@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import "./photo.css";
+import MainHeader from "@/components/header/Mainheader/MainHeader";
 
 const photopage = () => {
   return (
-    <div>photopage</div>
-  )
-}
+    <>
+      <MainHeader />
+      <section className="photobody px-5">photopage</section>
+    </>
+  );
+};
 
-export default photopage
+export default photopage;

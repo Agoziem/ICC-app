@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import "./about.css";
+import MainHeader from "@/components/header/Mainheader/MainHeader";
 
 const aboutpage = () => {
   return (
-    <div>aboutpage</div>
-  )
-}
+    <>
+      <MainHeader />
+      <section className="abouthero px-5">aboutpage</section>
+    </>
+  );
+};
 
-export default aboutpage
+export default aboutpage;

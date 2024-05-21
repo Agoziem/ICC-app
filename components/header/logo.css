@@ -20,5 +20,7 @@
 .logo span {
   font-size: 22px;
   font-weight: 700;
-  color: #012970;
+  color: var(--primary);
 }
+
+

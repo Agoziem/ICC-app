@@ -3,12 +3,12 @@ import HeaderSection from "@/sections/headerSection";
 import StatisticsSection from "@/sections/statisticsSection";
 import AboutSection from "@/sections/aboutSection";
 import ServicesSection from "@/sections/servicesSection";
-import ProductsSection from "@/sections/productsSection";
 import TestimonialSection from "@/sections/testimonialSection";
 import StaffSection from "@/sections/staffSection";
+import BlogSection from "@/sections/blogSection";
 import ContactSection from "@/sections/contactSection";
-import SubscriptionSection from "@/sections/subscriptionSection";
 import FooterSection from "@/sections/footerSection";
+import BackToTop from "@/components/backtotopbutton/BackToTop";
 
 export default function Home() {
   return (
@@ -17,12 +17,12 @@ export default function Home() {
       <StatisticsSection />
       <AboutSection />
       <ServicesSection />
-      <ProductsSection />
       <TestimonialSection />
       <StaffSection />
+      <BlogSection />
       <ContactSection />
-      <SubscriptionSection />
       <FooterSection />
+      <BackToTop />
     </main>
   );
 }

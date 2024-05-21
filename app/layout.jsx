@@ -1,4 +1,8 @@
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
+import { OrganizationContextProvider } from "@/data/Organizationalcontextdata";
+import BootstrapJs from "@/components/BootstrapJs";
 
 export const metadata = {
   title: "ICC app",
@@ -9,7 +13,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="body">
+        <OrganizationContextProvider>{children}</OrganizationContextProvider>
+        <BootstrapJs />
+      </body>
     </html>
   );
 }
