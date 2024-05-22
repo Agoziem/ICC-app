@@ -1,58 +1,61 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Menu from "./HambugerMenu";
 import "./Header.css";
 import ".././logo.css";
 import Link from "next/link";
 import { IoMenu } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUser } from "react-icons/fa";
 import MainHeaderLogo from "./Logo";
 import navlist from "./navitem";
 
-// import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const MainHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("/");
-
-  // const { data: session } = useSession();
-
-  // const [providers, setProviders] = useState(null);
+  const { data: session } = useSession();
   // const [toggleDropdown, setToggleDropdown] = useState(false);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await getProviders();
-  //     setProviders(res);
-  //   })();
-  // }, []);
 
   const handleActive = (link) => {
     setActiveLink(link);
   };
-  
-  
-  if (typeof window !== 'undefined') {
-    window.addEventListener('scroll', function() {
-      var header = document.getElementById('header');
-      var scrollPosition = window.scrollY;
-    
-      // Change background color based on scroll position
-      if (scrollPosition > 0) {
-        header.style.backgroundColor = '#FFF2FC';
-      } else {
-        header.style.backgroundColor = 'transparent';
-      }
-    });
-  }
-  
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleScroll = () => {
+        const header = document.getElementById("header");
+        const scrollPosition = window.scrollY;
+
+        if (header) {
+          if (scrollPosition > 0) {
+            header.style.backgroundColor = "#FFF2FC";
+          } else {
+            header.style.backgroundColor = "transparent";
+          }
+        }
+      };
+
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <nav id="header" className="header fixed-top d-flex align-items-center justify-content-between py-3 px-2 px-md-5">
+    <nav
+      id="header"
+      className="header fixed-top d-flex align-items-center justify-content-between py-3 px-2 px-md-5"
+      style={{
+        backgroundColor: "transparent",
+      }}
+    >
       <MainHeaderLogo toggle={toggleMenu} />
 
       <div className="d-none d-lg-block">
@@ -60,10 +63,13 @@ const MainHeader = () => {
           {navlist.map((item) => {
             return (
               <li className="mx-3" key={item.id}>
-                <Link href={item.link}
-                 className={activeLink === item.link ? "active" : ""}
-                 onClick={() => handleActive(item.link)}
-                >{item.title}</Link>
+                <Link
+                  href={item.link}
+                  className={activeLink === item.link ? "active" : ""}
+                  onClick={() => handleActive(item.link)}
+                >
+                  {item.title}
+                </Link>
               </li>
             );
           })}
@@ -77,17 +83,35 @@ const MainHeader = () => {
             style={{ cursor: "pointer", fontSize: "20px" }}
           />
         </div>
-        <Link href={"/"}>
-          <button
-            className="btn btn-primary text-white font-bold"
-            style={{
-              padding: "7px 22px",
-              borderRadius: "25px",
-            }}
-          >
-            Get Started now
-          </button>
-        </Link>
+        <div className="d-flex">
+          <Link href={"/dashboard"}>
+            <button
+              className="btn btn-primary text-white font-bold me-2"
+              style={{
+                padding: "7px 22px",
+                borderRadius: "25px",
+              }}
+            >
+              {session ? "Dashboard" : "Get Started now"}
+            </button>
+          </Link>
+          {session && (
+            <>
+              {session.user.avatar ? (
+                <img
+                  src={session.user.avatar}
+                  alt="user avatar"
+                  className="rounded-circle ms-3"
+                  style={{ width: "30px", height: "30px" }}
+                />
+              ) : (
+                <div className="user-icon">
+                  <FaUser />
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       <>

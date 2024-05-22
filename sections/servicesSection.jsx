@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { LuCheckCircle } from "react-icons/lu";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import Link from "next/link";
 
 const ServicesSection = () => {
   return (
@@ -56,9 +57,9 @@ const ServicesSection = () => {
             </li>
           </ul>
 
-          <button className="btn btn-primary mt-2">
+          <Link href={'/dashboard'} className="btn btn-primary mt-2">
             get started now <FaLongArrowAltRight className="ms-2" />
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -91,9 +92,9 @@ const ServicesSection = () => {
               over 1000+ Questions
             </li>
           </ul>
-          <button className="btn btn-primary mt-2">
+          <Link href={'/dashboard'} className="btn btn-primary mt-2">
             practice now <FaLongArrowAltRight className="ms-2" />
-          </button>
+          </Link>
         </div>
         <div className="col-12 col-md-6 feature-image d-flex justify-content-center">
           <Image
@@ -149,9 +150,9 @@ const ServicesSection = () => {
             </li>
           </ul>
 
-          <button className="btn btn-primary mt-2">
+          <Link href={'/dashboard'} className="btn btn-primary mt-2">
             get started now <FaLongArrowAltRight className="ms-2" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>
