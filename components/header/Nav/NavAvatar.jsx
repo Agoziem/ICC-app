@@ -65,7 +65,7 @@ function NavAvatar() {
           <li>
             <Link
               className="dropdown-item d-flex align-items-center"
-              href={`/${currentRoot}`}
+              href={`/`}
             >
               <i className="bi bi-house-door"></i>
               <span>Home page</span>
