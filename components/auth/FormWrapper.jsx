@@ -1,50 +1,109 @@
 import Link from "next/link";
 import React from "react";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { SiFacebook } from "react-icons/si";
+import { FaGithub } from "react-icons/fa6";
 
 const FormWrapper = ({
   children,
   headerLabel,
   backButtonlabel,
   backButtonHref,
+  backButtonHrefText,
   showSocial = true,
 }) => {
   return (
     <div>
-      <div className="text-center">
+      <div>
         <h4>{headerLabel}</h4>
+        <div className="my-3">
+          {backButtonlabel}{" "}
+          <Link href={backButtonHref} className="text-secondary">
+            {backButtonHrefText}
+          </Link>
+        </div>
 
-        <div>{children}</div>
-        
-        <hr />
+        {/* Social icons */}
         {showSocial && (
-          <div className="d-flex justify-content-center mb-2">
-            <div>
-              <FcGoogle
-                className="h2 me-5"
-                style={{
-                  cursor: "pointer",
-                }}
-                onClick={() => {}}
-              />
+          <div className="d-md-flex justify-content-center mb-4">
+            <div
+              className="d-flex align-items-center me-0 me-md-3 p-2 px-3 mb-4 mb-md-0"
+              style={{
+                border: "1.2px solid #98889573",
+                borderRadius: "5px",
+                cursor: "pointer",
+                width: "100%",
+              }}
+              onClick={() => {
+                signIn("google", {
+                  callbackUrl: DEFAULT_LOGIN_REDIRECT,
+                });
+              }}
+            >
+              <FcGoogle className="h5 mb-0 me-2" />
+
+              {backButtonHrefText === "Sign up" ? "Sign in" : "Sign up"}
             </div>
 
-            <div>
-              <SiFacebook
-                className="h2"
+            <div
+              className="d-flex align-items-center me-0  p-2 px-3"
+              style={{
+                border: "1.2px solid #98889573",
+                borderRadius: "5px",
+                cursor: "pointer",
+                width: "100%",
+              }}
+              onClick={() => {
+                signIn("github", {
+                  callbackUrl: DEFAULT_LOGIN_REDIRECT,
+                });
+              }}
+            >
+              <FaGithub
+                className="h5 mb-0 me-2"
                 style={{
                   cursor: "pointer",
-                  color: "#001A52",
+                  color: "#000000",
                 }}
-                onClick={() => {}}
               />
+
+              {backButtonHrefText === "Sign up" ? "Sign in" : "Sign up"}
             </div>
           </div>
         )}
-        <div className="text-center">
-          <Link href={backButtonHref}>{backButtonlabel}</Link>
+
+        {/* The Line */}
+        <div className="d-flex justify-content-center">
+          <div
+            style={{
+              width: "100%",
+              height: "1px",
+              backgroundColor: "#98889573",
+              marginTop: "10px",
+            }}
+          ></div>
+          <div
+            style={{
+              color: "var(--bgDarkerColor)",
+              padding: "0 10px",
+              fontSize: "14px",
+            }}
+          >
+            OR
+          </div>
+          <div
+            style={{
+              width: "100%",
+              height: "1px",
+              backgroundColor: "#98889573",
+              marginTop: "10px",
+            }}
+          ></div>
         </div>
+
+        <div>{children}</div>
       </div>
     </div>
   );

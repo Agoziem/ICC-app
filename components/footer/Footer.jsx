@@ -1,16 +1,18 @@
 "use client";
 import React, { useContext } from 'react';
 import './footer.css';
-import { SchoolContext } from '@/data/Organizationalcontextdata';
+import { OrganizationContext } from '@/data/Organizationalcontextdata';
 
 function Footer() {
-  const {schoolData} = useContext(SchoolContext)
+  const {OrganizationData } = useContext(OrganizationContext)
   return (
     <footer id="footer" className="footer">
       <div className="copyright">
         &copy; Copyright{' '}
         <strong>
-          <span>{schoolData && schoolData.Schoolname}</span>
+          <span>
+            {OrganizationData?.name}
+          </span>
         </strong>
         . All Rights Reserved
       </div>

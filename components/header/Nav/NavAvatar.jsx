@@ -5,19 +5,20 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "@/components/Modal/modal";
+import { signOut, useSession } from "next-auth/react";
 
 function NavAvatar() {
-  const { currentUser, currentRoot } = useCurrentUser();
+  const { data: session } = useSession();
+  const { currentRoot } = useCurrentUser();
   const [showModal,setShowModal] = useState(false)
   const [loggingOut,setLoggingOut] = useState(false)
   const router = useRouter();
 
   const logoutDashboard = () => {
     setLoggingOut(true)
-    localStorage.clear();
-    setLoggingOut(false)
     setShowModal(false)
-    router.push("/");
+    setLoggingOut(false)
+    signOut()
   };
 
   return (
@@ -28,9 +29,9 @@ function NavAvatar() {
           href="#"
           data-bs-toggle="dropdown"
         >
-          {currentUser && currentUser.headshot ? (
+          {session?.user.image ? (
             <img
-              src={`${currentUser.headshot}`}
+              src={`${session.user.image}`}
               alt="Profile"
               width={35}
               height={35}
@@ -41,20 +42,21 @@ function NavAvatar() {
             <i className="bi bi-person" style={{ fontSize: "30px" }}></i>
           )}
           <span className="d-none d-md-block dropdown-toggle ps-2">
-            {(currentUser && currentUser.firstname) ||
-              (currentUser && currentUser.firstName) ||
-              "User"}
+            {(session?.user.first_name) ||
+              (session?.user.username) ||
+              "user"}
           </span>
         </a>
 
         <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
             <h6>
-              {(currentUser && currentUser.firstname) ||
-                (currentUser && currentUser.firstName) ||
-                "User"}
+              {(session?.user.first_name) ||
+                (session?.user.username) ||
+                "user"}
             </h6>
-            <span>{(currentUser && currentUser.role) || "Student"}</span>
+            <span className="d-block">{session?.user.is_staff?"admin":"user"}</span>
+            <span>{session?.user.email}</span>
           </li>
           <li>
             <hr className="dropdown-divider" />

@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import useWebSocket from "@/hooks/useWebSocket";
-import useCurrentUser from "@/hooks/useCurrentUser";
-import { SchoolContext } from "@/data/Organizationalcontextdata";
+import useCurrentUser  from "@/hooks/useCurrentUser";
 import Modal from "@/components/Modal/modal";
-import { time } from "echarts";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { useSession } from "next-auth/react";
 
 function NavNotice() {
-  const { currentUser, currentRoot } = useCurrentUser();
+  const { data: session } = useSession();
+  const { currentRoot } = useCurrentUser();
   const [notifications, setNotifications] = useState([]);
+  const { OrganizationData } = useContext(OrganizationContext);
   const Django_URL = process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL;
-  const { schoolData } = useContext(SchoolContext);
+
   const [user_group, setUserGroup] = useState("");
   const [showmodal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({
@@ -22,14 +24,10 @@ function NavNotice() {
 
   // set the user group based on the current root
   const changeUserGroup = () => {
-    if (currentRoot === "teachers-portal") {
-      setUserGroup("Teachers");
-    } else if (currentRoot === "students-portal") {
-      setUserGroup("Students");
-    } else if (currentRoot === "accounting-portal") {
-      setUserGroup("Bursar");
-    } else if (currentRoot === "admin-portal") {
-      setUserGroup("Admins");
+    if (currentRoot === "admin") {
+      setUserGroup("admin");
+    } else if (currentRoot === "dashboard") {
+      setUserGroup("dashboard");
     }
   };
 
@@ -43,7 +41,7 @@ function NavNotice() {
   const fetchNotifications = async () => {
     try {
       const response = await fetch(
-        `${Django_URL}/adminsapi/get_notifications_by_group/${schoolData.id}/${user_group}/`,
+        `${Django_URL}/api/get_notifications_by_group/${OrganizationData.id}/${user_group}/`,
         {
           method: "GET",
         }
@@ -56,73 +54,73 @@ function NavNotice() {
   };
 
   useEffect(() => {
-    if (schoolData.id && user_group) {
+    if (OrganizationData.id && user_group) {
       fetchNotifications();
     }
-  }, [schoolData.id, user_group]);
+  }, [OrganizationData.id, user_group]);
 
 
 
   // WebSocket Connection for notifications
-  const { error, loading, sendMessage, closeWebSocket } = useWebSocket({
-    roomprefix: "notice",
-    room_name: `${user_group}`,
-    Connect: () => {
-      console.log("Connected to notice websocket");
-    },
-    Disconnect: () => {
-      console.log("Disconnected from notice websocket");
-    },
-    Receive: (e) => {
-      handleRecieve(e);
-    },
-  });
+  // const { error, loading, sendMessage, closeWebSocket } = useWebSocket({
+  //   roomprefix: "notice",
+  //   room_name: `${user_group}`,
+  //   Connect: () => {
+  //     console.log("Connected to notice websocket");
+  //   },
+  //   Disconnect: () => {
+  //     console.log("Disconnected from notice websocket");
+  //   },
+  //   Receive: (e) => {
+  //     handleRecieve(e);
+  //   },
+  // });
 
-  // handle the received notification
-  const handleRecieve = (e) => {
-    const newnotice = JSON.parse(e.data);
-    if (newnotice.action == "delete") {
-      setNotifications((prevNotifications) =>
-        prevNotifications.filter((n) => n.id !== newnotice.notification.id)
-      );
-    } else if (newnotice.action == "create") {
-      setNotifications((prevNotifications) => [
-        newnotice.notification,
-        ...prevNotifications,
-      ]);
-    } else if (newnotice.action == "update") {
-      return;
-    }
-  };
+  // // handle the received notification
+  // const handleRecieve = (e) => {
+  //   const newnotice = JSON.parse(e.data);
+  //   if (newnotice.action == "delete") {
+  //     setNotifications((prevNotifications) =>
+  //       prevNotifications.filter((n) => n.id !== newnotice.notification.id)
+  //     );
+  //   } else if (newnotice.action == "create") {
+  //     setNotifications((prevNotifications) => [
+  //       newnotice.notification,
+  //       ...prevNotifications,
+  //     ]);
+  //   } else if (newnotice.action == "update") {
+  //     return;
+  //   }
+  // };
 
-  // handle the update/show notification
-  const handleSend = (notification) => {
-    // set the modal content
-    setModalContent({
-      title: notification.headline,
-      message: notification.Notification,
-      time: timeSince(notification.Notificationdate),
-    });
-    // show the modal
-    setShowModal(true);
-    // if the notification has already been seen by the user, return
-    if (notification.users_seen.includes(currentUser.user.id)) {
-      return;
-    }
-    // Update users_seen
-    notification.users_seen.push(currentUser.user.id);
-    const index = notifications.findIndex((n) => n.id === notification.id);
-    if (index !== -1) {
-      const updatedNotifications = [...notifications];
-      updatedNotifications[index] = notification;
-      setNotifications(updatedNotifications);
+  // // handle the update/show notification
+  // const handleSend = (notification) => {
+  //   // set the modal content
+  //   setModalContent({
+  //     title: notification.headline,
+  //     message: notification.Notification,
+  //     time: timeSince(notification.Notificationdate),
+  //   });
+  //   // show the modal
+  //   setShowModal(true);
+  //   // if the notification has already been seen by the user, return
+  //   if (notification.users_seen.includes(session?.user.id)) {
+  //     return;
+  //   }
+  //   // Update users_seen
+  //   notification.users_seen.push(session?.user.id);
+  //   const index = notifications.findIndex((n) => n.id === notification.id);
+  //   if (index !== -1) {
+  //     const updatedNotifications = [...notifications];
+  //     updatedNotifications[index] = notification;
+  //     setNotifications(updatedNotifications);
 
-      // Send the updated notification via WebSocket
-      sendMessage({
-        notification: notification,
-      });
-    }
-  };
+  //     // Send the updated notification via WebSocket
+  //     sendMessage({
+  //       notification: notification,
+  //     });
+  //   }
+  // };
 
   // shorten the notification message
   const shortenMessage = (message) => {
@@ -184,13 +182,13 @@ function NavNotice() {
         <i className="bi bi-bell"></i>
         {notifications.filter(
           (notification) =>
-            !notification.users_seen?.includes(currentUser.user.id)
+            !notification.users_seen?.includes(session?.user.id)
         ).length > 0 ? (
           <span className="badge bg-danger badge-number">
             {
               notifications.filter(
                 (notification) =>
-                  !notification.users_seen?.includes(currentUser.user.id)
+                  !notification.users_seen?.includes(session?.user.id)
               ).length
             }
           </span>
@@ -201,7 +199,7 @@ function NavNotice() {
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
         {notifications.filter(
           (notification) =>
-            !notification.users_seen?.includes(currentUser.user.id)
+            !notification.users_seen?.includes(session?.user.id)
         ).length > 0 ? (
           <React.Fragment>
             <li className="dropdown-header">
@@ -209,7 +207,7 @@ function NavNotice() {
               {
                 notifications.filter(
                   (notification) =>
-                    !notification.users_seen?.includes(currentUser.user.id)
+                    !notification.users_seen?.includes(session?.user.id)
                 ).length
               }{" "}
               unread notifications
@@ -242,7 +240,7 @@ function NavNotice() {
               >
                 <i
                   className={`bi bi-exclamation-circle  ${
-                    notification.users_seen?.includes(currentUser.user.id)
+                    notification.users_seen?.includes(session?.user.id)
                       ? "text-muted"
                       : "text-warning"
                   }`}
@@ -250,7 +248,7 @@ function NavNotice() {
                 <div>
                   <h4
                     className={
-                      notification.users_seen?.includes(currentUser.user.id)
+                      notification.users_seen?.includes(session?.user.id)
                         ? "text-muted"
                         : ""
                     }
@@ -259,7 +257,7 @@ function NavNotice() {
                   </h4>
                   <p
                     className={
-                      notification.users_seen?.includes(currentUser.user.id)
+                      notification.users_seen?.includes(session?.user.id)
                         ? ""
                         : "text-dark"
                     }

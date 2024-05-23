@@ -97,12 +97,12 @@ const MainHeader = () => {
           </Link>
           {session && (
             <>
-              {session.user.avatar ? (
+              {session.user.image ? (
                 <img
-                  src={session.user.avatar}
+                  src={session.user.image}
                   alt="user avatar"
                   className="rounded-circle ms-3"
-                  style={{ width: "30px", height: "30px" }}
+                  style={{ width: "35px", height: "35px" }}
                 />
               ) : (
                 <div className="user-icon">

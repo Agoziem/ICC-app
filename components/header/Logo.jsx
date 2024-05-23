@@ -2,11 +2,12 @@
 import React, { useContext } from 'react';
 import './logo.css';
 import Link from 'next/link';
-import { SchoolContext } from '@/data/Organizationalcontextdata';
+
 import { RefContext } from '../sidebar/sideBarTogglerContext';
+import { OrganizationContext } from '@/data/Organizationalcontextdata';
 
 function Logo({portalname,portallink}) {
-  const { schoolData } = useContext(SchoolContext)
+  const { OrganizationData } = useContext(OrganizationContext);
   const sidebartoggleref = useContext(RefContext);
 
   const handleToggleSideBar = () => {
@@ -16,14 +17,13 @@ function Logo({portalname,portallink}) {
   };
 
 
-
   
   return (
     <div className="d-flex align-items-center justify-content-between">
       <Link href={`/${portallink}`} className="logo d-flex align-items-center">
         {
-          schoolData && schoolData.Schoollogo &&
-          <img src={schoolData.Schoollogo} alt="logo" width={50} className='me-3' />
+          OrganizationData && OrganizationData.Organizationlogo &&
+          <img src={OrganizationData.Organizationlogo} alt="logo" width={50} className='me-3' />
         }
         <span className="d-none d-lg-block">{portalname}</span>
       </Link>
