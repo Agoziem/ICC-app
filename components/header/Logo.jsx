@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { RefContext } from '../sidebar/sideBarTogglerContext';
 import { OrganizationContext } from '@/data/Organizationalcontextdata';
+import Image from 'next/image';
 
 function Logo({portalname,portallink}) {
   const { OrganizationData } = useContext(OrganizationContext);
@@ -23,8 +24,12 @@ function Logo({portalname,portallink}) {
       <Link href={`/${portallink}`} className="logo d-flex align-items-center">
         {
           OrganizationData && OrganizationData.Organizationlogo &&
-          <img src={OrganizationData.Organizationlogo} alt="logo" width={50} className='me-3' />
-        }
+          <Image src={OrganizationData.Organizationlogo} alt="logo" width={50} height={50} className='me-3' style={
+            {
+              height: "auto"
+            }
+          }/>
+        } 
         <span className="d-none d-lg-block">{portalname}</span>
       </Link>
       <i

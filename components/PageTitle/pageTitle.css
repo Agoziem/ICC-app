@@ -9,30 +9,30 @@
   font-size: 24px;
   margin-bottom: 0;
   font-weight: 600;
-  color: #012970;
+  color: var(--primary) !important;
 }
 
 /* Breadcrumbs */
 .breadcrumb {
   font-size: 14px;
-  color: #899bbd;
+  color: var(--primary-300) !important;
   font-weight: 600;
 }
 
 .breadcrumb a {
-  color: #899bbd;
+  color: var(--primary) !important;
   transition: 0.3s;
 }
 
 .breadcrumb a:hover {
-  color: #51678f;
+  color: var(--secondary) !important;
 }
 
 .breadcrumb .breadcrumb-item::before {
-  color: #899bbd;
+  color: var(--primary) !important;
 }
 
 .breadcrumb .active {
-  color: #51678f;
+  color: var(--secondary) !important;
   font-weight: 600;
 }

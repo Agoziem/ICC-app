@@ -10,6 +10,7 @@ import MainHeaderLogo from "./Logo";
 import navlist from "./navitem";
 
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const MainHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -98,11 +99,13 @@ const MainHeader = () => {
           {session && (
             <>
               {session.user.image ? (
-                <img
+                <Image
                   src={session.user.image}
-                  alt="user avatar"
-                  className="rounded-circle ms-3"
-                  style={{ width: "35px", height: "35px" }}
+                  alt="Profile"
+                  width={38}
+                  height={38}
+                  className="rounded-circle object-fit-cover"
+                  style={{ objectPosition: "top center" }}
                 />
               ) : (
                 <div className="user-icon">

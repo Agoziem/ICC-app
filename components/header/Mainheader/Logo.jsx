@@ -16,9 +16,12 @@ const MainHeaderLogo = () => {
               : "/logo placeholder.jpg"
           }
           alt="logo"
-          width={35}
+          width={50}
           height={35}
           className="me-3"
+          style={{
+            height: "auto",
+          }}
         />
         <span>ICC app</span>
       </Link>

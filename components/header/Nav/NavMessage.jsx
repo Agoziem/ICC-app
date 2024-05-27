@@ -9,7 +9,7 @@ function NavMessage() {
       </a>
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-        <li className="dropdown-header">
+        <li className="dropdown-header text-primary">
           You have 0 new messages at the moment
           {/* <a href="#">
             <span className="badge rounded-pill bg-primary p-2 ms-2">

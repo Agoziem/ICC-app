@@ -202,7 +202,7 @@ function NavNotice() {
             !notification.users_seen?.includes(session?.user.id)
         ).length > 0 ? (
           <React.Fragment>
-            <li className="dropdown-header">
+            <li className="dropdown-header text-primary">
               You have{" "}
               {
                 notifications.filter(
@@ -218,7 +218,7 @@ function NavNotice() {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <li className="dropdown-header">
+            <li className="dropdown-header text-primary">
               You have no unread notification at the Moment
             </li>
             <li>

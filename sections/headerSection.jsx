@@ -1,9 +1,13 @@
+"use client";
 import React from "react";
 import MainHeader from "@/components/header/Mainheader/MainHeader";
 import "./section.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+
 const HeaderSection = () => {
+  const { data: session } = useSession();
   return (
     <div>
       <MainHeader />
@@ -11,7 +15,7 @@ const HeaderSection = () => {
         <div className="container">
           <div className="row align-items-center ">
             <div className="col-md-6">
-              <div className="header-content text-center text-md-start px-2 px-md-0">
+              <div className="header-content text-center text-md-start px-2 px-md-4 pt-md-5">
                 <h1>Your Online Solution to admission related Issues </h1>
                 <p>
                   platform that provides innovative solutions to all online and
@@ -28,7 +32,10 @@ const HeaderSection = () => {
                     }}
                     href={"/dashboard"}
                   >
-                    Get Started now
+                    {
+                      session ? "Go to Dashboard" : "Get Started now"
+                    }
+                   
                   </Link>
                 </div>
               </div>

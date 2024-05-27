@@ -7,7 +7,7 @@ import Nav from './Nav/Nav';
 
 function Header({portalname, portallink}) {
   return (
-    <header id="header" className="header fixed-top d-flex align-items-center">
+    <header id="header" className="dashboardheader fixed-top d-flex align-items-center">
       <Logo portalname={portalname} portallink={portallink} />
       <SearchBar />
       <Nav />

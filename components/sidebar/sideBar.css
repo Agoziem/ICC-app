@@ -12,9 +12,9 @@
   padding: 20px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #aab7cf transparent;
+  scrollbar-color: var(--bgDarkerColor) transparent;
   box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
-  background-color: #fff;
+  background-color: var(--bgLightColor);
 }
 
 @media (max-width: 1199px) {
@@ -26,11 +26,11 @@
 .sidebar::-webkit-scrollbar {
   width: 2px;
   height: 8px;
-  background-color: #fff;
+  background-color: var(--bgColor);
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: #aab7cf;
+  background-color: var(--bgDarkerColor);
 }
 
 @media (min-width: 1200px) {
@@ -76,7 +76,7 @@
 .sidebar-nav .nav-heading {
   font-size: 11px;
   text-transform: uppercase;
-  color: #899bbd;
+  color: var(--bgDarkerColor);
   font-weight: 600;
   margin: 10px 0 5px 15px;
 }
@@ -86,43 +86,43 @@
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #012970;
+  color: var(--primary);
   transition: 0.3;
   padding: 10px 15px;
   border-radius: 4px;
 }
 
 .sidebar-nav .nav-link.active {
-  color: #2e42f7;
-  background: #e3ecff;
+  color: var(--secondary);
+  background: var(--primary);
 }
 
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #012970;
+  color: var(--primary);
 }
 
 .sidebar-nav .nav-link.active i  {
-  color: #2e42f7;
+  color: var(--secondary);
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #012970;
-  background: #fff;
+  color: var(--primary);
+  background: var(--bgDarkColor);
 }
 
 .sidebar-nav .nav-link.collapsed i {
-  color: #899bbd;
+  color: var(--bgDarkColor);
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #4154f1;
-  background: #f6f9ff;
+  color: var(--primary);
+  background: var(--bgDarkColor);
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #4154f1;
+  color: var(--primary);
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -145,7 +145,7 @@
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #012970;
+  color: var(--primary);
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
@@ -160,9 +160,9 @@
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: var(--secondary);
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #4154f1;
+  background-color: var(--secondary);
 }

@@ -57,7 +57,7 @@ const ServicesSection = () => {
             </li>
           </ul>
 
-          <Link href={'/dashboard'} className="btn btn-primary mt-2">
+          <Link href={'/dashboard/services'} className="btn btn-primary mt-2">
             get started now <FaLongArrowAltRight className="ms-2" />
           </Link>
         </div>
@@ -92,7 +92,7 @@ const ServicesSection = () => {
               over 1000+ Questions
             </li>
           </ul>
-          <Link href={'/dashboard'} className="btn btn-primary mt-2">
+          <Link href={'/dashboard/cbt'} className="btn btn-primary mt-2">
             practice now <FaLongArrowAltRight className="ms-2" />
           </Link>
         </div>
@@ -150,7 +150,7 @@ const ServicesSection = () => {
             </li>
           </ul>
 
-          <Link href={'/dashboard'} className="btn btn-primary mt-2">
+          <Link href={'/dashboard/chat'} className="btn btn-primary mt-2">
             get started now <FaLongArrowAltRight className="ms-2" />
           </Link>
         </div>

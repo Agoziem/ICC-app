@@ -16,9 +16,14 @@
   --secondary-400: #ffc59e;
   --secondary-300: #ffdfc9;
   --success: #28a745;
+  --success-600: #218838;
+  --success-500: #2cc94b;
+  --success-400: #51ff7a;
+  --success-300: #d1e7dd;
   --info: #17a2b8;
   --warning: #ffc107;
   --danger: #dc3545;
+  --danger-600: #a11927;
   --light: #f8f9fa;
   --dark: #343a40;
   --white: #fff;
@@ -69,7 +74,10 @@
   color: var(--primary-600);
 }
 
+/* ------------------------------------------- */
 /* text */
+/* ------------------------------------------- */
+
 .body .text-primary {
   color: var(--primary) !important;
 }
@@ -77,6 +85,11 @@
 .body .text-secondary {
   color: var(--secondary) !important;
 }
+
+
+/* ------------------------------------------- */
+/* dropdown */
+/* ------------------------------------------- */
 
 .body .dropdown-menu {
   border-radius: 4px;
@@ -89,6 +102,7 @@
   animation-fill-mode: both;
   border: 0;
   box-shadow: 0 5px 30px 0 rgba(82, 63, 105, 0.2);
+  background-color: var(--bgLightColor) !important;
 }
 
 .body .dropdown-menu .dropdown-header,
@@ -104,11 +118,12 @@
 }
 
 .body .dropdown-menu .dropdown-footer a:hover {
+  background-color: var(--bgDarkerColor) !important;
   text-decoration: none;
 }
 
 .body .dropdown-menu .dropdown-divider {
-  color: #a5c5fe;
+  color: var(--bgDarkerColor) !important;
   margin: 0;
 }
 
@@ -125,7 +140,7 @@
 }
 
 .body .dropdown-menu .dropdown-item:hover {
-  background-color: #f6f9ff;
+  background-color: var(--bgDarkerColor) !important;
 }
 
 @media (min-width: 768px) {
@@ -133,7 +148,7 @@
     content: "";
     width: 13px;
     height: 13px;
-    background: #fff;
+    background: var(--bgLightColor);
     position: absolute;
     top: -7px;
     right: 20px;
@@ -171,7 +186,11 @@
   }
 }
 
+/* ------------------------------------------- */
 /* Light Backgrounds */
+/* ------------------------------------------- */
+
+
 .body .bg-primary-light {
   background-color: var(--bgDarkColor);
   border-color: var(--bgDarkColor);
@@ -183,8 +202,8 @@
 }
 
 .body .bg-success-light {
-  background-color: #d1e7dd;
-  border-color: #d1e7dd;
+  background-color: var(--success-300);
+  border-color:var(--success-300);
 }
 
 .body .bg-danger-light {
@@ -207,7 +226,11 @@
   border-color: #d3d3d4;
 }
 
+
+/* ------------------------------------------- */
 /* Card */
+/* ------------------------------------------- */
+
 .body .card {
   margin-bottom: 30px;
   border: none;
@@ -225,36 +248,40 @@
 }
 
 .body .card-title {
-  padding: 20px 0 15px 0;
   font-size: 15px;
   font-weight: 500;
   color: var(--primary);
   letter-spacing: 1px;
-  /* font-family: 'Roboto', sans-serif; */
+  font-family: "jost", sans-serif;
+  font-weight: 700;
 }
 
 .body .card-title span {
   color: var(--primary-300);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 700;
 }
 
-.body.card-body {
-  padding: 0 20px 20px 20px;
-}
 
 .body .card-img-overlay {
   background-color: rgba(255, 255, 255, 0.6);
 }
 
+
+/* ------------------------------------------- */
 /* Alerts */
+/* ------------------------------------------- */
+
 .body .alert-heading {
   font-weight: 500;
   /* font-family: 'Poppins', sans-serif; */
   font-size: 20px;
 }
 
+/* ------------------------------------------- */
 /*  Buttons */
+/* ------------------------------------------- */
+
 
 .body .btn {
   padding: 8.5px 22px;
@@ -328,7 +355,10 @@
   color: var(--bgDarkColor);
 }
 
+/* ------------------------------------------- */
 /* Accordion */
+/* ------------------------------------------- */
+
 .body .accordion-item {
   border: 1px solid #ebeef4;
 }
@@ -360,33 +390,11 @@
   font-size: 15px;
 }
 
-/* Breadcrumbs */
-.body .breadcrumb {
-  font-size: 14px;
-  /* font-family: 'Nunito', sans-serif; */
-  color: #899bbd;
-  font-weight: 600;
-}
-
-.body .breadcrumb a {
-  color: #899bbd;
-  transition: 0.3s;
-}
-
-.body .breadcrumb a:hover {
-  color: #51678f;
-}
-
-.body .breadcrumb .breadcrumb-item::before {
-  color: #899bbd;
-}
-
-.body .breadcrumb .active {
-  color: #51678f;
-  font-weight: 600;
-}
-
+/* ------------------------------------------- */
 /* Bordered Tabs */
+/* ------------------------------------------- */
+
+
 .body .nav-tabs-bordered {
   border-bottom: 2px solid #ebeef4;
 }
