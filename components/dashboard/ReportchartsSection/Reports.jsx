@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CardFilter from "../Card/CardFilter";
 import ApexChart from "./ApexChart";
 
-function Reports() {
+function Reports({session}) {
   const [filter, setFilter] = useState("Today");
   const handleFilterChange = (filter) => {
     setFilter(filter);
@@ -71,7 +71,7 @@ function Reports() {
   };
 
   return (
-    <div className="card">
+    <div className="card px-md-2">
       <div className="d-flex justify-content-end pe-4 pt-3">
         <CardFilter filterChange={handleFilterChange} />
       </div>

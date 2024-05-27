@@ -44,7 +44,7 @@ function NavAvatar() {
           <span className="d-none d-md-block dropdown-toggle ps-2">
             {(session?.user.first_name) ||
               (session?.user.username) ||
-              "user"}
+              "customer"}
           </span>
         </a>
 
@@ -53,9 +53,9 @@ function NavAvatar() {
             <h6>
               {(session?.user.first_name) ||
                 (session?.user.username) ||
-                "user"}
+                "customer"}
             </h6>
-            <span className="d-block">{session?.user.is_staff?"admin":"user"}</span>
+            <span className="d-block">{session?.user.is_staff?"admin":"customer"}</span>
             <span>{session?.user.email}</span>
           </li>
           <li>

@@ -1,13 +1,13 @@
 import React from 'react';
 
-function RecentSalesTable({ items }) {
+function RecentSalesTable({ items,session }) {
   const handleStatus = status => {
     switch (status) {
       case 'Approved':
         return 'success';
         break;
       case 'Pending':
-        return 'warning';
+        return 'secondary';
         break;
       case 'Rejected':
         return 'danger';
@@ -21,9 +21,11 @@ function RecentSalesTable({ items }) {
     <table className="table table-bordered datatable">
       <thead className="table-light">
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Customer</th>
-          <th scope="col">Product</th>
+          <th scope="col">Order id</th>
+          {
+            session?.user?.is_staff ? <th scope="col">Customer</th> : null
+          }
+          <th scope="col">Order (Services/Products)</th>
           <th scope="col">Price</th>
           <th scope="col">Status</th>
         </tr>
@@ -34,9 +36,11 @@ function RecentSalesTable({ items }) {
           items.map(item => (
             <tr key={item._id}>
               <th scope="row">
-                <a href="#">{item.number}</a>
+                <a href="#">{item._id}</a>
               </th>
-              <td>{item.customer}</td>
+              {
+                session?.user?.is_staff ? <td>{item.customer}</td> : null
+              }
               <td>
                 <a href="#" className="text-primary">
                   {item.product}
@@ -44,7 +48,7 @@ function RecentSalesTable({ items }) {
               </td>
               <td>${item.price.toFixed(2)}</td>
               <td>
-                <span className={`badge bg-${handleStatus(item.status)}`}>
+                <span className={`badge text-${handleStatus(item.status)} bg-${handleStatus(item.status)}-light px-2`}>
                   {item.status}
                 </span>
               </td>

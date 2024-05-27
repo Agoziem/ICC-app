@@ -5,7 +5,7 @@ function TopSellingItem({ item }) {
     <tr>
       <th scope="row">
         <a href="#">
-          <img src={item.preview} alt="" />
+          <img src={item.preview} alt="" className='shadow-sm' />
         </a>
       </th>
       <td>
@@ -14,8 +14,6 @@ function TopSellingItem({ item }) {
         </a>
       </td>
       <td>${item.price.toFixed(2)}</td>
-      <td className="fw-bold">{item.sold}</td>
-      <td>${(item.price * item.sold).toLocaleString('en-US')}</td>
     </tr>
   );
 }
