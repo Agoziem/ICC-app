@@ -6,8 +6,10 @@ import MainHeaderLogo from "./Logo";
 import { FaTimes } from "react-icons/fa";
 import navlist from "./navitem";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const Menu = ({ isOpen, toggle }) => {
+  const { data: session } = useSession();
   const [activeLink, setActiveLink] = useState("/");
   const router = useRouter();
   return (
@@ -42,9 +44,21 @@ const Menu = ({ isOpen, toggle }) => {
       </ul>
 
       <div className="d-flex justify-content-center mt-2 px-3">
-        <div className="btn btn-primary text-white font-bold w-100">
-          Get Started now
-        </div>
+        {session ? (
+          <Link
+            href="/dashboard"
+            className="btn btn-primary text-white font-bold w-100"
+          >
+            go to Dashboard
+          </Link>
+        ) : (
+          <Link
+            href="/auth/signin"
+            className="btn btn-primary text-white font-bold w-100"
+          >
+            get Started now
+          </Link>
+        )}
       </div>
     </nav>
   );

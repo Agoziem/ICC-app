@@ -6,7 +6,7 @@ import { OrganizationContext } from '@/data/Organizationalcontextdata';
 function Footer() {
   const {OrganizationData } = useContext(OrganizationContext)
   return (
-    <footer id="footer" className="dashboardfooter">
+    <footer id="footer" className="dashboardfooter px-2">
       <div className="copyright">
         &copy; Copyright{' '}
         <strong>

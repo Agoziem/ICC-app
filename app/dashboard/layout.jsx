@@ -7,17 +7,22 @@ import { UserContextProvider } from "@/data/usercontextdata";
 import React from "react";
 import NavList from "./navList";
 import Main from "@/components/Main/Main";
+import OffCanvas from "@/components/Offcanvas/OffCanvas";
+import { CartProvider } from "@/data/Cartcontext";
 
 const dashboardlayout = ({ children }) => {
   return (
     <div>
       <AdminContextProvider>
         <UserContextProvider>
-          <Header portalname={"Dashboard"} portallink={"/dashboard"} />
-          <SideBar navList={NavList} />
-          <Main>{children}</Main>
-          <Footer />
-          <BackToTop />
+          <CartProvider>
+            <Header portalname={"Dashboard"} portallink={"/dashboard"} />
+            <SideBar navList={NavList} />
+            <Main>{children}</Main>
+            <Footer />
+            <BackToTop />
+            <OffCanvas />
+          </CartProvider>
         </UserContextProvider>
       </AdminContextProvider>
     </div>

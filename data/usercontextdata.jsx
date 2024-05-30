@@ -1,26 +1,101 @@
 "use client";
-import React, { createContext, useEffect, useState } from 'react';
-import useLocalStorage from '@/hooks/useLocalStorage';
+import React, { createContext, useEffect, useState } from "react";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import { useSession } from "next-auth/react";
 
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
+  const { data: session } = useSession();
   const [userData, setUserData] = useState({});
+  const [userOrder, setUserOrder] = useState([]);
 
-  const [storedUserData, setStoredUserData] = useLocalStorage('userData', userData)
+  // ----------------------------------------------------
+  // get it from local storage if it's there on mount
+  // ----------------------------------------------------
+
+  const [storedUserOrder, setStoredUserOrder] = useLocalStorage(
+    "userOrder",
+    userOrder
+  );
+
+  // ----------------------------------------------------
+  // set it to local storage if it's there on mount and not empty
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (session && session.user.id) {
+      setUserData(session.user);
+    }
+  }, [session?.user.id]);
 
   useEffect(() => {
-    if (storedUserData) {
-      setUserData(storedUserData)
+    if (session && session.user.id) {
+      if (storedUserOrder && storedUserOrder.length > 0) {
+        console.log("not empty")
+        setUserOrder(storedUserOrder);
+      } else {
+        console.log("empty")
+        fetchUserOrder();
+      }
     }
-  }, [storedUserData])
+  }, [session?.user.id]);
 
-  // Step 4: Provide the context value to children components
+  // ----------------------------------------------------
+  // fetch data from the backend and update LocalStorage
+  // ----------------------------------------------------
+
+  const fetchUserOrder = () => {
+    fetch(
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/paymentsbyuser/${session?.user.id}/`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setUserOrder(data);
+      })
+      .catch((e) => console.log(e.message));
+  };
+
+  // ----------------------------------------------------
+  // update local storage when the state changes
+  // ----------------------------------------------------
+
+  useEffect(() => {
+    setStoredUserOrder(userOrder);
+  }, [userOrder]);
+
+
+  // ----------------------------------------------------
+  // update userOrder
+  // ----------------------------------------------------
+  const updateUserOrder = (item) => {
+    const updatedOrder = userOrder.map((order) => {
+      if (order.id === item.id) {
+        return { ...order, status: item.status };
+      }
+      return order;
+    })
+    setStoredUserOrder(updatedOrder);
+    setUserOrder(updatedOrder);
+  }
+
+  // ----------------------------------------------------
+  // delete userOrder
+  // ----------------------------------------------------
+  const deleteUserOrder = (item) => {
+    const updatedOrder = userOrder.filter((order) => order.id !== item.id);
+    setStoredUserOrder(updatedOrder);
+    setUserOrder(updatedOrder);
+  }
+
   return (
-    <UserContext.Provider value={{ userData, setUserData }}>
+    <UserContext.Provider
+      value={{ userData, setUserData, userOrder, setUserOrder, updateUserOrder, deleteUserOrder}}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
-export { UserContext, UserContextProvider };
+const useUserContext = () => React.useContext(UserContext);
+
+export { useUserContext, UserContextProvider };

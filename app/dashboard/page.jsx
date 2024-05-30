@@ -4,7 +4,6 @@ import PageTitle from "@/components/PageTitle/PageTitle";
 import DashboardBody from "@/components/dashboard/dashboard";
 
 const Dashboard = () => {
-  
   return (
     <div>
       <PageTitle pathname="Dashboard" />

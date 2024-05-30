@@ -29,11 +29,12 @@ function Reports({session}) {
         toolbar: {
           show: false,
         },
+        fontFamily: 'jost, sans-serif'
       },
       markers: {
         size: 4,
       },
-      colors: ["#4154f1", "#2eca6a", "#ff771d"],
+      colors: ["#27011d", "#2eca6a", "#ff771d"],
       fill: {
         type: "gradient",
         gradient: {

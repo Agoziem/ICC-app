@@ -28,21 +28,21 @@
   "news": [
     {
       "_id": 1,
-      "img": "../assets/items/news-1.jpg",
+      "img": "/assets/items/news-1.jpg",
       "title": "Nihil blanditiis at in nihil autem",
       "subtitle": "Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum",
       "category": "abc"
     },
     {
       "_id": 2,
-      "img": "../assets/items/news-2.jpg",
+      "img": "/assets/items/news-2.jpg",
       "title": "Quidem autem et impedit",
       "subtitle": "Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande",
       "category": "abc"
     },
     {
       "_id": 3,
-      "img": "../assets/items/news-3.jpg",
+      "img": "/assets/items/news-3.jpg",
       "title": "Id quia et et ut maxime similique occaecati ut",
       "subtitle": "Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam",
       "category": "abc"
@@ -56,7 +56,7 @@
     },
     {
       "_id": 5,
-      "img": "../assets/items/news-5.jpg",
+      "img": "/assets/items/news-5.jpg",
       "title": "Et dolores corrupti quae illo quod dolor",
       "subtitle": "Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius",
       "category": "abc"
@@ -64,36 +64,36 @@
   ],
   "topselling": [
     {
-      "_id": 1,
-      "preview": "../assets/items/product-1.jpg",
+      "id": 1,
+      "preview": "/assets/items/product-1.jpg",
       "name": "Ut inventore ipsa voluptas nulla",
       "price": 64,
       "sold": 124
     },
     {
-      "_id": 2,
-      "preview": "../assets/items/product-2.jpg",
+      "id": 2,
+      "preview": "/assets/items/product-2.jpg",
       "name": "Exercitationem similique doloremque",
       "price": 46,
       "sold": 98
     },
     {
-      "_id": 3,
-      "preview": "../assets/items/product-3.jpg",
+      "id": 3,
+      "preview": "/assets/items/product-3.jpg",
       "name": "Doloribus nisi exercitationem",
       "price": 59,
       "sold": 74
     },
     {
-      "_id": 4,
-      "preview": "../assets/items/product-4.jpg",
+      "id": 4,
+      "preview": "/assets/items/product-4.jpg",
       "name": "Officiis quaerat sint rerum error",
       "price": 32,
       "sold": 63
     },
     {
-      "_id": 5,
-      "preview": "../assets/items/product-5.jpg",
+      "id": 5,
+      "preview": "/assets/items/product-5.jpg",
       "name": "Sit unde debitis delectus repellendus",
       "price": 79,
       "sold": 41

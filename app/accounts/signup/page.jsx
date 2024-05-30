@@ -36,6 +36,10 @@ const SignupPage = () => {
     }));
   }, [OrganizationData]);
 
+  // ----------------------------------------
+  // Handle form input changes
+  // ----------------------------------------
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -47,6 +51,10 @@ const SignupPage = () => {
       [name]: "",
     });
   };
+
+  // ----------------------------------------
+  // Form validation
+  // ----------------------------------------
 
   const validate = () => {
     const errors = {};
@@ -65,6 +73,10 @@ const SignupPage = () => {
     }
     return errors;
   };
+
+  // ----------------------------------------
+  // Handle form submission
+  // ----------------------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,0 +1,61 @@
+.datatableCard{
+    max-width: 100%;
+}
+
+.datatableCard .table th{
+    color: #012970;
+}
+
+.body .datatableCard .table tr:hover{
+    color: #4154f1;
+    background: #f6f9ff;
+}
+
+.body .datatableCard .sorting-icon{
+    font-weight: 700;
+   cursor: pointer;
+}
+
+.body .pagination .page-item{
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.body .pagination .page-item .page-link{
+    border: none;
+    cursor: pointer;
+}
+
+
+.body .pagination .page-item.active .page-link{
+    background: #4154f1;
+    border-color: #4154f1;
+}
+
+.body .pagination .page-item.active .page-link:hover{
+    color: #4154f1;
+    background: #f6f9ff;
+}
+
+.datatableCard::-webkit-scrollbar {
+    width: 3px;
+    height: 5px;
+    background-color: #fff;
+  }
+  
+  .datatableCard::-webkit-scrollbar-thumb {
+    background-color: #aab7cf;
+  }
+  
+  .icon-rotate {
+    animation: rotateIcon 1s linear infinite;
+  }
+  
+  @keyframes rotateIcon {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
