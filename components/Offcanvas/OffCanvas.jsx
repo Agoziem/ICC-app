@@ -50,7 +50,7 @@ const OffCanvas = () => {
                     {item.category === "service" ? (
                       <i className="bi bi-person-fill-gear me-2 h5"></i>
                     ) : (
-                      <i className="bi bi-google-play"></i>
+                      <i className="bi bi-google-play me-2 "></i>
                     )}
                     {item.category}
                   </span>

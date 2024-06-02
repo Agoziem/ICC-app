@@ -1,10 +1,12 @@
 "use client";
 import { useCart } from "@/data/Cartcontext";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAdminContext } from "@/data/Admincontextdata";
 import { useUserContext } from "@/data/usercontextdata";
 import { BsFillCartCheckFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import useJsxToPdf from "@/hooks/useJSXtoPDF";
+import { FaCheck, FaRegClipboard } from "react-icons/fa6";
 
 const OrderCompleted = () => {
   const router = useRouter();
@@ -14,6 +16,13 @@ const OrderCompleted = () => {
   const [successful, setSuccessful] = useState(false);
   const [error, setError] = useState(null);
   const [order, setOrder] = useState({});
+  const [copied, setCopied] = useState(false);
+  const [loading, generatePdf] = useJsxToPdf();
+  const pdfRef = useRef();
+
+  const savePdf = async () => {
+    await generatePdf(pdfRef.current, "Order-Receipt");
+  };
 
   // ---------------------------------------------------------------------
   // verify payment function
@@ -34,18 +43,15 @@ const OrderCompleted = () => {
       );
       if (response.status !== 200 && response.status === 404) {
         const data = await response.json();
-        console.log(data)
         updateOrder(data);
         updateUserOrder(data);
         setError("An error occurred while verifying payment");
-      } 
+      }
       const data = await response.json();
-      console.log(data)
       updateOrder(data);
       updateUserOrder(data);
       setSuccessful(true);
       setOrder(data);
-     
     } catch (error) {
       setError("An error occurred while verifying payment");
     }
@@ -58,6 +64,15 @@ const OrderCompleted = () => {
     if (reference) verifyPayment();
   }, []);
 
+  // ---------------------------------------------------------------------
+  // copy to clipboard function
+  // ----------------------------------------------------------------------
+  const handleCopy = () => {
+    setCopied(true);
+    if (order.reference) navigator.clipboard.writeText(order.reference);
+    setTimeout(() => setCopied(false), 3000);
+  };
+
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
       {!successful && !error ? (
@@ -67,38 +82,50 @@ const OrderCompleted = () => {
       ) : null}
 
       {successful ? (
-        <div className="card p-5 text-center">
-          <div
-            className="text-center bg-success-light d-flex align-items-center justify-content-center mb-4"
-            style={{
-              width: "80px",
-              height: "80px",
-              borderRadius: "50%",
-              margin: "0 auto",
-            }}
-          >
-            <BsFillCartCheckFill
+        <div className="card text-center px-4">
+          <div ref={pdfRef} className="px-5 pt-5">
+            <div
+              className="text-center bg-success-light d-flex align-items-center justify-content-center mb-4"
               style={{
-                fontSize: "40px",
-                color: "var(--success)",
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                margin: "0 auto",
               }}
-            />
+            >
+              <BsFillCartCheckFill
+                style={{
+                  fontSize: "40px",
+                  color: "var(--success)",
+                }}
+              />
+            </div>
+
+            <h5 className="mb-3">Payment Successful</h5>
+            <p className="mb-1">Thank you for your payment</p>
+            <p className="mb-1">
+              <span className="fw-bold">Order ID: </span>
+              {order.id}
+            </p>
+            <p className="mb-1">
+              <span className="fw-bold">Amount: </span>&#8358;{order.amount}
+            </p>
+            <p className="mb-1">
+              <div className="fw-bold">Payment Reference: </div>
+              {order.reference}
+              {copied ? (
+                <FaCheck className="h6 ms-2 text-success" />
+              ) : (
+                <FaRegClipboard
+                  className="h6 ms-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleCopy}
+                />
+              )}
+            </p>
           </div>
 
-          <h5 className="mb-3">Payment Successful</h5>
-          <p className="mb-1">Thank you for your payment</p>
-          <p className="mb-1">
-            <span className="fw-bold">Order ID: </span>
-            {order.id}
-          </p>
-          <p className="mb-1">
-            <span className="fw-bold">Amount: </span>&#8358;{order.amount}
-          </p>
-          <p className="mb-1">
-            <span className="fw-bold">Payment Reference: </span>
-            {order.reference}
-          </p>
-          <div className="mt-3">
+          <div className="my-3 mb-5">
             <div
               className="badge bg-secondary-light py-3 px-4 me-2 mb-3 mb-md-0"
               style={{
@@ -107,8 +134,15 @@ const OrderCompleted = () => {
                 fontSize: "15px",
                 borderRadius: "25px",
               }}
+              onClick={savePdf}
             >
-              download receipt
+              {loading ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="visually-hidden">downloading...</span>
+                </div>
+              ) : (
+                "Save Receipt"
+              )}
             </div>
             <button
               className="btn btn-primary"
@@ -121,6 +155,7 @@ const OrderCompleted = () => {
           </div>
         </div>
       ) : null}
+      
       {error && (
         <div className="card p-4">
           <div className="alert alert-danger mt-4">{error}</div>

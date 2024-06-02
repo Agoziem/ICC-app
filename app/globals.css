@@ -103,6 +103,8 @@
   border: 0;
   box-shadow: 0 5px 30px 0 rgba(82, 63, 105, 0.2);
   background-color: var(--bgLightColor) !important;
+  min-width: 250px;
+ 
 }
 
 .body .dropdown-menu .dropdown-header,
@@ -113,13 +115,14 @@
 }
 
 .body .dropdown-menu .dropdown-footer a {
-  color: #444444;
+  color: var(--primary-600);
   text-decoration: underline;
 }
 
 .body .dropdown-menu .dropdown-footer a:hover {
   background-color: var(--bgDarkerColor) !important;
   text-decoration: none;
+  color: var(--light)!important;
 }
 
 .body .dropdown-menu .dropdown-divider {
@@ -131,6 +134,7 @@
   font-size: 14px;
   padding: 10px 15px;
   transition: 0.3s;
+  color: var(--primary-600);
 }
 
 .body .dropdown-menu .dropdown-item i {
@@ -141,6 +145,7 @@
 
 .body .dropdown-menu .dropdown-item:hover {
   background-color: var(--bgDarkerColor) !important;
+  color: var(--light) !important;
 }
 
 @media (min-width: 768px) {
@@ -187,9 +192,28 @@
 }
 
 /* ------------------------------------------- */
-/* Light Backgrounds */
+/* Light & Dark Backgrounds */
 /* ------------------------------------------- */
 
+.body .bg-primary{
+  background-color: var(--primary)!important;
+  border-color: var(--primary)!important;
+}
+
+.body .bg-secondary {
+  background-color: var(--secondary)!important;
+  border-color: var(--secondary)!important;
+}
+
+.body .bg-success {
+  background-color: var(--success)!important;
+  border-color: var(--success)!important;
+}
+
+.body .bg-danger {
+  background-color: var(--danger)!important;
+  border-color: var(--danger)!important;
+}
 
 .body .bg-primary-light {
   background-color: var(--bgDarkColor);
@@ -281,8 +305,6 @@
 /* ------------------------------------------- */
 /*  Buttons */
 /* ------------------------------------------- */
-
-
 .body .btn {
   padding: 8.5px 22px;
   border-radius: 25px;
@@ -311,6 +333,17 @@
 .body .btn-primary:hover {
   background-color: var(--secondary);
   border-color: var(--secondary);
+}
+
+.body .btn-secondary {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--light);
+}
+
+.body .btn-secondary:hover {
+  background-color: var(--secondary-600);
+  border-color: var(--secondary-600);
 }
 
 .body .btn-accent-success {
@@ -346,13 +379,27 @@
   background: var(--bgDarkColor);
   padding: 7px 18px;
   box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
-  border-radius: 5px;
+  border-radius: 25px;
   font-weight: 600;
 }
 
 .body .btn-accent-primary:hover {
   background: var(--primary-600);
   color: var(--bgDarkColor);
+}
+
+.body .btn-accent-secondary {
+  border-color: var(--secondary-300);
+  color: var(--secondary);
+  background: var(--secondary-300);
+  padding: 7px 18px;
+  border-radius: 25px;
+  font-weight: 600;
+}
+
+.body .btn-accent-secondary:hover {
+  background: var(--secondary-300);
+  color: var(--secondary);
 }
 
 /* ------------------------------------------- */
@@ -416,8 +463,9 @@
   border-bottom: 2px solid var(--primary-400);
 }
 
+/* ------------------------------------------- */
 /* Table */
-
+/* ------------------------------------------- */
 .body table thead th {
   color: var(--primary);
 }
@@ -427,7 +475,9 @@
   scroll-snap-align: start;
 }
 
+/* ------------------------------------- */
 /* forms */
+/* ------------------------------------- */
 .body .form-control,
 .body .form-select {
   border: none;
@@ -454,3 +504,17 @@
 .body .form-select::placeholder {
   color: var(--primary);
 }
+
+.body .form-check-input {
+  background-color: var(--bgDarkColor);
+  border: 1.5px solid var(--bgDarkerColor);
+}
+
+.body .form-check-input:checked,
+.body .form-check-input:focus {
+  box-shadow: none;
+  background-color: var(--secondary);
+  border: 1px solid var(--secondary);
+}
+
+

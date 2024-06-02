@@ -41,19 +41,19 @@ const OrderPage = () => {
         <div className="row">
           <div className="col-12">
             <h4 className="text-center">Order Page</h4>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 <div className="py-2 fw-bold">Services Order</div>
               </li>
-              <li class="list-group-item text-primary" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
+              <li className="list-group-item text-primary" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 {cart && cart.length > 0 ? (
                   cart.map((item) => (
-                    <div>
+                    <div key={item.id}>
                       <span>
-                        <i class="bi bi-check2-circle me-3 h5 text-secondary fw-bold"></i>
+                        <i className="bi bi-check2-circle me-3 h5 text-secondary fw-bold"></i>
                         {item.name}
                       </span>
-                      <span className="float-md-end fw-bold">
+                      <span className="float-md-end ms-3 fw-bold">
                         &#8358;{item.price}
                       </span>
                     </div>
@@ -62,9 +62,9 @@ const OrderPage = () => {
                   <span>No items to order</span>
                 )}
               </li>
-              <li class="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
+              <li className="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 Total Amount to pay
-                <span className="float-md-end fw-bold">&#8358;{total}</span>
+                <span className="float-md-end ms-3 fw-bold">&#8358;{total}</span>
               </li>
             </ul>
             <div className="d-flex justify-content-center">

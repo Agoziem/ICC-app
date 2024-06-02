@@ -1,20 +1,19 @@
 "use client";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const useJsxToPdf = () => {
-  const [pdfname, setPdfname] = useState("MyPdf"); // set the pdf name
   const [loading, setLoading] = useState(false);
 
-  const generatePdf = async (jsxComponent) => {
+  const generatePdf = async (jsxComponent, pdfname) => {
     setLoading(true);
     const canvas = await html2canvas(jsxComponent, {
       scale: 2, // Increase the scale for higher DPI
       logging: false, // Disable logging to improve performance
     });
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a3");
+    const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -27,7 +26,7 @@ const useJsxToPdf = () => {
 
     pdf.addImage(imgData, "PNG", 0, 0, scaledWidth, scaledHeight);
     setLoading(false);
-    pdf.save(`${pdfname}.pdf`);
+    pdf.save(`${pdfname ? pdfname : "Document"}.pdf`);
   };
 
   return [loading, generatePdf];

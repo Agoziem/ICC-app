@@ -31,10 +31,8 @@ const UserContextProvider = ({ children }) => {
   useEffect(() => {
     if (session && session.user.id) {
       if (storedUserOrder && storedUserOrder.length > 0) {
-        console.log("not empty")
         setUserOrder(storedUserOrder);
       } else {
-        console.log("empty")
         fetchUserOrder();
       }
     }
@@ -63,7 +61,6 @@ const UserContextProvider = ({ children }) => {
     setStoredUserOrder(userOrder);
   }, [userOrder]);
 
-
   // ----------------------------------------------------
   // update userOrder
   // ----------------------------------------------------
@@ -73,10 +70,10 @@ const UserContextProvider = ({ children }) => {
         return { ...order, status: item.status };
       }
       return order;
-    })
+    });
     setStoredUserOrder(updatedOrder);
     setUserOrder(updatedOrder);
-  }
+  };
 
   // ----------------------------------------------------
   // delete userOrder
@@ -85,11 +82,18 @@ const UserContextProvider = ({ children }) => {
     const updatedOrder = userOrder.filter((order) => order.id !== item.id);
     setStoredUserOrder(updatedOrder);
     setUserOrder(updatedOrder);
-  }
+  };
 
   return (
     <UserContext.Provider
-      value={{ userData, setUserData, userOrder, setUserOrder, updateUserOrder, deleteUserOrder}}
+      value={{
+        userData,
+        setUserData,
+        userOrder,
+        setUserOrder,
+        updateUserOrder,
+        deleteUserOrder,
+      }}
     >
       {children}
     </UserContext.Provider>
