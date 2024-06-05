@@ -23,15 +23,4 @@
   color: var(--primary);
 }
 
-.user-icon{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--primary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--light);
-  font-size: 15px;
-}
 

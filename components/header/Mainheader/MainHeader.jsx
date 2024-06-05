@@ -108,8 +108,11 @@ const MainHeader = () => {
                   style={{ objectPosition: "top center" }}
                 />
               ) : (
-                <div className="user-icon">
-                  <FaUser />
+                <div
+                  className="rounded-circle text-white d-flex justify-content-center align-items-center"
+                  style={{ width: 40, height: 40, fontSize: 20, backgroundColor: "var(--secondary)" }}
+                >
+                  {session?.user?.username?.charAt(0).toUpperCase()}
                 </div>
               )}
             </>

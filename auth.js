@@ -44,7 +44,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      if (user && account.provider === "google" || user &&  account.provider === "github") {
+      if (
+        (user && account.provider === "google") ||
+        (user && account.provider === "github")
+      ) {
         try {
           const response = await fetch(
             `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/register_oauth/${account.provider}/`,
@@ -68,6 +71,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.email = oauthuserdata.email;
           token.is_staff = oauthuserdata.is_staff;
           token.date_joined = oauthuserdata.date_joined;
+          token.isOauth = oauthuserdata.isOauth;
+          token.emailIsVerified = oauthuserdata.emailIsVerified;
+          token.twofactorIsEnabled = oauthuserdata.twofactorIsEnabled;
+          token.sex = oauthuserdata.Sex;
+          token.phone = oauthuserdata.phone;
+          token.address = oauthuserdata.address;
           return token;
         } catch (error) {
           console.error("error:", error);
@@ -84,6 +93,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email;
         token.is_staff = user.is_staff;
         token.date_joined = user.date_joined;
+        token.isOauth = user.isOauth;
+        token.emailIsVerified = user.emailIsVerified;
+        token.twofactorIsEnabled = user.twofactorIsEnabled;
+        token.sex = user.Sex;
+        token.phone = user.phone;
+        token.address = user.address;
       }
 
       return token;
@@ -97,6 +112,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.email = token.email;
       session.user.is_staff = token.is_staff;
       session.user.date_joined = token.date_joined;
+      session.user.isOauth = token.isOauth;
+      session.user.emailIsVerified = token.emailIsVerified;
+      session.user.twofactorIsEnabled = token.twofactorIsEnabled;
+      session.user.sex = token.sex;
+      session.user.phone = token.phone;
+      session.user.address = token.address;
       return session;
     },
   },

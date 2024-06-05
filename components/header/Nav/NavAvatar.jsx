@@ -10,15 +10,15 @@ import { signOut, useSession } from "next-auth/react";
 function NavAvatar() {
   const { data: session } = useSession();
   const { currentRoot } = useCurrentUser();
-  const [showModal,setShowModal] = useState(false)
-  const [loggingOut,setLoggingOut] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const router = useRouter();
 
   const logoutDashboard = () => {
-    setLoggingOut(true)
-    setShowModal(false)
-    setLoggingOut(false)
-    signOut()
+    setLoggingOut(true);
+    setShowModal(false);
+    setLoggingOut(false);
+    signOut();
   };
 
   return (
@@ -39,23 +39,31 @@ function NavAvatar() {
               style={{ objectPosition: "top center" }}
             />
           ) : (
-            <i className="bi bi-person" style={{ fontSize: "30px" }}></i>
+            <div
+              className="rounded-circle text-white d-flex justify-content-center align-items-center"
+              style={{
+                width: 40,
+                height: 40,
+                fontSize: 20,
+                backgroundColor: "var(--secondary)",
+              }}
+            >
+              {session?.user?.username?.charAt(0).toUpperCase()}
+            </div>
           )}
           <span className="d-none d-md-block dropdown-toggle ps-2">
-            {(session?.user.first_name) ||
-              (session?.user.username) ||
-              "customer"}
+            {session?.user.first_name || session?.user.username || "customer"}
           </span>
         </a>
 
         <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
             <h6>
-              {(session?.user.first_name) ||
-                (session?.user.username) ||
-                "customer"}
+              {session?.user.first_name || session?.user.username || "customer"}
             </h6>
-            <span className="d-block">{session?.user.is_staff?"admin":"customer"}</span>
+            <span className="d-block">
+              {session?.user.is_staff ? "admin" : "customer"}
+            </span>
             <span>{session?.user.email}</span>
           </li>
           <li>
@@ -89,26 +97,13 @@ function NavAvatar() {
           </li>
 
           <li>
-            <a
+            <Link
               className="dropdown-item d-flex align-items-center"
-              href="users-profile.html"
+              href={`/${currentRoot}/profile`}
             >
               <i className="bi bi-gear"></i>
               <span>Account Settings</span>
-            </a>
-          </li>
-          <li>
-            <hr className="dropdown-divider" />
-          </li>
-
-          <li>
-            <a
-              className="dropdown-item d-flex align-items-center"
-              href="pages-faq.html"
-            >
-              <i className="bi bi-question-circle"></i>
-              <span>Need Help?</span>
-            </a>
+            </Link>
           </li>
           <li>
             <hr className="dropdown-divider" />
@@ -117,7 +112,20 @@ function NavAvatar() {
           <li>
             <Link
               className="dropdown-item d-flex align-items-center"
-              href="/#"
+              href={"#"}
+            >
+              <i className="bi bi-question-circle"></i>
+              <span>Need Help?</span>
+            </Link>
+          </li>
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
+
+          <li>
+            <Link
+              className="dropdown-item d-flex align-items-center"
+              href={"/#"}
               {...{
                 onClick: (e) => {
                   e.preventDefault();
@@ -132,7 +140,6 @@ function NavAvatar() {
         </ul>
       </li>
 
-      
       {/* Modal for logout */}
       <Modal showmodal={showModal} toggleModal={() => setShowModal(false)}>
         <div className="modal-body">
