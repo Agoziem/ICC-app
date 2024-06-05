@@ -5,11 +5,29 @@ import { useSession, signOut } from "next-auth/react";
 import { useUserContext } from "@/data/usercontextdata";
 import Link from "next/link";
 import Alert from "../Alert/Alert";
+import Modal from "../Modal/modal";
 
 const ProfileCard = ({ alert, setEditMode }) => {
+  const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
   const { userOrder } = useUserContext();
   const [active, setActive] = useState(1);
+
+  const deleteUser = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/delete/${session?.user?.id}/`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      signOut();
+      setShowModal(false);
+    }
+  };
   return (
     <div className="p-2 p-md-3 py-3">
       <div className="row">
@@ -131,11 +149,11 @@ const ProfileCard = ({ alert, setEditMode }) => {
                           <i className="bi bi-person-fill me-2"></i>Full Name
                         </p>
                         <span>
-                          {
-                            session?.user?.first_name && session?.user?.last_name ? (
-                              session?.user?.first_name + " " + session?.user?.last_name
-                            ) : "not available"
-                          }
+                          {session?.user?.first_name && session?.user?.last_name
+                            ? session?.user?.first_name +
+                              " " +
+                              session?.user?.last_name
+                            : "not available"}
                         </span>
                       </div>
                       <div className="my-2 col-12 col-md-6">
@@ -146,11 +164,11 @@ const ProfileCard = ({ alert, setEditMode }) => {
                       </div>
                       <div className="my-2 col-12 col-md-6">
                         <p className="text-primary fw-bold mb-0">
-                        <i class="bi bi-gender-ambiguous me-2 h4"></i>Gender
+                          <i class="bi bi-gender-ambiguous me-2 h4"></i>Gender
                         </p>
                         <span>{session?.user?.sex || "not available"}</span>
                       </div>
-                   
+
                       <div className="my-2 col-12 col-md-6">
                         <p className="text-primary fw-bold mb-0">
                           <i className="bi bi-telephone-fill me-2"></i>Phone
@@ -311,7 +329,10 @@ const ProfileCard = ({ alert, setEditMode }) => {
                   irreversible and all your Order data will be lost, and you
                   will be logged out
                   <div className="mt-3">
-                    <button className="btn btn-danger rounded float-end">
+                    <button
+                      className="btn btn-danger rounded float-end"
+                      onClick={() => setShowModal(true)}
+                    >
                       delete account
                     </button>
                   </div>
@@ -321,6 +342,31 @@ const ProfileCard = ({ alert, setEditMode }) => {
           </div>
         </div>
       </div>
+      {/* Modal for delete Account */}
+      <Modal showmodal={showModal} toggleModal={() => setShowModal(false)}>
+        <div className="modal-body">
+          <p className="text-center">
+            Are you sure you want to delete your Account
+          </p>
+          <div className="d-flex justify-content-center mt-4">
+            <button
+              className="btn btn-danger me-3"
+              onClick={() => {
+                deleteUser();
+              }}
+            >
+              Yes
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowModal(false)}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
