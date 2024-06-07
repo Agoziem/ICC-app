@@ -76,6 +76,7 @@ const MainHeader = () => {
         </ul>
       </div>
 
+      {/* large Screen */}
       <div className="mainnav-link d-none d-lg-flex align-items-center">
         <div className="font-bold me-4">
           <FaSearch
@@ -142,6 +143,7 @@ const MainHeader = () => {
       </div>
 
       <>
+        {/* small screen */}
         <div className="d-block d-lg-none">
           <FaSearch
             className="me-3 text-primary"
@@ -154,7 +156,7 @@ const MainHeader = () => {
             style={{ cursor: "pointer", fontSize: "30px" }}
           />
           {session && (
-            <div className="dropdown">
+            <div className="dropdown d-inline">
               <a href="#" data-bs-toggle="dropdown">
                 {session.user.image ? (
                   <Image
