@@ -194,29 +194,29 @@ const FooterSection = () => {
               <h6>Quick Links</h6>
               <ul className=" list-unstyled ">
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/">
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/#about">
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/#services">
                     Services
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/#staffs">
                     staff
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/#contact">
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -225,25 +225,30 @@ const FooterSection = () => {
             <div className="footer-links">
               <h6>features</h6>
               <ul className="list-unstyled">
+              <li>
+                  <Link className="small" href="/articles">
+                    Articles
+                  </Link>
+                </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/dashboard/cbt">
                     CBT practice
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/dashboard/chat">
                     Chatroom
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/dashboard/services">
                     Jamb
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="small" href="#">
+                  <Link className="small" href="/dashboard/services">
                     Post Utme
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

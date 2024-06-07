@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { SiFacebook } from "react-icons/si";
 import { FaGithub } from "react-icons/fa6";
+import { useSearchParams } from "next/navigation";
 
 const FormWrapper = ({
   children,
@@ -14,6 +15,8 @@ const FormWrapper = ({
   backButtonHrefText,
   showSocial = true,
 }) => {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || DEFAULT_LOGIN_REDIRECT;
   return (
     <div>
       <div>
@@ -38,7 +41,7 @@ const FormWrapper = ({
               }}
               onClick={() => {
                 signIn("google", {
-                  callbackUrl: DEFAULT_LOGIN_REDIRECT,
+                  callbackUrl: next,
                 });
               }}
             >
@@ -57,7 +60,7 @@ const FormWrapper = ({
               }}
               onClick={() => {
                 signIn("github", {
-                  callbackUrl: DEFAULT_LOGIN_REDIRECT,
+                  callbackUrl: next,
                 });
               }}
             >

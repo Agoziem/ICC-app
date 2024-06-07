@@ -72,7 +72,7 @@ const BlogSection = () => {
                       style={{ fontSize: "1rem" }}
                     >
                       <Link
-                        href={`/articles/${blog._id}`}
+                        href={`/articles/${blog.slug}`}
                         className="mx-2 fw-medium text-primary bg-primary-light px-3 py-2 rounded"
                         style={{ cursor: "pointer" }}
                       >

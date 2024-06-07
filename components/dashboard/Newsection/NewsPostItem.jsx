@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 function NewsPostItem({ item }) {
@@ -6,7 +7,7 @@ function NewsPostItem({ item }) {
       <img src={item.img} alt="" />
       <h6
 >
-        <a href="#">{item.title}</a>
+        <Link href={`/articles/${item.slug}`}>{item.title}</Link>
       </h6>
       <p>{item.subtitle}...</p>
     </div>

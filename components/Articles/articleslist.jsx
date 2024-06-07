@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./articles.css";
-import Image from "next/image";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { BiSolidLike } from "react-icons/bi";
 import Link from "next/link";
@@ -27,7 +26,7 @@ const ArticlesList = () => {
         {articles &&
           articles.length > 0 &&
           articles.map((item) => (
-            <Link href={`/articles/${item._id}`} key={item._id}>
+            <Link href={`/articles/${item.slug}`} key={item._id}>
               <li
                 className="list-group-item d-flex align-items-center py-3"
                 style={{
@@ -46,10 +45,10 @@ const ArticlesList = () => {
                 />
                 <div>
                   <h5 className="mb-1">{item.title}</h5>
-                  <p className="my-0 mb-2">{item.subtitle}...</p>
-                  <div className="d-flex align-items-center">
+                  <p className="my-0 mb-1">{item.subtitle}...</p>
+                  <div className="d-flex align-items-center" style={{color:"var(--bgDarkerColor)"}}>
                     <span className="me-3 small">
-                      <MdOutlineRemoveRedEye className="h5" /> 123
+                      <MdOutlineRemoveRedEye className="h5" /> {item.views}
                     </span>
                     <span className="me-3 small">
                       <BiSolidLike className="h5" /> {item.likes}

@@ -2,7 +2,7 @@
 import FormWrapper from "@/components/auth/FormWrapper";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter,useSearchParams } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import Image from "next/image";
 import styles from "../accounts.module.css";
@@ -11,6 +11,8 @@ import Alert from "@/components/Alert/Alert";
 
 const SigninPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || DEFAULT_LOGIN_REDIRECT;
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
   const [loggingIn, setLoggingIn] = useState(false);
@@ -45,25 +47,33 @@ const SigninPage = () => {
     if (Object.keys(errors).length === 0) {
       const { email, password } = formData;
       setLoggingIn(true);
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-      if (result.error) {
+      try {
+        setFormData({ email: "", password: "" });
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+        if (result?.error) {
+          throw new Error(result.error);
+        } else {
+          console.log("redirecting to", next);
+          router.push(next);
+        }
+      } catch (error) {
         setFormData({ email: "", password: "" });
         setAlert(
-          { show: true, message: "invalid credentials, try again", type: "danger" },
+          {
+            show: true,
+            message: "invalid credentials, try again",
+            type: "danger",
+          },
           setTimeout(() => {
             setAlert({ show: false, message: "", type: "" });
           }, 5000)
         );
-      } else {
-        setFormData({ email: "", password: "" });
-        router.push(DEFAULT_LOGIN_REDIRECT || "/");
       }
       setLoggingIn(false);
-      
     }
   };
 

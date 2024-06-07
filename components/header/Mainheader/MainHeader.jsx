@@ -5,11 +5,10 @@ import "./Header.css";
 import ".././logo.css";
 import Link from "next/link";
 import { IoMenu } from "react-icons/io5";
-import { FaSearch, FaUser } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import MainHeaderLogo from "./Logo";
 import navlist from "./navitem";
-
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 
 const MainHeader = () => {
@@ -97,25 +96,47 @@ const MainHeader = () => {
             </button>
           </Link>
           {session && (
-            <>
-              {session.user.image ? (
-                <Image
-                  src={session.user.image}
-                  alt="Profile"
-                  width={38}
-                  height={38}
-                  className="rounded-circle object-fit-cover"
-                  style={{ objectPosition: "top center" }}
-                />
-              ) : (
-                <div
-                  className="rounded-circle text-white d-flex justify-content-center align-items-center"
-                  style={{ width: 40, height: 40, fontSize: 20, backgroundColor: "var(--secondary)" }}
-                >
-                  {session?.user?.username?.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </>
+            <div className="dropdown">
+              <a href="#" data-bs-toggle="dropdown">
+                {session.user.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt="Profile"
+                    width={38}
+                    height={38}
+                    className="rounded-circle object-fit-cover"
+                    style={{ objectPosition: "top center" }}
+                  />
+                ) : (
+                  <div
+                    className="rounded-circle text-white d-flex justify-content-center align-items-center"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      fontSize: 20,
+                      backgroundColor: "var(--secondary)",
+                    }}
+                  >
+                    {session?.user?.username?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </a>
+              <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-3">
+                <li>
+                  <Link
+                    className="dropdown-item d-flex align-items-center"
+                    href={`/`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      signOut();
+                    }}
+                  >
+                    <i className="bi bi-box-arrow-right"></i>
+                    <span>log out</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           )}
         </div>
       </div>
@@ -126,11 +147,55 @@ const MainHeader = () => {
             className="me-3 text-primary"
             style={{ cursor: "pointer", fontSize: "20px" }}
           />
+
           <IoMenu
-            className="text-primary"
+            className="text-primary me-3"
             onClick={toggleMenu}
             style={{ cursor: "pointer", fontSize: "30px" }}
           />
+          {session && (
+            <div className="dropdown">
+              <a href="#" data-bs-toggle="dropdown">
+                {session.user.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt="Profile"
+                    width={38}
+                    height={38}
+                    className="rounded-circle object-fit-cover"
+                    style={{ objectPosition: "top center" }}
+                  />
+                ) : (
+                  <div
+                    className="rounded-circle text-white d-flex justify-content-center align-items-center"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      fontSize: 20,
+                      backgroundColor: "var(--secondary)",
+                    }}
+                  >
+                    {session?.user?.username?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </a>
+              <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-3">
+                <li>
+                  <Link
+                    className="dropdown-item d-flex align-items-center"
+                    href={`/`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      signOut();
+                    }}
+                  >
+                    <i className="bi bi-box-arrow-right"></i>
+                    <span>log out</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
 
         <Menu isOpen={isOpen} toggle={toggleMenu} />
