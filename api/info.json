@@ -31,35 +31,210 @@
       "img": "/assets/items/news-1.jpg",
       "title": "Nihil blanditiis at in nihil autem",
       "subtitle": "Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum",
-      "category": "abc"
+      "category": "abc",
+      "likes": 12,
+      "views": 24,
+      "author": {
+        "name": "John Doe",
+        "img": "/assets/avatar/avatar-1.jpeg"
+      },
+      "tags": [
+        "lifestyle",
+        "health",
+        "tech"
+      ],
+      "readTime": "5",
+      "date": "2021-09-01",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, eu",
+      "comments":[
+        {
+          "id":1,
+          "author": "John Doe",
+          "date": "2021-09-01",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":2,
+          "author": "Peter Parker",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":3,
+          "author": "Luke Smith",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        }
+
+      ]
     },
     {
       "_id": 2,
       "img": "/assets/items/news-2.jpg",
       "title": "Quidem autem et impedit",
       "subtitle": "Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande",
-      "category": "abc"
+      "category": "abc",
+      "likes": 8,
+      "views": 16,
+      "author": {
+        "name": "John Doe",
+        "img": "/assets/avatar/avatar-1.jpeg"
+      },
+      "tags": [
+        "lifestyle",
+        "health",
+        "tech"
+      ],
+      "readTime":"5",
+      "date": "2021-09-01",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc",
+       "comments":[
+        {
+          "id":1,
+          "author": "John Doe",
+          "date": "2021-09-01",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":2,
+          "author": "Peter Parker",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":3,
+          "author": "Luke Smith",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        }
+
+      ]
     },
     {
       "_id": 3,
       "img": "/assets/items/news-3.jpg",
       "title": "Id quia et et ut maxime similique occaecati ut",
       "subtitle": "Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam",
-      "category": "abc"
+      "category": "abc",
+      "likes": 5,
+      "views": 10,
+      "author": {
+        "name": "John Doe",
+        "img": "/assets/avatar/avatar-1.jpeg"
+      },
+      "tags": [
+        "lifestyle",
+        "health",
+        "tech"
+      ],
+      "readTime": "5",
+      "date": "2021-09-01",
+      "body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc",
+       "comments":[
+        {
+          "id":1,
+          "author": "John Doe",
+          "date": "2021-09-01",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":2,
+          "author": "Peter Parker",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":3,
+          "author": "Luke Smith",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        }
+
+      ]
     },
     {
       "_id": 4,
-      "img": "../assets/items/news-4.jpg",
+      "img": "/assets/items/news-4.jpg",
       "title": "Laborum corporis quo dara net para",
       "subtitle": "Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder",
-      "category": "abc"
+      "category": "abc",
+      "likes": 9,
+      "views": 18,
+      "author": {
+        "name": "John Doe",
+        "img": "/assets/avatar/avatar-1.jpeg"
+      },
+      "tags": [
+        "lifestyle",
+        "health",
+        "tech"
+      ],
+      "readTime": "5",
+      "date": "2021-09-01",
+      "body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc",
+       "comments":[
+        {
+          "id":1,
+          "author": "John Doe",
+          "date": "2021-09-01",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":2,
+          "author": "Peter Parker",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":3,
+          "author": "Luke Smith",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        }
+
+      ]
     },
     {
       "_id": 5,
       "img": "/assets/items/news-5.jpg",
       "title": "Et dolores corrupti quae illo quod dolor",
       "subtitle": "Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius",
-      "category": "abc"
+      "category": "abc",
+      "likes": 7,
+      "views": 14,
+      "author": {
+        "name": "John Doe",
+        "img": ""
+      },
+      "tags": [
+        "lifestyle",
+        "health",
+        "tech"
+      ],
+      "readTime": "5",
+      "date": "2021-09-01",
+      "body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, eu",
+       "comments":[
+        {
+          "id":1,
+          "author": "John Doe",
+          "date": "2021-09-01",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":2,
+          "author": "Peter Parker",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        },
+        {
+          "id":3,
+          "author": "Luke Smith",
+          "date": "2021-09-07",
+          "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet"
+        }
+
+      ]
     }
   ],
   "topselling": [

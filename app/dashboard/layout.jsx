@@ -18,8 +18,13 @@ const dashboardlayout = ({ children }) => {
           <CartProvider>
             <Header portalname={"Dashboard"} portallink={"/dashboard"} />
             <SideBar navList={NavList} />
-            <Main>{children}</Main>
-            <Footer />
+            <div
+              className="d-flex flex-column justify-content-between" 
+              style={{ minHeight: "100vh" }}
+            >
+              <Main>{children}</Main>
+              <Footer />
+            </div>
             <BackToTop />
             <OffCanvas />
           </CartProvider>

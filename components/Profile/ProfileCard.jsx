@@ -31,6 +31,7 @@ const ProfileCard = ({ alert, setEditMode }) => {
   return (
     <div className="p-2 p-md-3 py-3">
       <div className="row">
+        
         {/* Profile Link */}
         <div className="col-md-4">
           <div className="card py-3">
@@ -111,7 +112,7 @@ const ProfileCard = ({ alert, setEditMode }) => {
 
         {/* Profile Card */}
         <div className="col-md-8">
-          <div className="card p-4 p-md-4 px-5 px-md-5 ">
+          <div className="card pb-4 pb-md-4 px-5 px-md-5 ">
             {active === 1 && (
               <div className="">
                 {
@@ -257,7 +258,7 @@ const ProfileCard = ({ alert, setEditMode }) => {
             )}
 
             {active === 2 && (
-              <div>
+              <div className="pt-4 pt-md-4">
                 <h5 className="my-3">Verification & 2FA</h5>
                 <hr />
                 <div className="my-3 mb-4">
@@ -321,7 +322,7 @@ const ProfileCard = ({ alert, setEditMode }) => {
             )}
 
             {active === 3 && (
-              <div className="pb-3">
+              <div className="pt-4 pt-md-4 pb-3">
                 <h5 className="my-2">delete Account</h5>
                 <hr />
                 <div className=" bg-danger-light text-danger border border-1 border-danger rounded p-3">

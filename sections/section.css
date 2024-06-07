@@ -103,6 +103,10 @@
   max-width: 550px;
 }
 
+.staff-section .card {
+  border-radius: 10px;
+  max-width: 350px;
+}
 /*--------------------------------------------------------------
 # blog section
 --------------------------------------------------------------*/
@@ -118,37 +122,37 @@
 # footer section
 --------------------------------------------------------------*/
 
-.footer {
+.body .footer {
   background-color: var(--primary);
   color: var(--bgDarkColor);
 }
 
-.footer h5,
-.footer p {
+.body .footer h5,
+.body .footer p {
   color: var(--bgDarkColor);
 }
 
-.footer .footer-links a,
-.footer .footer-links h6 {
+.body .footer .footer-links a,
+.body .footer .footer-links h6 {
   color: var(--bgDarkColor);
   transition: 0.2s;
 }
 
-.footer .footer-links a:hover {
+.body .footer .footer-links a:hover {
   color: var(--primary-300);
 }
 
-.footer .social-links a {
+.body .footer .social-links a {
   color: var(--bgDarkColor);
   font-size: 20px;
   transition: 0.2s;
 }
 
-.footer .social-links a:hover {
+.body .footer .social-links a:hover {
   color: var(--primary-300);
 }
 
-.footer .subscribe-input .form-control {
+.body .footer .subscribe-input .form-control {
   background-color: var(--primary-600);
   border-color: var(--primary-500);
   color: var(--bgDarkColor) !important;
@@ -156,40 +160,40 @@
   min-width: 250px;
 }
 
-.footer .subscribe-input .form-control::placeholder {
+.body .footer .subscribe-input .form-control::placeholder {
   color: var(--primary-300);
 }
 
-.footer .subscribe-input button {
+.body .footer .subscribe-input button {
   background-color: var(--primary-700);
   border-color: var(--primary-700);
   color: var(--bgDarkerColor) !important;
   border-radius: 5px;
 }
 
-.footer .subscribe-input button:hover {
+.body .footer .subscribe-input button:hover {
   color: var(--bgLightColor) !important;
 }
-.subfooter {
+.body .subfooter {
   background-color: var(--primary-700);
   height: 100%;
 }
 
-.subfooter p {
+.body .subfooter p {
   color: var(--bgDarkerColor);
 }
 
 @media(max-width: 768px) {
-  .footer .subscribe-input .form-control {
+  .body .footer .subscribe-input .form-control {
     width: 100%;
     min-width: 200px;
   }
 
-  .footer .subscribe-input button{
+  .body .footer .subscribe-input button{
     width: 100%;
   }
 
-  .subfooter p {
+  .body .subfooter p {
     font-size: 12px ;
   }
 }
