@@ -5,11 +5,14 @@ import RecentSales from "./RecentsalesSection/RecentSales";
 import Reports from "./ReportchartsSection/Reports";
 import News from "./Newsection/News";
 import TopSelling from "./TopsellingSection/TopSelling";
-import BudgetReport from "./BudgetSection/BudgetReport";
-import WebTraffic from "./WebtrafficSection/WebTraffic";
 import { useSession } from "next-auth/react";
+import { useAdminContext } from "@/data/Admincontextdata";
+import { useUserContext } from "@/data/usercontextdata";
 
 const DashboardBody = () => {
+  const { services, applications, totalOrders, totalCustomers } =
+    useAdminContext();
+  const { userOrder, totalOrder } = useUserContext();
   const { data: session } = useSession();
   return (
     <div className="dashboard">
@@ -23,10 +26,14 @@ const DashboardBody = () => {
                 <div className="col-12 col-md-4">
                   <HorizontalCard
                     iconcolor="primary"
-                    cardtitle="Services"
+                    cardtitle="Services & Apps"
                     icon="bi bi-person-fill-gear"
-                    cardbody="10"
-                    cardspan="Services Available"
+                    cardbody={
+                      services &&
+                      applications &&
+                      services.length + applications.length
+                    }
+                    cardspan="Services/applications"
                   />
                 </div>
                 <div className="col-12 col-md-4">
@@ -34,8 +41,8 @@ const DashboardBody = () => {
                     iconcolor="secondary"
                     cardtitle="Orders"
                     icon="bi bi-cart3"
-                    cardbody="0"
-                    cardspan="Services Ordered"
+                    cardbody={totalOrders}
+                    cardspan={`Service${totalOrders > 1 ? "s" : ""} Ordered`}
                   />
                 </div>
                 <div className="col-12 col-md-4">
@@ -43,64 +50,60 @@ const DashboardBody = () => {
                     iconcolor="success"
                     cardtitle="Customers"
                     icon="bi bi-people"
-                    cardbody="4"
-                    cardspan="Total Customers"
+                    cardbody={totalCustomers}
+                    cardspan={`Total Customer${totalCustomers > 1 ? "s" : ""}`}
                   />
                 </div>
               </>
-            ) : (
-              <>
-                <div className="col-12 col-md-4">
-                  <HorizontalCard
-                    iconcolor="primary"
-                    cardtitle="Services"
-                    icon="bi bi-person-fill-gear"
-                    cardbody="4"
-                    cardspan="Services/Products"
-                  />
-                </div>
-                <div className="col-12 col-md-4">
-                  <HorizontalCard
-                    iconcolor="secondary"
-                    cardtitle="Completed Orders"
-                    icon="bi bi-person-check"
-                    cardbody="4"
-                    cardspan="Completed Orders"
-                  />
-                </div>
-                <div className="col-12 col-md-4">
-                  <HorizontalCard
-                    iconcolor="success"
-                    cardtitle="Pending Orders"
-                    icon="bi bi-pause-circle"
-                    cardbody="0"
-                    cardspan="Pending Orders"
-                  />
-                </div>
-              </>
-            )}
+            ) : null}
+
+            {
+              // Customers
+              session?.user?.is_staff === false ? (
+                <>
+                  <div className="col-12 col-md-4">
+                    <HorizontalCard
+                      iconcolor="primary"
+                      cardtitle="Services & Apps"
+                      icon="bi bi-person-fill-gear"
+                      cardbody={
+                        services &&
+                        applications &&
+                        services.length + applications.length
+                      }
+                      cardspan="Services/applications"
+                    />
+                  </div>
+                  <div className="col-12 col-md-4">
+                    <HorizontalCard
+                      iconcolor="secondary"
+                      cardtitle="Orders"
+                      icon="bi bi-person-check"
+                      cardbody={totalOrder}
+                      cardspan="Orders"
+                    />
+                  </div>
+                  <div className="col-12 col-md-4">
+                    <HorizontalCard
+                      iconcolor="success"
+                      cardtitle="Completed Orders"
+                      icon="bi bi-cart-check"
+                      cardbody={
+                        userOrder &&
+                        userOrder.filter((item) => item.status === "Completed")
+                          .length
+                      }
+                      cardspan="Completed Orders"
+                    />
+                  </div>
+                </>
+              ) : null
+            }
 
             {/* Display Analytics Chart for to the Admin & Customers */}
             <div className="col-12">
               <Reports session={session} />
             </div>
-
-            {/* Display Budget Report & Web Traffic to only Admins*/}
-            {
-              // Only Admins
-              session?.user?.is_staff ? (
-                <div className="col-12">
-                  <div className="row">
-                    <div className="col-12 col-md-6">
-                      <BudgetReport />
-                    </div>
-                    <div className="col-12 col-md-6">
-                      <WebTraffic />
-                    </div>
-                  </div>
-                </div>
-              ) : null
-            }
 
             {/* Display the Resent Orders to Admin OR Orders purchased to customers */}
             <div className="col-12">

@@ -13,7 +13,8 @@ function TopSellingItem({ item }) {
           {item.name}
         </a>
       </td>
-      <td>${item.price.toFixed(2)}</td>
+      <td>{item.category}</td>
+      <td>&#8358;{parseFloat(item.price)}</td>
     </tr>
   );
 }

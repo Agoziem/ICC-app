@@ -9,6 +9,7 @@ const UserContextProvider = ({ children }) => {
   const { data: session } = useSession();
   const [userData, setUserData] = useState({});
   const [userOrder, setUserOrder] = useState([]);
+  const [totalOrder, setTotalOrder] = useState(0);
 
   // ----------------------------------------------------
   // get it from local storage if it's there on mount
@@ -48,7 +49,8 @@ const UserContextProvider = ({ children }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setUserOrder(data);
+        setUserOrder(data.orders);
+        setTotalOrder(data.total);
       })
       .catch((e) => console.log(e.message));
   };
@@ -93,6 +95,8 @@ const UserContextProvider = ({ children }) => {
         setUserOrder,
         updateUserOrder,
         deleteUserOrder,
+        totalOrder,
+        setTotalOrder,
       }}
     >
       {children}

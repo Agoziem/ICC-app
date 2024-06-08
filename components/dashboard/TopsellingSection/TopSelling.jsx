@@ -1,27 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import TopSellingItem from './TopSellingItem';
-import './topSelling.css';
+import './topSelling.css'; 
+import { useAdminContext } from '@/data/Admincontextdata';
 
 function TopSelling() {
-  const [items, setItems] = useState([]);
-
-
-  // you need intall the json server to run the backend api
-  // npm i json-server -g
-  // once installed globally, run the following code in terminal
-  // json-server --watch --port 4000 ./api/info.json
-  const fetchData = () => {
-    fetch('http://localhost:4000/topselling')
-      .then(res => res.json())
-      .then(data => {
-        setItems(data);
-      })
-      .catch(e => console.log(e.message));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { services } = useAdminContext();
 
   return (
     <div className="card top-selling overflow-auto p-3">
@@ -35,14 +18,16 @@ function TopSelling() {
           <thead className="table-light">
             <tr>
               <th scope="col">Preview</th>
-              <th scope="col">Product</th>
+              <th scope="col">Services</th>
+              <th scope="col">Category</th>
               <th scope="col">Price</th>
             </tr>
           </thead>
           <tbody>
-            {items &&
-              items.length > 0 &&
-              items.map(item => <TopSellingItem key={item.id} item={item} />)}
+            {services &&
+              services.length > 0 && services.slice(0, 10).map(item => (
+                <TopSellingItem key={item.id} item={item} />
+              ))}
           </tbody>
         </table>
       </div>

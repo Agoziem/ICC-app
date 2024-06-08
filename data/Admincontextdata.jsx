@@ -12,6 +12,9 @@ const AdminContextProvider = ({ children }) => {
   const [services, setServices] = useState([]);
   const [applications, setApplications] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
 
   // ------------------------------
   // get it from local storage
@@ -48,6 +51,12 @@ const AdminContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (organizationID) {
+      fetchCustomers();
+    }
+  }, [organizationID]);
+
+  useEffect(() => {
     if (session && session.user.id) {
       setAdminData(session.user);
     }
@@ -76,6 +85,19 @@ const AdminContextProvider = ({ children }) => {
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
+      })
+      .catch((e) => console.log(e.message));
+  };
+
+  const fetchCustomers = () => {
+    fetch(
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/getcustomerscount/${organizationID}/`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setCustomers(data);
+        setTotalCustomers(data.totalcustomers)
+        setTotalOrders(data.totalorders)
       })
       .catch((e) => console.log(e.message));
   };
@@ -145,6 +167,12 @@ const AdminContextProvider = ({ children }) => {
         setOrders,
         updateOrder,
         deleteOrder,
+        customers,
+        setCustomers,
+        totalCustomers,
+        setTotalCustomers,
+        totalOrders,
+        setTotalOrders,
         
       }}
     >
