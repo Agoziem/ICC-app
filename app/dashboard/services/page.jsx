@@ -6,7 +6,7 @@ import { useAdminContext } from "@/data/Admincontextdata";
 import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 
 const ServicesPage = () => {
@@ -14,7 +14,11 @@ const ServicesPage = () => {
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const { orders } = useAdminContext();
+  const [items, setItems] = useState([]);
   
+  useEffect(() => {
+    setItems(userOrder);
+  }, [userOrder]);
   return (
     <div>
       <PageTitle pathname="Services" />
@@ -99,7 +103,7 @@ const ServicesPage = () => {
 
           <div className="mt-2">
             <h5>Services Ordered</h5>
-            <Datatable items={userOrder}>
+            <Datatable items={items} setItems={setItems}>
               <OrderTableItems />
             </Datatable>
           </div>

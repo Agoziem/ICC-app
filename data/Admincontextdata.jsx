@@ -95,7 +95,7 @@ const AdminContextProvider = ({ children }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setCustomers(data);
+        setCustomers(data.customers);
         setTotalCustomers(data.totalcustomers)
         setTotalOrders(data.totalorders)
       })

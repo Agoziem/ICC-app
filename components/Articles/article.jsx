@@ -290,7 +290,7 @@ const Article = ({ article, otherArticles }) => {
         </div>
       </div>
 
-      {/* Modal for logout */}
+      {/* Modal for Comment */}
       <Modal showmodal={showModal} toggleModal={() => setShowModal(false)}>
         <div className="modal-body">
           <h4 className="text-center">Add comment</h4>
