@@ -24,6 +24,7 @@ const OrderTableItems = ({ currentItems }) => {
         <thead>
           <tr>
             <th scope="col">Order ID</th>
+            <th scope="col">Customer</th>
             <th scope="col">Services</th>
             <th scope="col">Prices</th>
             <th scope="col">Total Amount</th>
@@ -35,6 +36,7 @@ const OrderTableItems = ({ currentItems }) => {
             currentItems.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
+                <td>{item.customer.name}</td>
                 <td>
                   <ul>
                     {item.services &&

@@ -1,16 +1,19 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { IoIosMailOpen } from "react-icons/io";
 import { FaPhoneVolume } from "react-icons/fa6";
 import Alert from "@/components/Alert/Alert";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { useSession } from "next-auth/react";
 
 const ContactSection = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { OrganizationData,setMessages,messages } = useContext(OrganizationContext);
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "",
     message: "",
   });
   const [formErrors, setFormErrors] = useState({});
@@ -24,6 +27,7 @@ const ContactSection = () => {
   const validate = () => {
     const errors = {};
     if (!formData.name) errors.name = "Name is required";
+    if (!formData.subject) errors.subject = "Subject is required";
     if (!formData.email) {
       errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -45,6 +49,16 @@ const ContactSection = () => {
     });
   };
 
+  useEffect(() => {
+    if (session) {
+      setFormData({
+        ...formData,
+        name: session.user.name || session.user.username,
+        email: session.user.email,
+      });
+    }
+  }, [session]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validate();
@@ -63,43 +77,41 @@ const ContactSection = () => {
           }
         );
         if (response.ok) {
+          const data = await response.json();
+          console.log(data);
           setIsSubmitting(false);
+          setMessages([ data,...messages]);
           setFormData({
             name: "",
             email: "",
             message: "",
+            subject: "",
           });
-          setAlert(
-            {
-              type: "success",
-              message: "Message sent successfully",
-              show: true,
-            },
-            setTimeout(() => {
-              setAlert({
-                show: false,
-              });
-            }, 3000)
-          );
+          setAlert({
+            type: "success",
+            message: "Message sent successfully",
+            show: true,
+          });
         } else {
           throw new Error("Something went wrong");
         }
       } catch (error) {
         setIsSubmitting(false);
-        setAlert(
-          {
-            type: "danger",
-            message: "Something went wrong",
-            show: true,
-          },
-          setTimeout(() => {
-            setAlert({
-              show: false,
-            });
-          }, 3000)
-        );
+        setAlert({
+          type: "danger",
+          message: "Something went wrong",
+          show: true,
+        });
+      } finally {
+        setTimeout(() => {
+          setAlert({
+            type: "",
+            message: "",
+            show: false,
+          });
+        }, 3000);
       }
-    }
+    } 
   };
 
   return (
@@ -187,6 +199,23 @@ const ContactSection = () => {
                     <div className="invalid-feedback">{formErrors.email}</div>
                   )}
                 </div>
+
+                <div className="form-group my-4">
+                  <input
+                    type="text"
+                    className={`form-control ${
+                      formErrors.subject ? "is-invalid" : ""
+                    }`}
+                    name="subject"
+                    placeholder="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                  />
+                  {formErrors.subject && (
+                    <div className="invalid-feedback">{formErrors.subject}</div>
+                  )}
+                </div>
                 <div className="form-group my-4">
                   <textarea
                     className={`form-control ${
@@ -209,7 +238,7 @@ const ContactSection = () => {
                 )}
                 <button
                   type="submit"
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary w-100 rounded"
                   disabled={submitting}
                 >
                   {submitting ? "Sending message..." : "Send Message"}

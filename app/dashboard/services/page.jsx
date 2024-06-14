@@ -6,7 +6,7 @@ import { useAdminContext } from "@/data/Admincontextdata";
 import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 const ServicesPage = () => {
@@ -56,7 +56,7 @@ const ServicesPage = () => {
                 }}>
                   <div className="d-flex justify-content-center align-items-center">
                     <Image
-                      src={service.preview}
+                      src={service.img_url}
                       alt="Services"
                       width={100}
                       height={100}

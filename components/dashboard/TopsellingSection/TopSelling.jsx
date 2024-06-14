@@ -31,7 +31,7 @@ function TopSelling() {
                 .map((item) => <TopSellingItem key={item.id} item={item} />)}
           </tbody>
         </table>
-        <Link href={"/dashboard/services"} className="btn btn-primary my-3">See more Services</Link>
+        <Link href={"/dashboard/services"} className="btn bg-primary-light btn-primary rounded  my-3">See more Services</Link>
       </div>
     </div>
   );

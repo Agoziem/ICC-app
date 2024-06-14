@@ -37,7 +37,7 @@ const ProfileCard = ({ alert, setEditMode }) => {
           <div className="card py-3">
             <div className="profilepicture d-flex flex-column justify-content-center align-items-center my-3">
               {session && session.user.image ? (
-                <Image
+                <img
                   src={session?.user?.image}
                   alt="Picture of the Customer"
                   width={80}
@@ -165,7 +165,7 @@ const ProfileCard = ({ alert, setEditMode }) => {
                       </div>
                       <div className="my-2 col-12 col-md-6">
                         <p className="text-primary fw-bold mb-0">
-                          <i class="bi bi-gender-ambiguous me-2 h4"></i>Gender
+                          <i className="bi bi-gender-ambiguous me-2 h4"></i>Gender
                         </p>
                         <span>{session?.user?.sex || "not available"}</span>
                       </div>

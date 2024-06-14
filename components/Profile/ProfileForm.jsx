@@ -1,13 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { FaRegFileImage } from "react-icons/fa6";
-import { FaTimes } from "react-icons/fa";
-import { LuUpload } from "react-icons/lu";
+import ImageUploader from "../Imageuploader/ImageUploader";
 
 const ProfileForm = ({ setAlert, setEditMode }) => {
   const { data: session } = useSession();
-  const [fileName, setFileName] = useState("No Selected file");
-  const fileInput = useRef(null);
   const [formData, setFormData] = useState({
     image: "",
     first_name: "",
@@ -20,7 +16,6 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
 
   useEffect(() => {
     if (session) {
-      setFileName("my profile picture");
       setFormData({
         image: session.user.image,
         first_name: session.user.first_name,
@@ -97,83 +92,10 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
           <hr />
           {/* custom picture uploader */}
           <div className="form-profile">
-            <input
-              ref={fileInput}
-              type="file"
-              id="file"
-              onChange={({ target: { files } }) => {
-                files[0] && setFileName(files[0].name);
-                if (files[0])
-                  setFormData({
-                    ...formData,
-                    // headshot: URL.createObjectURL(files[0]),
-                    image: `${files[0].name}`,
-                  });
-              }}
-              hidden
-            />
-
+           
             {/* display the image or the icon */}
             <div>
-              <div className="d-flex align-items-center mt-2">
-                <div>
-                  {formData.image ? (
-                    <img
-                      src={formData.image}
-                      className="rounded-circle object-fit-cover me-3"
-                      alt="profile"
-                      height={75}
-                      width={75}
-                      style={{ objectPosition: "top center" }}
-                    />
-                  ) : (
-                    <div
-                      className="rounded-circle text-white d-flex justify-content-center align-items-center me-2"
-                      style={{
-                        width: 80,
-                        height: 80,
-                        fontSize: 40,
-                        backgroundColor: "var(--bgDarkerColor)",
-                      }}
-                    >
-                      {session?.user?.username?.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <button
-                    className="btn btn-sm btn-accent-primary shadow-none mt-3"
-                    disabled
-                    onClick={(e) => {
-                      e.preventDefault();
-                      fileInput.current.click();
-                    }}
-                  >
-                    <LuUpload className="h5 me-2" />
-                    {formData.image ? "Change Image" : "Upload Image"}
-                  </button>
-                </div>
-              </div>
-
-              {/* display the file name & the delete icon */}
-              <div className="d-flex align-items-center rounded py-3">
-                <FaRegFileImage className="h4 text-primary" />
-                <p className="font-medium text-sm mt-2 mx-3 mb-2">{fileName}</p>
-                {formData.image && (
-                  <FaTimes
-                    className="h-5 w-6 text-danger ms-2"
-                    onClick={() => {
-                      setFileName("No Selected file");
-                      setFormData({
-                        ...formData,
-                        image: null,
-                      });
-                    }}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-              </div>
+              <ImageUploader imagekey={"image"} formData={formData} setFormData={setFormData} />
             </div>
           </div>
 

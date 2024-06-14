@@ -46,6 +46,32 @@ const navList = [
     name: "configurations",
     icon: "bi bi-gear",
     link: "/dashboard/configuration",
+    content: [
+      {
+        _id: 1,
+        name: "homepage",
+        icon: "bi bi-house",
+        link: "/dashboard/configuration/homepage",
+      },
+      {
+        _id: 2,
+        name: "services & applications",
+        icon: "bi bi-person-gear",
+        link: "/dashboard/configuration/services",
+      },
+      {
+        _id: 3,
+        name: "articles",
+        icon: "bi bi-journal-bookmark-fill",
+        link: "/dashboard/configuration/articles",
+      },
+      {
+        _id: 4,
+        name: "cbtpractice",
+        icon: "bi bi-laptop",
+        link: "/dashboard/configuration/cbt",
+      },
+    ],
   },
   {
     _id: 9,

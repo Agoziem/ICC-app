@@ -17,7 +17,7 @@ const Modal = ({ children,showmodal,toggleModal}) => {
         <>
           {showmodal && (
             <div>
-                <div className="modal">
+                <div className="modal ">
                   <div onClick={toggleModal} className="overlay"></div>
                   <div className="modal-content">
                     {children}

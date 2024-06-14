@@ -109,11 +109,10 @@
 
 .sidebar-nav .nav-link.collapsed {
   color: var(--primary);
-  background: var(--bgDarkColor);
 }
 
 .sidebar-nav .nav-link.collapsed i {
-  color: var(--bgDarkColor);
+  color: var(--primary);
 }
 
 .sidebar-nav .nav-link:hover {
@@ -152,17 +151,19 @@
 }
 
 .sidebar-nav .nav-content a i {
-  font-size: 6px;
+  font-size: 10px;
   margin-right: 8px;
   line-height: 0;
   border-radius: 50%;
 }
 
-.sidebar-nav .nav-content a:hover,
+.sidebar-nav .nav-content a:hover {
+  color: var(--primary);
+}
 .sidebar-nav .nav-content a.active {
   color: var(--secondary);
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: var(--secondary);
+  color: var(--secondary);
 }
