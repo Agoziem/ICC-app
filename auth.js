@@ -77,6 +77,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.sex = oauthuserdata.Sex;
           token.phone = oauthuserdata.phone;
           token.address = oauthuserdata.address;
+          token.avatar_name = oauthuserdata.avatar_name;
+          token.avatar_url = oauthuserdata.avatar_url;
           return token;
         } catch (error) {
           console.error("error:", error);
@@ -89,7 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.username = user.username;
         token.first_name = user.first_name;
         token.last_name = user.last_name;
-        token.picture = user.avatar;
+        token.picture = user.avatar_url;
         token.email = user.email;
         token.is_staff = user.is_staff;
         token.date_joined = user.date_joined;
@@ -99,6 +101,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.sex = user.Sex;
         token.phone = user.phone;
         token.address = user.address;
+        token.avatar = user.avatar;
+        token.avatar_name = user.avatar_name;
+        token.avatar_url = user.avatar_url;
       }
 
       return token;
@@ -118,6 +123,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.sex = token.sex;
       session.user.phone = token.phone;
       session.user.address = token.address;
+      session.user.avatar = token.avatar;
+      session.user.avatar_name = token.avatar_name;
+      session.user.avatar_url = token.avatar_url;
       return session;
     },
   },

@@ -24,6 +24,9 @@
   --warning: #ffc107;
   --danger: #dc3545;
   --danger-600: #a11927;
+  --danger-500: #d12f3c;
+  --danger-400: #ff5a6e;
+  --danger-300: #f8d7da;
   --light: #f8f9fa;
   --dark: #343a40;
   --white: #fff;
@@ -398,9 +401,25 @@
 }
 
 .body .btn-accent-secondary:hover {
-  background: var(--secondary-300);
-  color: var(--secondary);
+  background: var(--secondary);
+  color: var(--secondary-300);
 }
+
+.body .btn-accent-danger {
+  border-color: var(--danger-300);
+  color: var(--danger);
+  background: var(--danger-300);
+  padding: 7px 18px;
+  border-radius: 25px;
+  font-weight: 600;
+}
+
+.body .btn-accent-danger:hover {
+  background: var(--danger);
+  color: var(--danger-300);
+}
+
+
 
 /* ------------------------------------------- */
 /* Accordion */
@@ -502,7 +521,7 @@
 
 .body .form-control::placeholder,
 .body .form-select::placeholder {
-  color: var(--primary);
+  color: var(--bgDarkerColor);
 }
 
 .body .form-check-input {

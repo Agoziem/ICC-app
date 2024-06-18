@@ -5,24 +5,28 @@ import ImageUploader from "../Imageuploader/ImageUploader";
 const ProfileForm = ({ setAlert, setEditMode }) => {
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
-    image: "",
+    avatar: null,
+    avatar_url: null,
+    avatar_name: null,
     first_name: "",
     last_name: "",
-    sex: "",
+    Sex: "",
     email: "",
-    Phonenumber: "",
+    phone: "",
     address: "",
   });
 
   useEffect(() => {
     if (session) {
       setFormData({
-        image: session.user.image,
+        avatar: session.user.avatar,
+        avatar_url: session.user.avatar_url,
+        avatar_name: session.user.avatar_name,
         first_name: session.user.first_name,
         last_name: session.user.last_name,
-        sex: session.user.sex,
+        Sex: session.user.sex,
         email: session.user.email,
-        Phonenumber: session.user.phone,
+        phone: session.user.phone,
         address: session.user.address,
       });
     }
@@ -92,10 +96,15 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
           <hr />
           {/* custom picture uploader */}
           <div className="form-profile">
-           
             {/* display the image or the icon */}
             <div>
-              <ImageUploader imagekey={"image"} formData={formData} setFormData={setFormData} />
+              <ImageUploader
+                imageurlkey={"avatar_url"}
+                imagename={"avatar_name"}
+                imagekey={"avatar"}
+                formData={formData}
+                setFormData={setFormData}
+              />
             </div>
           </div>
 
@@ -149,10 +158,10 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
                   type="radio"
                   name="flexRadioDefault"
                   id="flexRadioDefault1"
-                  checked={formData.sex === "male"}
+                  checked={formData.Sex === "male"}
                   value="male"
                   onChange={(e) => {
-                    setFormData({ ...formData, sex: e.target.value });
+                    setFormData({ ...formData, Sex: e.target.value });
                   }}
                 />
                 <label className="form-check-label" htmlFor="flexRadioDefault1">
@@ -165,10 +174,10 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
                   type="radio"
                   name="flexRadioDefault"
                   id="flexRadioDefault2"
-                  checked={formData.sex === "female"}
+                  checked={formData.Sex === "female"}
                   value="female"
                   onChange={(e) => {
-                    setFormData({ ...formData, sex: e.target.value });
+                    setFormData({ ...formData, Sex: e.target.value });
                   }}
                 />
                 <label className="form-check-label" htmlFor="flexRadioDefault2">
@@ -208,9 +217,9 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
                 className="form-control"
                 id="Phonenumber"
                 placeholder="your Phonenumber"
-                value={formData.Phonenumber || ""}
+                value={formData.phone || ""}
                 onChange={(e) => {
-                  setFormData({ ...formData, Phonenumber: e.target.value });
+                  setFormData({ ...formData, phone: e.target.value });
                 }}
               />
             </div>
