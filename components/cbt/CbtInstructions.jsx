@@ -29,7 +29,7 @@ const CbtInstructions = ({ Test,setStartTest }) => {
         <div className="text-primary">
           {" "}
           <i className="bi bi-check2-circle me-2 text-secondary"></i>Number of
-          Questions: {Test.testSubject.length}
+          Subjects: {Test.testSubject.length}
         </div>
         <div className="text-primary">
           {" "}
@@ -45,7 +45,11 @@ const CbtInstructions = ({ Test,setStartTest }) => {
         <div className="text-primary">
           {" "}
           <i className="bi bi-check2-circle me-2 text-secondary"></i>Time
-          Allowed: {Test.testTime} minutes
+          Allowed: {
+            Test.testSubject.length > 0 &&
+            Test.testSubject.reduce((acc, curr) => acc + parseInt(curr.subjectduration), 0)
+          }{" "}
+           minutes
         </div>
       </div>
       <div>

@@ -22,19 +22,40 @@ const CbtQuiz = ({ Test, setTestMode }) => {
     questionIndex: currentQuestionIndex,
   };
 
+  // -------------------------------------------
   // function to handle next question
+  // -------------------------------------------
   const handleNext = () => {
-    if (currentQuestionIndex < currentSubject.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else if (currentSubjectIndex < Test.testSubject.length - 1) {
-      setCurrentSubjectIndex(currentSubjectIndex + 1);
-      setCurrentQuestionIndex(0);
+    let nextQuestionIndex = currentQuestionIndex + 1;
+    let nextSubjectIndex = currentSubjectIndex;
+
+    // Move to the next question if it exists in the current subject
+    if (nextQuestionIndex < currentSubject.questions.length) {
+      setCurrentQuestionIndex(nextQuestionIndex);
     } else {
-      handleSubmit();
+      // Move to the next subject with questions if it exists
+      while (nextSubjectIndex < Test.testSubject.length - 1) {
+        nextSubjectIndex += 1;
+        if (Test.testSubject[nextSubjectIndex].questions.length > 0) {
+          setCurrentSubjectIndex(nextSubjectIndex);
+          setCurrentQuestionIndex(0);
+          return;
+        }
+      }
+
+      // If no more subjects with questions, handle submit or back to score review
+      if (reviewAnswers) {
+        setReviewAnswers(false);
+        setSubmitted(true);
+      } else {
+        handleSubmit();
+      }
     }
   };
 
+  // -------------------------------------------
   // function to handle previous question
+  // -------------------------------------------
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -46,7 +67,9 @@ const CbtQuiz = ({ Test, setTestMode }) => {
     }
   };
 
+  // -------------------------------------------
   // function to handle answer selection
+  // -------------------------------------------
   const handleAnswerSelect = (subjectId, questionId, answerId) => {
     setSelectedAnswers({
       ...selectedAnswers,
@@ -57,20 +80,26 @@ const CbtQuiz = ({ Test, setTestMode }) => {
     });
   };
 
+  // -------------------------------------------
   // function to handle subject selection
+  // -------------------------------------------
   const handleSubjectSelect = (subjectIndex) => {
     setCurrentSubjectIndex(subjectIndex);
     setCurrentQuestionIndex(0);
   };
 
+  // -------------------------------------------
   // function to handle form submission
+  // -------------------------------------------
   const handleSubmit = () => {
     if (window.confirm("Are you sure you want to submit the test?")) {
       calculateScores();
     }
   };
 
+  // -------------------------------------------
   // function to calculate scores
+  // -------------------------------------------
   const calculateScores = () => {
     Test.testSubject.forEach((subject) => {
       let subjectScore = {
@@ -78,14 +107,16 @@ const CbtQuiz = ({ Test, setTestMode }) => {
         score: 0,
       };
 
-      subject.questions.forEach((question) => {
-        if (
-          selectedAnswers[subject.id] &&
-          selectedAnswers[subject.id][question.id] === question.correctAnswer
-        ) {
-          subjectScore.score += question.questionMark;
-        }
-      });
+      subject.questions.length > 0 &&
+        subject.questions.forEach((question) => {
+          if (
+            selectedAnswers[subject.id] &&
+            selectedAnswers[subject.id][question.id] ===
+              question.correctAnswer.id
+          ) {
+            subjectScore.score += question.questionMark;
+          }
+        });
 
       setScore((prev) => ({
         subjectscores: [...prev.subjectscores, subjectScore],
@@ -95,7 +126,9 @@ const CbtQuiz = ({ Test, setTestMode }) => {
     setSubmitted(true);
   };
 
+  // -------------------------------------------
   // function to review answers and feedback
+  // -------------------------------------------
   const ReviewAnswers = () => {
     setSubmitted(false);
     setReviewAnswers(true);
@@ -117,12 +150,16 @@ const CbtQuiz = ({ Test, setTestMode }) => {
     setCurrentSubjectIndex(0);
   };
 
+  // -------------------------------------------
   // function to retake test
+  // -------------------------------------------
   const retaketest = () => {
     resetStates();
   };
 
+  // -------------------------------------------
   // function to take another test
+  // -------------------------------------------
   const takeanothertest = () => {
     resetStates();
     setTestMode(false);
@@ -152,7 +189,13 @@ const CbtQuiz = ({ Test, setTestMode }) => {
               ) : (
                 <div className="text-center mb-3">
                   <CbtTimer
-                    time={Test.testTime}
+                    time={
+                      Test.testSubject.length > 0 &&
+                      Test.testSubject.reduce(
+                        (acc, curr) => acc + parseInt(curr.subjectduration),
+                        0
+                      )
+                    }
                     handleSubmit={calculateScores}
                   />
                 </div>
@@ -189,7 +232,7 @@ const CbtQuiz = ({ Test, setTestMode }) => {
                         setSubmitted(true);
                       }}
                     >
-                      back to Score
+                      Back to Score
                     </button>
                   ) : (
                     <button className="btn btn-success" onClick={handleSubmit}>
@@ -209,7 +252,11 @@ const CbtQuiz = ({ Test, setTestMode }) => {
                 {Test.testSubject.map((subject, index) => (
                   <div
                     key={subject.id}
-                    onClick={() => handleSubjectSelect(index)}
+                    onClick={
+                      subject.questions.length > 0
+                        ? () => handleSubjectSelect(index)
+                        : null
+                    }
                     className={`badge px-3 py-2 ${
                       currentSubjectIndex === index
                         ? "bg-secondary-light text-secondary"

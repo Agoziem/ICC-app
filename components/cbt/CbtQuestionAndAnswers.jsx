@@ -27,7 +27,7 @@ const QuestionAndAnswers = ({
             selectedAnswers[currentSubject.id] &&
             selectedAnswers[currentSubject.id][currentQuestion.id];
           const isSelectedAnswer = answerSelectedID === answer.id;
-          const isCorrectAnswer = answer.id === currentQuestion.correctAnswer;
+          const isCorrectAnswer = answer.id === currentQuestion.correctAnswer.id;
           const answerClassName =
             reviewAnswers && answerSelectedID
               ? isCorrectAnswer

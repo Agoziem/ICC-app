@@ -30,44 +30,6 @@ const Test = ({ testID }) => {
     if (testID && OrganizationData.id) fetchTest();
   }, [testID, OrganizationData.id]);
 
-  // //   {
-  //     "id": 3,
-  //     "testYear": {
-  //         "id": 3,
-  //         "year": 2021
-  //     },
-  //     "texttype": {
-  //         "id": 4,
-  //         "testtype": "WEAC"
-  //     },
-  //     "testSubject": [
-  //         {
-  //             "id": 6,
-  //             "questions": [],
-  //             "subjectduration": 0,
-  //             "subjectname": "Mathematics"
-  //         },
-  //         {
-  //             "id": 7,
-  //             "questions": [],
-  //             "subjectduration": 0,
-  //             "subjectname": "English"
-  //         },
-  //         {
-  //             "id": 8,
-  //             "questions": [],
-  //             "subjectduration": 0,
-  //             "subjectname": "Igbo language"
-  //         },
-  //         {
-  //             "id": 9,
-  //             "questions": [],
-  //             "subjectduration": 0,
-  //             "subjectname": "Chemistry"
-  //         }
-  //     ],
-  //     "testorganization": 1
-  // }
   return (
     <>
       {Object.keys.length === 0 ? (
@@ -94,18 +56,29 @@ const Test = ({ testID }) => {
             </div>
             {/* The test Subjects details */}
             <div className="mt-2">
-              <SubjectDetails test={test} setTest={setTest} subjects={test?.testSubject} setCurrentSubject={setCurrentSubject} />
+              <SubjectDetails
+                test={test}
+                setTest={setTest}
+                subjects={test?.testSubject}
+                setCurrentSubject={setCurrentSubject}
+              />
             </div>
           </div>
           <div className="col-12 col-md-8">
             <h4 className="text-center">
-                {currentSubject?.subjectname} ({currentSubject?.questions?.length} questions)
+              {currentSubject?.subjectname}{" "}
+              {currentSubject?.subjectduration &&
+                `| ${currentSubject?.subjectduration} minutes`}
             </h4>
             {/* The QuestionForm */}
             <div>
-              <QuestionForm currentSubject={currentSubject} />
+              <QuestionForm
+                test={test}
+                setTest={setTest}
+                currentSubject={currentSubject}
+                setCurrentSubject={setCurrentSubject}
+              />
             </div>
-            {/* The QuestionsGrid */}
           </div>
         </div>
       )}
@@ -114,3 +87,42 @@ const Test = ({ testID }) => {
 };
 
 export default Test;
+
+// //   {
+//     "id": 3,
+//     "testYear": {
+//         "id": 3,
+//         "year": 2021
+//     },
+//     "texttype": {
+//         "id": 4,
+//         "testtype": "WEAC"
+//     },
+//     "testSubject": [
+//         {
+//             "id": 6,
+//             "questions": [],
+//             "subjectduration": 0,
+//             "subjectname": "Mathematics"
+//         },
+//         {
+//             "id": 7,
+//             "questions": [],
+//             "subjectduration": 0,
+//             "subjectname": "English"
+//         },
+//         {
+//             "id": 8,
+//             "questions": [],
+//             "subjectduration": 0,
+//             "subjectname": "Igbo language"
+//         },
+//         {
+//             "id": 9,
+//             "questions": [],
+//             "subjectduration": 0,
+//             "subjectname": "Chemistry"
+//         }
+//     ],
+//     "testorganization": 1
+// }
