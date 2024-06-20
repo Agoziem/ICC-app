@@ -42,7 +42,7 @@ const CustomersPage = () => {
   }, [customerID]);
 
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Customers" />
       <div className="mt-4">
         <h4>ICC Customers</h4>

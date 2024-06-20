@@ -290,7 +290,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
           ))}
         </div>
       )}
-
+{/*  */}
       <Modal
         showmodal={showdeleteModal}
         toggleModal={() => setShowDeleteModal(false)}
@@ -325,7 +325,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
             {addorupdate.mode === "add" ? "Add" : "Update"} Staff
           </h4>
           <hr />
-          <StaffForm addStaff={addStaff} addorupdate={addorupdate} staff={staff} setStaff={setStaff}/>
+          <StaffForm addStaff={addStaff} addorupdate={addorupdate} staff={staff} setStaff={setStaff} OrganizationData={OrganizationData}/>
         </div>
       </Modal>
     </div>

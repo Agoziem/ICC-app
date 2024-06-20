@@ -6,7 +6,7 @@ const AddingQuestionPage = ({params}) => {
   
   const testID = params.id
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
         <PageTitle pathname="subject-questions" />
         <div>
           <Test testID={testID}  />

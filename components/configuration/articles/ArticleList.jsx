@@ -16,32 +16,7 @@ const ArticleList = ({
     message: "",
     type: "",
   });
-  //   {
-  //     "id": 1,
-  //     "img": "/media/blogs/news-2.jpg",
-  //     "img_url": "http://127.0.0.1:8000/media/blogs/news-2.jpg",
-  //     "img_name": "news-2.jpg",
-  //     "authordata": {
-  //         "id": 1,
-  //         "name": "Gozzy",
-  //         "img": "http://127.0.0.1:8000/media/avatars/IMG_20230808_195658_YR2fjuu.jpg"
-  //     },
-  //     "no_of_likes": 0,
-  //     "title": "Nihil blanditiis at in nihil autem",
-  //     "subtitle": "Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum",
-  //     "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum. Ut sit amet suscipit odio. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, eu",
-  //     "date": "2024-06-15T02:06:10.081508Z",
-  //     "updated_at": "2024-06-15T02:06:10.081508Z",
-  //     "tags": "[         \"lifestyle\",         \"health\",         \"tech\"       ]",
-  //     "slug": "nihil-blanditiis-at-in-nihil-autem",
-  //     "category": "abc",
-  //     "readTime": 0,
-  //     "views": 0,
-  //     "organization": 1,
-  //     "author": 1,
-  //     "likes": []
-  // }
-
+  
   const deleteArticle = async (id) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/deleteblog/${id}`, {
       method: "DELETE",
@@ -80,10 +55,11 @@ const ArticleList = ({
       title: "",
       subtitle: "",
       body: "",
-      // tags: "",
+      tags: [],
       slug: "",
       category: "",
     });
+    
   };
 
   return (
@@ -139,9 +115,9 @@ const ArticleList = ({
                       title: article.title,
                       subtitle: article.subtitle,
                       body: article.body,
-                      // tags: article.tags,
+                      tags: article.tags.map((t) => t.tag),
                       slug: article.slug,
-                      category: article.category,
+                      category: article.category.category,
                     });
                     setEditMode(true);
                   }}
@@ -159,9 +135,9 @@ const ArticleList = ({
                       title: article.title,
                       subtitle: article.subtitle,
                       body: article.body,
-                      // tags: article.tags,
+                      tags: article.tags.map((t) => t.tag),
                       slug: article.slug,
-                      category: article.category,
+                      category: article.category.category,
                     });
                     setShowModal(true);
                   }}

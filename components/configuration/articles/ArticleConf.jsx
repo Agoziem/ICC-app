@@ -16,7 +16,7 @@ const ArticleConf = () => {
     title: "",
     subtitle: "",
     body: "",
-    // tags: "",
+    tags: [],
     slug: "",
     category: "",
   });

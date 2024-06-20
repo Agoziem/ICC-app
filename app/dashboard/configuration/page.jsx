@@ -3,7 +3,7 @@ import React from 'react'
 
 const ConfigurationPage = () => {
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Configurations" />
     </div>
   )

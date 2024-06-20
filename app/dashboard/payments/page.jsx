@@ -13,7 +13,7 @@ const PaymentsPage = () => {
     setItems(orders);
   }, [orders]);
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Payments" />
       <div className="mt-4">
         <h3>Payment History</h3>

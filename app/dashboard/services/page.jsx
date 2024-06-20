@@ -8,21 +8,20 @@ import { useUserContext } from "@/data/usercontextdata";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-
 const ServicesPage = () => {
   const { services, setServices } = useAdminContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const { orders } = useAdminContext();
   const [items, setItems] = useState([]);
-  
+
   useEffect(() => {
     setItems(userOrder);
   }, [userOrder]);
   return (
     <div>
       <PageTitle pathname="Services" />
-      <div>
+      <div style={{minHeight:"100vh"}}>
         <div className="d-flex justify-content-end pe-3 pb-3">
           <div
             className="px-3 py-2 position-relative"
@@ -51,25 +50,38 @@ const ServicesPage = () => {
             services.length > 0 &&
             services.map((service) => (
               <div key={service.id} className="col-12 col-md-4">
-                <div className="card p-3 py-4" style={{
-                  minHeight: "150px",
-                }}>
-                  <div className="d-flex justify-content-center align-items-center">
-                    <Image
-                      src={service.img_url}
-                      alt="Services"
-                      width={100}
-                      height={100}
-                      className="me-3"
-                      style={{
-                        maxWidth: "60px",
-                        maxHeight: "60px",
-                        objectFit: "cover",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <div>
-                      <h6>{service.name}</h6>
+                <div className="card p-4 py-4">
+                  <div className="d-flex align-items-center">
+                    {service.preview ? (
+                      <img
+                        src={service.img_url}
+                        alt="services"
+                        width={75}
+                        height={75}
+                        className="me-3 rounded-circle object-fit-cover"
+                        style={{
+                          objectPosition: "center",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        className="me-3"
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "50%",
+                          backgroundColor: "var(--bgDarkerColor)",
+                          color: "var(--bgDarkerColor)",
+                        }}
+                      >
+                        <i className="bi bi-person-fill-gear h4 mb-0"></i>
+                      </div>
+                    )}
+                    <div
+                      className="flex-fill d-flex flex-column justify-content-between"
+                      style={{ height: "100%" }}
+                    >
+                      <h6 className="flex-grow-1">{service.name}</h6>
                       <div className="d-flex justify-content-around mt-3">
                         <span className="fw-bold text-primary me-2">
                           &#8358;{parseFloat(service.price)}

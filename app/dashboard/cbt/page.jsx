@@ -43,7 +43,7 @@ const CbtPage = () => {
   };
 
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="CBT practice" />
 
       {/* quiz component */}

@@ -31,7 +31,7 @@ const OrderPage = () => {
     onclose: () => console.log("closed"),
   };
   return (
-    <section className="vh-100 pt-5">
+    <section className="pt-5" style={{minHeight:"100vh"}}>
       <div
         className="card p-4 mx-auto"
         style={{

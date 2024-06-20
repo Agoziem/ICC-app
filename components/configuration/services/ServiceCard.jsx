@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const ServiceCard = ({ item, onEdit, onDelete }) => (
   <div className="col-12 col-md-4">
-    <div className="card p-3 py-4" style={{ minHeight: "150px" }}>
+    <div className="card p-3 py-4">
       <div className="d-flex justify-content-center align-items-center">
         {item.img_url ? (
           <Image

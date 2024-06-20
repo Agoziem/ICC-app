@@ -95,6 +95,8 @@ const ArticleImageUploader = ({
               setFormData({
                 ...formData,
                 [imagekey]: null,
+                [imageurlkey]: null,
+                [imagename]: null,
               });
             }}
             style={{ cursor: "pointer" }}

@@ -4,7 +4,7 @@ import React from 'react'
 
 const CbtConfigPage = () => {
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
         <PageTitle pathname="cbtquestions" />
         <SettingsForm />
     </div>

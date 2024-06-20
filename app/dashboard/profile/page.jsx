@@ -12,7 +12,7 @@ const ProfilePage = () => {
     type: "",
   });
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Profile" />
       {editMode ? (
         <ProfileForm setAlert={setAlert} setEditMode={setEditMode} />

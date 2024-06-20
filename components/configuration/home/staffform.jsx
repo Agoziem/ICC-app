@@ -1,14 +1,14 @@
 import ImageUploader from "@/components/Imageuploader/ImageUploader";
 import React from "react";
 
-const StaffForm = ({addStaff, addorupdate, staff,setStaff}) => {
+const StaffForm = ({addStaff, addorupdate, staff,setStaff,OrganizationData}) => {
   return (
     <form
       onSubmit={(e) =>
         addStaff(
           e,
           addorupdate.mode === "add"
-            ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/staff/add/${OrganizationData.id}/`
+            ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/staff/add/${OrganizationData?.id}/`
             : `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/staff/update/${staff.id}/`
         )
       }

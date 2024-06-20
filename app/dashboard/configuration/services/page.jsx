@@ -4,7 +4,7 @@ import React from 'react'
 
 const ServicesConfigPage = () => {
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
         <PageTitle pathname="services" />
         <h4 className="my-3 mt-4">Services & Applications</h4>
         <Services />

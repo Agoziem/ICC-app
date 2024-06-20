@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import Datatable from "@/components/Datatable/Datatable";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import OrderTableItems from "@/components/orders/OrderTableItems";
@@ -15,7 +14,7 @@ const ApplicationsPage = () => {
   const { orders } = useAdminContext();
 
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Applications" />
       <div>
         <div className="d-flex justify-content-end pe-3 pb-3">
@@ -46,26 +45,21 @@ const ApplicationsPage = () => {
             applications.length > 0 &&
             applications.map((application) => (
               <div key={application.id} className="col-12 col-md-4">
-                <div className="card p-3 py-4"
-                style={{
-                  minHeight: "130px",
-                }}
+                <div className="card p-4 py-4"
+              
                 >
-                  <div className="d-flex justify-content-center">
+                  <div className="d-flex align-items-center">
                     {application.preview ? (
-                      <Image
-                        src={application.preview}
-                        alt="applications"
-                        width={100}
-                        height={100}
-                        className="me-3"
-                        style={{
-                          maxWidth: "60px",
-                          maxHeight: "60px",
-                          objectFit: "cover",
-                          borderRadius: "50%",
-                        }}
-                      />
+                      <img
+                      src={application.img_url}
+                      alt="application"
+                      width={75}
+                      height={75}
+                      className="me-3 rounded-circle object-fit-cover"
+                      style={{
+                        objectPosition: "center",
+                      }}
+                    />
                     ) : (
                       <div
                         className="p-3 d-flex justify-content-center align-items-center"
@@ -74,13 +68,14 @@ const ApplicationsPage = () => {
                           height: "50px",
                           borderRadius: "50%",
                           backgroundColor: "var(--bgDarkColor)",
+                          color: "var(--bgDarkerColor)",
                         }}
                       >
-                        <i className="bi bi-google-play h4 text-primary m-0"></i>
+                        <i className="bi bi-google-play h4 mb-0"></i>
                       </div>
                     )}
 
-                    <div className="ms-3">
+                    <div className="ms-3 flex-fill">
                       <h6>{application.name}</h6>
                       <div className="d-flex justify-content-around mt-3">
                         <span className="fw-bold text-primary me-2">
