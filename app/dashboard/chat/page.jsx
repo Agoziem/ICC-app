@@ -1,3 +1,4 @@
+"use client";
 import PageTitle from '@/components/PageTitle/PageTitle'
 import Link from 'next/link'
 import React, { useContext } from 'react'
