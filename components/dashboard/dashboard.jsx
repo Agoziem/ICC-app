@@ -101,9 +101,9 @@ const DashboardBody = () => {
             }
 
             {/* Display Analytics Chart for to the Admin & Customers */}
-            <div className="col-12">
+            {/* <div className="col-12">
               <Reports session={session} />
-            </div>
+            </div> */}
 
             {/* Display the Resent Orders to Admin OR Orders purchased to customers */}
             <div className="col-12">
