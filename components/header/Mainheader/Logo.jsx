@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
-
-import Image from "next/image";
 import Link from "next/link";
 
 const MainHeaderLogo = () => {
@@ -9,7 +7,7 @@ const MainHeaderLogo = () => {
   return (
     <div>
       <Link href="/" className="logo d-flex align-items-center mt-0 ">
-        <Image
+        <img
           src={
             OrganizationData.Organizationlogo
               ? OrganizationData.Organizationlogo
