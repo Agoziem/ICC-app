@@ -22,7 +22,7 @@ const StaffSection = () => {
           </p>
         </div>
 
-        <div className="row px-0 px-md-5">
+        <div className="row px-4 px-md-5">
           {OrganizationData && OrganizationData.staffs?.length > 0 ? (
             OrganizationData.staffs.map((staff) => (
               <div key={staff.id} className="col-12 col-md-6 col-lg-4">
@@ -114,9 +114,12 @@ const StaffSection = () => {
               </div>
             ))
           ) : (
-            <div className="text-center">
-              <h5>No staffs available</h5>
-            </div>
+            <p
+              className="p-3 text-light text-center bg-primary-light my-3 rounded"
+              style={{ background: "var(--bgDarkerColor)" }}
+            >
+              No staff added yet
+            </p>
           )}
         </div>
       </section>

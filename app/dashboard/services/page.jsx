@@ -7,6 +7,7 @@ import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { PiEmptyBold } from "react-icons/pi";
 
 const ServicesPage = () => {
   const { services, setServices } = useAdminContext();
@@ -47,7 +48,7 @@ const ServicesPage = () => {
         </div>
         <div className="row">
           {services &&
-            services.length > 0 &&
+            services.length > 0 ?
             services.map((service) => (
               <div key={service.id} className="col-12 col-md-4">
                 <div className="card p-4 py-4">
@@ -111,7 +112,22 @@ const ServicesPage = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            )):(
+              
+                <div className="mt-3 mb-3 text-center">
+                  <PiEmptyBold
+                    className="mt-2"
+                    style={{
+                      fontSize: "6rem",
+                      color: "var(--bgDarkerColor)",
+                    }}
+                  />
+                  <p className="mt-3 mb-3">
+                    no services available at the moment
+                  </p>
+                </div>
+             
+            )}
 
           <div className="mt-2">
             <h5>Services Ordered</h5>

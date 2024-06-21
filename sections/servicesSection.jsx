@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const ServicesSection = () => {
   return (
-    <section id="services" className="features p-2 py-4 p-md-5">
+    <section id="services" className="features p-2 py-5 p-md-5">
       <div className="row align-items-center px-5 px-md-4 pb-2">
         <div className="col-12 col-md-6 feature-image d-flex justify-content-center ">
           <img
@@ -71,7 +71,7 @@ const ServicesSection = () => {
 
       <hr className="text-primary pt-3" />
       {/* CBT advert */}
-      <div className="row align-items-center px-4 px-md-5 mt-3">
+      <div className="row align-items-center px-4 px-md-5 mt-5 mt-md-3">
         <div className="col-12 col-md-6">
           <h6>
             <span className="text-primary">CBT Practice </span>
@@ -118,7 +118,7 @@ const ServicesSection = () => {
 
       <hr className="text-primary pt-4" />
       {/* built in Chat Community */}
-      <div className="row align-items-center px-5 px-md-4 pb-2">
+      <div className="row align-items-center px-5 px-md-4 pb-2 mt-4 mt-md-3">
         <div className="col-12 col-md-6 feature-image d-flex justify-content-center">
           <img
             className="img-fluid mb-4 mb-md-0"

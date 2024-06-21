@@ -6,6 +6,7 @@ import OrderTableItems from "@/components/orders/OrderTableItems";
 import { useAdminContext } from "@/data/Admincontextdata";
 import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
+import { PiEmptyBold } from "react-icons/pi";
 
 const ApplicationsPage = () => {
   const { applications, setApplications } = useAdminContext();
@@ -14,7 +15,7 @@ const ApplicationsPage = () => {
   const { orders } = useAdminContext();
 
   return (
-    <div style={{minHeight:"100vh"}}>
+    <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Applications" />
       <div>
         <div className="d-flex justify-content-end pe-3 pb-3">
@@ -41,25 +42,22 @@ const ApplicationsPage = () => {
           </div>
         </div>
         <div className="row">
-          {applications &&
-            applications.length > 0 &&
+          {applications && applications.length > 0 ? (
             applications.map((application) => (
               <div key={application.id} className="col-12 col-md-4">
-                <div className="card p-4 py-4"
-              
-                >
+                <div className="card p-4 py-4">
                   <div className="d-flex align-items-center">
                     {application.preview ? (
                       <img
-                      src={application.img_url}
-                      alt="application"
-                      width={75}
-                      height={75}
-                      className="me-3 rounded-circle object-fit-cover"
-                      style={{
-                        objectPosition: "center",
-                      }}
-                    />
+                        src={application.img_url}
+                        alt="application"
+                        width={75}
+                        height={75}
+                        className="me-3 rounded-circle object-fit-cover"
+                        style={{
+                          objectPosition: "center",
+                        }}
+                      />
                     ) : (
                       <div
                         className="p-3 d-flex justify-content-center align-items-center"
@@ -106,7 +104,21 @@ const ApplicationsPage = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="mt-3 mb-3 text-center">
+              <PiEmptyBold
+                className="mt-2"
+                style={{
+                  fontSize: "6rem",
+                  color: "var(--bgDarkerColor)",
+                }}
+              />
+              <p className="mt-3 mb-3">
+                no applications available at the moment
+              </p>
+            </div>
+          )}
 
           <div className="mt-2">
             <h5>Orders made</h5>

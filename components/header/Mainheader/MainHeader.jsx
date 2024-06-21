@@ -144,16 +144,16 @@ const MainHeader = () => {
 
       <>
         {/* small screen */}
-        <div className="d-block d-lg-none">
+        <div className="d-flex d-lg-none align-items-center">
           <FaSearch
             className="me-3 text-primary"
-            style={{ cursor: "pointer", fontSize: "20px" }}
+            style={{ cursor: "pointer", fontSize: "18px" }}
           />
 
           <IoMenu
-            className="text-primary me-3"
+            className="text-primary me-2"
             onClick={toggleMenu}
-            style={{ cursor: "pointer", fontSize: "30px" }}
+            style={{ cursor: "pointer", fontSize: "25px" }}
           />
           {session && (
             <div className="dropdown d-inline">
@@ -162,18 +162,18 @@ const MainHeader = () => {
                   <Image
                     src={session.user.image}
                     alt="Profile"
-                    width={38}
-                    height={38}
-                    className="rounded-circle object-fit-cover"
+                    width={30}
+                    height={30}
+                    className="rounded-circle object-fit-cover me-2"
                     style={{ objectPosition: "top center" }}
                   />
                 ) : (
                   <div
-                    className="rounded-circle text-white d-flex justify-content-center align-items-center"
+                    className="rounded-circle text-white d-flex justify-content-center align-items-center me-2"
                     style={{
-                      width: 40,
-                      height: 40,
-                      fontSize: 20,
+                      width: 30,
+                      height: 30,
+                      fontSize: 15,
                       backgroundColor: "var(--secondary)",
                     }}
                   >

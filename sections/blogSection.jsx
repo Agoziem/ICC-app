@@ -8,7 +8,7 @@ import { MdOutlineArticle } from "react-icons/md";
 
 const BlogSection = () => {
   const { articles } = useArticleContext();
-  
+
   return (
     <>
       <hr className="text-primary pt-4 mx-5" />
@@ -21,15 +21,14 @@ const BlogSection = () => {
           </p>
         </div>
 
-        <div className="row px-0 px-md-5">
-          {articles &&
-            articles.length > 0 &&
+        <div className="row px-3 px-md-5">
+          {articles && articles.length > 0 ? (
             articles.slice(0, 3).map((blog) => (
               <div
                 key={blog.id}
                 className="col-12 col-md d-flex justify-content-center"
               >
-                <div className="card mx-auto" style={{width:"350px"}}>
+                <div className="card mx-auto" style={{ width: "350px" }}>
                   <div
                     className="blog-image"
                     style={{
@@ -90,16 +89,26 @@ const BlogSection = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <p
+              className="p-3 text-light text-center bg-primary-light mt-1 mb-3 rounded"
+              style={{ background: "var(--bgDarkerColor)" }}
+            >
+              No Articles yet
+            </p>
+          )}
         </div>
 
-        <div>
-          <div className="d-flex justify-content-center mt-0 mb-5">
-            <Link href="/articles" className="btn btn-primary px-5">
-              View articles
-            </Link>
+        {articles && articles.length > 3 && (
+          <div>
+            <div className="d-flex justify-content-center mt-0 mb-5">
+              <Link href="/articles" className="btn btn-primary px-5">
+                View articles
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </section>
     </>
   );

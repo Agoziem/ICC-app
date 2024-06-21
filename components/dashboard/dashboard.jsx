@@ -118,9 +118,9 @@ const DashboardBody = () => {
         </div>
 
         <div className="col-12 col-md-3">
-          <div>
+          {/* <div>
             <RecentActivity />
-          </div>
+          </div> */}
           <div>
             <News />
           </div>

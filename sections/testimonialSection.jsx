@@ -9,8 +9,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
-
-
 const CustomSwiper = () => {
   const { OrganizationData } = useContext(OrganizationContext);
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -48,7 +46,8 @@ const CustomSwiper = () => {
             992: { slidesPerView: 3 },
           }}
         >
-          {OrganizationData?.testimonials ? (
+          {OrganizationData?.testimonials &&
+          OrganizationData?.testimonials.length > 0 ? (
             OrganizationData?.testimonials?.map((testimonial) => (
               <SwiperSlide key={testimonial.id}>
                 <div className="card p-4">
@@ -92,7 +91,12 @@ const CustomSwiper = () => {
               </SwiperSlide>
             ))
           ) : (
-            <div className="text-center">No Testimonials</div>
+            <p
+              className="p-3 text-light text-center bg-primary-light my-3 rounded"
+              style={{ background: "var(--bgDarkerColor)" }}
+            >
+              No Reviews yet
+            </p>
           )}
         </Swiper>
 

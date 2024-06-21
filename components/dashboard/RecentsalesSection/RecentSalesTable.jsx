@@ -73,7 +73,7 @@ function RecentSalesTable({ items, session }) {
           ))
         ) : (
           <tr>
-            <td colSpan="6" className="text-center fw-bold">
+            <td colSpan="6" className="text-center fw-bold  py-4">
               No Order Yet
             </td>
           </tr>

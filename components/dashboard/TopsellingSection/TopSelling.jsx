@@ -24,14 +24,35 @@ function TopSelling() {
             </tr>
           </thead>
           <tbody>
-            {services &&
-              services.length > 0 &&
+            {services && services.length > 0 ? (
               services
                 .slice(0, 10)
-                .map((item) => <TopSellingItem key={item.id} item={item} />)}
+                .map((item) => <TopSellingItem key={item.id} item={item} />)
+            ) : (
+              <tr>
+                <td colSpan="4">
+                  <div className="d-flex justify-content-center align-items-center">
+                    <p className="text-center fw-bold mb-1 py-4">
+                      No Services Available
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
-        <Link href={"/dashboard/services"} className="btn bg-primary-light btn-primary rounded  my-3">See more Services</Link>
+        {services && services.length > 0 ? (
+          <Link
+            href={"/dashboard/services"}
+            className="btn bg-primary-light btn-primary rounded  my-3"
+            style={{
+              backgroundColor: "var(--bgDarkerColor)",
+              borderColor: "var(--bgDarkerColor)",
+            }}
+          >
+            See more Services
+          </Link>
+        ) : null}
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ const AboutSection = () => {
         </p>
       </div>
 
-      <div className="row justify-content-between mt-4 px-2 px-md-5">
+      <div className="row justify-content-between mt-4 px-3 px-md-5">
         <div className="col-12 col-md-4 d-flex justify-content-center ">
           <div className="card p-4 pt-4">
             <div className="card-icon vision d-flex justify-content-center align-items-center align-self-center my-3">
