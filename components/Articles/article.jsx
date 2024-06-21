@@ -7,6 +7,7 @@ import ArticleLikes from "./ArticleLikes";
 import ArticleCommentsForm from "./ArticleCommentsForm";
 import Toast from "../Toast/toast";
 import { useSession } from "next-auth/react";
+import { MdOutlineArticle } from "react-icons/md";
 
 const Article = ({ article, setArticle, otherArticles }) => {
   const { data: session } = useSession();

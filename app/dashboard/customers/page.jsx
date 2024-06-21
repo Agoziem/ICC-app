@@ -4,6 +4,7 @@ import Modal from "@/components/Modal/modal";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import CustomersTable from "@/components/orders/CustomersTable";
 import { useAdminContext } from "@/data/Admincontextdata";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const CustomersPage = () => {
