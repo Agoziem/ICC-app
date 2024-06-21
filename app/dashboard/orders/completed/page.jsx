@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from "@/data/Cartcontext";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useAdminContext } from "@/data/Admincontextdata";
 import { useUserContext } from "@/data/usercontextdata";
 import { BsFillCartCheckFill } from "react-icons/bs";
@@ -9,6 +9,7 @@ import useJsxToPdf from "@/hooks/useJSXtoPDF";
 import { FaCheck, FaRegClipboard } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import Link from "next/link";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
 const OrderCompleted = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const OrderCompleted = () => {
   const [copied, setCopied] = useState(false);
   const [loading, generatePdf] = useJsxToPdf();
   const pdfRef = useRef();
+  const { OrganizationData } = useContext(OrganizationContext);
 
   const savePdf = async () => {
     await generatePdf(pdfRef.current, "Order-Receipt");
