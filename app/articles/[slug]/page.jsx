@@ -1,29 +1,29 @@
 "use client";
 import Article from "@/components/Articles/article";
+import { useArticleContext } from "@/data/Articlescontextdata";
 import React, { useEffect, useState } from "react";
 
 const ArticlePage = ({ params }) => {
   const { slug } = params;
+  const { articles } = useArticleContext();
   const [article, setArticle] = useState(null);
   const [otherArticles, setOtherArticles] = useState([]);
 
   const fetchData = () => {
-    fetch(`http://localhost:4000/news`)
-      .then((res) => res.json())
-      .then((data) => {
-        const article = data.find((item) => item.slug === slug);
-        const otherArticles = data.filter((item) => item.slug !== slug);
-        setArticle(article);
-        setOtherArticles(otherArticles);
-      })
-      .catch((e) => console.log(e.message));
+    if (!articles) return;
+    const article = articles.find((item) => item.slug === slug);
+    if (article) {
+      setArticle(article);
+      const otherArticles = articles.filter((item) => item.slug !== slug);
+      setOtherArticles(otherArticles);
+    }
   };
 
   useEffect(() => {
-    if (slug) fetchData();
-  }, [slug]);
+    if (slug && articles && articles.length > 0) fetchData();
+  }, [slug, articles]);
 
-  return <Article article={article} otherArticles={otherArticles} />;
+  return <Article article={article} setArticle={setArticle} otherArticles={otherArticles} />;
 };
 
 export default ArticlePage;

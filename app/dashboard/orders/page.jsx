@@ -48,7 +48,7 @@ const OrderPage = () => {
               <li className="list-group-item text-primary" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 {cart && cart.length > 0 ? (
                   cart.map((item) => (
-                    <div key={item.id}>
+                    <div key={item.id} className="mb-2">
                       <span>
                         <i className="bi bi-check2-circle me-3 h5 text-secondary fw-bold"></i>
                         {item.name}

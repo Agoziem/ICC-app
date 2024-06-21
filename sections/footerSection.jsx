@@ -95,8 +95,7 @@ const FooterSection = () => {
       }
       }
     }
-
-
+    
   return (
     <section className="footer">
       <div className="p-5 p-md-5">
@@ -109,7 +108,7 @@ const FooterSection = () => {
               </p>
               <div className="social-links">
                 <Link
-                  href="https://www.facebook.com/innovationscybercafe?mibextid=ZbWKwL"
+                  href={OrganizationData?.facebooklink || "#"}
                   target="_blank"
                 >
                   <FaFacebook
@@ -119,7 +118,7 @@ const FooterSection = () => {
                     }}
                   />
                 </Link>
-                <Link href="https://wa.me/+234813 635 8370" target="_blank">
+                <Link href={OrganizationData?.whatsapplink || "#"} target="_blank">
                   <IoLogoWhatsapp
                     className="mx-2"
                     style={{
@@ -128,7 +127,7 @@ const FooterSection = () => {
                   />
                 </Link>
                 <Link
-                  href="https://www.instagram.com/innovationscybercafe?igsh=ZTBsMzVkaDBhZ29y"
+                  href={OrganizationData?.instagramlink || "#"}
                   target="_blank"
                 >
                   <FaInstagram
@@ -139,7 +138,7 @@ const FooterSection = () => {
                   />
                 </Link>
                 <Link
-                  href="https://x.com/innovationscafe?t=W6oditlAiCOBx_0x32TQsw&s=09"
+                  href={OrganizationData?.twitterlink || "#"}
                   target="_blank"
                 >
                   <FaXTwitter

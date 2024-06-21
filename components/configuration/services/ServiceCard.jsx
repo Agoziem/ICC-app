@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-const ServiceCard = ({ item, onEdit, onDelete }) => (
+const ServiceCard = ({ item, tab, onEdit, onDelete }) => (
   <div className="col-12 col-md-4">
     <div className="card p-3 py-4">
       <div className="d-flex justify-content-center align-items-center">
@@ -29,7 +29,11 @@ const ServiceCard = ({ item, onEdit, onDelete }) => (
               backgroundColor: "var(--bgDarkColor)",
             }}
           >
-            <i className="bi bi-google-play h4 text-primary m-0"></i>
+            <i
+              className={`bi ${
+                tab === "services" ? "bi-person-fill-gear" : "bi-google-play"
+              } h4 text-primary m-0`}
+            ></i>
           </div>
         )}
 

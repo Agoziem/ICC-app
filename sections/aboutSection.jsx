@@ -1,17 +1,18 @@
-import React from "react";
+"use client";
+import React, { useContext } from "react";
 import { TbTargetArrow } from "react-icons/tb";
 import { FaEye, FaUserGroup } from "react-icons/fa6";
 import "./section.css";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
 const AboutSection = () => {
+  const { OrganizationData } = useContext(OrganizationContext);
   return (
     <section id="about" className="text-center p-3 py-5 p-md-5">
       <div className="d-flex flex-column align-items-center">
         <h2 className="text-primary">About Us</h2>
         <p className="">
-          We are a team of professionals who are dedicated to providing you with
-          the best services and products that concerns Admission process, jamb
-          and POST UTME
+         {OrganizationData?.description}
         </p>
       </div>
 
@@ -23,9 +24,7 @@ const AboutSection = () => {
             </div>
             <h6 className="text-primary">Our Vision</h6>
             <p className="">
-              To provide innovative solutions to all online and Offline related
-              educational problems to students across the trans secondary to
-              tertiary level.
+              {OrganizationData?.vision}
             </p>
           </div>
         </div>
@@ -37,9 +36,7 @@ const AboutSection = () => {
             </div>
             <h6 className="text-primary">Our Mission</h6>
             <p className="">
-              To help our prospects get fast and easy service, utilizing and
-              finding better solutions. To upgrade the mode of service of local
-              cafe utilizing modern technology
+              {OrganizationData?.mission}
             </p>
           </div>
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import StarRating from "@/components/StarRating/StarRating";
@@ -7,36 +7,12 @@ import styles from "./TestimonialSwiper.module.css";
 import "./section.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
-const testimonials = [
-  {
-    id: 1,
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatum, quidem, cumque, quibusdam voluptatibus quas quod necessitatibus",
-    name: "John Doe",
-    role: "CEO, Company",
-    rating: 2,
-    img: "https://randomuser.me/api/portraits/med/men/75.jpg",
-  },
-  {
-    id: 2,
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatum, quidem, cumque, quibusdam voluptatibus quas quod necessitatibus",
-    name: "Jane Doe",
-    role: "CTO, Company",
-    rating: 3.5,
-    img: "https://randomuser.me/api/portraits/med/women/75.jpg",
-  },
-  {
-    id: 3,
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatum, quidem, cumque, quibusdam voluptatibus quas quod necessitatibus",
-    name: "Michael Smith",
-    role: "Manager, Company",
-    rating: 5,
-    img: "https://randomuser.me/api/portraits/med/men/76.jpg",
-  },
-  // Add more testimonials as needed
-];
+
 
 const CustomSwiper = () => {
+  const { OrganizationData } = useContext(OrganizationContext);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slidesCount, setSlidesCount] = useState(0);
@@ -72,34 +48,52 @@ const CustomSwiper = () => {
             992: { slidesPerView: 3 },
           }}
         >
-          {testimonials.map((testimonial) => (
-            <SwiperSlide key={testimonial.id}>
-              <div className="card p-4">
-                <div className="card-body">
-                  <div>
-                    <BiSolidQuoteAltRight
-                      className="float-end text-primary"
-                      style={{ fontSize: "35px" }}
-                    />
-                  </div>
-                  <p className="card-text">{testimonial.text}</p>
-                  <div className="d-flex align-items-center">
-                    <img
-                      src={testimonial.img}
-                      alt="testimonial"
-                      className="img-fluid rounded-circle"
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                    <div className="ms-3">
-                      <h6 className="mb-1">{testimonial.name}</h6>
-                      <p className="my-0 small">{testimonial.role}</p>
-                      <StarRating rating={testimonial.rating} />
+          {OrganizationData?.testimonials ? (
+            OrganizationData?.testimonials?.map((testimonial) => (
+              <SwiperSlide key={testimonial.id}>
+                <div className="card p-4">
+                  <div className="card-body">
+                    <div>
+                      <BiSolidQuoteAltRight
+                        className="float-end text-primary"
+                        style={{ fontSize: "35px" }}
+                      />
+                    </div>
+                    <p className="card-text">{testimonial.content}</p>
+                    <div className="d-flex align-items-center">
+                      {testimonial.img ? (
+                        <img
+                          src={testimonial.img_url}
+                          alt="testimonial"
+                          className="img-fluid rounded-circle"
+                          style={{ width: "50px", height: "50px" }}
+                        />
+                      ) : (
+                        <div
+                          className="rounded-circle text-white d-flex justify-content-center align-items-center"
+                          style={{
+                            width: 75,
+                            height: 75,
+                            fontSize: "30px",
+                            backgroundColor: "var(--bgDarkerColor)",
+                          }}
+                        >
+                          {testimonial.name?.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className="ms-3">
+                        <h6 className="mb-1">{testimonial.name}</h6>
+                        <p className="my-0 small">{testimonial.role}</p>
+                        <StarRating rating={testimonial.rating} />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
+              </SwiperSlide>
+            ))
+          ) : (
+            <div className="text-center">No Testimonials</div>
+          )}
         </Swiper>
 
         <div className="px-2 pb-4 px-md-5 text-primary">

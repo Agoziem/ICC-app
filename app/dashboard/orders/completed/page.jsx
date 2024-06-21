@@ -7,6 +7,8 @@ import { BsFillCartCheckFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import useJsxToPdf from "@/hooks/useJSXtoPDF";
 import { FaCheck, FaRegClipboard } from "react-icons/fa6";
+import { IoLogoWhatsapp } from "react-icons/io5";
+import Link from "next/link";
 
 const OrderCompleted = () => {
   const router = useRouter();
@@ -74,7 +76,10 @@ const OrderCompleted = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center py-5" style={{minHeight:"100vh"}}>
+    <div
+      className="d-flex justify-content-center align-items-center py-5"
+      style={{ minHeight: "100vh" }}
+    >
       {!successful && !error ? (
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
@@ -126,36 +131,48 @@ const OrderCompleted = () => {
           </div>
 
           <div className="my-3 mb-5">
-            <div
-              className="badge bg-secondary-light py-3 px-4 me-2 mb-3 mb-md-0"
-              style={{
-                cursor: "pointer",
-                color: "var(--secondary)",
-                fontSize: "15px",
-                borderRadius: "25px",
-              }}
-              onClick={savePdf}
-            >
-              {loading ? (
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="visually-hidden">downloading...</span>
-                </div>
-              ) : (
-                "Save Receipt"
-              )}
+            <div>
+              <div
+                className="badge bg-secondary-light py-3 px-4 me-3 mb-3 mb-md-0"
+                style={{
+                  cursor: "pointer",
+                  color: "var(--secondary)",
+                  fontSize: "15px",
+                  borderRadius: "25px",
+                }}
+                onClick={savePdf}
+              >
+                {loading ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="visually-hidden">downloading...</span>
+                  </div>
+                ) : (
+                  "Save Receipt"
+                )}
+              </div>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  router.push("/dashboard");
+                }}
+              >
+                Continue Shopping
+              </button>
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                router.push("/dashboard");
-              }}
-            >
-              Continue Shopping
-            </button>
+            <div className="px-3 my-2 mt-4">
+              copy the payment reference to clipboard to track your order
+            </div>
+            <Link href={"#"} className="btn btn-accent-primary shadow-none rounded px-5">
+              <IoLogoWhatsapp className={"h4 mb-1 me-2"} />
+              chat on whatsapp
+            </Link>
           </div>
         </div>
       ) : null}
-      
+
       {error && (
         <div className="card p-4">
           <div className="alert alert-danger mt-4">{error}</div>

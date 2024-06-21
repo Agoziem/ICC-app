@@ -43,7 +43,7 @@ const HeaderSection = () => {
 
             <div className="col-md-6">
               <div className="header-image my-4 my-md-0">
-                <Image className="img-fluid" src={"/hero image.png"} width={573.42} height={444} alt="hero image" />
+                <img className="img-fluid" src={"/hero image.png"} width={573.42} height={444} alt="hero image" />
               </div>
             </div>
           </div>

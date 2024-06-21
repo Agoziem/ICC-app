@@ -135,7 +135,7 @@ const ContactSection = () => {
                     <IoLocationSharp className="text-secondary me-2 h5" />
                     location
                   </span>
-                  <p>123 Main Street, Lagos, Nigeria</p>
+                  <p>{OrganizationData?.address}</p>
                 </div>
                 <div className="contact-item">
                   <span className="text-primary fw-bold">
@@ -147,7 +147,7 @@ const ContactSection = () => {
                       href="mailto:innovationcybercafe@gmail.com"
                       className="text-primary"
                     >
-                      innovationcybercafe@gmail.com
+                     {OrganizationData?.email}
                     </a>
                   </p>
                 </div>
@@ -156,7 +156,7 @@ const ContactSection = () => {
                     <FaPhoneVolume className="text-secondary me-2 h6" />
                     Phone
                   </span>
-                  <p>+234 123 456 7890</p>
+                  <p>{OrganizationData?.phone}</p>
                 </div>
               </div>
             </div>

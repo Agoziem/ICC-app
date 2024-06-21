@@ -211,6 +211,7 @@ const Services = () => {
             services.map((service) => (
               <ServiceCard
                 key={service.id}
+                tab={tab}
                 item={service}
                 onEdit={handleEdit}
                 onDelete={handleDeleteConfirm}
@@ -222,6 +223,7 @@ const Services = () => {
               <ServiceCard
                 key={application.id}
                 item={application}
+                tab={tab}
                 onEdit={handleEdit}
                 onDelete={handleDeleteConfirm}
               />

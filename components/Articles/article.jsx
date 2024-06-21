@@ -1,77 +1,70 @@
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import ArticleComments from "./articlecomments";
 import ShareButtons from "./sharebuttons";
 import Link from "next/link";
 import { FaLongArrowAltRight } from "react-icons/fa";
-import Modal from "../Modal/modal";
-import { useSession } from "next-auth/react";
+import ArticleLikes from "./ArticleLikes";
+import ArticleCommentsForm from "./ArticleCommentsForm";
 import Toast from "../Toast/toast";
+import { useSession } from "next-auth/react";
 
-const Article = ({ article, otherArticles }) => {
+const Article = ({ article, setArticle, otherArticles }) => {
+  const { data: session } = useSession();
   const [toastmessage, setToastMessage] = useState({
     title: "",
     message: "",
     time: "",
   });
-  const { data: session } = useSession();
-  const [showModal, setShowModal] = useState(false);
-  const [comment, setComment] = useState({
-    user: {
-      id: "",
-      name: "",
-    },
-    comment: "",
-  });
-  const [like, setLike] = useState({
-    user: {
-      id: "",
-      name: "",
-    },
-  });
-  
+  const [comments, setComments] = useState([]);
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getcomments/${article.id}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setComments(data);
+      } else {
+        throw new Error("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const incrementViews = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/addviews/${article.id}/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setArticle({
+        ...article,
+        views: data.views,
+      });
+      console.log("Views updated:", data);
+    } catch (error) {
+      console.error("Failed to update views:", error);
+    }
+  };
 
   useEffect(() => {
-    if (session) {
-      setComment({
-        ...comment,
-        user: {
-          id: session.user.id,
-          name: session.user.name,
-        },
-      });
-      setLike({
-        ...like,
-        user: {
-          id: session.user.id,
-          name: session.user.name,
-        },
-      });
+    if (article?.id) {
+      fetchComments();
+      incrementViews();
     }
-  },[session]);
+  }, [article?.id]);
 
-  const addComment = (e) => {
-    e.preventDefault();
-    console.log(comment);
-    setComment({
-      ...comment,
-      comment: "",
-    }); 
-    setShowModal(false);
-  };
-
-  const addLike = () => {
-    console.log(like);
-    document.getElementById("liveToast").classList.replace("hide", "show");
-    setTimeout(() => {
-      document.getElementById("liveToast").classList.replace("show", "hide");
-      setToastMessage({
-        title: "",
-        message: "",
-        time: "",
-      });
-    }, 3000);
-  };
   return (
     <>
       {article && (
@@ -83,13 +76,14 @@ const Article = ({ article, otherArticles }) => {
             <h1>{article.title}</h1>
             <div className="d-flex my-4">
               <div>
-                {article.author.img ? (
-                  <Image
-                    src={article.author.img}
-                    alt={article.author.name}
+                {article.authordata.img ? (
+                  <img
+                    src={article.authordata.img}
+                    alt={article.authordata.name}
                     width={50}
                     height={50}
                     className="rounded-circle object-fit-cover"
+                    style={{ objectPosition: "top center" }}
                   />
                 ) : (
                   <div
@@ -101,15 +95,15 @@ const Article = ({ article, otherArticles }) => {
                       backgroundColor: "var(--bgDarkerColor)",
                     }}
                   >
-                    {article.author.name[0].toUpperCase()}
+                    {article.authordata.name[0].toUpperCase()}
                   </div>
                 )}
               </div>
               <div className="ms-3">
-                <p className="mb-0 fw-bold">{article.author.name}</p>
+                <p className="mb-0 fw-bold">{article.authordata.name}</p>
                 <div>
                   <span>
-                    <small>{article.category}</small>
+                    <small>{article.category.category}</small>
                   </span>
                   {" . "}
                   <span className="me-3">
@@ -121,7 +115,7 @@ const Article = ({ article, otherArticles }) => {
                         key={index}
                         className="badge bg-secondary-light text-secondary rounded-5 px-3 py-2 me-1"
                       >
-                        {tag}
+                        {tag.tag}
                       </span>
                     ))}
                 </div>
@@ -132,71 +126,65 @@ const Article = ({ article, otherArticles }) => {
               <span className=" me-3">{article.readTime} min read</span>
               <span className=" me-3">
                 <i className="bi bi-eye-fill me-1"></i>
-                {article.views} views
+                {article.views} view{article.views > 1 && "s"}
               </span>
             </div>
             <hr />
           </div>
           <div className="article-body pb-4">
-            <img
-              src={article.img}
-              width={400}
-              height={400}
-              alt="article"
-              className="mb-4 rounded object-fit-cover"
-              style={{ width: "100%", minWidth: "300px" }}
-            />
-            <p>{article.body}</p>
+            {article.img_url && (
+              <img
+                src={article.img_url}
+                width={400}
+                height={400}
+                alt="article"
+                className="mb-4 rounded object-fit-cover"
+                style={{ width: "100%", minWidth: "300px" }}
+              />
+            )}
+            <div style={{ width: "100%" }}>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: article.body,
+                }}
+                style={{
+                  fontSize: "1.1rem",
+                  whiteSpace: "pre-wrap",
+                  wordWrap: "break-word",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
+              />
+            </div>
           </div>
           <div>
             <hr />
             <div className="d-md-flex justify-content-between align-items-center">
               <div>
                 <span className="me-3">
-                  <i className="bi bi-heart-fill me-1"></i>
-                  {article.likes} likes
+                  <i className={`bi ${article.likes.includes(parseInt(session?.user?.id)) ? "bi-heart-fill text-danger" : "bi-heart-fill text-primary"} me-1`}></i>
+                  {article.no_of_likes} like{article.no_of_likes > 1 && "s"}
                 </span>
                 <span className="me-3">
                   <i className="bi bi-chat-fill me-1"></i>
-                  {article.comments && article.comments.length} comments
+                  {comments ? comments.length : "0"} comment{comments?.length > 1 && "s"}
                 </span>
               </div>
 
-              {session ? (
-                <div className="my-3 my-md-0">
-                  <button
-                    className="btn btn-primary me-3"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowModal(true);
-                    }}
-                  >
-                    Add Comment
-                  </button>
-                  <button className="btn btn-primary" onClick={() => {
-                    setToastMessage({
-                      title: "Liked",
-                      message: "You liked the post",
-                      time: new Date().toLocaleTimeString(),
-                    })
-                    addLike();
-                  }}>
-                    Like
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <Link href={`/accounts/signin?next=/articles/${article.slug}/`} className="btn btn-primary me-3">
-                    Add Comment
-                  </Link>
-                  <Link href={`/accounts/signin?next=/articles/${article.slug}/`} className="btn btn-primary">
-                    Like
-                  </Link>
-                </div>
-              )}
+              <div className="my-3 my-md-0">
+                <ArticleCommentsForm
+                  article={article}
+                  comments={comments}
+                  setComments={setComments}
+                />
+                <ArticleLikes
+                  article={article}
+                  setArticle={setArticle}
+                  setToastMessage={setToastMessage}
+                />
+              </div>
             </div>
             <hr />
-            {/* share the Post */}
             <div className="share-post my-4">
               <h5 className="mb-3">Share this post</h5>
               <ShareButtons
@@ -205,125 +193,103 @@ const Article = ({ article, otherArticles }) => {
                 setToastMessage={setToastMessage}
               />
             </div>
-
-            {/* comments or responses */}
-            {article.comments && (
+            {comments && (
               <div className="comments mt-5">
+                <hr />
                 <h5 className="my-4">Comments</h5>
-                <ArticleComments comments={article.comments} />
+                <div>
+                  {comments.length > 0 ? (
+                    <ArticleComments
+                      comments={comments}
+                      setComments={setComments}
+                    />
+                  ) : (
+                    <p>No comments yet</p>
+                  )}
+                </div>
               </div>
             )}
           </div>
         </section>
       )}
-      {/* other Articles in the same category , excluding the current one */}
-      <div
-        className="other-articles my-5 mx-auto"
-        style={{ maxWidth: "1200px" }}
-      >
-        <h4 className="my-4 text-center">Other Articles</h4>
-        <div className="row px-3 px-md-5 justify-content-between">
-          {otherArticles &&
-            otherArticles.length > 0 &&
-            otherArticles.slice(0, 3).map((blog) => (
-              <div
-                key={blog._id}
-                className="col-12 col-md d-flex justify-content-center"
-              >
-                <div className="card">
-                  <div
-                    className="blog-image"
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      height: "200px",
-                    }}
-                  >
-                    <img
-                      src={blog.img}
-                      alt="blog1"
-                      style={{
-                        borderRadius: "10px 10px 0px 0px",
-                        objectFit: "cover",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-                  <div className="px-4 py-3">
-                    <div className="text-center">
-                      <h6 className="text-primary mb-2">{blog.title}</h6>
-                      <p className="mb-1 small ">
-                        {blog.subtitle.length > 100
-                          ? blog.subtitle.slice(0, 100) + "..."
-                          : blog.subtitle}
-                      </p>
-                    </div>
-                    <div
-                      className="d-flex justify-content-center my-3 text-primary"
-                      style={{ fontSize: "1rem" }}
-                    >
-                      <Link
-                        href={`/articles/${blog.slug}`}
-                        className="mx-2 fw-medium text-primary bg-primary-light px-3 py-2 rounded"
-                        style={{ cursor: "pointer" }}
-                      >
-                        Read more <FaLongArrowAltRight className="ms-2" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
-        <div className="text-center">
-          <Link
-            className="btn rounded"
-            href="/articles"
-            style={{
-              backgroundColor: "var(--bgDarkerColor)",
-              color: "var(--light)",
-            }}
-          >
-            View All Articles
-          </Link>
-        </div>
-      </div>
 
-      {/* Modal for Comment */}
-      <Modal showmodal={showModal} toggleModal={() => setShowModal(false)}>
-        <div className="modal-body">
-          <h4 className="text-center">Add comment</h4>
-          <form onSubmit={addComment}>
-            <div className="form-group my-3">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                name="name"
-                value={comment.user.name}
-                readOnly
-              />
+      <section className="bg-primary-light mt-5">
+        <div className="px-5 py-4 mx-auto" style={{ maxWidth: "1200px" }}>
+          <div className="text-center">
+            <h4 className="fw-bold mb-4">Related Articles</h4>
+            <div className="row justify-content-center">
+              {otherArticles &&
+                otherArticles.map((blog, index) => (
+                  <div
+                    key={blog.id}
+                    className="col-12 col-md d-flex justify-content-center"
+                  >
+                    <div className="card mx-auto" style={{ width: "350px" }}>
+                      <div
+                        className="blog-image"
+                        style={{
+                          position: "relative",
+                          width: "100%",
+                          height: "200px",
+                        }}
+                      >
+                        {blog.img ? (
+                          <img
+                            src={blog.img_url}
+                            className="object-fit-cover me-3"
+                            alt="profile"
+                            style={{
+                              objectPosition: "top center",
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "0.5rem 0.5rem 0 0",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="d-flex justify-content-center align-items-center me-3"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "var(--bgDarkColor)",
+                              color: "var(--bgDarkerColor)",
+                              fontSize: "5rem",
+                              borderRadius: "0.5rem 0.5rem 0 0",
+                            }}
+                          >
+                            <MdOutlineArticle />
+                          </div>
+                        )}
+                      </div>
+                      <div className="px-4 py-3">
+                        <div className="text-center">
+                          <h6 className="text-primary mb-2">{blog.title}</h6>
+                          <p className="mb-1 small ">
+                            {blog.subtitle.length > 100
+                              ? blog.subtitle.slice(0, 100) + "..."
+                              : blog.subtitle}
+                          </p>
+                        </div>
+                        <div
+                          className="d-flex justify-content-center my-3 text-primary"
+                          style={{ fontSize: "1rem" }}
+                        >
+                          <Link
+                            href={`/articles/${blog.slug}`}
+                            className="mx-2 fw-medium text-primary bg-primary-light px-3 py-2 rounded"
+                            style={{ cursor: "pointer" }}
+                          >
+                            Read more <FaLongArrowAltRight className="ms-2" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
             </div>
-            <div className="form-group my-3">
-              <label htmlFor="comment">Comment</label>
-              <textarea
-                className="form-control"
-                id="comment"
-                name="comment"
-                value={comment.comment}
-                onChange={(e) =>
-                  setComment({ ...comment, comment: e.target.value })
-                }
-              ></textarea>
-            </div>
-            <button type="submit" className="btn btn-primary w-100 rounded mt-3">
-              Add Comment
-            </button>
-          </form>
+          </div>
         </div>
-      </Modal>
+      </section>
 
       <Toast
         title={toastmessage.title}

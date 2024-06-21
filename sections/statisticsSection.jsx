@@ -19,7 +19,7 @@ const StatisticsSection = () => {
               <p className=" text-white small">Active</p>
             </div>
             <div className="mx-2 mx-md-4">
-              <h2 className="text-white">200+</h2>
+              <h2 className="text-white">100+</h2>
               <p className=" text-white small">clients</p>
             </div>
             <div className="mx-2 mx-md-4">

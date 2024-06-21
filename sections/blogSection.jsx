@@ -3,21 +3,12 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import "./section.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import { useArticleContext } from "@/data/Articlescontextdata";
+import { MdOutlineArticle } from "react-icons/md";
 
 const BlogSection = () => {
-  const [articles, setArticles] = useState([]);
-  const fetchData = () => {
-    fetch("http://localhost:4000/news")
-      .then((res) => res.json())
-      .then((data) => {
-        setArticles(data);
-      })
-      .catch((e) => console.log(e.message));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { articles } = useArticleContext();
+  
   return (
     <>
       <hr className="text-primary pt-4 mx-5" />
@@ -35,10 +26,10 @@ const BlogSection = () => {
             articles.length > 0 &&
             articles.slice(0, 3).map((blog) => (
               <div
-                key={blog._id}
+                key={blog.id}
                 className="col-12 col-md d-flex justify-content-center"
               >
-                <div className="card">
+                <div className="card mx-auto" style={{width:"350px"}}>
                   <div
                     className="blog-image"
                     style={{
@@ -47,16 +38,33 @@ const BlogSection = () => {
                       height: "200px",
                     }}
                   >
-                    <img
-                      src={blog.img}
-                      alt="blog1"
-                      style={{
-                        borderRadius: "10px 10px 0px 0px",
-                        objectFit: "cover",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
+                    {blog.img ? (
+                      <img
+                        src={blog.img_url}
+                        className="object-fit-cover me-3"
+                        alt="profile"
+                        style={{
+                          objectPosition: "top center",
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "0.5rem 0.5rem 0 0",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        className="d-flex justify-content-center align-items-center me-3"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "var(--bgDarkColor)",
+                          color: "var(--bgDarkerColor)",
+                          fontSize: "5rem",
+                          borderRadius: "0.5rem 0.5rem 0 0",
+                        }}
+                      >
+                        <MdOutlineArticle />
+                      </div>
+                    )}
                   </div>
                   <div className="px-4 py-3">
                     <div className="text-center">
