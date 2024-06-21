@@ -165,7 +165,7 @@ const OrderCompleted = () => {
             <div className="px-3 my-2 mt-4">
               copy the payment reference to clipboard to track your order
             </div>
-            <Link href={"#"} className="btn btn-accent-primary shadow-none rounded px-5">
+            <Link href={OrganizationData?.whatsapplink || "#"} target="_blank" className="btn btn-accent-primary shadow-none rounded px-5">
               <IoLogoWhatsapp className={"h4 mb-1 me-2"} />
               chat on whatsapp
             </Link>
