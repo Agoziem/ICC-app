@@ -15,8 +15,6 @@ import {
 } from "react-icons/md";
 
 const Toolbar = ({ editor, content }) => {
-  if (!editor) return null;
-
   const addImage = useCallback(() => {
     const url = window.prompt("URL");
 
@@ -28,97 +26,103 @@ const Toolbar = ({ editor, content }) => {
   const setLink = useCallback(() => {
     const previousUrl = editor.getAttributes("link").href;
     const url = window.prompt("URL", previousUrl);
-    // cancelled
+
     if (url === null) {
       return;
     }
-    // empty
+
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
       return;
     }
-    // update link
+
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }, [editor]);
 
   return (
-    <div
-      className="d-flex align-items-center gap-4 w-100 flex-wrap px-3 mb-2 rounded py-2"
-      style={{
-        border: "1px solid var(--bgDarkColor)",
-      }}
-    >
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        isActive={editor.isActive("bold")}
-        Icon={MdOutlineFormatBold}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        isActive={editor.isActive("italic")}
-        Icon={MdOutlineFormatItalic}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        isActive={editor.isActive("underline")}
-        Icon={MdFormatUnderlined}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        isActive={editor.isActive("strike")}
-        Icon={MdOutlineStrikethroughS}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        isActive={editor.isActive("heading", { level: 2 })}
-        Icon={LuHeading2}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        isActive={editor.isActive("bulletList")}
-        Icon={BsList}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        isActive={editor.isActive("orderedList")}
-        Icon={LuListOrdered}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        isActive={editor.isActive("blockquote")}
-        Icon={BiSolidQuoteAltLeft}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().setCode().run()}
-        isActive={editor.isActive("code")}
-        Icon={FaCode}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().undo().run()}
-        isActive={editor.isActive("undo")}
-        Icon={IoArrowUndoSharp}
-      />
-      <ToolbarButton
-        onClick={() => editor.chain().focus().redo().run()}
-        isActive={editor.isActive("redo")}
-        Icon={IoArrowRedo}
-      />
-      <ToolbarButton
-        onClick={() => addImage()}
-        isActive={editor.isActive("image")}
-        Icon={FaRegImage}
-      />
-      <ToolbarButton
-        onClick={() => setLink()}
-        isActive={editor.isActive("link")}
-        Icon={IoLink}
-      />
+    <>
+      {editor ? (
+        <div
+          className="d-flex align-items-center gap-4 w-100 flex-wrap px-3 mb-2 rounded py-2"
+          style={{
+            border: "1px solid var(--bgDarkColor)",
+          }}
+        >
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            isActive={editor.isActive("bold")}
+            Icon={MdOutlineFormatBold}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            isActive={editor.isActive("italic")}
+            Icon={MdOutlineFormatItalic}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            isActive={editor.isActive("underline")}
+            Icon={MdFormatUnderlined}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            isActive={editor.isActive("strike")}
+            Icon={MdOutlineStrikethroughS}
+          />
+          <ToolbarButton
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+            isActive={editor.isActive("heading", { level: 2 })}
+            Icon={LuHeading2}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            isActive={editor.isActive("bulletList")}
+            Icon={BsList}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            isActive={editor.isActive("orderedList")}
+            Icon={LuListOrdered}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            isActive={editor.isActive("blockquote")}
+            Icon={BiSolidQuoteAltLeft}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setCode().run()}
+            isActive={editor.isActive("code")}
+            Icon={FaCode}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().undo().run()}
+            isActive={editor.isActive("undo")}
+            Icon={IoArrowUndoSharp}
+          />
+          <ToolbarButton
+            onClick={() => editor.chain().focus().redo().run()}
+            isActive={editor.isActive("redo")}
+            Icon={IoArrowRedo}
+          />
+          <ToolbarButton
+            onClick={() => addImage()}
+            isActive={editor.isActive("image")}
+            Icon={FaRegImage}
+          />
+          <ToolbarButton
+            onClick={() => setLink()}
+            isActive={editor.isActive("link")}
+            Icon={IoLink}
+          />
 
-      <ToolbarButton
-        onClick={() => editor.chain().focus().unsetLink().run()}
-        Icon={MdOutlineLinkOff }
-      />
-    </div>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().unsetLink().run()}
+            Icon={MdOutlineLinkOff}
+          />
+        </div>
+      ) : null}
+    </>
   );
 };
 
