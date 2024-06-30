@@ -94,7 +94,7 @@ const BlogSection = () => {
             <div className="col-12 d-flex justify-content-center">
               <p
                 className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded"
-                style={{ minWidth: "400px" }}
+                style={{ minWidth: "300px" }}
               >
                 No Articles yet
               </p>
