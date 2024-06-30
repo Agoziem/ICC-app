@@ -108,16 +108,16 @@ const ServicesPage = () => {
                           />
                         ) : (
                           <div
-                            className="me-3"
+                            className="me-3 d-flex justify-content-center align-items-center"
                             style={{
-                              width: "100px",
-                              height: "100px",
+                              width: "68px",
+                              height: "68px",
                               borderRadius: "50%",
-                              backgroundColor: "var(--bgDarkerColor)",
+                              backgroundColor: "var(--bgDarkColor)",
                               color: "var(--bgDarkerColor)",
                             }}
                           >
-                            <i className="bi bi-person-fill-gear h4 mb-0"></i>
+                            <i className="bi bi-person-fill-gear h2 mb-0"></i>
                           </div>
                         )}
                         <div
