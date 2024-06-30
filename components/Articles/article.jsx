@@ -76,7 +76,6 @@ const Article = ({ params }) => {
         ...article,
         views: data.views,
       });
-      console.log("Views updated:", data);
     } catch (error) {
       console.error("Failed to update views:", error);
     }
@@ -96,7 +95,7 @@ const Article = ({ params }) => {
           className="px-4 px-md-5 mx-auto mb-5"
           style={{ maxWidth: "900px" }}
         >
-          <div className="pt-4 ps-3">
+          <div className="pt-2 ps-3">
             <NextBreadcrumb capitalizeLinks />
           </div>
           <div className="article-header pb-4">
