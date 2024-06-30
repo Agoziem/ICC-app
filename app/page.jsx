@@ -9,6 +9,7 @@ import BlogSection from "@/sections/blogSection";
 import ContactSection from "@/sections/contactSection";
 import FooterSection from "@/sections/footerSection";
 import BackToTop from "@/components/backtotopbutton/BackToTop";
+import OffCanvas from "@/components/Offcanvas/OffCanvas";
 
 export default function Home() {
   return (
@@ -17,11 +18,12 @@ export default function Home() {
       <StatisticsSection />
       <AboutSection />
       <ServicesSection />
-      <TestimonialSection />
       <StaffSection />
       <BlogSection />
+      <TestimonialSection />
       <ContactSection />
       <FooterSection />
+      <OffCanvas />
       <BackToTop />
     </main>
   );

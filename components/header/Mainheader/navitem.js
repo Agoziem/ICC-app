@@ -18,7 +18,7 @@ const navlist = [
   },
   {
     id: 4,
-    title: "staffs",
+    title: "Departments",
     link: "/#staffs",
   },
   {

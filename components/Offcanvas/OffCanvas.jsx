@@ -2,10 +2,13 @@
 import { useCart } from "@/data/Cartcontext";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import React, { useContext } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const OffCanvas = () => {
   const { OrganizationData } = useContext(OrganizationContext);
   const { cart, removeFromCart, resertCart, checkout } = useCart();
+  const { data: session } = useSession();
   return (
     <div
       className="offcanvas offcanvas-end"
@@ -47,12 +50,12 @@ const OffCanvas = () => {
                     </span>
                   </div>
                   <span className="fw-bold small text-secondary">
-                    {item.category === "service" ? (
+                    {item.category.category !== "application" ? (
                       <i className="bi bi-person-fill-gear me-2 h5"></i>
                     ) : (
                       <i className="bi bi-google-play me-2 "></i>
                     )}
-                    {item.category}
+                    {item.category.category}
                   </span>
                   <span
                     className="float-end badge bg-secondary-light text-secondary ms-2"
@@ -89,16 +92,25 @@ const OffCanvas = () => {
                 >
                   Clear Cart
                 </button>
-                <button
-                  className="btn btn-primary"
-                  data-bs-dismiss="offcanvas"
-                  aria-label="Close"
-                  onClick={() => {
-                    checkout(OrganizationData?.id);
-                  }}
-                >
-                  Checkout now <i className="bi bi-cart-check h5 ms-2"></i>
-                </button>
+                {
+                  session ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        checkout();
+                      }}
+                    >
+                      Checkout
+                    </button>
+                  ) : (
+                    <Link
+                      className="btn btn-primary"
+                      href="/accounts/signin"
+                    >
+                      Login to Checkout
+                    </Link>
+                  )
+                }
               </div>
             </div>
           </div>

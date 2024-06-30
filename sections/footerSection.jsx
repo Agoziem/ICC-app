@@ -209,7 +209,7 @@ const FooterSection = () => {
                 </li>
                 <li>
                   <Link className="small" href="/#staffs">
-                    staff
+                    Departments
                   </Link>
                 </li>
                 <li>

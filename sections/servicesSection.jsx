@@ -1,13 +1,19 @@
-import Image from "next/image";
-import React from "react";
+"use client";
+import React, { useContext } from "react";
 import { LuCheckCircle } from "react-icons/lu";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Link from "next/link";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
+import { useCart } from "@/data/Cartcontext";
 
 const ServicesSection = () => {
+  const { services, categories } = useContext(OrganizationContext);
+  const { cart, addToCart, removeFromCart } = useCart();
+
   return (
     <section id="services" className="features p-2 py-5 p-md-5">
-      <div className="row align-items-center px-5 px-md-4 pb-2">
+      <div className="row align-items-center px-5 px-md-4 pb-2 mb-5">
         <div className="col-12 col-md-6 feature-image d-flex justify-content-center ">
           <img
             className="img-fluid mb-4 mb-md-0"
@@ -38,28 +44,30 @@ const ServicesSection = () => {
               Sales of JAMB/Post UTME forms
             </li>
             <li className="py-1">
-              <LuCheckCircle className="text-secondary  me-2" />
-              Sales of Checker cards
+              <LuCheckCircle className="text-secondary  me-2" /> Sales of
+              Checker cards
             </li>
+
             <li className="py-1">
               <LuCheckCircle className="text-secondary  me-2" /> Printing of
-              WAEC Certificate
+              WAEC Certificate, Neco Certificate and E Verification
             </li>
             <li className="py-1">
-              <LuCheckCircle className="text-secondary  me-2" /> Printing of
-              Neck Certificate and E Verification
+              <LuCheckCircle className="text-secondary  me-2" /> Academic
+              Consultation
             </li>
             <li className="py-1">
-              <LuCheckCircle className="text-secondary me-2" /> Processing of
-              Affidavits
+              <LuCheckCircle className="text-secondary  me-2" /> Processing of
+              Affidavits and All Documents for School Clearance
             </li>
+
             <li className="py-1">
-              <LuCheckCircle className="text-secondary me-2" /> All Documents
-              Processing for School Clearance
-            </li>
-            <li className="py-1">
-              <LuCheckCircle className="text-secondary me-2" /> Tutorials and
+              <LuCheckCircle className="text-secondary  me-2" /> Tutorials and
               Skill Acquisition for Students Productivity.
+            </li>
+            <li className="py-1">
+              <LuCheckCircle className="text-secondary  me-2" /> Hostel bookings
+              Campus & Off-campus
             </li>
           </ul>
 
@@ -69,7 +77,187 @@ const ServicesSection = () => {
         </div>
       </div>
 
-      <hr className="text-primary pt-3" />
+      <hr className="text-primary pt-4" />
+
+      {categories && categories.length > 0 && (
+        <>
+          {/* Handle Other Categories */}
+          {categories
+            .filter((category) => category.category !== "application")
+            .filter((category) =>
+              services.some((service) => service.category.id === category.id)
+            )
+            .map((category) => (
+              <React.Fragment key={category.id}>
+                <div className="p-3 py-5 p-md-5">
+                  <h4 className="mb-4">{category.category} Services</h4>
+                  <ReusableSwiper noItemsMessage="No Service yet">
+                    {services &&
+                      services
+                        .filter(
+                          (service) => service.category.id === category.id
+                        )
+                        .map((service) => (
+                          <div key={service.id} className="card p-4" style={{}}>
+                            <div className="d-flex justify-content-center align-items-center">
+                              {service.preview ? (
+                                <img
+                                  src={service.img_url}
+                                  alt="services"
+                                  width={80}
+                                  height={80}
+                                  className="me-3 rounded-circle object-fit-cover"
+                                  style={{ objectPosition: "center" }}
+                                />
+                              ) : (
+                                <div
+                                  className="me-3 d-flex justify-content-center align-items-center"
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "var(--bgDarkColor)",
+                                    color: "var(--bgDarkerColor)",
+                                  }}
+                                >
+                                  <i className="bi bi-person-fill-gear h2 mb-0"></i>
+                                </div>
+                              )}
+                            </div>
+                            <div className="my-2 mt-3 text-center">
+                              <h6>
+                                {service.name.length > 30
+                                  ? service.name.slice(0, 30) + "..."
+                                  : service.name}
+                              </h6>
+                              <p>
+                                {service.description.length > 100
+                                  ? service.description.slice(0, 100) + "..."
+                                  : service.description}
+                              </p>
+                              <hr />
+                              <div className="d-flex justify-content-around mt-4">
+                                <span className="fw-bold text-primary me-2">
+                                  &#8358;{parseFloat(service.price)}
+                                </span>
+
+                                {cart.find((item) => item.id === service.id) ? (
+                                  <span
+                                    className="badge bg-secondary-light text-secondary p-2"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => removeFromCart(service.id)}
+                                  >
+                                    remove Service {"  "}
+                                    <i className="bi bi-cart-dash"></i>
+                                  </span>
+                                ) : (
+                                  <span
+                                    className="badge bg-success-light text-success p-2"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => addToCart(service)}
+                                  >
+                                    Add Service {"  "}
+                                    <i className="bi bi-cart-plus"></i>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                  </ReusableSwiper>
+                </div>
+                <hr className="text-primary" />
+              </React.Fragment>
+            ))}
+
+          {/* Handle Application Category Separately */}
+          {categories
+            .filter((category) => category.category === "application")
+            .map((category) => (
+              <React.Fragment key={category.id}>
+                <div className="p-3 py-5 p-md-5">
+                  <h4 className="mb-4">{category.category} Services</h4>
+                  <ReusableSwiper noItemsMessage="No Service yet">
+                    {services &&
+                      services
+                        .filter(
+                          (service) => service.category.id === category.id
+                        )
+                        .map((service) => (
+                          <div key={service.id} className="card p-4" style={{}}>
+                            <div className="d-flex justify-content-center align-items-center">
+                              {service.preview ? (
+                                <img
+                                  src={service.img_url}
+                                  alt="services"
+                                  width={80}
+                                  height={80}
+                                  className="me-3 rounded-circle object-fit-cover"
+                                  style={{ objectPosition: "center" }}
+                                />
+                              ) : (
+                                <div
+                                  className="me-3 d-flex justify-content-center align-items-center"
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "var(--bgDarkColor)",
+                                    color: "var(--bgDarkerColor)",
+                                  }}
+                                >
+                                  <i className="bi bi-google-play h2 mb-0"></i>
+                                </div>
+                              )}
+                            </div>
+                            <div className="my-2 mt-3 text-center">
+                              <h6>
+                                {service.name.length > 30
+                                  ? service.name.slice(0, 30) + "..."
+                                  : service.name}
+                              </h6>
+                              <p>
+                                {service.description.length > 100
+                                  ? service.description.slice(0, 100) + "..."
+                                  : service.description}
+                              </p>
+                              <hr />
+                              <div className="d-flex justify-content-around mt-4">
+                                <span className="fw-bold text-primary me-2">
+                                  &#8358;{parseFloat(service.price)}
+                                </span>
+
+                                {cart.find((item) => item.id === service.id) ? (
+                                  <span
+                                    className="badge bg-secondary-light text-secondary p-2"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => removeFromCart(service.id)}
+                                  >
+                                    remove application {"  "}
+                                    <i className="bi bi-cart-dash"></i>
+                                  </span>
+                                ) : (
+                                  <span
+                                    className="badge bg-success-light text-success p-2"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => addToCart(service)}
+                                  >
+                                    Add application {"  "}
+                                    <i className="bi bi-cart-plus"></i>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                  </ReusableSwiper>
+                </div>
+                <hr className="text-primary" />
+              </React.Fragment>
+            ))}
+        </>
+      )}
+
       {/* CBT advert */}
       <div className="row align-items-center px-4 px-md-5 mt-5 mt-md-3">
         <div className="col-12 col-md-6">

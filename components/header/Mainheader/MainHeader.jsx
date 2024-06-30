@@ -5,13 +5,15 @@ import "./Header.css";
 import ".././logo.css";
 import Link from "next/link";
 import { IoMenu } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
 import MainHeaderLogo from "./Logo";
 import navlist from "./navitem";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
+import { MdOutlineShoppingCart } from "react-icons/md";
+import { useCart } from "@/data/Cartcontext";
 
 const MainHeader = () => {
+  const { cart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("/");
   const { data: session } = useSession();
@@ -79,10 +81,24 @@ const MainHeader = () => {
       {/* large Screen */}
       <div className="mainnav-link d-none d-lg-flex align-items-center">
         <div className="font-bold me-4">
-          <FaSearch
-            className="text-primary"
-            style={{ cursor: "pointer", fontSize: "20px" }}
-          />
+          <div
+            className="position-relative"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasTop"
+            aria-controls="offcanvasTop"
+            style={{ cursor: "pointer" }}
+          >
+            <MdOutlineShoppingCart
+              className="text-primary"
+              style={{ fontSize: "30px" }}
+            />
+            {cart.length > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {cart.length}
+                <span className="visually-hidden">cart items</span>
+              </span>
+            )}
+          </div>
         </div>
         <div className="d-flex">
           <Link href={"/dashboard"}>
@@ -145,15 +161,29 @@ const MainHeader = () => {
       <>
         {/* small screen */}
         <div className="d-flex d-lg-none align-items-center">
-          <FaSearch
-            className="me-3 text-primary"
-            style={{ cursor: "pointer", fontSize: "18px" }}
-          />
+        <div
+            className="position-relative me-3"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasTop"
+            aria-controls="offcanvasTop"
+            style={{ cursor: "pointer" }}
+          >
+            <MdOutlineShoppingCart
+              className="text-primary"
+              style={{ fontSize: "25px" }}
+            />
+            {cart.length > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {cart.length}
+                <span className="visually-hidden">cart items</span>
+              </span>
+            )}
+          </div>
 
           <IoMenu
             className="text-primary me-2"
             onClick={toggleMenu}
-            style={{ cursor: "pointer", fontSize: "25px" }}
+            style={{ cursor: "pointer", fontSize: "28px" }}
           />
           {session && (
             <div className="dropdown d-inline">
@@ -162,8 +192,8 @@ const MainHeader = () => {
                   <Image
                     src={session.user.image}
                     alt="Profile"
-                    width={30}
-                    height={30}
+                    width={32}
+                    height={32}
                     className="rounded-circle object-fit-cover me-2"
                     style={{ objectPosition: "top center" }}
                   />
@@ -171,8 +201,8 @@ const MainHeader = () => {
                   <div
                     className="rounded-circle text-white d-flex justify-content-center align-items-center me-2"
                     style={{
-                      width: 30,
-                      height: 30,
+                      width: 32,
+                      height: 32,
                       fontSize: 15,
                       backgroundColor: "var(--secondary)",
                     }}

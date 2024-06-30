@@ -4,11 +4,10 @@ import FormWrapper from "@/components/auth/FormWrapper";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../accounts.module.css";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import Alert from "@/components/Alert/Alert";
+import { sendVerificationEmail } from "@/utils/mail";
 
 const SignupPage = () => {
   const router = useRouter();
@@ -39,7 +38,7 @@ const SignupPage = () => {
   // ----------------------------------------
   // Handle form input changes
   // ----------------------------------------
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -103,7 +102,21 @@ const SignupPage = () => {
             password: "",
             confirmPassword: "",
           });
-          router.push("/dashboard");
+          const data = await response.json();
+          const verificationres = await sendVerificationEmail(
+            data.user.email,
+            data.user.verificationToken
+          );
+          setAlert(
+            {
+              show: true,
+              message: verificationres.message,
+              type: verificationres.success ? "success" : "danger",
+            },
+            setTimeout(() => {
+              setAlert({ show: false, message: "", type: "" });
+            }, 5000)
+          );
         } else {
           const message =
             response.status === 400
@@ -127,9 +140,10 @@ const SignupPage = () => {
     }
   };
 
+  //
   return (
     <section
-      className={`${styles.siguppage} d-flex justify-content-center align-items-center h-100 px-3 py-5`}
+      className={`${styles.siguppage} d-flex justify-content-center align-items-center px-3 py-5`}
     >
       <div
         className="row justify-content-between"

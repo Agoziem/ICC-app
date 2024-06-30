@@ -1,4 +1,4 @@
-export const publicRoutes = ["/", "/about", "/photos", "/articles"];
+export const publicRoutes = ["/", "/about", "/photos", "/articles","/accounts/new-verification","/department"];
 
 export const isPublicRouteOrIncludes = (pathname) => {
   return publicRoutes.some((route) => {

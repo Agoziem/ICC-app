@@ -7,6 +7,7 @@ import Link from "next/link";
 function TopSelling() {
   const { services } = useAdminContext();
 
+
   return (
     <div className="card top-selling overflow-auto p-3">
       <div className="card-body pb-0">
@@ -21,6 +22,7 @@ function TopSelling() {
               <th scope="col">Services</th>
               <th scope="col">Category</th>
               <th scope="col">Price</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -42,14 +44,7 @@ function TopSelling() {
           </tbody>
         </table>
         {services && services.length > 0 ? (
-          <Link
-            href={"/dashboard/services"}
-            className="btn bg-primary-light btn-primary rounded  my-3"
-            style={{
-              backgroundColor: "var(--bgDarkerColor)",
-              borderColor: "var(--bgDarkerColor)",
-            }}
-          >
+          <Link href={"/dashboard/services"} className="text-secondary  my-3">
             See more Services
           </Link>
         ) : null}

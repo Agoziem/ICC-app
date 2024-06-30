@@ -2,12 +2,13 @@
 import FormWrapper from "@/components/auth/FormWrapper";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter,useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import Image from "next/image";
 import styles from "../accounts.module.css";
 import Link from "next/link";
 import Alert from "@/components/Alert/Alert";
+import { sendVerificationEmail } from "@/utils/mail";
 
 const SigninPage = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const SigninPage = () => {
     message: "",
     type: "success",
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -36,8 +38,23 @@ const SigninPage = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "Email address is invalid";
     }
-    if (!formData.password) errors.password = "your password is required";
+    if (!formData.password) errors.password = "Your password is required";
     return errors;
+  };
+
+  const validateUser = async (email) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getUserbyEmail/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+    const data = await res.json();
+    return data;
   };
 
   const handleSubmit = async (e) => {
@@ -47,39 +64,55 @@ const SigninPage = () => {
     if (Object.keys(errors).length === 0) {
       const { email, password } = formData;
       setLoggingIn(true);
-      try {
-        setFormData({ email: "", password: "" });
-        const result = await signIn("credentials", {
-          redirect: false,
-          email,
-          password,
-        });
-        if (result?.error) {
-          throw new Error(result.error);
-        } else {
-          console.log("redirecting to", next);
-          router.push(next);
+      setFormData({ email: "", password: "" });
+
+      const user = await validateUser(email);
+      if (user?.emailIsVerified === true) {
+        try {
+          const result = await signIn("credentials", {
+            redirect: false,
+            email,
+            password,
+          });
+          if (result?.error) {
+            throw new Error(result.error);
+          } else {
+            router.push(next);
+          }
+        } catch (error) {
+          setFormData({ email: "", password: "" });
+          setAlert(
+            {
+              show: true,
+              message: "Invalid credentials, try again",
+              type: "danger",
+            },
+            setTimeout(() => {
+              setAlert({ show: false, message: "", type: "" });
+            }, 5000)
+          );
         }
-      } catch (error) {
-        setFormData({ email: "", password: "" });
+      } else {
+        const res = await sendVerificationEmail(email, user.verificationToken);
         setAlert(
           {
             show: true,
-            message: "invalid credentials, try again",
-            type: "danger",
+            message: res.message,
+            type: res.success ? "success" : "danger",
           },
           setTimeout(() => {
             setAlert({ show: false, message: "", type: "" });
           }, 5000)
         );
       }
+
       setLoggingIn(false);
     }
   };
 
   return (
     <section
-      className={`${styles.siguppage} d-flex justify-content-center align-items-center vh-100 px-3 py-5`}
+      className={`${styles.siguppage} d-flex justify-content-center align-items-center px-3 py-5`}
     >
       <div
         className="row justify-content-between"

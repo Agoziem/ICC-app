@@ -93,14 +93,14 @@ const BlogSection = () => {
           ) : (
             <p
               className="p-3 text-light text-center bg-primary-light mt-1 mb-3 rounded"
-              style={{ background: "var(--bgDarkerColor)" }}
+              style={{ background: "var(--bgDarkerColor)",maxWidth:"400px"}}
             >
               No Articles yet
             </p>
           )}
         </div>
 
-        {articles && articles.length > 3 && (
+        {articles && articles.length > 1 && (
           <div>
             <div className="d-flex justify-content-center mt-0 mb-5">
               <Link href="/articles" className="btn btn-primary px-5">

@@ -45,7 +45,7 @@ const navList = [
     _id: 8,
     name: "configurations",
     icon: "bi bi-gear",
-    link: "/dashboard/configuration",
+    link: "#",
     content: [
       {
         _id: 1,

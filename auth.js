@@ -3,6 +3,14 @@ import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 
+const validateuser = async (id) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getuser/${id}/`
+  );
+  const data = await res.json();
+  return data;
+};
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // Configure one or more authentication providers
   session: { strategy: "jwt" },
@@ -43,6 +51,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      if (account.provider === "credentials") {
+        const registereduser = await validateuser(user.id);
+        if (registereduser?.emailIsVerified === false) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    },
     async jwt({ token, user, account, profile }) {
       if (
         (user && account.provider === "google") ||

@@ -5,6 +5,9 @@ import { OrganizationContextProvider } from "@/data/Organizationalcontextdata";
 import BootstrapJs from "@/components/BootstrapJs";
 import { SessionProvider } from "next-auth/react";
 import { ArticleProvider } from "@/data/Articlescontextdata";
+import { CartProvider } from "@/data/Cartcontext";
+import { AdminContextProvider } from "@/data/Admincontextdata";
+import { UserContextProvider } from "@/data/usercontextdata";
 
 export const metadata = {
   title: "ICC app",
@@ -18,7 +21,13 @@ export default function RootLayout({ children, session }) {
       <body className="body">
         <SessionProvider session={session}>
           <OrganizationContextProvider>
-            <ArticleProvider>{children}</ArticleProvider>
+            <ArticleProvider>
+              <AdminContextProvider>
+                <UserContextProvider>
+                  <CartProvider>{children}</CartProvider>
+                </UserContextProvider>
+              </AdminContextProvider>
+            </ArticleProvider>
           </OrganizationContextProvider>
         </SessionProvider>
         <BootstrapJs />

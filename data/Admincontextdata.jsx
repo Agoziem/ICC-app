@@ -72,8 +72,8 @@ const AdminContextProvider = ({ children }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setServices(data.filter((item) => item.category === "service").map((item) => item));
-        setApplications(data.filter((item) => item.category === "application").map((item) => item));
+        setServices(data.filter((item) => item.category.category !== "application").map((item) => item));
+        setApplications(data.filter((item) => item.category.category === "application").map((item) => item));
       })
       .catch((e) => console.log(e.message));
   };

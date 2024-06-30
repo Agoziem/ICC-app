@@ -17,7 +17,7 @@ function News() {
               .slice(0, 5)
               .map((item) => <NewsPostItem key={item.id} item={item} />) :(
               <div className="d-flex justify-content-center align-items-center">
-                <p className="text-center fw-bold mb-1 py-4">No Articles Available</p>
+                <p className="fw-bold mb-1 py-4" style={{marginLeft:"0px"}}>No Articles Available</p>
               </div>
               )}
         </div>

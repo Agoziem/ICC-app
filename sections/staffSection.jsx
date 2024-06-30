@@ -1,12 +1,37 @@
 "use client";
 import React, { useContext } from "react";
 import "./section.css";
-import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
-import { BsPersonFillExclamation } from "react-icons/bs";
+import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
+import { TbBooks } from "react-icons/tb";
+import { RiCustomerService2Line } from "react-icons/ri";
+import Link from "next/link";
 
 const StaffSection = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { depts, staffs } = useContext(OrganizationContext);
+  const dept_icons = [
+    {
+      id: 1,
+      icon: <MdOutlineQuestionAnswer />,
+    },
+    {
+      id: 2,
+      icon: <PiGraduationCapBold />,
+    },
+    {
+      id: 3,
+      icon: <TbBooks />,
+    },
+    {
+      id: 4,
+      icon: <RiCustomerService2Line />,
+    },
+    {
+      id: 5,
+      icon: <PiGearBold />,
+    },
+  ];
   return (
     <>
       <section
@@ -14,112 +39,39 @@ const StaffSection = () => {
         className="text-center staff-section py-5 px-3 p-md-5"
       >
         <div className="d-md-flex flex-column align-items-center mb-3">
-          <h2>Our Staffs</h2>
+          <h2>Our Departments</h2>
           <p>
-            Our staffs are professionals who are dedicated to providing you with
-            the best services and products that concerns Admission process, jamb
-            and POST UTME
+            our departments are well structured to meet your needs and provide
+            you with the best services
           </p>
         </div>
 
         <div className="row px-4 px-md-5">
-          {OrganizationData && OrganizationData.staffs?.length > 0 ? (
-            OrganizationData.staffs.map((staff) => (
-              <div key={staff.id} className="col-12 col-md-6 col-lg-4">
-                <div className="card mx-auto">
-                  <div
-                    className="staff-image"
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      height: "250px",
-                    }}
-                  >
-                    {
-                      staff.img ? (
-                        <img
-                          src={staff.img_url}
-                          alt={staff.img_name}
-                          className="img-fluid"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: "0.5rem 0.5rem 0 0",
-                            objectPosition: "top center",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="d-flex justify-content-center align-items-center"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "var(--bgDarkColor)",
-                            borderRadius: "0.5rem 0.5rem 0 0",
-                            color: "var(--bgDarkerColor)",
-                            fontSize: "5rem",
-                          }}
-                        >
-                          <BsPersonFillExclamation />
-                        </div>
-                      )
-                    }
-                  </div>
-
-                  <div className="px-4 pt-3 pb-5">
-                    <div className="text-center">
-                      <h6 className="text-primary mb-0">{staff.first_name}{staff.last_name}</h6>
-                      <p className="mb-1 small">{staff.role}</p>
+          {depts && depts.length > 0 ? (
+            depts.map((dept, index) => (
+              <div key={index} className="col-md-6 col-lg-4 mb-4">
+                <div className="card py-3 mx-auto">
+                  <div className="card-body">
+                    <div className="d-flex flex-column justify-content-center align-items-center mb-3">
+                      <span className="dept-icon h1 mb-3 text-secondary">
+                        {dept_icons.find((icon) => icon.id === dept.id).icon}
+                      </span>
+                      <h4 className="mb-0">{dept.name}</h4>
                     </div>
-                    <div
-                      className="d-flex justify-content-center mt-3 text-primary"
-                      style={{
-                        fontSize: "1.5rem",
-                      }}
-                    >
-                      <FaFacebook
-                        className="mx-2"
-                        style={{
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          if (staff.facebooklink !== "#")
-                            window.open(staff.facebooklink);
-                        }}
-                      />
-                      <FaInstagram
-                        className="mx-2"
-                        style={{
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          if (staff.instagramlink !== "#")
-                            window.open(staff.instagramlink);
-                        }}
-                      />
-                      <FaXTwitter
-                        className="mx-2"
-                        style={{
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          if (staff.twitterlink !== "#")
-                            window.open(staff.twitterlink);
-                        }}
-                      />
+                    <p>{dept.description.substring(0, 100) + " ..."}</p>
+                    <div>
+                      <Link href={`/department/${dept.id}`} className="btn btn-sm btn-accent-secondary rounded">
+                        view Department
+                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p
-              className="p-3 text-light text-center bg-primary-light my-3 rounded"
-              style={{ background: "var(--bgDarkerColor)" }}
-            >
-              No staff added yet
-            </p>
+            <div className="col-12">
+              <p>No Department available</p>
+            </div>
           )}
         </div>
       </section>
@@ -128,3 +80,4 @@ const StaffSection = () => {
 };
 
 export default StaffSection;
+

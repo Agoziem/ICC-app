@@ -8,6 +8,7 @@ import TopSelling from "./TopsellingSection/TopSelling";
 import { useSession } from "next-auth/react";
 import { useAdminContext } from "@/data/Admincontextdata";
 import { useUserContext } from "@/data/usercontextdata";
+import CartButton from "../Offcanvas/CartButton";
 
 const DashboardBody = () => {
   const { services, applications, totalOrders, totalCustomers } =
@@ -16,6 +17,10 @@ const DashboardBody = () => {
   const { data: session } = useSession();
   return (
     <div className="dashboard">
+      <div className="my-4 d-flex justify-content-between align-items-center flex-wrap">
+        <h5>Welcome, {session?.user?.username}</h5>
+      <CartButton />
+      </div>
       <div className="row">
         <div className="col-12 col-md-9">
           <div className="row">
