@@ -8,6 +8,7 @@ import { ArticleProvider } from "@/data/Articlescontextdata";
 import { CartProvider } from "@/data/Cartcontext";
 import { AdminContextProvider } from "@/data/Admincontextdata";
 import { UserContextProvider } from "@/data/usercontextdata";
+import OffCanvas from "@/components/Offcanvas/OffCanvas";
 
 export const metadata = {
   title: "ICC app",
@@ -24,7 +25,10 @@ export default function RootLayout({ children, session }) {
             <ArticleProvider>
               <AdminContextProvider>
                 <UserContextProvider>
-                  <CartProvider>{children}</CartProvider>
+                  <CartProvider>
+                    {children}
+                    <OffCanvas />
+                  </CartProvider>
                 </UserContextProvider>
               </AdminContextProvider>
             </ArticleProvider>

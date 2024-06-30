@@ -4,6 +4,12 @@ import MainHeader from "@/components/header/Mainheader/MainHeader";
 import FooterSection from "@/sections/footerSection";
 import styles from "./articlelayout.module.css";
 
+export const metadata = {
+  title: "ICC Articles",
+  description:
+    " Get the latest news and updates on our blog, stay informed and never miss out on any important information.",
+};
+
 const ArticleLayout = ({ children }) => {
   return (
     <div

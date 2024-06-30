@@ -1,29 +1,25 @@
-"use client";
 import Article from "@/components/Articles/article";
-import { useArticleContext } from "@/data/Articlescontextdata";
-import React, { useEffect, useState } from "react";
+
+export async function generateMetadata({ params }) {
+  const { slug } = params;
+
+  // Fetch product data
+  const article = await fetch(
+    `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/blogbyslug/${slug}`
+  ).then((res) => res.json());
+
+  return {
+    title: article.title,
+    openGraph: {
+      title: article.title,
+      description: article.subtitle,
+      images: [article.img_url], // URL of the product image
+    },
+  };
+}
 
 const ArticlePage = ({ params }) => {
-  const { slug } = params;
-  const { articles } = useArticleContext();
-  const [article, setArticle] = useState(null);
-  const [otherArticles, setOtherArticles] = useState([]);
-
-  const fetchData = () => {
-    if (!articles) return;
-    const article = articles.find((item) => item.slug === slug);
-    if (article) {
-      setArticle(article);
-      const otherArticles = articles.filter((item) => item.slug !== slug);
-      setOtherArticles(otherArticles);
-    }
-  };
-
-  useEffect(() => {
-    if (slug && articles && articles.length > 0) fetchData();
-  }, [slug, articles]);
-
-  return <Article article={article} setArticle={setArticle} otherArticles={otherArticles} />;
+  return <Article params={params} />;
 };
 
 export default ArticlePage;

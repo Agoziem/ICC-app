@@ -1,3 +1,5 @@
+"use client";
+import { useArticleContext } from "@/data/Articlescontextdata";
 import React, { useEffect, useState } from "react";
 import ArticleComments from "./articlecomments";
 import ShareButtons from "./sharebuttons";
@@ -9,7 +11,26 @@ import Toast from "../Toast/toast";
 import { useSession } from "next-auth/react";
 import { MdOutlineArticle } from "react-icons/md";
 
-const Article = ({ article, setArticle, otherArticles }) => {
+const Article = ({ params }) => {
+  const { slug } = params;
+  const { articles } = useArticleContext();
+  const [article, setArticle] = useState(null);
+  const [otherArticles, setOtherArticles] = useState([]);
+
+  const fetchData = () => {
+    if (!articles) return;
+    const article = articles.find((item) => item.slug === slug);
+    if (article) {
+      setArticle(article);
+      const otherArticles = articles.filter((item) => item.slug !== slug);
+      setOtherArticles(otherArticles);
+    }
+  };
+
+  useEffect(() => {
+    if (slug && articles && articles.length > 0) fetchData();
+  }, [slug, articles]);
+
   const { data: session } = useSession();
   const [toastmessage, setToastMessage] = useState({
     title: "",
