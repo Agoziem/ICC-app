@@ -18,7 +18,7 @@ const ServicesPage = () => {
   const { userOrder } = useUserContext();
   const [items, setItems] = useState([]);
   const searchParams = useSearchParams();
-  const [currentcategory, setCurrentCategory] = useState("");
+  const [currentCategory, setCurrentCategory] = useState("");
 
   useEffect(() => {
     setItems(userOrder);
@@ -28,11 +28,17 @@ const ServicesPage = () => {
     const category = searchParams.get("category");
     if (category) {
       setCurrentCategory(category);
-    } else {
-      console.log(categories)
-      setCurrentCategory(categories[0]?.category);
+    } else if (categories.length > 0) {
+      const firstCategoryWithServices = categories.find((cat) =>
+        services.some((service) => service.category.id === cat.id)
+      );
+      setCurrentCategory(firstCategoryWithServices?.category || categories[0].category);
     }
-  }, [categories]);
+  }, [categories, services, searchParams]);
+
+  const filteredCategories = categories.filter((category) =>
+    services.some((service) => service.category.id === category.id)
+  );
 
   return (
     <div>
@@ -40,15 +46,14 @@ const ServicesPage = () => {
       <div style={{ minHeight: "100vh" }}>
         <div className="d-flex justify-content-between align-items-center pe-3 pb-3 flex-wrap">
           <div>
-            <h4 className="my-3">{currentcategory} Services</h4>
+            <h4 className="my-3">{currentCategory} Services</h4>
           </div>
           <CartButton />
         </div>
 
         <div className="mb-4">
-          {categories &&
-            categories.length > 0 &&
-            categories.map((category) => {
+          {filteredCategories.length > 0 &&
+            filteredCategories.map((category) => {
               if (category.category !== "application") {
                 return (
                   <div
@@ -56,15 +61,15 @@ const ServicesPage = () => {
                     className={`badge rounded-5 px-4 py-2 me-2 mb-3 mb-md-0`}
                     style={{
                       color:
-                        currentcategory === category.category
+                        currentCategory === category.category
                           ? "var(--secondary)"
                           : "var(--primary)",
                       backgroundColor:
-                        currentcategory === category.category
+                        currentCategory === category.category
                           ? "var(--secondary-300)"
                           : " ",
                       border:
-                        currentcategory === category.category
+                        currentCategory === category.category
                           ? "1.5px solid var(--secondary)"
                           : "1.5px solid var(--bgDarkerColor)",
                       cursor: "pointer",
@@ -82,11 +87,11 @@ const ServicesPage = () => {
           {services && services.length > 0 ? (
             // Filter services by the current category
             services.filter(
-              (service) => currentcategory === service.category.category
+              (service) => currentCategory === service.category.category
             ).length > 0 ? (
               services
                 .filter(
-                  (service) => currentcategory === service.category.category
+                  (service) => currentCategory === service.category.category
                 )
                 .map((service) => (
                   <div key={service.id} className="col-12 col-md-4">
@@ -161,13 +166,13 @@ const ServicesPage = () => {
                   }}
                 />
                 <p className="mt-3 mb-3">
-                  no services available for the {currentcategory} category
+                  no services available for the {currentCategory} category
                 </p>
               </div>
             )
           ) : (
             // Show "no services available" message if no services at all
-            <div className="mt-3 mb-3 text-center" >
+            <div className="mt-3 mb-3 text-center">
               <PiEmptyBold
                 className="mt-2"
                 style={{
@@ -190,4 +195,5 @@ const ServicesPage = () => {
     </div>
   );
 };
+
 export default ServicesPage;
