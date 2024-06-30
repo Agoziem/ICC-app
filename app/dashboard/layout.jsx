@@ -5,7 +5,6 @@ import SideBar from "@/components/sidebar/SideBar";
 import React from "react";
 import NavList from "./navList";
 import Main from "@/components/Main/Main";
-import OffCanvas from "@/components/Offcanvas/OffCanvas";
 
 export const metadata = {
   title: "ICC dashboard",
@@ -25,7 +24,6 @@ const dashboardlayout = ({ children }) => {
         <Main>{children}</Main>
         <Footer />
       </div>
-      <OffCanvas />
       <BackToTop />
     </div>
   );

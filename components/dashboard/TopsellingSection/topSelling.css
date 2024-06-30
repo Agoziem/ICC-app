@@ -27,5 +27,8 @@
 
 .dashboard .top-selling img {
   border-radius: 5px;
-  max-width: 60px;
+  max-width: 50px;
+  min-height: 50px;
+  object-fit: cover;
+  object-position: top center;
 }

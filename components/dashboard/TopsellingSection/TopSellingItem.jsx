@@ -6,7 +6,21 @@ function TopSellingItem({ item }) {
   return (
     <tr>
       <th scope="row">
-        <img src={item.img_url} alt="" className="shadow-sm" />
+        {item.img_url ? (
+          <img src={item.img_url} alt="" className="shadow-sm" />
+        ) : (
+          <div
+            className="rounded d-flex justify-content-center align-items-center"
+            style={{
+              width: "50px",
+              height: "50px",
+              backgroundColor: "var(--bgDarkColor)",
+              color: "var(--bgDarkerColor)",
+            }}
+          >
+            <i className="bi bi-person-fill-gear h3 mb-0"></i>
+          </div>
+        )}
       </th>
       <td className="text-primary fw-bold">{item.name}</td>
       <td>{item.category.category}</td>
