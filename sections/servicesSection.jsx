@@ -173,88 +173,89 @@ const ServicesSection = () => {
           {/* Handle Application Category Separately */}
           {categories
             .filter((category) => category.category === "application")
-            .map((category) => (
-              <React.Fragment key={category.id}>
-                <div className="p-3 py-5 p-md-5">
-                  <h4 className="mb-4">{category.category} Services</h4>
-                  <ReusableSwiper noItemsMessage="No Service yet">
-                    {services &&
-                      services
-                        .filter(
-                          (service) => service.category.id === category.id
-                        )
-                        .map((service) => (
-                          <div key={service.id} className="card p-4" style={{}}>
-                            <div className="d-flex justify-content-center align-items-center">
-                              {service.preview ? (
-                                <img
-                                  src={service.img_url}
-                                  alt="services"
-                                  width={80}
-                                  height={80}
-                                  className="me-3 rounded-circle object-fit-cover"
-                                  style={{ objectPosition: "center" }}
-                                />
-                              ) : (
-                                <div
-                                  className="me-3 d-flex justify-content-center align-items-center"
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    borderRadius: "50%",
-                                    backgroundColor: "var(--bgDarkColor)",
-                                    color: "var(--bgDarkerColor)",
-                                  }}
+            .map((category) => {
+              const applicationServices = services.filter(
+                (service) => service.category.id === category.id
+              );
+
+              return applicationServices.length > 0 ? (
+                <React.Fragment key={category.id}>
+                  <div className="p-3 py-5 p-md-5">
+                    <h4 className="mb-4">{category.category} Services</h4>
+                    <ReusableSwiper noItemsMessage="No Application yet">
+                      {applicationServices.map((service) => (
+                        <div key={service.id} className="card p-4" style={{}}>
+                          <div className="d-flex justify-content-center align-items-center">
+                            {service.preview ? (
+                              <img
+                                src={service.img_url}
+                                alt="services"
+                                width={80}
+                                height={80}
+                                className="me-3 rounded-circle object-fit-cover"
+                                style={{ objectPosition: "center" }}
+                              />
+                            ) : (
+                              <div
+                                className="me-3 d-flex justify-content-center align-items-center"
+                                style={{
+                                  width: "80px",
+                                  height: "80px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "var(--bgDarkColor)",
+                                  color: "var(--bgDarkerColor)",
+                                }}
+                              >
+                                <i className="bi bi-google-play h2 mb-0"></i>
+                              </div>
+                            )}
+                          </div>
+                          <div className="my-2 mt-3 text-center">
+                            <h6>
+                              {service.name.length > 30
+                                ? service.name.slice(0, 30) + "..."
+                                : service.name}
+                            </h6>
+                            <p>
+                              {service.description.length > 100
+                                ? service.description.slice(0, 100) + "..."
+                                : service.description}
+                            </p>
+                            <hr />
+                            <div className="d-flex justify-content-around mt-4">
+                              <span className="fw-bold text-primary me-2">
+                                &#8358;{parseFloat(service.price)}
+                              </span>
+
+                              {cart.find((item) => item.id === service.id) ? (
+                                <span
+                                  className="badge bg-secondary-light text-secondary p-2"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => removeFromCart(service.id)}
                                 >
-                                  <i className="bi bi-google-play h2 mb-0"></i>
-                                </div>
+                                  remove application {"  "}
+                                  <i className="bi bi-cart-dash"></i>
+                                </span>
+                              ) : (
+                                <span
+                                  className="badge bg-success-light text-success p-2"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => addToCart(service)}
+                                >
+                                  Add application {"  "}
+                                  <i className="bi bi-cart-plus"></i>
+                                </span>
                               )}
                             </div>
-                            <div className="my-2 mt-3 text-center">
-                              <h6>
-                                {service.name.length > 30
-                                  ? service.name.slice(0, 30) + "..."
-                                  : service.name}
-                              </h6>
-                              <p>
-                                {service.description.length > 100
-                                  ? service.description.slice(0, 100) + "..."
-                                  : service.description}
-                              </p>
-                              <hr />
-                              <div className="d-flex justify-content-around mt-4">
-                                <span className="fw-bold text-primary me-2">
-                                  &#8358;{parseFloat(service.price)}
-                                </span>
-
-                                {cart.find((item) => item.id === service.id) ? (
-                                  <span
-                                    className="badge bg-secondary-light text-secondary p-2"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => removeFromCart(service.id)}
-                                  >
-                                    remove application {"  "}
-                                    <i className="bi bi-cart-dash"></i>
-                                  </span>
-                                ) : (
-                                  <span
-                                    className="badge bg-success-light text-success p-2"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => addToCart(service)}
-                                  >
-                                    Add application {"  "}
-                                    <i className="bi bi-cart-plus"></i>
-                                  </span>
-                                )}
-                              </div>
-                            </div>
                           </div>
-                        ))}
-                  </ReusableSwiper>
-                </div>
-                <hr className="text-primary" />
-              </React.Fragment>
-            ))}
+                        </div>
+                      ))}
+                    </ReusableSwiper>
+                  </div>
+                  <hr className="text-primary" />
+                </React.Fragment>
+              ) : null;
+            })}
         </>
       )}
 
