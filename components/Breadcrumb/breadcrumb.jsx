@@ -2,6 +2,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
+import './breadcrumb.css';
 
 
 const NextBreadcrumb = ({capitalizeLinks}) => {

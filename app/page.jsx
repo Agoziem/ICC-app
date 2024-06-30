@@ -23,7 +23,6 @@ export default function Home() {
       <TestimonialSection />
       <ContactSection />
       <FooterSection />
-      
       <BackToTop />
     </main>
   );

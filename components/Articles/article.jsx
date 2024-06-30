@@ -10,6 +10,8 @@ import ArticleCommentsForm from "./ArticleCommentsForm";
 import Toast from "../Toast/toast";
 import { useSession } from "next-auth/react";
 import { MdOutlineArticle } from "react-icons/md";
+import NextBreadcrumb from "../Breadcrumb/breadcrumb"
+
 
 const Article = ({ params }) => {
   const { slug } = params;
@@ -94,7 +96,10 @@ const Article = ({ params }) => {
           className="px-4 px-md-5 mx-auto mb-5"
           style={{ maxWidth: "900px" }}
         >
-          <div className="article-header py-4">
+          <div className="pt-4 ps-3">
+            <NextBreadcrumb capitalizeLinks />
+          </div>
+          <div className="article-header pb-4">
             <h1>{article.title}</h1>
             <div className="d-flex my-4">
               <div>
@@ -184,12 +189,19 @@ const Article = ({ params }) => {
             <div className="d-md-flex justify-content-between align-items-center">
               <div>
                 <span className="me-3">
-                  <i className={`bi ${article.likes.includes(parseInt(session?.user?.id)) ? "bi-heart-fill text-danger" : "bi-heart-fill text-primary"} me-1`}></i>
+                  <i
+                    className={`bi ${
+                      article.likes.includes(parseInt(session?.user?.id))
+                        ? "bi-heart-fill text-danger"
+                        : "bi-heart-fill text-primary"
+                    } me-1`}
+                  ></i>
                   {article.no_of_likes} like{article.no_of_likes > 1 && "s"}
                 </span>
                 <span className="me-3">
                   <i className="bi bi-chat-fill me-1"></i>
-                  {comments ? comments.length : "0"} comment{comments?.length > 1 && "s"}
+                  {comments ? comments.length : "0"} comment
+                  {comments?.length > 1 && "s"}
                 </span>
               </div>
 

@@ -3,3 +3,11 @@
     max-width: 700px;
 }
 
+.articles_list ul h5{
+    color: var(--primary);
+    transition: color 0.3s ease;
+}
+
+.articles_list ul h5:hover{
+    color: var(--secondary);
+}

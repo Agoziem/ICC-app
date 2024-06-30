@@ -6,6 +6,7 @@ const ArticleContext = createContext();
 const ArticleProvider = ({children}) => {
     const {OrganizationData} = useContext(OrganizationContext);
     const [articles, setArticles] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const fetchArticles = async () => {
         try {
@@ -17,8 +18,22 @@ const ArticleProvider = ({children}) => {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getCategories/`);
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error(error);
+        }
+    
+    }
+
     useEffect(() => {
-        if (OrganizationData.id) fetchArticles();
+        if (OrganizationData.id) {
+            fetchArticles();
+            fetchCategories();
+        };
     }, [OrganizationData.id]);
 
   return (
@@ -26,6 +41,8 @@ const ArticleProvider = ({children}) => {
         articles,
         setArticles,
         fetchArticles,
+        categories,
+        setCategories,
     }}>
         {children}
     </ArticleContext.Provider>
