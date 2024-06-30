@@ -43,6 +43,7 @@ const ArticlesList = () => {
       <div className="articles_list mx-auto">
         {/* categories */}
         <div className="mb-4">
+          <div className="mb-1 fw-bold">categories</div>
           {filteredCategories.length > 0 &&
             filteredCategories.map((category) => {
               return (
