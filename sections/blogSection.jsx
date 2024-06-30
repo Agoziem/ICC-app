@@ -91,12 +91,14 @@ const BlogSection = () => {
               </div>
             ))
           ) : (
-            <p
-              className="p-3 text-light text-center bg-primary-light mt-1 mb-3 rounded"
-              style={{ background: "var(--bgDarkerColor)",maxWidth:"400px"}}
-            >
-              No Articles yet
-            </p>
+            <div className="col-12 d-flex justify-content-center">
+              <p
+                className="p-3 text-light text-center bg-primary-light mt-1 mb-3 rounded"
+                style={{ maxWidth: "400px" }}
+              >
+                No Articles yet
+              </p>
+            </div>
           )}
         </div>
 

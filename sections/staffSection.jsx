@@ -69,8 +69,13 @@ const StaffSection = () => {
               </div>
             ))
           ) : (
-            <div className="col-12">
-              <p>No Department available</p>
+            <div className="col-12 d-flex justify-content-center">
+              <p
+                className="p-3 text-light text-center bg-primary-light mt-1 mb-3 rounded"
+                style={{ maxWidth: "400px" }}
+              >
+                No Department yet
+              </p>
             </div>
           )}
         </div>

@@ -37,7 +37,10 @@ const ReusableSwiper = ({ children, noItemsMessage }) => {
             <SwiperSlide key={index}>{child}</SwiperSlide>
           ))
         ) : (
-          <div className="no-items-message p-3 text-light text-center bg-primary-light my-3 rounded">
+          <div
+            className="no-items-message p-3 text-primary text-center bg-primary-light my-3 rounded"
+            style={{ maxWidth: "400px" }}
+          >
             {noItemsMessage}
           </div>
         )}
