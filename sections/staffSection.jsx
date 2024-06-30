@@ -60,7 +60,10 @@ const StaffSection = () => {
                     </div>
                     <p>{dept.description.substring(0, 100) + " ..."}</p>
                     <div>
-                      <Link href={`/department/${dept.id}`} className="btn btn-sm btn-accent-secondary rounded">
+                      <Link
+                        href={`/department/${dept.id}`}
+                        className="btn btn-sm btn-accent-secondary rounded"
+                      >
                         view Department
                       </Link>
                     </div>
@@ -69,11 +72,8 @@ const StaffSection = () => {
               </div>
             ))
           ) : (
-            <div className="col-12 d-flex justify-content-center">
-              <p
-                className="p-3 text-light text-center bg-primary-light mt-1 mb-3 rounded"
-                style={{ maxWidth: "400px" }}
-              >
+            <div className="col-12 d-flex justify-content-center" style={{ maxWidth: "400px" }}>
+              <p className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded">
                 No Department yet
               </p>
             </div>
@@ -85,4 +85,3 @@ const StaffSection = () => {
 };
 
 export default StaffSection;
-
