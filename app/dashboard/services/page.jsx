@@ -29,6 +29,7 @@ const ServicesPage = () => {
     if (category) {
       setCurrentCategory(category);
     } else {
+      console.log(categories)
       setCurrentCategory(categories[0]?.category);
     }
   }, [categories]);

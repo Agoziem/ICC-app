@@ -7,6 +7,12 @@ import NavList from "./navList";
 import Main from "@/components/Main/Main";
 import OffCanvas from "@/components/Offcanvas/OffCanvas";
 
+export const metadata = {
+  title: "ICC dashboard",
+  description:
+    "ICC dashboard provides a platform for users to access the Jamb,Postutme, Admission services and applications. It is a dashboard that displays the services and applications, orders, and customers. It also displays the recent activities, recent sales, reports, news, and top-selling items.",
+};
+
 const dashboardlayout = ({ children }) => {
   return (
     <div>
