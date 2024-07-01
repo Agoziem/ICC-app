@@ -42,7 +42,7 @@ const ArticlesList = () => {
     <div>
       <div className="articles_list mx-auto px-3 px-md-0">
         {/* categories */}
-        <div className="mb-2 ps-2 ps-md-0">
+        <div className="mb-3 ps-2 ps-md-0">
           <div className="mb-1 fw-bold">categories</div>
           {filteredCategories.length > 0 &&
             filteredCategories.map((category) => {
