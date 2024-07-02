@@ -31,6 +31,7 @@ const StaffSection = () => {
       id: 5,
       icon: <PiGearBold />,
     },
+    
   ];
   return (
     <>
@@ -54,7 +55,7 @@ const StaffSection = () => {
                   <div className="card-body">
                     <div className="d-flex flex-column justify-content-center align-items-center mb-3">
                       <span className="dept-icon h1 mb-3 text-secondary">
-                        {dept_icons.find((icon) => icon.id === dept.id).icon}
+                        {dept_icons.find((icon) => icon.id === dept.id)?.icon || <PiGearBold />}
                       </span>
                       <h4 className="mb-0">{dept.name}</h4>
                     </div>

@@ -1,5 +1,8 @@
 "use client";
 import PageTitle from "@/components/PageTitle/PageTitle";
+import PrivacyPolicy from "@/components/configuration/home/PrivacyPolicy";
+import TermsOfUse from "@/components/configuration/home/TermsOfUse";
+import Depts from "@/components/configuration/home/depts";
 import Messages from "@/components/configuration/home/messages";
 import OrganizationCard from "@/components/configuration/home/organizationcard";
 import Staffs from "@/components/configuration/home/staffs";
@@ -21,6 +24,8 @@ const HomePageConfigPage = () => {
     setSubscriptions,
     messages,
     setMessages,
+    depts,
+    setDepts,
   } = useContext(OrganizationContext);
 
 
@@ -82,8 +87,9 @@ const HomePageConfigPage = () => {
                 }}
                 onClick={() => setCurrentSection(4)}
               >
-                Subscriptions
+                Departments
               </li>
+
               <li
                 className="list-group-item"
                 style={{
@@ -95,7 +101,46 @@ const HomePageConfigPage = () => {
                 }}
                 onClick={() => setCurrentSection(5)}
               >
+                Subscriptions
+              </li>
+              <li
+                className="list-group-item"
+                style={{
+                  background: "var(--bgLighterColor)",
+                  borderColor: "var(--bgDarkColor)",
+                  cursor: "pointer",
+                  color: currentSection === 6 ? "var(--secondary)" : "var(--primary)",
+                  fontWeight: currentSection === 6 ? "bold" : "",
+                }}
+                onClick={() => setCurrentSection(6)}
+              >
                 Messages
+              </li>
+              <li
+                className="list-group-item"
+                style={{
+                  background: "var(--bgLighterColor)",
+                  borderColor: "var(--bgDarkColor)",
+                  cursor: "pointer",
+                  color: currentSection === 7 ? "var(--secondary)" : "var(--primary)",
+                  fontWeight: currentSection === 7 ? "bold" : "",
+                }}
+                onClick={() => setCurrentSection(7)}
+              >
+                Terms & Conditions
+              </li>
+              <li
+                className="list-group-item"
+                style={{
+                  background: "var(--bgLighterColor)",
+                  borderColor: "var(--bgDarkColor)",
+                  cursor: "pointer",
+                  color: currentSection === 8 ? "var(--secondary)" : "var(--primary)",
+                  fontWeight: currentSection === 8 ? "bold" : "",
+                }}
+                onClick={() => setCurrentSection(8)}
+              >
+                Privacy Policy
               </li>
             </ul>
           </div>
@@ -119,14 +164,30 @@ const HomePageConfigPage = () => {
           }
           {
             currentSection === 4 && (
-              <Subscriptions subscriptions={subscriptions} setSubscriptions={setSubscriptions} OrganizationData={OrganizationData} />
+              <Depts depts={depts} setDepts={setDepts} OrganizationData={OrganizationData} />
             )
           }
           {
             currentSection === 5 && (
+              <Subscriptions subscriptions={subscriptions} setSubscriptions={setSubscriptions} OrganizationData={OrganizationData} />
+            )
+          }
+          {
+            currentSection === 6 && (
               <Messages messages={messages} setMessages={setMessages} OrganizationData={OrganizationData}/>
             )
           }
+           {
+            currentSection === 7 && (
+              <TermsOfUse OrganizationData={OrganizationData} setOrganizationData={setOrganizationData} />
+            )
+          }
+           {
+            currentSection === 8 && (
+              <PrivacyPolicy OrganizationData={OrganizationData} setOrganizationData={setOrganizationData} />
+            )
+          }
+
         </div>
       </div>
     </div>

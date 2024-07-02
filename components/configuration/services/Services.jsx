@@ -1,17 +1,20 @@
 "use client";
 import { useAdminContext } from "@/data/Admincontextdata";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import { converttoformData } from "@/utils/formutils";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
+import CategoryTabs from "@/components/Categories/Categoriestab";
+import CategoriesForm from "@/components/Categories/Categories";
 
 const Services = () => {
   const { services, setServices } = useAdminContext();
   const { applications, setApplications } = useAdminContext();
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { OrganizationData, categories, setCategories } =
+    useContext(OrganizationContext);
   const [service, setService] = useState({
     name: "",
     description: "",
@@ -20,14 +23,18 @@ const Services = () => {
     preview: null,
     img_url: null,
     img_name: "",
-    category: "service",
+    category: "",
   });
 
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "", state: false });
-  const [tab, setTab] = useState("services");
+  const [currentCategory, setCurrentCategory] = useState("service");
+
+  useEffect(() => {
+    setCurrentCategory(categories[0]?.category);
+  }, [categories]);
 
   const closeModal = () => {
     setShowModal(false);
@@ -41,7 +48,7 @@ const Services = () => {
       preview: null,
       img_url: null,
       img_name: "",
-      category: "service",
+      category: "",
     });
   };
 
@@ -56,18 +63,18 @@ const Services = () => {
       const data = await res.json();
       if (res.ok) {
         if (addorupdate.mode === "add") {
-          data.category === "service"
+          data.category !== "application"
             ? setServices([...services, data])
             : setApplications([...applications, data]);
           setAlert({
             show: true,
             message: `${
-              tab === "services" ? "service" : "application"
+              currentCategory !== "application" ? "service" : "application"
             } added successfully`,
             type: "success",
           });
         } else {
-          data.category === "service"
+          data.category !== "application"
             ? setServices(
                 services.map((service) =>
                   service.id === data.id ? { ...service, ...data } : service
@@ -83,7 +90,7 @@ const Services = () => {
           setAlert({
             show: true,
             message: `${
-              tab === "services" ? "service" : "application"
+              currentCategory !== "application" ? "service" : "application"
             } updated successfully`,
             type: "success",
           });
@@ -118,7 +125,7 @@ const Services = () => {
         }
       );
       if (res.ok) {
-        tab === "services"
+        currentCategory !== "application"
           ? setServices(services.filter((service) => service.id !== id))
           : setApplications(
               applications.filter((application) => application.id !== id)
@@ -128,7 +135,7 @@ const Services = () => {
           message: "service deleted successfully",
           type: "success",
         });
-      } 
+      }
     } catch (error) {
       setAlert({
         show: true,
@@ -157,40 +164,50 @@ const Services = () => {
   return (
     <div>
       <hr />
-      <div className="d-flex flex-wrap justify-content-between pe-3 pb-3 mb-3">
-        <div>
-          <div
-            className={`badge rounded-5 px-4 py-2 me-2`}
-            style={{
-              color:
-                tab === "services" ? "var(--bgLightColor)" : "var(--primary)",
-              backgroundColor:
-                tab === "services" ? "var(--bgDarkerColor)" : " ",
-              border: "1.5px solid var(--bgDarkerColor)",
-              cursor: "pointer",
-            }}
-            onClick={() => setTab("services")}
-          >
-            Services
-          </div>
-          <div
-            className={`badge   rounded-5 px-4 py-2`}
-            style={{
-              color:
-                tab === "applications"
-                  ? "var(--bgLightColor)"
-                  : "var(--primary)",
-              backgroundColor:
-                tab === "applications" ? "var(--bgDarkerColor)" : " ",
-              border: "1.5px solid var(--bgDarkerColor)",
-              cursor: "pointer",
-            }}
-            onClick={() => setTab("applications")}
-          >
-            Applications
-          </div>
-        </div>
+      <div
+        style={{
+          maxWidth: "650px",
+        }}
+      >
+        <CategoriesForm
+          items={categories}
+          setItems={setCategories}
+          itemName="category"
+          itemLabel="Category"
+          addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/add_category/`}
+          updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/update_category`}
+          deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/delete_category`}
+        />
+      </div>
 
+      <div className="d-flex flex-wrap align-items-center mb-4">
+        <CategoryTabs
+          categories={categories}
+          currentCategory={currentCategory}
+          setCurrentCategory={setCurrentCategory}
+          services={services}
+        />
+        <div
+          className={`badge rounded-5 px-4 py-2 me-2 mb-2 mb-md-0`}
+          style={{
+            color:
+              currentCategory === "application"
+                ? "var(--secondary)"
+                : "var(--primary)",
+            backgroundColor:
+              currentCategory === "application" ? "var(--secondary-300)" : " ",
+            border:
+              currentCategory === "application"
+                ? "1.5px solid var(--secondary)"
+                : "1.5px solid var(--bgDarkerColor)",
+            cursor: "pointer",
+          }}
+          onClick={() => setCurrentCategory("application")}
+        >
+          application
+        </div>
+      </div>
+      <div className="d-flex flex-wrap justify-content-between pe-3 pb-3 mb-3">
         <button
           className="btn btn-primary border-0 rounded mb-2 mt-4 mt-md-0 mb-md-0"
           style={{ backgroundColor: "var(--bgDarkerColor)" }}
@@ -199,31 +216,36 @@ const Services = () => {
             setShowModal(true);
           }}
         >
-          <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add {tab === "services" ? "service" : "application"}
+          <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add{" "}
+          {currentCategory !== "application" ? "service" : "application"}
         </button>
       </div>
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {tab === "services"
+        {currentCategory !== "application"
           ? services &&
             services.length > 0 &&
-            services.map((service) => (
-              <ServiceCard
-                key={service.id}
-                tab={tab}
-                item={service}
-                onEdit={handleEdit}
-                onDelete={handleDeleteConfirm}
-              />
-            ))
+            services
+              .filter(
+                (service) => currentCategory === service.category.category
+              )
+              .map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  tab={currentCategory}
+                  item={service}
+                  onEdit={handleEdit}
+                  onDelete={handleDeleteConfirm}
+                />
+              ))
           : applications &&
             applications.length > 0 &&
             applications.map((application) => (
               <ServiceCard
                 key={application.id}
                 item={application}
-                tab={tab}
+                tab={currentCategory}
                 onEdit={handleEdit}
                 onDelete={handleDeleteConfirm}
               />
@@ -242,7 +264,8 @@ const Services = () => {
           handleSubmit={handleSubmit}
           addorupdate={addorupdate}
           OrganizationData={OrganizationData}
-          tab={tab}
+          tab={currentCategory}
+          categories={categories}
         />
       </Modal>
 
@@ -254,7 +277,8 @@ const Services = () => {
       >
         <div className="p-3">
           <p className="text-center">
-            Delete {tab === "services" ? "service" : "application"}
+            Delete{" "}
+            {currentCategory !== "application" ? "service" : "application"}
           </p>
           <hr />
           <h5 className="text-center mb-4">{service.name}</h5>

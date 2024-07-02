@@ -1,12 +1,20 @@
 import React from "react";
 import ImageUploader from "@/components/Imageuploader/ImageUploader";
 
-const ServiceForm = ({ service, setService, handleSubmit, addorupdate, OrganizationData, tab }) => (
+const ServiceForm = ({
+  service,
+  setService,
+  handleSubmit,
+  addorupdate,
+  OrganizationData,
+  tab,
+  categories,
+}) => (
   <div className="p-3">
     <h5 className="text-center mb-4">
       {addorupdate.mode === "add"
-        ? `Add ${tab === "services" ? "service" : "application"}`
-        : `Edit ${tab === "services" ? "service" : "application"}`}
+        ? `Add ${tab !== "application" ? "service" : "application"}`
+        : `Edit ${tab !== "application" ? "service" : "application"}`}
     </h5>
     <hr />
     <form
@@ -50,7 +58,9 @@ const ServiceForm = ({ service, setService, handleSubmit, addorupdate, Organizat
           id="description"
           name="description"
           value={service.description}
-          onChange={(e) => setService({ ...service, description: e.target.value })}
+          onChange={(e) =>
+            setService({ ...service, description: e.target.value })
+          }
         ></textarea>
       </div>
       <div className="mb-3">
@@ -64,6 +74,7 @@ const ServiceForm = ({ service, setService, handleSubmit, addorupdate, Organizat
           name="price"
           value={service.price}
           onChange={(e) => setService({ ...service, price: e.target.value })}
+          required
         />
       </div>
       <div className="mb-3">
@@ -76,10 +87,14 @@ const ServiceForm = ({ service, setService, handleSubmit, addorupdate, Organizat
           name="category"
           value={service.category}
           onChange={(e) => setService({ ...service, category: e.target.value })}
+          required
         >
-          <option value="service">Service</option>
-          <option value="application">Application</option>
-          <option value="Other">Other</option>
+          <option value="">Select category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.category}>
+              {category.category}
+            </option>
+          ))}
         </select>
       </div>
       <button type="submit" className="btn btn-primary rounded px-5 mt-3">

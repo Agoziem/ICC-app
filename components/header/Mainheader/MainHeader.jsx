@@ -142,6 +142,24 @@ const MainHeader = () => {
                 <li>
                   <Link
                     className="dropdown-item d-flex align-items-center"
+                    href={`/terms-of-use`}
+                  >
+                    <i class="bi bi-person-lock"></i>
+                    <span>Terms of Use</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item d-flex align-items-center"
+                    href={`/privacy-policy`}
+                  >
+                    <i class="bi bi-shield-shaded"></i>
+                    <span>Privacy Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item d-flex align-items-center"
                     href={`/`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -161,7 +179,7 @@ const MainHeader = () => {
       <>
         {/* small screen */}
         <div className="d-flex d-lg-none align-items-center">
-        <div
+          <div
             className="position-relative me-3"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasTop"
@@ -212,6 +230,24 @@ const MainHeader = () => {
                 )}
               </a>
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-3">
+                <li>
+                  <Link
+                    className="dropdown-item d-flex align-items-center"
+                    href={`/terms-of-use`}
+                  >
+                    <i class="bi bi-person-lock"></i>
+                    <span>Terms of Use</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item d-flex align-items-center"
+                    href={`/privacy-policy`}
+                  >
+                    <i class="bi bi-shield-shaded"></i>
+                    <span>Privacy Policy</span>
+                  </Link>
+                </li>
                 <li>
                   <Link
                     className="dropdown-item d-flex align-items-center"

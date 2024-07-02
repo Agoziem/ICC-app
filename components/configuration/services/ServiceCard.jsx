@@ -46,7 +46,10 @@ const ServiceCard = ({ item, tab, onEdit, onDelete }) => (
             <div>
               <button
                 className="btn btn-sm btn-accent-secondary rounded py-1 px-3 me-2"
-                onClick={() => onEdit(item)}
+                onClick={() => {
+                  
+                  onEdit({ ...item, category: item.category.category });
+                }}
               >
                 edit
               </button>

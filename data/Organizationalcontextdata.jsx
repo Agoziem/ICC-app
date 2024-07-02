@@ -32,7 +32,6 @@ const OrganizationContextProvider = ({ children }) => {
           setStaffs(data.staffs);
           setTestimonials(data.testimonials);
           setSubscriptions(data.subscriptions);
-          console.log(data.departments)
           setDepts(data.departments);
         })
         .catch((error) => {

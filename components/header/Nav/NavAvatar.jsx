@@ -112,10 +112,23 @@ function NavAvatar() {
           <li>
             <Link
               className="dropdown-item d-flex align-items-center"
-              href={"#"}
+              href={`/terms-of-use`}
             >
-              <i className="bi bi-question-circle"></i>
-              <span>Need Help?</span>
+              <i class="bi bi-person-lock"></i>
+              <span>Terms of Use</span>
+            </Link>
+          </li>
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
+          
+          <li>
+            <Link
+              className="dropdown-item d-flex align-items-center"
+              href={`/privacy-policy`}
+            >
+              <i class="bi bi-shield-shaded"></i>
+              <span>Privacy Policy</span>
             </Link>
           </li>
           <li>

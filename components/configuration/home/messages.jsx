@@ -189,14 +189,14 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
                   </button>
 
                   <button
-                    className="btn btn-sm btn-danger rounded px-3"
+                    className="btn btn-sm btn-danger rounded px-4 px-md-3 mt-3 mt-md-0"
                     onClick={() => {
                       setMessage(message);
                       setDeleteMode(true);
                       setShowModal(true);
                     }}
                   >
-                    delete
+                    delete message
                   </button>
                 </div>
               </div>

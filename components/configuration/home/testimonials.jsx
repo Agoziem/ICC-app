@@ -30,6 +30,10 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
     state: false,
   });
 
+  // -------------------------------------------------------------
+  // Function to handle form submission
+  // -------------------------------------------------------------
+
   const handleSubmit = (e, url) => {
     e.preventDefault();
     fetch(url, {
@@ -68,6 +72,10 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
       });
   };
 
+  // -------------------------------------------------------------
+  // Function to close the modal
+  // -------------------------------------------------------------
+
   const closeModal = () => {
     setShowModal(false);
     setAddOrUpdate({
@@ -86,6 +94,9 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
     });
   };
 
+  // -------------------------------------------------------------
+  // Function to delete a testimonial
+  // -------------------------------------------------------------
   const deleteTestimonial = (id) => {
     fetch(
       `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/delete/${id}/`,
@@ -128,19 +139,21 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
   return (
     <div className="px-1 px-md-4">
       <div className="mb-5 mb-md-0">
-        <button
-          className="btn btn-primary border-0 rounded float-end"
-          style={{ backgroundColor: "var(--bgDarkerColor)" }}
-          onClick={() => {
-            setAddOrUpdate({
-              type: "add",
-              state: true,
-            });
-            setShowModal(true);
-          }}
-        >
-          <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add Testimonial
-        </button>
+        <div className="d-flex justify-content-end mb-2">
+          <button
+            className="btn btn-primary border-0 rounded"
+            style={{ backgroundColor: "var(--bgDarkerColor)" }}
+            onClick={() => {
+              setAddOrUpdate({
+                type: "add",
+                state: true,
+              });
+              setShowModal(true);
+            }}
+          >
+            <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add Testimonial
+          </button>
+        </div>
         <h4>Testimonials</h4>
       </div>
 

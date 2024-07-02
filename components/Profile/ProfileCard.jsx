@@ -31,7 +31,6 @@ const ProfileCard = ({ alert, setEditMode }) => {
   return (
     <div className="p-2 p-md-3 py-3">
       <div className="row">
-        
         {/* Profile Link */}
         <div className="col-md-4">
           <div className="card py-3">
@@ -116,19 +115,23 @@ const ProfileCard = ({ alert, setEditMode }) => {
             {active === 1 && (
               <div className="">
                 {
-                  <Alert type={alert.type}>
-                    <div>{alert.message}</div>
-                    {alert.type === "success" && (
-                      <button
-                        className="btn btn-success my-3 rounded float-end"
-                        onClick={() => {
-                          signOut();
-                        }}
-                      >
-                        log out
-                      </button>
-                    )}
-                  </Alert>
+                  <div className="mt-3">
+                    <Alert type={alert.type}>
+                      <div>{alert.message}</div>
+                      {alert.type === "success" && (
+                        <div className="mt-2">
+                          <button
+                            className="btn btn-success my-3 rounded float-end"
+                            onClick={() => {
+                              signOut();
+                            }}
+                          >
+                            log out
+                          </button>
+                        </div>
+                      )}
+                    </Alert>
+                  </div>
                 }
                 <div>
                   <h4 className="my-2">Account Settings</h4>
@@ -165,7 +168,8 @@ const ProfileCard = ({ alert, setEditMode }) => {
                       </div>
                       <div className="my-2 col-12 col-md-6">
                         <p className="text-primary fw-bold mb-0">
-                          <i className="bi bi-gender-ambiguous me-2 h4"></i>Gender
+                          <i className="bi bi-gender-ambiguous me-2 h4"></i>
+                          Gender
                         </p>
                         <span>{session?.user?.sex || "not available"}</span>
                       </div>

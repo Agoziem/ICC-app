@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import ImageUploader from "../Imageuploader/ImageUploader";
+import { converttoformData } from "@/utils/formutils";
 
 const ProfileForm = ({ setAlert, setEditMode }) => {
   const { data: session } = useSession();
@@ -15,6 +16,7 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
     phone: "",
     address: "",
   });
+
 
   useEffect(() => {
     if (session) {
@@ -34,16 +36,14 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const modifiedformData = converttoformData(formData);
     if (session) {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/update/${session?.user?.id}/`,
           {
             method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
+            body: modifiedformData,
           }
         );
         const data = await response.json();
@@ -77,6 +77,8 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
       }
     }
   };
+
+
   return (
     <div>
       <div className="card p-4 p-md-4 mx-auto" style={{ maxWidth: "600px" }}>
@@ -99,9 +101,9 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
             {/* display the image or the icon */}
             <div>
               <ImageUploader
+                imagekey={"avatar"}
                 imageurlkey={"avatar_url"}
                 imagename={"avatar_name"}
-                imagekey={"avatar"}
                 formData={formData}
                 setFormData={setFormData}
               />

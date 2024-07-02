@@ -7,7 +7,7 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import "./Tiptap.css";
 
-const Tiptap = ({ article, setArticle }) => {
+const Tiptap = ({ item, setItem, keylabel   }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -33,22 +33,22 @@ const Tiptap = ({ article, setArticle }) => {
       },
     },
     onUpdate: ({ editor }) => {
-      setArticle({
-        ...article,
-        body: editor.getHTML(),
+      setItem({
+        ...item,
+        [keylabel]: editor.getHTML(),
       });
     },
   });
 
   useEffect(() => {
-    if (editor && article.body !== editor.getHTML()) {
-      editor.commands.setContent(article.body);
+    if (editor && item[keylabel] !== editor.getHTML()) {
+      editor.commands.setContent(item[keylabel]);
     }
-  }, [article, editor]);
+  }, [item, editor]);
 
   return (
     <div className="w-100">
-      <Toolbar editor={editor} content={article.body} />
+      <Toolbar editor={editor} content={item[keylabel]} />
       <EditorContent
         style={{
           whiteSpace: "pre-line",

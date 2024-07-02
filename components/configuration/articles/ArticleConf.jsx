@@ -1,12 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ArticleForm from "./ArticleForm";
 import ArticleList from "./ArticleList";
 import { useArticleContext } from "@/data/Articlescontextdata";
 import { useSession } from "next-auth/react";
+import ArticleCategoryForm from "./ArticleCategoryForm";
 
 const ArticleConf = () => {
-  const { articles, setArticles } = useArticleContext();
+  const { articles, setArticles, categories, setCategories } =
+    useArticleContext();
   const { data: session } = useSession();
   const [article, setArticle] = useState({
     id: null,
@@ -25,6 +27,12 @@ const ArticleConf = () => {
   return (
     <div className="row mt-4 justify-content-between">
       <div className="col-12 col-md-8">
+        <div>
+          <ArticleCategoryForm
+            categories={categories}
+            setCategories={setCategories}
+          />
+        </div>
         <ArticleForm
           session={session}
           article={article}
@@ -33,6 +41,7 @@ const ArticleConf = () => {
           setEditMode={setEditMode}
           articles={articles}
           setArticles={setArticles}
+          categories={categories}
         />
       </div>
       <div className="col-12 col-md-4">

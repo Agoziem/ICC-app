@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { FaRegFileImage, FaUser } from "react-icons/fa6";
+import { FaRegFileImage } from "react-icons/fa6";
+import { IoIosImages } from "react-icons/io";
 import { LuUpload } from "react-icons/lu";
 
 const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData }) => {
@@ -13,7 +14,7 @@ const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData
       setFileName(formData[imagename]);
       setImage(formData[imageurlkey]);
     }
-  }, []);
+  }, [formData[imageurlkey]]);
 
   return (
     <div>
@@ -55,7 +56,7 @@ const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData
                 backgroundColor: "var(--bgDarkerColor)",
               }}
             >
-              <FaUser />
+              <IoIosImages />
             </div>
           )}
         </div>

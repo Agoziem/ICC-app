@@ -14,6 +14,7 @@ const ArticleForm = ({
   setEditMode,
   articles,
   setArticles,
+  categories,
 }) => {
   const { OrganizationData } = useContext(OrganizationContext);
   const [alert, setAlert] = useState({
@@ -124,6 +125,7 @@ const ArticleForm = ({
                 slug: createSlug(e.target.value),
               });
             }}
+            required
           />
         </div>
         <div className="form-group mb-3">
@@ -135,12 +137,13 @@ const ArticleForm = ({
             onChange={(e) =>
               setArticle({ ...article, subtitle: e.target.value })
             }
+            required
           />
         </div>
 
         <div className="form-group mb-3">
           <label className="mb-3">Body</label>
-          <Tiptap article={article} setArticle={setArticle} />
+          <Tiptap item={article} setItem={setArticle} keylabel={"body"} />
         </div>
 
         <div className="form-group mb-3">
@@ -199,14 +202,21 @@ const ArticleForm = ({
         </div>
         <div className="form-group mb-4">
           <label>Category</label>
-          <input
-            type="text"
-            className="form-control"
+          <select
+            className="form-select"
             value={article.category}
             onChange={(e) =>
               setArticle({ ...article, category: e.target.value })
             }
-          />
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.category}>
+                {category.category}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-2">
           <ArticleImageUploader
