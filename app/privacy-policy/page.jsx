@@ -7,7 +7,7 @@ const PrivacyPage = () => {
 
   return (
     <div
-      className="mx-auto"
+      className="mx-auto px-4 px-md-0 py-2"
       style={{
         maxWidth: "800px",
       }}
