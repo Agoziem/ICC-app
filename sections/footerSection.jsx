@@ -257,7 +257,7 @@ const FooterSection = () => {
       {/* subfooter */}
       <div className="subfooter py-3 d-flex justify-content-center align-items-center">
         <p className="text-center small mb-0">
-          &copy; 2021 Innovation Cyber Cafe. All Rights Reserved
+          &copy; 2024 Innovation Cyber Cafe. All Rights Reserved
         </p>
       </div>
     </section>

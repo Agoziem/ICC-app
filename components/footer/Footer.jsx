@@ -16,9 +16,6 @@ function Footer() {
         </strong>
         . All Rights Reserved
       </div>
-      <div className="credits">
-        Designed by <a href="#">GDD Impact</a>
-      </div>
     </footer>
   );
 }
