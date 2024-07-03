@@ -18,7 +18,7 @@ const DashboardBody = () => {
   return (
     <div className="dashboard">
       <div className="my-4 d-flex justify-content-between align-items-center flex-wrap">
-        <h5 className="mb-3 mb-md-0">Welcome, {session?.user?.username}</h5>
+        <h5 className="mb-3 mb-md-0 me-2 me-md-0">Welcome, {session?.user?.username}</h5>
         <CartButton />
       </div>
       <div className="row">
