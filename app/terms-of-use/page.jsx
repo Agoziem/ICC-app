@@ -6,7 +6,7 @@ const TermsPage = () => {
   const { OrganizationData } = useContext(OrganizationContext)
   return (
     <div
-      className="mx-auto mt-3"
+      className="mx-auto mt-3 px-4 px-md-0"
       style={{
         maxWidth: "900px",
       }}
