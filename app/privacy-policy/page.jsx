@@ -3,7 +3,7 @@ import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import React, { useContext } from "react";
 
 const PrivacyPage = () => {
-  const { OrganizationData } = useContext(OrganizationContext)
+  const { OrganizationData } = useContext(OrganizationContext);
 
   return (
     <div
@@ -14,11 +14,20 @@ const PrivacyPage = () => {
     >
       <h4>Privacy Policy</h4>
       <hr />
-      <div 
-        dangerouslySetInnerHTML={{
-          __html: OrganizationData.privacy_policy,
-        }}
-      />
+      {OrganizationData?.privacyPolicy ? (
+        <div
+          dangerouslySetInnerHTML={{ __html: OrganizationData.privacyPolicy }}
+        />
+      ) : (
+        <div className="d-flex justify-content-center">
+          <p
+            className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded"
+            style={{ minWidth: "300px" }}
+          >
+            No Articles yet
+          </p>
+        </div>
+      )}
     </div>
   );
 };

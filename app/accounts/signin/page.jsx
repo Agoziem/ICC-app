@@ -9,6 +9,7 @@ import styles from "../accounts.module.css";
 import Link from "next/link";
 import Alert from "@/components/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
+import PasswordInput from "@/components/Inputs/PasswordInput";
 
 const SigninPage = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const SigninPage = () => {
     message: "",
     type: "success",
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -179,24 +181,13 @@ const SigninPage = () => {
                 </div>
 
                 {/* password */}
-                <div className="form-group my-4">
-                  <input
-                    name="password"
-                    type="password"
-                    className={`form-control ${
-                      formErrors.password ? "is-invalid" : ""
-                    }`}
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Enter your password"
-                    required
-                  />
-                  {formErrors.password && (
-                    <div className="text-danger invalid-feedback">
-                      {formErrors.password}
-                    </div>
-                  )}
-                </div>
+                <PasswordInput
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  formErrors={formErrors}
+                />
 
                 {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
 

@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import "./card.css";
 import CardFilter from "./CardFilter";
 const HorizontalCard = ({ cardspan, iconcolor, cardtitle, icon, cardbody }) => {
-  const [filter, setFilter] = useState("Today");
-  const handleFilterChange = (filter) => {
-    setFilter(filter);
-  };
+  // const [filter, setFilter] = useState("Today");
+  // const handleFilterChange = (filter) => {
+  //   setFilter(filter);
+  // };
 
   return (
     <div
@@ -15,12 +15,13 @@ const HorizontalCard = ({ cardspan, iconcolor, cardtitle, icon, cardbody }) => {
       `}
     >
       <div className="card-body">
-        <div className="d-flex justify-content-between">
-          <h5 className="card-title pt-2 pb-3">{cardtitle}</h5>
-          <CardFilter filterChange={handleFilterChange} />
+        <div className="">
+          <h6 className="pt-2">{cardtitle}</h6>
+          {/* <CardFilter filterChange={handleFilterChange} /> */}
+          <hr />
         </div>
 
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center mt-2">
           <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i className={icon}></i>
           </div>

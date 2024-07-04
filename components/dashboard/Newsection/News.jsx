@@ -8,9 +8,10 @@ function News() {
   return (
     <div className="card">
       <div className="card-body pb-0">
-        <h5 className="card-title pb-3 px-3 py-3">Articles &amp; Updates</h5>
+        <h6 className="px-3 pt-2">Articles &amp; Updates</h6>
+        <hr />
 
-        <div className="news">
+        <div className="news mt-3">
           {articles &&
             articles.length > 0 ?
             articles

@@ -19,10 +19,10 @@ function RecentSales({ session }) {
         <CardFilter filterChange={handleFilterChange} />
       </div>
       <div className="card-body">
-        <h5 className="card-title pb-3">
+        <h6 className="pb-3">
           {session?.user?.is_staff ? "Recent Sales" : "Recent Orders"}{" "}
           <span>| {filter}</span>
-        </h5>
+        </h6>
         {session?.user?.is_staff ? (
           <RecentSalesTable items={orders} session={session} />
         ) : null}

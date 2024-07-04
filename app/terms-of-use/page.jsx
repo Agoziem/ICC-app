@@ -13,11 +13,22 @@ const TermsPage = () => {
     >
       <h4>Terms of Use</h4>
       <hr />
-      <div
-        dangerouslySetInnerHTML={{
-          __html: OrganizationData.terms_of_use,
-        }}
-       />
+      {
+        OrganizationData?.termsOfUse ? (
+          <div
+            dangerouslySetInnerHTML={{ __html: OrganizationData.termsOfUse }}
+          />
+        ) : (
+          <div className="d-flex justify-content-center">
+            <p
+              className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded"
+              style={{ minWidth: "300px" }}
+            >
+              No Terms of Use yet
+            </p>
+          </div>
+        )
+      }
     </div>
   );
 };

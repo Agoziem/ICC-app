@@ -11,9 +11,9 @@ function TopSelling() {
   return (
     <div className="card top-selling overflow-auto p-3">
       <div className="card-body pb-0">
-        <h5 className="card-title pb-2">
+        <h6 className=" pb-2">
           Services & Products <span>| Top Selling</span>
-        </h5>
+        </h6>
 
         <table className="table table-bordered">
           <thead className="table-light">

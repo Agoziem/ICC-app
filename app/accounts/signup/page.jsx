@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import Alert from "@/components/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
+import PasswordInput from "@/components/Inputs/PasswordInput";
 
 const SignupPage = () => {
   const router = useRouter();
@@ -252,44 +253,22 @@ const SignupPage = () => {
                 </div>
 
                 {/* password */}
-                <div className="form-group my-4">
-                  <input
-                    name="password"
-                    type="password"
-                    className={`form-control ${
-                      formErrors.password ? "is-invalid" : ""
-                    }`}
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  {formErrors.password && (
-                    <div className="text-danger invalid-feedback">
-                      {formErrors.password}
-                    </div>
-                  )}
-                </div>
+                <PasswordInput
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  formErrors={formErrors}
+                />
 
                 {/* confirmPassword */}
-                <div className="form-group my-4">
-                  <input
-                    name="confirmPassword"
-                    type="password"
-                    className={`form-control ${
-                      formErrors.confirmPassword ? "is-invalid" : ""
-                    }`}
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                  />
-                  {formErrors.confirmPassword && (
-                    <div className="text-danger invalid-feedback">
-                      {formErrors.confirmPassword}
-                    </div>
-                  )}
-                </div>
+                <PasswordInput
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your password"
+                  formErrors={formErrors}
+                />
 
                 {alert.show && (
                   <div className="my-3">
