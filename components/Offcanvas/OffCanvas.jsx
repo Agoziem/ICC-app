@@ -97,7 +97,7 @@ const OffCanvas = () => {
                     <button
                       className="btn btn-primary"
                       onClick={() => {
-                        checkout();
+                        checkout(OrganizationData.id);
                       }}
                     >
                       Checkout
