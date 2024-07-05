@@ -92,25 +92,22 @@ const OffCanvas = () => {
                 >
                   Clear Cart
                 </button>
-                {
-                  session ? (
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        checkout(OrganizationData.id);
-                      }}
-                    >
-                      Checkout
-                    </button>
-                  ) : (
-                    <Link
-                      className="btn btn-primary"
-                      href="/accounts/signin"
-                    >
-                      Login to Checkout
-                    </Link>
-                  )
-                }
+                {session ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      checkout(OrganizationData.id);
+                    }}
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  >
+                    Checkout
+                  </button>
+                ) : (
+                  <Link className="btn btn-primary" href="/accounts/signin">
+                    Login to Checkout
+                  </Link>
+                )}
               </div>
             </div>
           </div>
