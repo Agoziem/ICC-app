@@ -1,7 +1,9 @@
 import React from "react";
 import "./OrderTableItems.css";
+import { useSession } from "next-auth/react";
 
 const OrderTableItems = ({ currentItems }) => {
+  const { data: session } = useSession();
   const handleStatus = (status) => {
     switch (status) {
       case "Completed":
@@ -24,10 +26,13 @@ const OrderTableItems = ({ currentItems }) => {
         <thead>
           <tr>
             <th scope="col">Order ID</th>
-            <th scope="col">Customer</th>
+            {
+              session?.user?.is_staff && <th scope="col">Customer</th>
+            }
             <th scope="col">Services</th>
             <th scope="col">Prices</th>
             <th scope="col">Total Amount</th>
+            <th scope="col">Payment ref</th>
             <th scope="col">status</th>
           </tr>
         </thead>
@@ -36,7 +41,9 @@ const OrderTableItems = ({ currentItems }) => {
             currentItems.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
-                <td>{item.customer.name}</td>
+                {
+                  session?.user?.is_staff && <td>{item.customer.name}</td>
+                }
                 <td>
                   <ul>
                     {item.services &&
@@ -58,6 +65,9 @@ const OrderTableItems = ({ currentItems }) => {
                   &#8358; {item.amount}
                 </td>
                 <td>
+                  {item.reference}
+                </td>
+                <td>
                   <span
                     className={`badge text-${handleStatus(
                       item.status
@@ -70,7 +80,7 @@ const OrderTableItems = ({ currentItems }) => {
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center">No order found</td>
+              <td colSpan="7" className="text-center">No order found</td>
             </tr>
           )}
         </tbody>

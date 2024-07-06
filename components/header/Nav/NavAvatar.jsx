@@ -114,7 +114,7 @@ function NavAvatar() {
               className="dropdown-item d-flex align-items-center"
               href={`/terms-of-use`}
             >
-              <i class="bi bi-person-lock"></i>
+              <i className="bi bi-person-lock"></i>
               <span>Terms of Use</span>
             </Link>
           </li>
@@ -127,7 +127,7 @@ function NavAvatar() {
               className="dropdown-item d-flex align-items-center"
               href={`/privacy-policy`}
             >
-              <i class="bi bi-shield-shaded"></i>
+              <i className="bi bi-shield-shaded"></i>
               <span>Privacy Policy</span>
             </Link>
           </li>

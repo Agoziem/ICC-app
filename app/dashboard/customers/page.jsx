@@ -46,9 +46,9 @@ const CustomersPage = () => {
     <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Customers" />
       <div className="mt-4">
-        <h4>ICC Customers</h4>
+        <h5>ICC Customers</h5>
         {items && items.length > 0 && (
-          <Datatable items={items} setItems={setItems}>
+          <Datatable items={items} setItems={setItems} label={"Customers"} filteritemlabel={"customer__username"}>
             <CustomersTable
               setCustomerID={setCustomerID}
               toggleModal={() => setShowModal(true)}
@@ -71,7 +71,7 @@ const CustomersPage = () => {
                 <div className="profilepicture d-flex flex-column justify-content-center align-items-center my-3">
                   {customer.avatar ? (
                     <Image
-                      src={customer.avatar}
+                      src={customer.avatar_url}
                       alt="Picture of the Customer"
                       width={80}
                       height={80}
@@ -107,19 +107,19 @@ const CustomersPage = () => {
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">email: </span>
-                  {customer.email || "not available"}
+                  {customer.email || "email is not available"}
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">sex: </span>
-                  {customer.first_name} {customer.Sex || "not available"}
+                   {customer.Sex || "sex is not available"}
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">phone number: </span>
-                  {customer.first_name} {customer.phone || "not available"}
+                   {customer.phone || "Phone number is not available"}
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">address: </span>
-                  {customer.first_name} {customer.address || "not available"}
+                  {customer.address || "address is not available"}
                 </p>
 
                 <p className="my-1">

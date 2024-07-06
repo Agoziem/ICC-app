@@ -1,24 +1,26 @@
-"use client";   
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 
-const DatatableinputFilter = ({ filterInput, setfilterInput }) => {
+const DatatableinputFilter = ({
+  filterInput,
+  setfilterInput,
+  filteritemlabel,
+}) => {
+  const handleInputChange = (e) => {
+    setfilterInput(e.target.value);
+  };
 
-    const handleInputChange = (e) => {
-        setfilterInput(e.target.value);
-    }
-
-    return (
-        <div>
-            <input
-            type="text"
-            placeholder="Search items..."
-            className="form-control"
-            value={filterInput}
-            onChange={handleInputChange}
-        />    
-        </div>
-         
-    );
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder={`Search by ${filteritemlabel}`}
+        className="form-control"
+        value={filterInput}
+        onChange={handleInputChange}
+      />
+    </div>
+  );
 };
 
 export default DatatableinputFilter;

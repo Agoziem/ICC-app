@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Datatable from "@/components/Datatable/Datatable";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import OrderTableItems from "@/components/orders/OrderTableItems";
@@ -13,6 +13,11 @@ const ApplicationsPage = () => {
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const { orders } = useAdminContext();
+  const [items,setItems] = useState([]);
+
+  useEffect(() => {
+    setItems(userOrder);
+  }, [userOrder]);
 
   return (
     <div style={{ minHeight: "100vh" }}>
@@ -122,7 +127,7 @@ const ApplicationsPage = () => {
 
           <div className="mt-2">
             <h5>Orders made</h5>
-            <Datatable items={userOrder}>
+            <Datatable items={items} setItems={setItems} label={"Orders"} filteritemlabel={"reference"}>
               <OrderTableItems />
             </Datatable>
           </div>

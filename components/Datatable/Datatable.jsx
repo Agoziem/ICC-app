@@ -6,17 +6,17 @@ import Datatableselect from "./DatatableSelect";
 import useJsonToExcel from "@/hooks/useJsonToExcel";
 import { SiMicrosoftexcel } from "react-icons/si";
 
-
-const Datatable = ({ items, setItems, children }) => {
+const Datatable = ({ items, setItems, children, label, filteritemlabel }) => {
   const [filterInput, setfilterInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Filter Items
   const filteredItems = items.filter((item) => {
+    const filtertarget = item && item[filteritemlabel];
     return filterInput.toLowerCase() === ""
       ? item
-      : item.firstname.toLowerCase().includes(filterInput.toLowerCase());
+      : filtertarget?.toLowerCase().includes(filterInput.toLowerCase());
   });
 
   // Get Current Items for the Page
@@ -56,6 +56,7 @@ const Datatable = ({ items, setItems, children }) => {
               <DatatableinputFilter
                 filterInput={filterInput}
                 setfilterInput={setfilterInput}
+                filteritemlabel={filteritemlabel}
               />
             </div>
 
@@ -80,6 +81,7 @@ const Datatable = ({ items, setItems, children }) => {
         itemsPerPage={itemsPerPage}
         totalItems={filteredItems.length}
         setCurrentPage={setCurrentPage}
+        footerlabel={label}
       />
     </div>
   );

@@ -20,7 +20,7 @@ function RecentSales({ session }) {
       </div>
       <div className="card-body">
         <h6 className="pb-3">
-          {session?.user?.is_staff ? "Recent Sales" : "Recent Orders"}{" "}
+          Recent Orders
           <span>| {filter}</span>
         </h6>
         {session?.user?.is_staff ? (

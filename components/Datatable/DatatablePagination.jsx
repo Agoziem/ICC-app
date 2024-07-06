@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
 
-const DatatablePagination = ({ itemsPerPage, totalItems, setCurrentPage }) => {
+const DatatablePagination = ({ itemsPerPage, totalItems, setCurrentPage,footerlabel }) => {
 
     const pageNumbers = [];
 
@@ -15,7 +15,7 @@ const DatatablePagination = ({ itemsPerPage, totalItems, setCurrentPage }) => {
     return (
                 <div className='d-flex align-items-center justify-content-between'>
                 {totalItems > 0  &&
-                 <div className='text-center'>Showing <span className='fw-bold text-primary'>{itemsPerPage}</span> of <span className='fw-bold text-primary'>{totalItems} Orders</span></div>
+                 <div className='text-center'>Showing <span className='fw-bold text-primary'>{itemsPerPage}</span> of <span className='fw-bold text-primary'>{totalItems} {footerlabel}</span></div>
                 }
                 
                 { pageNumbers.length > 1 &&

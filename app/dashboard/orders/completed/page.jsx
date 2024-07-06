@@ -28,7 +28,7 @@ const OrderCompleted = () => {
     await generatePdf(pdfRef.current, "Order-Receipt");
   };
 
-  const message = `Hello, I just made a payment on ${OrganizationData?.name} with reference ${order?.reference}. I would like to track my order`;
+  const message = `Hello am ${order?.customer.name}, I just made a payment to ${OrganizationData?.name} with payment reference of ${order?.reference}. I would like to verify my order.`;
 
   // ---------------------------------------------------------------------
   // verify payment function
@@ -160,7 +160,7 @@ const OrderCompleted = () => {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  router.push("/dashboard");
+                  router.push("/dashboard/services");
                 }}
               >
                 Continue Shopping
@@ -183,7 +183,7 @@ const OrderCompleted = () => {
           <button
             className="btn btn-primary"
             onClick={() => {
-              router.push("/dashboard");
+              router.push("/dashboard/services");
             }}
           >
             Continue Shopping

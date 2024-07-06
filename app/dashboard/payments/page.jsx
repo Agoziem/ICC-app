@@ -12,12 +12,13 @@ const PaymentsPage = () => {
   useEffect(() => {
     setItems(orders);
   }, [orders]);
+
   return (
     <div style={{minHeight:"100vh"}}>
       <PageTitle pathname="Payments" />
       <div className="mt-4">
-        <h3>Payment History</h3>
-        <Datatable items={items} setItems={setItems}>
+        <h5>Payment History</h5>
+        <Datatable items={items} setItems={setItems} label={"Payments"} filteritemlabel={"reference"} >
           <OrderTableItems />
         </Datatable>
       </div>

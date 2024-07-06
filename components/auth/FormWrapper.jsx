@@ -3,7 +3,7 @@ import React from "react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import { SiFacebook } from "react-icons/si";
+// import { SiFacebook } from "react-icons/si";
 import { FaGithub } from "react-icons/fa6";
 import { useSearchParams } from "next/navigation";
 

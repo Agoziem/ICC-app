@@ -161,7 +161,7 @@ const ServicesPage = () => {
 
           <div className="mt-2">
             <h5>Services Ordered</h5>
-            <Datatable items={items} setItems={setItems}>
+            <Datatable items={items} setItems={setItems} label={"Orders"} filteritemlabel={"reference"}>
               <OrderTableItems />
             </Datatable>
           </div>
