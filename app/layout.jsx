@@ -11,7 +11,7 @@ import { UserContextProvider } from "@/data/usercontextdata";
 import OffCanvas from "@/components/Offcanvas/OffCanvas";
 
 export const metadata = {
-  title: "ICC app",
+  title: "ICC Online Center",
   description:
     "Innovation Cybercafe is a platform that provides innovative solutions to all online and Offline related educational problems to students across the trans secondary to tertiary level.",
 };

@@ -21,7 +21,7 @@ const MainHeaderLogo = () => {
             height: "auto",
           }}
         />
-        <span>ICC app</span>
+        <span>ICC Online Center</span>
       </Link>
     </div>
   );

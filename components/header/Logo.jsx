@@ -21,7 +21,7 @@ function Logo({portalname,portallink}) {
   
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <Link href={`/${portallink}`} className="logo d-flex align-items-center">
+      <Link href={`/`} className="logo d-flex align-items-center">
         {
           OrganizationData && OrganizationData.Organizationlogo &&
           <Image src={OrganizationData.Organizationlogo} alt="logo" width={50} height={50} className='me-3' style={
