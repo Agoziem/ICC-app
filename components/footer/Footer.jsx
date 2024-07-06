@@ -1,18 +1,16 @@
 "use client";
-import React, { useContext } from 'react';
-import './footer.css';
-import { OrganizationContext } from '@/data/Organizationalcontextdata';
+import React, { useContext } from "react";
+import "./footer.css";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
 function Footer() {
-  const {OrganizationData } = useContext(OrganizationContext)
+  const { OrganizationData } = useContext(OrganizationContext);
   return (
     <footer id="footer" className="dashboardfooter px-2">
       <div className="copyright">
-        &copy; Copyright{' '}
+        &copy; Copyright 2024, {' '}
         <strong>
-          <span>
-            {OrganizationData?.name}
-          </span>
+          <span>{OrganizationData?.name}</span>
         </strong>
         . All Rights Reserved
       </div>

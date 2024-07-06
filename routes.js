@@ -1,4 +1,10 @@
-export const publicRoutes = ["/", "/about", "/photos", "/articles","/accounts/new-verification","/department"];
+export const publicRoutes = [
+  "/",
+  "/about",
+  "/photos",
+  "/articles",
+  "/department",
+];
 
 export const isPublicRouteOrIncludes = (pathname) => {
   return publicRoutes.some((route) => {
@@ -12,7 +18,13 @@ export const isPublicRouteOrIncludes = (pathname) => {
   });
 };
 
-export const authRoutes = ["/accounts/signin", "/accounts/signup"];
+export const authRoutes = [
+  "/accounts/signin",
+  "/accounts/signup",
+  "/accounts/reset-password",
+  "/accounts/new-password",
+  "/accounts/new-verification",
+];
 
 export const apiAuthPrefix = "/api/auth";
 

@@ -1,23 +1,18 @@
 "use client";
 import FormWrapper from "@/components/auth/FormWrapper";
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import Image from "next/image";
 import styles from "../accounts.module.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Alert from "@/components/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
-import PasswordInput from "@/components/Inputs/PasswordInput";
 
 const SigninPage = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") || DEFAULT_LOGIN_REDIRECT;
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const router = useRouter()
+  const [formData, setFormData] = useState({ email: ""});
   const [formErrors, setFormErrors] = useState({});
-  const [loggingIn, setLoggingIn] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -40,8 +35,6 @@ const SigninPage = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "Email address is invalid";
     }
-    if (!formData.password) errors.password = "Your password is required";
-    return errors;
   };
 
   const validateUser = async (email) => {
@@ -64,51 +57,8 @@ const SigninPage = () => {
     const errors = validate();
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
-      const { email, password } = formData;
-      setLoggingIn(true);
-      setFormData({ email: "", password: "" });
-
-      const user = await validateUser(email);
-      if (user?.emailIsVerified === true) {
-        try {
-          const result = await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
-          });
-          if (result?.error) {
-            throw new Error(result.error);
-          } else {
-            router.push(next);
-          }
-        } catch (error) {
-          setFormData({ email: "", password: "" });
-          setAlert(
-            {
-              show: true,
-              message: "Invalid credentials, try again",
-              type: "danger",
-            },
-            setTimeout(() => {
-              setAlert({ show: false, message: "", type: "" });
-            }, 5000)
-          );
-        }
-      } else {
-        const res = await sendVerificationEmail(email, user.verificationToken);
-        setAlert(
-          {
-            show: true,
-            message: res.message,
-            type: res.success ? "success" : "danger",
-          },
-          setTimeout(() => {
-            setAlert({ show: false, message: "", type: "" });
-          }, 5000)
-        );
-      }
-
-      setLoggingIn(false);
+      
+      setSubmitting(false);
     }
   };
 
@@ -154,10 +104,11 @@ const SigninPage = () => {
         <div className="col-12 col-md-7 p-3 py-5 px-md-5">
           <div className="px-3 px-md-5">
             <FormWrapper
-              headerLabel="Get Started."
+              headerLabel="Reset Password"
               backButtonlabel="Don't have an account?"
               backButtonHrefText="Sign up"
               backButtonHref="/accounts/signup"
+              showSocial = {false}
             >
               <form noValidate onSubmit={handleSubmit}>
                 {/* email */}
@@ -180,32 +131,25 @@ const SigninPage = () => {
                   )}
                 </div>
 
-                {/* password */}
-                <PasswordInput
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  formErrors={formErrors}
-                />
-
                 {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
 
                 {/* submit button */}
                 <button
                   type="submit"
                   className="btn btn-primary w-100 my-3"
-                  disabled={loggingIn}
+                  disabled={submitting}
                 >
-                  {loggingIn ? "Logging in..." : "Sign In"}
+                  {submitting ? "Submitting in..." : "Submit"}
                 </button>
               </form>
               <div className="text-end">
-                <Link href="/" className="text-primary small me-2">
-                  Home
-                </Link>
-              <Link href={"/accounts/reset-password"} className="text-secondary small">
-                  Forgot your password?
+                <Link href="#" className="text-primary small me-2"
+                onClick={(e)=>{
+                    e.preventDefault()
+                    router.back()
+                }}
+                >
+                  Back to login
                 </Link>
               </div>
             </FormWrapper>
