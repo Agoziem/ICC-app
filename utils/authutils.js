@@ -1,15 +1,11 @@
-// authUtils.js
-// validate user 
 export const validateUser = async (id) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getuser/${id}/`
-  );
-  return await res.json();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getuser/${id}/`);
+  const data = await res.json();
+  return data;
 };
 
-// fetch Oauth UserData
 export const fetchOAuthUserData = async (provider, profile) => {
-  const res = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/register_oauth/${provider}/`,
     {
       method: "POST",
@@ -17,19 +13,17 @@ export const fetchOAuthUserData = async (provider, profile) => {
       headers: { "Content-Type": "application/json" },
     }
   );
-  if (!res.ok) {
-    throw new Error(
-      "An error occurred while trying to verify user credentials"
-    );
+  
+  if (!response.ok) {
+    throw new Error("An error occurred while trying to verify user credentials");
   }
-  return await res.json();
+  
+  return await response.json();
 };
 
- 
-// authorize Credentials
 export const authorizeCredentials = async (credentials) => {
   try {
-    const res = await fetch(
+    const response = await fetch(
       `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/verifyuser/`,
       {
         method: "POST",
@@ -38,16 +32,40 @@ export const authorizeCredentials = async (credentials) => {
       }
     );
 
-    if (!res.ok) {
-      throw new Error(
-        "An error occurred while trying to verify user credentials"
-      );
+    if (!response.ok) {
+      throw new Error("An error occurred while trying to verify user credentials");
     }
-
-    const { user } = await res.json();
-    return user;
+    
+    const userdata = await response.json();
+    return userdata.user;
   } catch (error) {
     console.error("error:", error);
     return null;
   }
 };
+
+const mapOAuthUserData = (userData, token) => {
+  const {
+    id, username, first_name, last_name, email, is_staff, date_joined,
+    isOauth, emailIsVerified, twofactorIsEnabled, Sex: sex, phone, address, avatar_name, avatar_url
+  } = userData;
+
+  Object.assign(token, {
+    id, username, first_name, last_name, email, is_staff, date_joined,
+    isOauth, emailIsVerified, twofactorIsEnabled, sex, phone, address, avatar_name, avatar_url
+  });
+};
+
+const mapNonOAuthUserData = (userData, token) => {
+  const {
+    id, username, first_name, last_name, avatar_url, email, is_staff, date_joined,
+    isOauth, emailIsVerified, twofactorIsEnabled, Sex: sex, phone, address, avatar, avatar_name
+  } = userData;
+
+  Object.assign(token, {
+    id, username, first_name, last_name, picture: avatar_url, email, is_staff,
+    date_joined, isOauth, emailIsVerified, twofactorIsEnabled, sex, phone, address, avatar, avatar_name, avatar_url
+  });
+};
+
+export { mapOAuthUserData, mapNonOAuthUserData };
