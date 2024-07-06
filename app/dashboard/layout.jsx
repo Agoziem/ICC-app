@@ -5,6 +5,7 @@ import SideBar from "@/components/sidebar/SideBar";
 import React from "react";
 import NavList from "./navList";
 import Main from "@/components/Main/Main";
+import { SidebartoggleRefProvider } from "@/components/sidebar/sideBarTogglerContext";
 
 export const metadata = {
   title: "ICC dashboard",
@@ -15,16 +16,18 @@ export const metadata = {
 const dashboardlayout = ({ children }) => {
   return (
     <div>
-      <Header portalname={"Dashboard"} portallink={"/dashboard"} />
-      <SideBar navList={NavList} />
-      <div
-        className="d-flex flex-column justify-content-between"
-        style={{ minHeight: "100vh" }}
-      >
-        <Main>{children}</Main>
-        <Footer />
-      </div>
-      <BackToTop />
+      <SidebartoggleRefProvider>
+        <Header portalname={"Dashboard"} portallink={"/dashboard"} />
+        <SideBar navList={NavList} />
+        <div
+          className="d-flex flex-column justify-content-between"
+          style={{ minHeight: "100vh" }}
+        >
+          <Main>{children}</Main>
+          <Footer />
+        </div>
+        <BackToTop />
+      </SidebartoggleRefProvider>
     </div>
   );
 };

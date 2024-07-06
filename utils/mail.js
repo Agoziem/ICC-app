@@ -20,3 +20,20 @@ export const sendVerificationEmail = async (email, token) => {
   }
 };
 
+
+export const sendPasswordResetEmail = async (email, token) => {
+  const resetLink = `${process.env.NEXT_PUBLIC_URL}/accounts/new-password?token=${token}`;
+
+  try {
+    await resend.emails.send({
+      from: "ICCapp <emails@innovationscybercafe.com>",
+      to: email,
+      subject: "Reset your password",
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+      reply_to: "innovationscybercafe@gmail.com",
+    });
+    return { success: true, message: 'We have sent you a password reset email. Please check your inbox and click on the link to reset your password.' };
+  } catch (error) {
+    return { success: false, message: 'Failed to send password reset email', error: error.message };
+  }
+};

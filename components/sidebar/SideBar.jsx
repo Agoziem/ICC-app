@@ -52,7 +52,7 @@ function SideBar({ navList }) {
                   return true; // Keep all navGroups for staff users
                 } else {
                   // Exclude specific navGroups for non-staff users
-                  return !["payments", "customers", "configurations"].includes(
+                  return !["Payments", "Customers", "Configurations"].includes(
                     navGroup.name
                   );
                 }
@@ -124,7 +124,7 @@ function SideBar({ navList }) {
                   return true; // Keep all navGroups for staff users
                 } else {
                   // Exclude specific navGroups for non-staff users
-                  return !["payments", "customers", "configurations"].includes(
+                  return !["Payments", "Customers", "Configurations"].includes(
                     navGroup.name
                   );
                 }

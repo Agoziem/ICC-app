@@ -6,11 +6,11 @@ import styles from "../accounts.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Alert from "@/components/Alert/Alert";
-import { sendVerificationEmail } from "@/utils/mail";
+import { sendPasswordResetEmail } from "@/utils/mail";
 
 const SigninPage = () => {
-  const router = useRouter()
-  const [formData, setFormData] = useState({ email: ""});
+  const router = useRouter();
+  const [formData, setFormData] = useState({ email: "" });
   const [formErrors, setFormErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [alert, setAlert] = useState({
@@ -18,7 +18,6 @@ const SigninPage = () => {
     message: "",
     type: "success",
   });
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,11 +34,12 @@ const SigninPage = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "Email address is invalid";
     }
+    return errors;
   };
 
   const validateUser = async (email) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getUserbyEmail/`,
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getResetPasswordToken/`,
       {
         method: "POST",
         headers: {
@@ -57,7 +57,27 @@ const SigninPage = () => {
     const errors = validate();
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
-      
+      const { email } = formData;
+      setSubmitting(true);
+      setFormData({ email: "" });
+      const user = await validateUser(email);
+      if (user) {
+        const res = await sendPasswordResetEmail(user.email, user.verificationToken);
+        setAlert({
+          show: true,
+          message: res.message,
+          type: res.success ? "success" : "danger",
+        });
+      } else {
+        setAlert({
+          show: true,
+          message: "User not found",
+          type: "danger",
+        });
+      }
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "" });
+      }, 5000);
       setSubmitting(false);
     }
   };
@@ -108,7 +128,7 @@ const SigninPage = () => {
               backButtonlabel="Don't have an account?"
               backButtonHrefText="Sign up"
               backButtonHref="/accounts/signup"
-              showSocial = {false}
+              showSocial={false}
             >
               <form noValidate onSubmit={handleSubmit}>
                 {/* email */}
@@ -116,17 +136,17 @@ const SigninPage = () => {
                   <input
                     type="email"
                     className={`form-control ${
-                      formErrors.email ? "is-invalid" : ""
+                      formErrors?.email ? "is-invalid" : ""
                     }`}
-                    value={formData.email}
+                    value={formData?.email}
                     onChange={handleChange}
                     name="email"
                     placeholder="Enter your email"
                     required
                   />
-                  {formErrors.email && (
+                  {formErrors?.email && (
                     <div className="text-danger invalid-feedback">
-                      {formErrors.email}
+                      {formErrors?.email}
                     </div>
                   )}
                 </div>
@@ -139,15 +159,17 @@ const SigninPage = () => {
                   className="btn btn-primary w-100 my-3"
                   disabled={submitting}
                 >
-                  {submitting ? "Submitting in..." : "Submit"}
+                  {submitting ? "Submitting..." : "Submit"}
                 </button>
               </form>
               <div className="text-end">
-                <Link href="#" className="text-primary small me-2"
-                onClick={(e)=>{
-                    e.preventDefault()
-                    router.back()
-                }}
+                <Link
+                  href="#"
+                  className="text-primary small me-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    router.back();
+                  }}
                 >
                   Back to login
                 </Link>
