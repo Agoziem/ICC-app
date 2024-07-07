@@ -1,7 +1,7 @@
 import ArticleImageUploader from "@/components/Imageuploader/ArticleImageUploader";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import { converttoformData } from "@/utils/formutils";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Alert from "@/components/Alert/Alert";
 import Tiptap from "@/components/Richtexteditor/Tiptap";
 import { TiTimes } from "react-icons/ti";
@@ -23,8 +23,28 @@ const ArticleForm = ({
     type: "",
   });
   const [tag, setTag] = useState("");
+  const [saving,setSaving] = useState(false)
 
-  // use Local Storage to get the article data in case of page refresh
+
+  // set the edit article to local Storage when in edit mode and update the state every time the article changes, at itervals of 1 second
+  useEffect(() => {
+    if (editMode) {
+      setSaving(true)
+      localStorage.setItem("editArticle", JSON.stringify(article));
+      setSaving(false)
+    }
+    const interval = setInterval(() => {
+      if (editMode) {
+        setSaving(true)
+        localStorage.setItem("editArticle", JSON.stringify(article));
+        setSaving(false)
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [article]);
+
+  
+  
 
 
   const createSlug = (title) => {

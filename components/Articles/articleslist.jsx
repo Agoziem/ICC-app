@@ -96,14 +96,18 @@ const ArticlesList = () => {
                           : "1px solid var(--bgDarkColor)",
                     }}
                   >
-                    <img
-                      src={item.img_url}
-                      alt="article"
-                      width={90}
-                      height={90}
-                      className="object-fit-cover rounded me-4"
-                    />
-                    <div>
+                    {item.img_url ? (
+                      <img
+                        src={item.img_url}
+                        alt="article"
+                        width={90}
+                        height={90}
+                        className="object-fit-cover rounded me-4"
+                      />
+                    ) : (
+                      <ArticlePlaceholder />
+                    )}
+                    <div className="ms-2">
                       <h5 className="mb-1">{item.title}</h5>
                       <p className="my-0 mb-1">{item.subtitle}...</p>
                       <div
@@ -156,20 +160,18 @@ const ArticlesList = () => {
                           : "1px solid var(--bgDarkColor)",
                     }}
                   >
-                    {
-                      item.img_url ? (
-                        <img
-                      src={item.img_url}
-                      alt="article"
-                      width={90}
-                      height={90}
-                      className="object-fit-cover rounded me-4"
-                    />
-                      ):(
+                    {item.img_url ? (
+                      <img
+                        src={item.img_url}
+                        alt="article"
+                        width={90}
+                        height={90}
+                        className="object-fit-cover rounded me-4"
+                      />
+                    ) : (
                       <ArticlePlaceholder />
-                      )
-                    }
-                    <div>
+                    )}
+                    <div className="ms-2">
                       <h5 className="mb-1">{item.title}</h5>
                       <p className="my-0 mb-1">{item.subtitle}...</p>
                       <div
