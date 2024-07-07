@@ -11,9 +11,10 @@ import PageTitle from "@/components/PageTitle/PageTitle";
 import OrderTableItems from "@/components/orders/OrderTableItems";
 import CartButton from "@/components/Offcanvas/CartButton";
 import CategoryTabs from "@/components/Categories/Categoriestab";
+import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
 
 const ServicesPage = () => {
-  const { services } = useAdminContext();
+  const { services, openModal } = useAdminContext();
   const { categories } = useContext(OrganizationContext);
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
@@ -45,11 +46,11 @@ const ServicesPage = () => {
       <div style={{ minHeight: "100vh" }}>
         <div className="d-flex justify-content-between align-items-center pe-3 pb-3 flex-wrap">
           <div>
-            <h4 className="my-3">{currentCategory} Services</h4>
+            <h4 className="my-3 me-2">{currentCategory} Services</h4>
           </div>
           <CartButton />
         </div>
-        
+
         <div className="mb-4">
           <CategoryTabs
             categories={categories}
@@ -72,58 +73,69 @@ const ServicesPage = () => {
                   <div key={service.id} className="col-12 col-md-4">
                     <div className="card p-4 py-4">
                       <div className="d-flex align-items-center">
-                        {service.preview ? (
-                          <img
-                            src={service.img_url}
-                            alt="services"
-                            width={68}
-                            height={68}
-                            className="me-3 rounded-circle object-fit-cover"
-                            style={{ objectPosition: "center" }}
-                          />
-                        ) : (
-                          <div
-                            className="me-3 d-flex justify-content-center align-items-center"
-                            style={{
-                              width: "68px",
-                              height: "68px",
-                              borderRadius: "50%",
-                              backgroundColor: "var(--bgDarkColor)",
-                              color: "var(--bgDarkerColor)",
-                            }}
-                          >
-                            <i className="bi bi-person-fill-gear h2 mb-0"></i>
-                          </div>
-                        )}
+                        <div className="me-3">
+                          {service.preview ? (
+                            <img
+                              src={service.img_url}
+                              alt="services"
+                              width={68}
+                              height={68}
+                              className="rounded-circle object-fit-cover"
+                              style={{ objectPosition: "center" }}
+                            />
+                          ) : (
+                            <ServicesPlaceholder />
+                          )}
+                        </div>
+
                         <div
                           className="flex-fill d-flex flex-column justify-content-between"
                           style={{ height: "100%" }}
                         >
                           <h6 className="flex-grow-1">{service.name}</h6>
-                          <div className="d-flex justify-content-around mt-3">
+                          {/* Shorten the lenght by 100 characters */}
+                          <p className="text-primary mb-1">
+                            {service.description.length > 80 ? (
+                              <span>
+                                {service.description.substring(0, 80)}...{" "}
+                                <span
+                                  className="text-secondary fw-bold"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => openModal(service)}
+                                >
+                                  view more
+                                </span>
+                              </span>
+                            ) : (
+                              service.description
+                            )}
+                          </p>
+                          <div className="d-flex justify-content-between mt-3 flex-wrap">
                             <span className="fw-bold text-primary me-2">
                               &#8358;{parseFloat(service.price)}
                             </span>
 
-                            {cart.find((item) => item.id === service.id) ? (
-                              <span
-                                className="badge bg-secondary-light text-secondary p-2"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => removeFromCart(service.id)}
-                              >
-                                remove Service {"  "}
-                                <i className="bi bi-cart-dash"></i>
-                              </span>
-                            ) : (
-                              <span
-                                className="badge bg-success-light text-success p-2"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => addToCart(service)}
-                              >
-                                Add Service {"  "}
-                                <i className="bi bi-cart-plus"></i>
-                              </span>
-                            )}
+                            <div className="me-2 me-md-3">
+                              {cart.find((item) => item.id === service.id) ? (
+                                <span
+                                  className="badge bg-secondary-light text-secondary p-2"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => removeFromCart(service.id)}
+                                >
+                                  remove Service {"  "}
+                                  <i className="bi bi-cart-dash"></i>
+                                </span>
+                              ) : (
+                                <span
+                                  className="badge bg-success-light text-success p-2"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => addToCart(service)}
+                                >
+                                  Add Service {"  "}
+                                  <i className="bi bi-cart-plus"></i>
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -161,7 +173,12 @@ const ServicesPage = () => {
 
           <div className="mt-2">
             <h5>Services Ordered</h5>
-            <Datatable items={items} setItems={setItems} label={"Orders"} filteritemlabel={"reference"}>
+            <Datatable
+              items={items}
+              setItems={setItems}
+              label={"Orders"}
+              filteritemlabel={"reference"}
+            >
               <OrderTableItems />
             </Datatable>
           </div>

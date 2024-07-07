@@ -7,13 +7,14 @@ import { useAdminContext } from "@/data/Admincontextdata";
 import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
 import { PiEmptyBold } from "react-icons/pi";
+import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
 
 const ApplicationsPage = () => {
-  const { applications, setApplications } = useAdminContext();
+  const { applications, setApplications, openModal } = useAdminContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const { orders } = useAdminContext();
-  const [items,setItems] = useState([]);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     setItems(userOrder);
@@ -52,58 +53,66 @@ const ApplicationsPage = () => {
               <div key={application.id} className="col-12 col-md-4">
                 <div className="card p-4 py-4">
                   <div className="d-flex align-items-center">
-                    {application.preview ? (
-                      <img
-                        src={application.img_url}
-                        alt="application"
-                        width={75}
-                        height={75}
-                        className="me-3 rounded-circle object-fit-cover"
-                        style={{
-                          objectPosition: "center",
-                        }}
-                      />
-                    ) : (
-                      <div
-                        className="p-3 d-flex justify-content-center align-items-center"
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          borderRadius: "50%",
-                          backgroundColor: "var(--bgDarkColor)",
-                          color: "var(--bgDarkerColor)",
-                        }}
-                      >
-                        <i className="bi bi-google-play h4 mb-0"></i>
-                      </div>
-                    )}
+                    <div className="me-3">
+                      {application.preview ? (
+                        <img
+                          src={application.img_url}
+                          alt="application"
+                          width={75}
+                          height={75}
+                          className="rounded-circle object-fit-cover"
+                          style={{
+                            objectPosition: "center",
+                          }}
+                        />
+                      ) : (
+                        <ApplicationPlaceholder />
+                      )}
+                    </div>
 
-                    <div className="ms-3 flex-fill">
+                    <div className="ms-2 flex-fill">
                       <h6>{application.name}</h6>
-                      <div className="d-flex justify-content-around mt-3">
+                      <p className="text-primary mb-1">
+                        {application.description.length > 80 ? (
+                          <span>
+                            {application.description.substring(0, 80)}...{" "}
+                            <span
+                              className="text-secondary fw-bold"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => openModal(application)}
+                            >
+                              view more
+                            </span>
+                          </span>
+                        ) : (
+                          application.description
+                        )}
+                      </p>
+                      <div className="d-flex justify-content-between mt-3">
                         <span className="fw-bold text-primary me-2">
                           &#8358;{parseFloat(application.price)}
                         </span>
-
-                        {cart.find((item) => item.id === application.id) ? (
-                          <span
-                            className="badge bg-secondary-light text-secondary p-2"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => removeFromCart(application.id)}
-                          >
-                            remove from Cart {"  "}
-                            <i className="bi bi-cart-dash"></i>
-                          </span>
-                        ) : (
-                          <span
-                            className="badge bg-success-light text-success p-2"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => addToCart(application)}
-                          >
-                            Add to Cart {"  "}
-                            <i className="bi bi-cart-plus"></i>
-                          </span>
-                        )}
+                        <span className="me-2 me-md-4">
+                          {cart.find((item) => item.id === application.id) ? (
+                            <span
+                              className="badge bg-secondary-light text-secondary p-2"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => removeFromCart(application.id)}
+                            >
+                              remove from Cart {"  "}
+                              <i className="bi bi-cart-dash"></i>
+                            </span>
+                          ) : (
+                            <span
+                              className="badge bg-success-light text-success p-2"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => addToCart(application)}
+                            >
+                              Add to Cart {"  "}
+                              <i className="bi bi-cart-plus"></i>
+                            </span>
+                          )}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -127,7 +136,12 @@ const ApplicationsPage = () => {
 
           <div className="mt-2">
             <h5>Orders made</h5>
-            <Datatable items={items} setItems={setItems} label={"Orders"} filteritemlabel={"reference"}>
+            <Datatable
+              items={items}
+              setItems={setItems}
+              label={"Orders"}
+              filteritemlabel={"reference"}
+            >
               <OrderTableItems />
             </Datatable>
           </div>

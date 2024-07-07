@@ -100,7 +100,6 @@ const ArticleList = ({
                 <button
                   className="btn btn-sm btn-accent-primary me-2 rounded"
                   onClick={() => {
-                    console.log(article);
                     setArticle({
                       id: article.id,
                       img: article.img,

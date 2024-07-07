@@ -47,6 +47,7 @@ const ServiceForm = ({
           name="name"
           value={service.name}
           onChange={(e) => setService({ ...service, name: e.target.value })}
+          required
         />
       </div>
       <div className="mb-3">
@@ -61,6 +62,8 @@ const ServiceForm = ({
           onChange={(e) =>
             setService({ ...service, description: e.target.value })
           }
+          rows = "4"
+          required
         ></textarea>
       </div>
       <div className="mb-3">

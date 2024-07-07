@@ -11,7 +11,7 @@ import CategoryTabs from "@/components/Categories/Categoriestab";
 import CategoriesForm from "@/components/Categories/Categories";
 
 const Services = () => {
-  const { services, setServices, applications, setApplications } = useAdminContext();
+  const { services, setServices, applications, setApplications,openModal } = useAdminContext();
   const { OrganizationData, categories, setCategories } = useContext(OrganizationContext);
   
   const initialServiceState = {
@@ -160,6 +160,7 @@ const Services = () => {
         {currentCategory !== "application"
           ? services.filter((service) => currentCategory === service.category.category).map((service) => (
               <ServiceCard
+              openModal={openModal}
                 key={service.id}
                 tab={currentCategory}
                 item={service}
@@ -169,6 +170,7 @@ const Services = () => {
             ))
           : applications.map((application) => (
               <ServiceCard
+              openModal={openModal}
                 key={application.id}
                 item={application}
                 tab={currentCategory}

@@ -6,7 +6,7 @@ const CartButton = () => {
   const { cart } = useCart();
   return (
     <div
-      className="px-3 py-2 position-relative"
+      className="px-3 py-2 position-relative mb-2 mb-md-0"
       style={{
         cursor: "pointer",
         backgroundColor: "var(--bgDarkerColor)",

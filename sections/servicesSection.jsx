@@ -8,7 +8,7 @@ import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
 import { useCart } from "@/data/Cartcontext";
 
 const ServicesSection = () => {
-  const { services, categories } = useContext(OrganizationContext);
+  const { services, categories, openModal } = useContext(OrganizationContext);
   const { cart, addToCart, removeFromCart } = useCart();
 
   return (
@@ -130,10 +130,21 @@ const ServicesSection = () => {
                                   ? service.name.slice(0, 30) + "..."
                                   : service.name}
                               </h6>
-                              <p>
-                                {service.description.length > 100
-                                  ? service.description.slice(0, 100) + "..."
-                                  : service.description}
+                              <p className="text-primary mb-1">
+                                {service.description.length > 100 ? (
+                                  <span>
+                                    {service.description.substring(0, 100)}...{" "}
+                                    <span
+                                      className="text-secondary fw-bold"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => openModal(service)}
+                                    >
+                                      view more
+                                    </span>
+                                  </span>
+                                ) : (
+                                  service.description
+                                )}
                               </p>
                               <hr />
                               <div className="d-flex justify-content-around mt-4">
@@ -216,11 +227,22 @@ const ServicesSection = () => {
                                 ? service.name.slice(0, 30) + "..."
                                 : service.name}
                             </h6>
-                            <p>
-                              {service.description.length > 100
-                                ? service.description.slice(0, 100) + "..."
-                                : service.description}
-                            </p>
+                            <p className="text-primary mb-1">
+                            {service.description.length > 100 ? (
+                              <span>
+                                {service.description.substring(0, 100)}...{" "}
+                                <span
+                                  className="text-secondary fw-bold"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => openModal(service)}
+                                >
+                                  view more
+                                </span>
+                              </span>
+                            ) : (
+                              service.description
+                            )}
+                          </p>
                             <hr />
                             <div className="d-flex justify-content-around mt-4">
                               <span className="fw-bold text-primary me-2">

@@ -1,6 +1,7 @@
 "use client";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import React, { createContext, useEffect, useState } from "react";
+import Modal from "@/components/Modal/modal";
 const OrganizationContext = createContext();
 
 const OrganizationContextProvider = ({ children }) => {
@@ -13,9 +14,11 @@ const OrganizationContextProvider = ({ children }) => {
   const [depts, setDepts] = useState([]);
   const [storedOrganizationalData, setStoredOrganizationalData] =
     useLocalStorage("OrganizationData", OrganizationData);
-  
+
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalService, setModalService] = useState(null);
 
   useEffect(() => {
     const isEmptyData =
@@ -41,7 +44,6 @@ const OrganizationContextProvider = ({ children }) => {
       setOrganizationData(storedOrganizationalData);
     }
   }, [organizationID, storedOrganizationalData]);
-  
 
   // get messages
   useEffect(() => {
@@ -92,6 +94,16 @@ const OrganizationContextProvider = ({ children }) => {
     }
   }, [organizationID]);
 
+  const openModal = (service) => {
+    setModalService(service);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setModalService(null);
+    setShowModal(false);
+  };
+
   return (
     <OrganizationContext.Provider
       value={{
@@ -112,9 +124,25 @@ const OrganizationContextProvider = ({ children }) => {
         setCategories,
         depts,
         setDepts,
+        openModal, // Open Description Modal
+        closeModal, // Close Description Modal
       }}
     >
       {children}
+      {/* Modal for Service Description */}
+      <Modal showmodal={showModal} toggleModal={closeModal}>
+        <div className="">
+          <h5 className="mb-3">Service Description</h5>
+          <div className="modal-body">
+            <p>{modalService?.description}</p>
+          </div>
+          <div>
+            <button className="btn btn-primary" onClick={() => closeModal()}>
+              Close
+            </button>
+          </div>
+        </div>
+      </Modal>
     </OrganizationContext.Provider>
   );
 };
