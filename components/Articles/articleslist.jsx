@@ -163,7 +163,7 @@ const ArticlesList = () => {
                           : "1px solid var(--bgDarkColor)",
                     }}
                   >
-                    <div className="me-4">
+                    <div className="me-3">
                       {item.img_url ? (
                         <img
                           src={item.img_url}
