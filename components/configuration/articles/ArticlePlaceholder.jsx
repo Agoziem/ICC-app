@@ -2,8 +2,8 @@ import React from "react";
 import { MdOutlineArticle } from "react-icons/md";
 
 const ArticlePlaceholder = ({
-  width = 900,
-  height = 600,
+  width = 90,
+  height = 90,
   fontSize = "2rem",
 }) => {
   return (

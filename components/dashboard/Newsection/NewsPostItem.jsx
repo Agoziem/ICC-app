@@ -4,7 +4,7 @@ import React from "react";
 
 function NewsPostItem({ item }) {
   return (
-    <div className="post-item clearfix">
+    <div className="post-item">
       {item.image ? (
         <div className="post-image">
           <img src={item.image} alt={item.title} />
@@ -12,10 +12,12 @@ function NewsPostItem({ item }) {
       ) : (
         <ArticlePlaceholder />
       )}
-      <h6>
-        <Link href={`/articles/${item.slug}`}>{item.title}</Link>
-      </h6>
-      <p>{item.subtitle}...</p>
+      <div className="flex-f">
+        <h6>
+          <Link href={`/articles/${item.slug}`}>{item.title}</Link>
+        </h6>
+        <p>{item.subtitle}...</p>
+      </div>
     </div>
   );
 }
