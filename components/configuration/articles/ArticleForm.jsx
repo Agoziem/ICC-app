@@ -24,6 +24,9 @@ const ArticleForm = ({
   });
   const [tag, setTag] = useState("");
 
+  // use Local Storage to get the article data in case of page refresh
+
+
   const createSlug = (title) => {
     return title
       .toLowerCase()
