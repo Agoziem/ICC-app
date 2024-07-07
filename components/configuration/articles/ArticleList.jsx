@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { MdOutlineArticle } from "react-icons/md";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
+import ArticlePlaceholder from "./ArticlePlaceholder";
 const ArticleList = ({
   articles,
   setArticles,
@@ -82,18 +82,7 @@ const ArticleList = ({
                       style={{ objectPosition: "top center" }}
                     />
                   ) : (
-                    <div
-                      className="d-flex justify-content-center align-items-center me-3 rounded"
-                      style={{
-                        width: "90px",
-                        height: "90px",
-                        fontSize: "40px",
-                        backgroundColor: "var(--bgDarkColor)",
-                        color: "var(--bgDarkerColor)",
-                      }}
-                    >
-                      <MdOutlineArticle />
-                    </div>
+                    <ArticlePlaceholder />
                   )}
                 </div>
                 <div className="flex-fill">

@@ -8,6 +8,7 @@ import { useArticleContext } from "@/data/Articlescontextdata";
 import NextBreadcrumb from "../Breadcrumb/breadcrumb";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import ArticlePlaceholder from "../configuration/articles/ArticlePlaceholder";
 
 const ArticlesList = () => {
   const { articles, categories } = useArticleContext();
@@ -155,13 +156,19 @@ const ArticlesList = () => {
                           : "1px solid var(--bgDarkColor)",
                     }}
                   >
-                    <img
+                    {
+                      item.img_url ? (
+                        <img
                       src={item.img_url}
                       alt="article"
                       width={90}
                       height={90}
                       className="object-fit-cover rounded me-4"
                     />
+                      ):(
+                      <ArticlePlaceholder />
+                      )
+                    }
                     <div>
                       <h5 className="mb-1">{item.title}</h5>
                       <p className="my-0 mb-1">{item.subtitle}...</p>
