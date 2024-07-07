@@ -15,6 +15,8 @@ const ArticlePlaceholder = ({
         fontSize: fontSize,
         backgroundColor: "var(--bgDarkColor)",
         color: "var(--bgDarkerColor)",
+        flexShrink: 0, // Prevents shrinking
+        overflow: "hidden", // Ensures content fits within the container
       }}
     >
       <MdOutlineArticle />

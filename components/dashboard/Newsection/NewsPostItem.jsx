@@ -4,10 +4,10 @@ import React from "react";
 
 function NewsPostItem({ item }) {
   return (
-    <div className="post-item">
+    <div className="post-item d-flex">
       {item.image ? (
         <div className="post-image">
-          <img src={item.image} alt={item.title} />
+          <img src={item.img_url} alt={item.title} />
         </div>
       ) : (
         <ArticlePlaceholder />
