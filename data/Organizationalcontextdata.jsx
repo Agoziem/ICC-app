@@ -130,7 +130,7 @@ const OrganizationContextProvider = ({ children }) => {
     >
       {children}
       {/* Modal for Service Description */}
-      {/* <Modal showmodal={showModal} toggleModal={closeModal}>
+      <Modal showmodal={showModal} toggleModal={closeModal}>
         <div className="">
           <h5 className="mb-3">Service Description</h5>
           <div className="modal-body">
@@ -142,7 +142,7 @@ const OrganizationContextProvider = ({ children }) => {
             </button>
           </div>
         </div>
-      </Modal> */}
+      </Modal>
     </OrganizationContext.Provider>
   );
 };
