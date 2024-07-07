@@ -74,6 +74,7 @@ const ArticleForm = ({
       tags: [],
       slug: "",
       category: "",
+      readTime: 0,
     });
   };
 

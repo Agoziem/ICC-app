@@ -61,6 +61,7 @@ const ArticleList = ({
       tags: [],
       slug: "",
       category: "",
+      readTime: 0,
     });
   };
 
@@ -111,6 +112,7 @@ const ArticleList = ({
                       tags: article.tags.map((t) => t.tag),
                       slug: article.slug,
                       category: article.category.category,
+                      readTime: article.readTime,
                     });
                     setEditMode(true);
                   }}
@@ -131,6 +133,7 @@ const ArticleList = ({
                       tags: article.tags.map((t) => t.tag),
                       slug: article.slug,
                       category: article.category.category,
+                      readTime: article.readTime,
                     });
                     setShowModal(true);
                   }}
