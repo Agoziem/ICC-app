@@ -11,7 +11,7 @@
 
 .dashboard .news h6 {
   font-size: 13px;
-  margin-left: 95px;
+  /* margin-left: 95px; */
   font-weight: bold;
   margin-bottom: 5px;
 }
@@ -28,5 +28,5 @@
 .dashboard .news p {
   font-size: 14px;
   color: var(--primary);
-  margin-left: 95px;
+  /* margin-left: 95px; */
 }

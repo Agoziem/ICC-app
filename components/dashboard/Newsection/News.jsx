@@ -6,8 +6,8 @@ import { useArticleContext } from "@/data/Articlescontextdata";
 function News() {
   const { articles } = useArticleContext();
   return (
-    <div className="card">
-      <div className="card-body pb-0">
+    <div className="card ">
+      <div className="card-body pb-4">
         <h6 className="px-3 pt-2">Articles &amp; Updates</h6>
         <hr />
 
@@ -16,7 +16,7 @@ function News() {
             articles.length > 0 ?
             articles
               .slice(0, 5)
-              .map((item) => <NewsPostItem key={item.id} item={item} />) :(
+              .map((item,index) => <NewsPostItem key={item.id} item={item} index={index} items={articles} />) :(
               <div className="d-flex justify-content-center align-items-center">
                 <p className="fw-bold mb-1 py-4" style={{marginLeft:"0px"}}>No Articles Available</p>
               </div>

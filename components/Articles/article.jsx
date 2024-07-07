@@ -139,7 +139,7 @@ const Article = ({ params }) => {
                     article.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="badge bg-secondary-light text-secondary rounded-5 px-3 py-2 me-1"
+                        className="badge bg-secondary-light text-secondary rounded-5 px-3 py-2 me-1 mb-2 mb-md-0"
                       >
                         {tag.tag}
                       </span>

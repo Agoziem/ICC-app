@@ -21,8 +21,10 @@ const ArticleConf = () => {
     tags: [],
     slug: "",
     category: "",
+    readTime: 0,
   });
   const [editMode, setEditMode] = useState(false);
+
 
   return (
     <div className="row mt-4 justify-content-between">

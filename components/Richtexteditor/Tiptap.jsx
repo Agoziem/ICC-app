@@ -7,7 +7,7 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import "./Tiptap.css";
 
-const Tiptap = ({ item, setItem, keylabel   }) => {
+const Tiptap = ({ item, setItem, keylabel, setHasStartedEditing = "" }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -33,6 +33,7 @@ const Tiptap = ({ item, setItem, keylabel   }) => {
       },
     },
     onUpdate: ({ editor }) => {
+      setHasStartedEditing && setHasStartedEditing(true);
       setItem({
         ...item,
         [keylabel]: editor.getHTML(),

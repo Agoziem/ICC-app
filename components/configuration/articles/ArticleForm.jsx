@@ -23,29 +23,38 @@ const ArticleForm = ({
     type: "",
   });
   const [tag, setTag] = useState("");
-  const [saving,setSaving] = useState(false)
+  const [saving, setSaving] = useState(false);
+  const [hasStartedEditing, setHasStartedEditing] = useState(false); // New state to track if editing has started
+  const [progressRestoredMessage, setProgressRestoredMessage] = useState("");
 
-
-  // set the edit article to local Storage when in edit mode and update the state every time the article changes, at itervals of 1 second
+  // Load draft from local storage on mount
   useEffect(() => {
-    if (editMode) {
-      setSaving(true)
-      localStorage.setItem("editArticle", JSON.stringify(article));
-      setSaving(false)
+    const savedDraft = localStorage.getItem("draftArticle");
+    if (savedDraft) {
+      setArticle(JSON.parse(savedDraft));
+      setProgressRestoredMessage("Your Draft was restored");
+      setTimeout(() => {
+        setProgressRestoredMessage("");
+      }, 3000);
+    }
+  }, []);
+
+  // Save draft to local storage periodically
+  useEffect(() => {
+    if (!editMode && hasStartedEditing) {
+      setSaving(true);
+      localStorage.setItem("draftArticle", JSON.stringify(article));
+      setSaving(false);
     }
     const interval = setInterval(() => {
-      if (editMode) {
-        setSaving(true)
-        localStorage.setItem("editArticle", JSON.stringify(article));
-        setSaving(false)
+      if (!editMode && hasStartedEditing) {
+        setSaving(true);
+        localStorage.setItem("draftArticle", JSON.stringify(article));
+        setSaving(false);
       }
     }, 2000);
     return () => clearInterval(interval);
-  }, [article]);
-
-  
-  
-
+  }, [article, editMode, hasStartedEditing]);
 
   const createSlug = (title) => {
     return title
@@ -71,6 +80,9 @@ const ArticleForm = ({
   const closeEditMode = () => {
     setEditMode(false);
     resetFormState();
+    setHasStartedEditing(false); // Reset editing state
+    localStorage.removeItem("editArticle");
+    localStorage.removeItem("draftArticle");
   };
 
   const addArticle = async (e, url) => {
@@ -84,7 +96,9 @@ const ArticleForm = ({
       if (res.ok) {
         const data = await res.json();
         if (editMode) {
-          setArticles(articles.map((a) => (a.id === data.id ? data : a)));
+          // take the updated article to the top of the list
+          const newArticles = articles.filter((a) => a.id !== data.id);
+          setArticles([data, ...newArticles]);
           setAlert({
             show: true,
             message: "Article updated successfully",
@@ -98,6 +112,7 @@ const ArticleForm = ({
             type: "success",
           });
         }
+        localStorage.removeItem("draftArticle");
       } else {
         throw new Error(" An error occurred");
       }
@@ -118,6 +133,9 @@ const ArticleForm = ({
   return (
     <div className="card p-4 px-md-5 py-5">
       <h4 className="mb-3">{editMode ? "Edit Article" : "Create Article"}</h4>
+      {progressRestoredMessage && (
+        <div className="text-success fw-bold">{progressRestoredMessage}</div>
+      )}
       <hr />
       <form
         onSubmit={
@@ -147,6 +165,7 @@ const ArticleForm = ({
                 title: e.target.value,
                 slug: createSlug(e.target.value),
               });
+              setHasStartedEditing(true); // Mark as started editing
             }}
             required
           />
@@ -157,16 +176,37 @@ const ArticleForm = ({
             type="text"
             className="form-control"
             value={article.subtitle}
-            onChange={(e) =>
-              setArticle({ ...article, subtitle: e.target.value })
-            }
+            onChange={(e) => {
+              setArticle({ ...article, subtitle: e.target.value });
+              setHasStartedEditing(true); // Mark as started editing
+            }}
             required
           />
         </div>
 
         <div className="form-group mb-3">
           <label className="mb-3">Body</label>
-          <Tiptap item={article} setItem={setArticle} keylabel={"body"} />
+          <Tiptap
+            item={article}
+            setItem={setArticle}
+            keylabel={"body"}
+            setHasStartedEditing={setHasStartedEditing} // Mark as started editing
+          />
+        </div>
+
+        <div className="form-group mb-3">
+          <label>Read Time</label>
+          <input
+            type="number"
+            className="form-control"
+            min={0}
+            value={article.readTime}
+            onChange={(e) => {
+              setArticle({ ...article, readTime: e.target.value });
+              setHasStartedEditing(true); // Mark as started editing
+            }}
+            required
+          />
         </div>
 
         <div className="form-group mb-3">
@@ -184,6 +224,7 @@ const ArticleForm = ({
               onClick={() => {
                 setArticle({ ...article, tags: [...article.tags, tag] });
                 setTag("");
+                setHasStartedEditing(true); // Mark as started editing
               }}
             >
               Add
@@ -205,6 +246,7 @@ const ArticleForm = ({
                         ...article,
                         tags: article.tags.filter((tag) => tag !== t),
                       });
+                      setHasStartedEditing(true); // Mark as started editing
                     }}
                   />
                 </div>
@@ -228,9 +270,10 @@ const ArticleForm = ({
           <select
             className="form-select"
             value={article.category}
-            onChange={(e) =>
-              setArticle({ ...article, category: e.target.value })
-            }
+            onChange={(e) => {
+              setArticle({ ...article, category: e.target.value });
+              setHasStartedEditing(true); // Mark as started editing
+            }}
             required
           >
             <option value="">Select Category</option>

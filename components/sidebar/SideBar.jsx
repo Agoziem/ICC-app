@@ -74,7 +74,7 @@ function SideBar({ navList }) {
                         : ""
                     }
                     data-bs-target={`#${navGroup.name}`}
-                    {...(navGroup.name === "logout" && {
+                    {...(navGroup.name === "Logout" && {
                       onClick: (e) => {
                         e.preventDefault();
                         setShowModal(true);
@@ -155,7 +155,7 @@ function SideBar({ navList }) {
                         handleSidebarClose();
                       }
                     }}
-                    {...(navGroup.name === "logout" && {
+                    {...(navGroup.name === "Logout" && {
                       onClick: (e) => {
                         e.preventDefault();
                         setShowModal(true);

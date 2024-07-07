@@ -8,7 +8,7 @@ const ArticlePlaceholder = ({
 }) => {
   return (
     <div
-      className="d-flex justify-content-center align-items-center me-3 rounded"
+      className="d-flex justify-content-center align-items-center rounded"
       style={{
         width: `${width}px`,
         height: `${height}px`,

@@ -16,11 +16,14 @@ const ArticleList = ({
     message: "",
     type: "",
   });
-  
+
   const deleteArticle = async (id) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/deleteblog/${id}`, {
-      method: "DELETE",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/deleteblog/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
     if (res.ok) {
       setArticles(articles.filter((article) => article.id !== id));
       setAlert({
@@ -59,23 +62,24 @@ const ArticleList = ({
       slug: "",
       category: "",
     });
-    
   };
 
   return (
     <div>
-      <h4 className="mb-3">{articles?.length} Article{ articles.length > 1 ? "s":""}</h4>
+      <h4 className="mb-3">
+        {articles?.length} Article{articles.length > 1 ? "s" : ""}
+      </h4>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {articles && articles.length > 0 ? (
         <div className="">
           {articles.map((article) => (
             <div key={article.id} className="card px-4 py-3">
               <div className="d-flex justify-content-between align-items-center">
-                <div>
+                <div className="me-3">
                   {article.img ? (
                     <img
                       src={article.img_url}
-                      className="rounded object-fit-cover me-3"
+                      className="rounded object-fit-cover "
                       alt="profile"
                       height={90}
                       width={90}
@@ -95,7 +99,7 @@ const ArticleList = ({
                 <button
                   className="btn btn-sm btn-accent-primary me-2 rounded"
                   onClick={() => {
-                    console.log(article)
+                    console.log(article);
                     setArticle({
                       id: article.id,
                       img: article.img,
