@@ -30,9 +30,7 @@ const OrderCompleted = () => {
 
   const message = `Hello, I just made a payment to ${OrganizationData?.name} with payment reference of ${order?.reference}. I would like to verify my order.`;
 
-  // ---------------------------------------------------------------------
-  // verify payment function
-  // ----------------------------------------------------------------------
+  // Verify payment function
   const verifyPayment = async () => {
     try {
       const response = await fetch(
@@ -42,55 +40,49 @@ const OrderCompleted = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            ref: reference,
-          }),
+          body: JSON.stringify({ ref: reference }),
         }
       );
-      if (response.status !== 200 && response.status === 404) {
-        const data = await response.json();
-        updateOrder(data);
-        updateUserOrder(data);
-        setError("An error occurred while verifying payment");
+
+      if (!response.ok) {
+        throw new Error("Failed to verify payment");
       }
+
       const data = await response.json();
       updateOrder(data);
       updateUserOrder(data);
-      setSuccessful(true);
       setOrder(data);
+      setSuccessful(true);
     } catch (error) {
-      setError("An error occurred while verifying payment");
+      setError(error.message || "An error occurred while verifying payment");
     }
   };
 
-  // ---------------------------------------------------------------------
-  // call the verify payment function
-  // ----------------------------------------------------------------------
+  // Call the verify payment function
   useEffect(() => {
-    if (reference) verifyPayment();
-  }, []);
+    if (reference) {
+      verifyPayment();
+    }
+  }, [reference]);
 
-  // ---------------------------------------------------------------------
-  // copy to clipboard function
-  // ----------------------------------------------------------------------
+  // Copy to clipboard function
   const handleCopy = () => {
     setCopied(true);
-    if (order.reference) navigator.clipboard.writeText(order.reference);
+    if (order.reference) {
+      navigator.clipboard.writeText(order.reference);
+    }
     setTimeout(() => setCopied(false), 3000);
   };
 
   return (
-    <div
-      className="d-flex justify-content-center align-items-center py-5"
-      style={{ minHeight: "100vh" }}
-    >
+    <div className="d-flex justify-content-center align-items-center py-5" style={{ minHeight: "100vh" }}>
       {!successful && !error ? (
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       ) : null}
 
-      {successful ? (
+      {successful && !error ? (
         <div className="card text-center px-4">
           <div ref={pdfRef} className="px-5 pt-5">
             <div
@@ -120,7 +112,7 @@ const OrderCompleted = () => {
               <span className="fw-bold">Amount: </span>&#8358;{order.amount}
             </p>
             <p className="mb-1">
-              <div className="fw-bold">Payment Reference: </div>
+              <span className="fw-bold">Payment Reference: </span>
               {order.reference}
               {copied ? (
                 <FaCheck className="h6 ms-2 text-success" />
@@ -147,31 +139,27 @@ const OrderCompleted = () => {
                 onClick={savePdf}
               >
                 {loading ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                  >
-                    <span className="visually-hidden">downloading...</span>
+                  <div className="spinner-border spinner-border-sm" role="status">
+                    <span className="visually-hidden">Downloading...</span>
                   </div>
                 ) : (
                   "Save Receipt"
                 )}
               </div>
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  router.push("/dashboard/services");
-                }}
-              >
+              <button className="btn btn-primary" onClick={() => router.push("/dashboard/services")}>
                 Continue Shopping
               </button>
             </div>
             <div className="px-3 my-2 mt-4">
-              copy the payment reference to clipboard to track your order
+              Copy the payment reference to clipboard to track your order
             </div>
-            <Link href={`${OrganizationData?.whatsapplink}?text=${encodeURIComponent(message)}` || "#"} target="_blank" className="btn btn-accent-primary shadow-none rounded px-5">
+            <Link
+              href={`${OrganizationData?.whatsapplink}?text=${encodeURIComponent(message)}` || "#"}
+              target="_blank"
+              className="btn btn-accent-primary shadow-none rounded px-5"
+            >
               <IoLogoWhatsapp className={"h4 mb-1 me-2"} />
-              chat on whatsapp
+              Chat on WhatsApp
             </Link>
           </div>
         </div>
@@ -180,12 +168,7 @@ const OrderCompleted = () => {
       {error && (
         <div className="card p-4">
           <div className="alert alert-danger mt-4">{error}</div>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              router.push("/dashboard/services");
-            }}
-          >
+          <button className="btn btn-primary" onClick={() => router.push("/dashboard/services")}>
             Continue Shopping
           </button>
         </div>
