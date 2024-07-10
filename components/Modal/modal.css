@@ -2,7 +2,7 @@ body.active-modal {
     overflow: hidden;
   }
   
-  .modal {
+  .mymodal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -25,7 +25,7 @@ body.active-modal {
     background-color: rgba(0, 0, 0, 0.123);
   }
   
-  .modal-content {
+  .mymodal-content {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -40,7 +40,7 @@ body.active-modal {
     overflow: auto;
   }
   
-  .close-modal {
+  .close-mymodal {
     position: absolute;
     top: 12px;
     right: 12px;

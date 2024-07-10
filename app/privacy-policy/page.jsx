@@ -24,7 +24,7 @@ const PrivacyPage = () => {
             className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded"
             style={{ minWidth: "300px" }}
           >
-            No Articles yet
+            No Privacy Policy Found
           </p>
         </div>
       )}

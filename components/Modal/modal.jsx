@@ -17,11 +17,11 @@ const Modal = ({ children,showmodal,toggleModal}) => {
         <>
           {showmodal && (
             <div>
-                <div className="modal ">
+                <div className="mymodal">
                   <div onClick={toggleModal} className="overlay"></div>
-                  <div className="modal-content">
+                  <div className="mymodal-content">
                     {children}
-                    <FaTimes className="close-modal" onClick={toggleModal} />
+                    <FaTimes className="close-mymodal" onClick={toggleModal} />
                   </div>
                 </div>
               </div>

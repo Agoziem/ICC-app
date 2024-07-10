@@ -8,8 +8,7 @@ import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
 import { useCart } from "@/data/Cartcontext";
 
 const ServicesSection = () => {
-  const { services, categories, // openModal 
-    } = useContext(OrganizationContext);
+  const { services, categories, openModal } = useContext(OrganizationContext);
   const { cart, addToCart, removeFromCart } = useCart();
 
   return (
@@ -138,7 +137,7 @@ const ServicesSection = () => {
                                     <span
                                       className="text-secondary fw-bold"
                                       style={{ cursor: "pointer" }}
-                                      // onClick={() => openModal(service)}
+                                      onClick={() => openModal(service)}
                                     >
                                       view more
                                     </span>
@@ -229,21 +228,21 @@ const ServicesSection = () => {
                                 : service.name}
                             </h6>
                             <p className="text-primary mb-1">
-                            {service.description.length > 100 ? (
-                              <span>
-                                {service.description.substring(0, 100)}...{" "}
-                                <span
-                                  className="text-secondary fw-bold"
-                                  style={{ cursor: "pointer" }}
-                                  // onClick={() => openModal(service)}
-                                >
-                                  view more
+                              {service.description.length > 100 ? (
+                                <span>
+                                  {service.description.substring(0, 100)}...{" "}
+                                  <span
+                                    className="text-secondary fw-bold"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => openModal(service)}
+                                  >
+                                    view more
+                                  </span>
                                 </span>
-                              </span>
-                            ) : (
-                              service.description
-                            )}
-                          </p>
+                              ) : (
+                                service.description
+                              )}
+                            </p>
                             <hr />
                             <div className="d-flex justify-content-around mt-4">
                               <span className="fw-bold text-primary me-2">

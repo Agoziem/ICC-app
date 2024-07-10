@@ -14,8 +14,7 @@ import CategoryTabs from "@/components/Categories/Categoriestab";
 import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
 
 const ServicesPage = () => {
-  const { services, // openModal 
-    } = useAdminContext();
+  const { services, openModal } = useAdminContext();
   const { categories } = useContext(OrganizationContext);
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
@@ -102,7 +101,7 @@ const ServicesPage = () => {
                                 <span
                                   className="text-secondary fw-bold"
                                   style={{ cursor: "pointer" }}
-                                  // onClick={() => openModal(service)}
+                                  onClick={() => openModal(service)}
                                 >
                                   view more
                                 </span>

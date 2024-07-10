@@ -14,11 +14,17 @@ const PaymentsPage = () => {
   }, [orders]);
 
   return (
-    <div style={{minHeight:"100vh"}}>
+    <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Payments" />
       <div className="mt-4">
         <h5>Payment History</h5>
-        <Datatable items={items} setItems={setItems} label={"Payments"} filteritemlabel={"reference"} >
+
+        <Datatable
+          items={items}
+          setItems={setItems}
+          label={"Payments"}
+          filteritemlabel={"reference"}
+        >
           <OrderTableItems />
         </Datatable>
       </div>
