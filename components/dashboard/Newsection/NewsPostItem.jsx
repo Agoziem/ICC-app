@@ -23,7 +23,7 @@ function NewsPostItem({ item, index, items }) {
           <ArticlePlaceholder />
         )}
         <div className="ms-3">
-          <h6>
+          <h6 className="text-wrap text-break">
             <Link href={`/articles/${item.slug}`}>{item.title}</Link>
           </h6>
           <p>{item.subtitle}...</p>
