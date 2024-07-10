@@ -125,7 +125,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
   };
 
   return (
-    <div className="px-3">
+    <div>
       <div className="d-flex justify-content-end mb-3">
         <button
           className="btn btn-primary border-0 rounded mb-2 mb-md-0"
@@ -192,7 +192,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
                     <p className="mb-3">{staff.role}</p>
                     <div>
                       <div
-                        className="badge text-primary bg-primary-light me-0 me-md-5 mb-3 mb-md-0 rounded p-2 px-3"
+                        className="badge text-primary bg-primary-light me-2 me-md-5 mb-3 mb-md-0 rounded p-2 px-3"
                         style={{ cursor: "pointer" }}
                         onClick={() => handleToggle(index)}
                       >
@@ -255,11 +255,11 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
                 </div>
               </div>
               <div
-                className={`accordion-content card my-0  ${
+                className={`myaccordion-content px-4 py-4 my-0  ${
                   openIndex === index ? "open" : ""
                 }`}
               >
-                <div className="card-body">
+                <div className="">
                   <h5>More details</h5>
                   <hr />
                   <div className="row">
@@ -290,7 +290,6 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
           ))}
         </div>
       )}
-{/*  */}
       <Modal
         showmodal={showdeleteModal}
         toggleModal={() => setShowDeleteModal(false)}
@@ -320,12 +319,18 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
         </div>
       </Modal>
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>
-        <div className="modal-body">
+        <div className="">
           <h4 className="">
             {addorupdate.mode === "add" ? "Add" : "Update"} Staff
           </h4>
           <hr />
-          <StaffForm addStaff={addStaff} addorupdate={addorupdate} staff={staff} setStaff={setStaff} OrganizationData={OrganizationData}/>
+          <StaffForm
+            addStaff={addStaff}
+            addorupdate={addorupdate}
+            staff={staff}
+            setStaff={setStaff}
+            OrganizationData={OrganizationData}
+          />
         </div>
       </Modal>
     </div>
