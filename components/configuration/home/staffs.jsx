@@ -125,7 +125,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
   };
 
   return (
-    <div>
+    <div className="px-0 px-md-4">
       <div className="d-flex justify-content-end mb-3">
         <button
           className="btn btn-primary border-0 rounded mb-2 mb-md-0"
@@ -255,8 +255,8 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
                 </div>
               </div>
               <div
-                className={`myaccordion-content px-4 py-4 my-0  ${
-                  openIndex === index ? "open" : ""
+                className={`myaccordion-content my-0  ${
+                  openIndex === index ? "open px-4 py-4" : ""
                 }`}
               >
                 <div className="">
