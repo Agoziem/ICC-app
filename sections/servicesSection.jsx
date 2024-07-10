@@ -8,7 +8,8 @@ import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
 import { useCart } from "@/data/Cartcontext";
 
 const ServicesSection = () => {
-  const { services, categories, openModal } = useContext(OrganizationContext);
+  const { services, categories, // openModal 
+    } = useContext(OrganizationContext);
   const { cart, addToCart, removeFromCart } = useCart();
 
   return (
@@ -137,7 +138,7 @@ const ServicesSection = () => {
                                     <span
                                       className="text-secondary fw-bold"
                                       style={{ cursor: "pointer" }}
-                                      onClick={() => openModal(service)}
+                                      // onClick={() => openModal(service)}
                                     >
                                       view more
                                     </span>
@@ -234,7 +235,7 @@ const ServicesSection = () => {
                                 <span
                                   className="text-secondary fw-bold"
                                   style={{ cursor: "pointer" }}
-                                  onClick={() => openModal(service)}
+                                  // onClick={() => openModal(service)}
                                 >
                                   view more
                                 </span>

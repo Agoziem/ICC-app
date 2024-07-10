@@ -2,13 +2,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useSession } from "next-auth/react";
-import Modal from "@/components/Modal/modal";
+// import Modal from "@/components/Modal/modal";
 
 const AdminContext = createContext();
 
 const AdminContextProvider = ({ children }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [modalService, setModalService] = useState(null);
+  // const [showModal, setShowModal] = useState(false);
+  // const [modalService, setModalService] = useState(null);
   const { data: session } = useSession();
   const [organizationID, setorganizationID] = useState(1);
   const [adminData, setAdminData] = useState({});
@@ -156,15 +156,15 @@ const AdminContextProvider = ({ children }) => {
     setOrders(updatedOrders);
   }
   
-  const openModal = (service) => {
-    setModalService(service);
-    setShowModal(true);
-  };
+  // const openModal = (service) => {
+  //   setModalService(service);
+  //   setShowModal(true);
+  // };
 
-  const closeModal = () => {
-    setModalService(null);
-    setShowModal(false);
-  };
+  // const closeModal = () => {
+  //   setModalService(null);
+  //   setShowModal(false);
+  // };
 
   return (
     <AdminContext.Provider
@@ -187,15 +187,15 @@ const AdminContextProvider = ({ children }) => {
         setTotalCustomers,
         totalOrders,
         setTotalOrders,
-        openModal, // Open Description Modal
-        closeModal, // Close Description Modal
+        // openModal, // Open Description Modal
+        // closeModal, // Close Description Modal
         
       }}
     >
       {children}
 
       {/* Modal for Service Description */}
-      <Modal showmodal={showModal} toggleModal={closeModal}>
+      {/* <Modal showmodal={showModal} toggleModal={closeModal}>
         <div className="">
           <h5 className="mb-3">Service Description</h5>
           <div className="modal-body">
@@ -210,7 +210,7 @@ const AdminContextProvider = ({ children }) => {
             </button>
           </div>
         </div>
-      </Modal>
+      </Modal> */}
     </AdminContext.Provider>
   );
 };

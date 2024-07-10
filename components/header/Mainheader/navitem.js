@@ -3,17 +3,17 @@ import { act } from "react";
 const navlist = [
   {
     id: 1,
-    title: "home",
+    title: "Home",
     link: "/",
   },
   {
     id: 2,
-    title: "about",
+    title: "About",
     link: "/#about",
   },
   {
     id: 3,
-    title: "services",
+    title: "Services",
     link: "/#services",
   },
   {
@@ -28,12 +28,12 @@ const navlist = [
   },
   {
     id: 6,
-    title: "contact us",
+    title: "Contact us",
     link: "/#contact",
   },
   {
     id: 7,
-    title: "articles",
+    title: "Articles",
     link: "/articles",
   },
 ];

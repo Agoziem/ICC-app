@@ -3,7 +3,8 @@ import Image from "next/image";
 import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
 import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
 
-const ServiceCard = ({ item, tab, onEdit, onDelete, openModal }) => (
+const ServiceCard = ({ item, tab, onEdit, onDelete, // openModal 
+  }) => (
   <div className="col-12 col-md-4">
     <div className="card p-3 py-4">
       <div className="d-flex justify-content-center align-items-center">
@@ -41,7 +42,7 @@ const ServiceCard = ({ item, tab, onEdit, onDelete, openModal }) => (
                 <span
                   className="text-secondary fw-bold"
                   style={{ cursor: "pointer" }}
-                  onClick={() => openModal(item)}
+                  // onClick={() => openModal(item)}
                 >
                   view more
                 </span>

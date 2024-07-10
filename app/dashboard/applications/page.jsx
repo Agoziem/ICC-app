@@ -10,7 +10,8 @@ import { PiEmptyBold } from "react-icons/pi";
 import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
 
 const ApplicationsPage = () => {
-  const { applications, setApplications, openModal } = useAdminContext();
+  const { applications, setApplications, // openModal 
+    } = useAdminContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const { orders } = useAdminContext();
@@ -79,7 +80,7 @@ const ApplicationsPage = () => {
                             <span
                               className="text-secondary fw-bold"
                               style={{ cursor: "pointer" }}
-                              onClick={() => openModal(application)}
+                              // onClick={() => openModal(application)}
                             >
                               view more
                             </span>
