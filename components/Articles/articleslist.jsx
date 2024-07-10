@@ -148,8 +148,8 @@ const ArticlesList = () => {
           <h3 className="text-center my-4">Top trending Articles</h3>
           <hr />
           <ul className="list-group list-group-flush mx-auto mb-5">
-            {articles && articles.length > 0 ? (
-              articles.map((item, index) => (
+            {articles && articles.length > 0  ? (
+              articles.slice(0,6).map((item, index) => (
                 <Link href={`/articles/${item.slug}`} key={item.id}>
                   <li
                     className="list-group-item d-flex align-items-center py-3"
