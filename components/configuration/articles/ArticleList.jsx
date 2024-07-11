@@ -91,8 +91,8 @@ const ArticleList = ({
                   )}
                 </div>
                 <div className="flex-fill">
-                  <h6>{article.title}</h6>
-                  <p>{article.subtitle}</p>
+                  <h6 className="text-wrap text-break">{article.title}</h6>
+                  <p className="text-wrap text-break">{article.subtitle}</p>
                 </div>
               </div>
 
