@@ -99,7 +99,7 @@ const Article = ({ params }) => {
             <NextBreadcrumb capitalizeLinks />
           </div>
           <div className="article-header pb-4">
-            <h1>{article.title}</h1>
+            <h1 className="text-wrap text-break">{article.title}</h1>
             <div className="d-flex my-4">
               <div>
                 {article.authordata.img ? (

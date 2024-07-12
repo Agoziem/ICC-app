@@ -111,8 +111,8 @@ const ArticlesList = () => {
                     </div>
 
                     <div className="ms-2">
-                      <h5 className="mb-1">{item.title}</h5>
-                      <p className="my-0 mb-1">{item.subtitle}...</p>
+                      <h5 className="mb-1 text-wrap text-break">{item.title}</h5>
+                      <p className="my-0 mb-1 text-wrap text-break">{item.subtitle}...</p>
                       <div
                         className="d-flex align-items-center"
                         style={{ color: "var(--bgDarkerColor)" }}
@@ -178,8 +178,8 @@ const ArticlesList = () => {
                     </div>
 
                     <div className="ms-2">
-                      <h5 className="mb-1">{item.title}</h5>
-                      <p className="my-0 mb-1">{item.subtitle}...</p>
+                      <h5 className="mb-1 text-wrap text-break">{item.title}</h5>
+                      <p className="my-0 mb-1 text-wrap text-break">{item.subtitle}...</p>
                       <div
                         className="d-flex align-items-center"
                         style={{ color: "var(--bgDarkerColor)" }}
