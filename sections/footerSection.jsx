@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
-import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaInstagram, FaLinkedinIn, FaTiktok, FaXTwitter } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import Alert from "@/components/Alert/Alert";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
@@ -102,7 +102,7 @@ const FooterSection = () => {
         <div className="row px-0 px-md-5">
           <div className="col-12 col-md-6">
             <div className="footer-info pe-0 pe-md-5 mb-4 mb-md-0">
-              <h5>ICC app</h5>
+              <h5>ICC Online Center</h5>
               <p className="small mb-1">
                 connect with us on our social media platforms
               </p>
@@ -142,6 +142,28 @@ const FooterSection = () => {
                   target="_blank"
                 >
                   <FaXTwitter
+                    className="mx-2"
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  />
+                </Link>
+                <Link
+                  href={OrganizationData?.linkedinlink || "#"}
+                  target="_blank"
+                >
+                  <FaLinkedinIn
+                    className="mx-2"
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  />
+                </Link>
+                <Link
+                  href={OrganizationData?.tiktoklink || "#"}
+                  target="_blank"
+                >
+                  <FaTiktok
                     className="mx-2"
                     style={{
                       cursor: "pointer",
@@ -256,12 +278,14 @@ const FooterSection = () => {
       </div>
       {/* subfooter */}
       <div className="subfooter py-3 d-flex justify-content-center align-items-center">
-        <p className="text-center small mb-0">
-          &copy; 2024 Innovation Cyber Cafe. All Rights Reserved
+        <p className="text-center  small mb-0">
+          &copy; 2024 <span className="text-secondary">Innovations CyberCafe.</span> All Rights Reserved
         </p>
       </div>
     </section>
   );
 };
+
+
 
 export default FooterSection;

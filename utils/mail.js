@@ -14,12 +14,19 @@ export const sendVerificationEmail = async (email, token) => {
       html: `<p>Click <a href="${confirmLink}">here</a> to verify your email.</p>`,
       reply_to: "innovationscybercafe@gmail.com",
     });
-    return { success: true, message: 'We have sent you a verification email. Please check your inbox and click on the link to verify your email address.' };
+    return {
+      success: true,
+      message:
+        "We have sent you a verification email. Please check your inbox and click on the link to verify your email address.",
+    };
   } catch (error) {
-    return { success: false, message: 'Failed to send verification email', error: error.message };
+    return {
+      success: false,
+      message: "Failed to send verification email",
+      error: error.message,
+    };
   }
 };
-
 
 export const sendPasswordResetEmail = async (email, token) => {
   const resetLink = `${process.env.NEXT_PUBLIC_URL}/accounts/new-password?token=${token}`;
@@ -32,8 +39,62 @@ export const sendPasswordResetEmail = async (email, token) => {
       html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
       reply_to: "innovationscybercafe@gmail.com",
     });
-    return { success: true, message: 'We have sent you a password reset email. Please check your inbox and click on the link to reset your password.' };
+    return {
+      success: true,
+      message:
+        "We have sent you a password reset email. Please check your inbox and click on the link to reset your password.",
+    };
   } catch (error) {
-    return { success: false, message: 'Failed to send password reset email', error: error.message };
+    return {
+      success: false,
+      message: "Failed to send password reset email",
+      error: error.message,
+    };
+  }
+};
+
+// reply to email messages
+export const sendReplyEmail = async (email, message, subject) => {
+  try {
+    await resend.emails.send({
+      from: "ICCapp <emails@innovationscybercafe.com>",
+      to: email,
+      subject: subject,
+      html: `<p>${message}</p>`,
+      reply_to: "innovationscybercafe@gmail.com",
+    });
+    return {
+      success: true,
+      message: "We have sent your message successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to send message",
+      error: error.message,
+    };
+  }
+};
+
+// send emails to multiple recipients
+export const sendMultipleEmails = async (email, message, subject, group) => {
+  try {
+    await resend.emails.send({
+      from: `ICCapp <${group}@innovationscybercafe.com>`,
+      to: email,
+      subject: subject,
+      html: `<p>${message}</p>`,
+      reply_to: "innovationscybercafe@gmail.com",
+    });
+    return {
+      success: true,
+      message: "We have sent your message successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to send message",
+      error: error.message,
+    };
   }
 };

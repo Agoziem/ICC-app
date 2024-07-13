@@ -71,6 +71,18 @@ const navList = [
         icon: "bi bi-laptop",
         link: "/dashboard/configuration/cbt",
       },
+      {
+        _id: 5,
+        name: "Emails",
+        icon: "bi bi-envelope-paper",
+        link: "/dashboard/configuration/emails",
+      },
+      {
+        _id: 6,
+        name: "WhatsappAPI",
+        icon: "bi bi-whatsapp",
+        link: "/dashboard/configuration/whatsapp",
+      },
     ],
   },
   {
