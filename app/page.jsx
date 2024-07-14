@@ -9,6 +9,7 @@ import BlogSection from "@/sections/blogSection";
 import ContactSection from "@/sections/contactSection";
 import FooterSection from "@/sections/footerSection";
 import BackToTop from "@/components/backtotopbutton/BackToTop";
+import Feedback from "@/components/Feedback/ModalFeedback";
 
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
       <ContactSection />
       <FooterSection />
       <BackToTop />
+      <Feedback />
     </main>
   );
 }

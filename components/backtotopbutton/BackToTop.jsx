@@ -23,7 +23,7 @@ function BackToTop() {
   return (
     <a
       onClick={backToTop}
-      className={`back-to-top d-flex align-items-center justify-content-center 
+      className={`back-to-top d-flex align-items-center justify-content-center
       ${scroll > 100 ? 'active' : undefined}`}
     >
       <i className="bi bi-arrow-up-short"></i>

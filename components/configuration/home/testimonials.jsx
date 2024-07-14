@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import Modal from "@/components/Modal/modal";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
 import Alert from "@/components/Alert/Alert";
-import ImageUploader from "@/components/Imageuploader/ImageUploader";
-import { converttoformData } from "@/utils/formutils";
+import TestimonialForm from "./TestimonialForm";
 
 const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
   const [showModal, setShowModal] = useState(false);
-  const [showdeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [testimonial, setTestimonial] = useState({
     id: "",
     name: "",
@@ -34,11 +33,15 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
   // Function to handle form submission
   // -------------------------------------------------------------
 
-  const handleSubmit = (e, url) => {
-    e.preventDefault();
+  const handleFormSubmit = (formData) => {
+    const url =
+      addorupdate.type === "add"
+        ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/add/${OrganizationData.id}/`
+        : `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/update/${formData.id}/`;
+
     fetch(url, {
       method: addorupdate.type === "add" ? "POST" : "PUT",
-      body: converttoformData(testimonial),
+      body: converttoformData(formData),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -136,6 +139,7 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
         setShowDeleteModal(false);
       });
   };
+
   return (
     <div className="px-1 px-md-4">
       <div className="mb-5 mb-md-0">
@@ -255,105 +259,17 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>
         <div className="modal-body">
           {addorupdate.state ? (
-            <div className="mt-4">
-              <h4>{addorupdate.type} Testimonial</h4>
-              <hr />
-              <form
-                onSubmit={(e) => {
-                  if (addorupdate.type === "add") {
-                    handleSubmit(
-                      e,
-                      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/add/${OrganizationData.id}/`
-                    );
-                  } else {
-                    handleSubmit(
-                      e,
-                      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/update/${testimonial.id}/`
-                    );
-                  }
-                }}
-              >
-                <div className="form-group mb-3">
-                  <ImageUploader
-                    imagekey={"img"}
-                    imageurlkey={"img_url"}
-                    imagename={"img_name"}
-                    formData={testimonial}
-                    setFormData={setTestimonial}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    placeholder="Name"
-                    value={testimonial.name}
-                    onChange={(e) =>
-                      setTestimonial({ ...testimonial, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="role">Role</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="role"
-                    placeholder="student or Aspirant etc"
-                    value={testimonial.role}
-                    onChange={(e) =>
-                      setTestimonial({ ...testimonial, role: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="content">Content</label>
-                  <textarea
-                    className="form-control"
-                    id="content"
-                    placeholder="Content"
-                    value={testimonial.content}
-                    onChange={(e) =>
-                      setTestimonial({
-                        ...testimonial,
-                        content: e.target.value,
-                      })
-                    }
-                  ></textarea>
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="rating">Rating</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="rating"
-                    placeholder="Rate from 1 to 5"
-                    max={5}
-                    min={1}
-                    value={testimonial.rating}
-                    onChange={(e) =>
-                      setTestimonial({ ...testimonial, rating: e.target.value })
-                    }
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn btn-accent-secondary border-0 text-secondary mt-3 rounded"
-                >
-                  {addorupdate.type === "add"
-                    ? "Add Testimonial"
-                    : "Update Testimonial"}
-                </button>
-              </form>
-            </div>
+            <TestimonialForm
+              addorupdate={addorupdate}
+              testimonialData={testimonial}
+              onSubmit={handleFormSubmit}
+              onClose={closeModal}
+            />
           ) : null}
         </div>
       </Modal>
       <Modal
-        showmodal={showdeleteModal}
+        showmodal={showDeleteModal}
         toggleModal={() => setShowDeleteModal(false)}
       >
         <div className="modal-body">

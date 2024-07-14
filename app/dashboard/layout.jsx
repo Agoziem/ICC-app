@@ -6,6 +6,7 @@ import React from "react";
 import NavList from "./navList";
 import Main from "@/components/Main/Main";
 import { SidebartoggleRefProvider } from "@/components/sidebar/sideBarTogglerContext";
+import Feedback from "@/components/Feedback/ModalFeedback";
 
 export const metadata = {
   title: "ICC dashboard",
@@ -27,6 +28,7 @@ const dashboardlayout = ({ children }) => {
           <Footer />
         </div>
         <BackToTop />
+        <Feedback />
       </SidebartoggleRefProvider>
     </div>
   );
