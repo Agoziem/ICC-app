@@ -17,7 +17,7 @@ const FeedbackButton = ({ setShowModal }) => {
 
   return (
     <div className={`feedback-button ${scroll > 100 ? 'active' : undefined}`} onClick={() => setShowModal(true)} >
-      <span className="feedback-button-text text-nowrap">Give Feedback</span>
+      <span className="feedback-button-text text-nowrap">Send Feedback</span>
     </div>
   );
 };
