@@ -10,11 +10,10 @@ import { PiEmptyBold } from "react-icons/pi";
 import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
 
 const ApplicationsPage = () => {
-  const { applications, setApplications,openModal 
+  const { applications,openModal 
     } = useAdminContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
-  const { orders } = useAdminContext();
   const [items, setItems] = useState([]);
 
   useEffect(() => {

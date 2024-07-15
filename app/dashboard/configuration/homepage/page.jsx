@@ -31,7 +31,7 @@ const HomePageConfigPage = () => {
 
   return (
     <div style={{minHeight:"100vh"}}>
-      <PageTitle pathname="homepage" />
+      <PageTitle pathname="Homepage Settings" />
       <h3 className="my-3 mt-4">Sections</h3>
       <div className="row justify-content-between">
         <div className="col-md-5">

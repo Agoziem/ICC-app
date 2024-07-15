@@ -1,37 +1,38 @@
+import { v4 as uuidv4 } from 'uuid';
 
 const navlist = [
   {
-    id: 1,
+    id: uuidv4(),
     title: "Home",
     link: "/",
   },
   {
-    id: 2,
+    id: uuidv4(),
     title: "About",
     link: "/#about",
   },
   {
-    id: 3,
+    id: uuidv4(),
     title: "Services",
     link: "/#services",
   },
   {
-    id: 4,
+    id: uuidv4(),
     title: "Departments",
     link: "/#staffs",
   },
   {
-    id: 5,
+    id: uuidv4(),
     title: "Testimonials",
     link: "/#testimonials",
   },
   {
-    id: 6,
+    id: uuidv4(),
     title: "Contact us",
     link: "/#contact",
   },
   {
-    id: 7,
+    id: uuidv4(),
     title: "Articles",
     link: "/articles",
   },

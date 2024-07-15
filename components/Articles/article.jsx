@@ -252,7 +252,7 @@ const Article = ({ params }) => {
             <h4 className="fw-bold mb-4">Related Articles</h4>
             <div className="row justify-content-center">
               {otherArticles &&
-                otherArticles.map((blog, index) => (
+                otherArticles.slice(0,6).map((blog, index) => (
                   <div
                     key={blog.id}
                     className="col-12 col-md d-flex justify-content-center"
