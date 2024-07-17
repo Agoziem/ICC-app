@@ -1,4 +1,4 @@
-import ProductPlaceholder from "@/components/ImagePlaceholders/ProductPlaceholder";
+import ProductPlaceholder from "@/components/ImagePlaceholders/Productplaceholder";
 import React from "react";
 
 const ProductCard = ({ openModal, item, onDelete, onEdit, tab }) => {

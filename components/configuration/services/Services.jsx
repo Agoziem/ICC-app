@@ -179,7 +179,7 @@ const Services = () => {
       </div>
 
       <div className="d-flex flex-wrap align-items-center mb-4">
-        {/* other tabs */}
+        {/* other services tabs */}
         <CategoryTabs
           categories={categories}
           currentCategory={currentCategory}
@@ -223,6 +223,7 @@ const Services = () => {
         </button>
       </div>
 
+      {/* The Services & Application list */}
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
         {currentCategory !== "application"
