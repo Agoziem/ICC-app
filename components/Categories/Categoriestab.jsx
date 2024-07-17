@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const CategoryTabs = ({ categories, currentCategory, setCurrentCategory, services }) => {
   const filteredCategories = categories?.filter((category) =>
     services.some((service) => service.category.id === category.id)
   );
+
+  useEffect(() => {
+    setCurrentCategory(filteredCategories[0]?.category);
+  }, [services]);
 
   return (
     <div>
