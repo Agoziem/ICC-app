@@ -157,7 +157,7 @@ const ServiceForm = ({
             name="subcategory"
             value={service.subcategory?.subcategory || ""}
             onChange={handleSubCategoryChange}
-            required
+            // required
           >
             {loading ? (
               <option>Loading...</option>

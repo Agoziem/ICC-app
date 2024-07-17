@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import Aggregator from "./Aggregator";
+import CGPA from "./CGPA";
 
 const Calculators = () => {
   const categories = ["Aggregator", "CGPA Calculator"];
@@ -30,8 +32,8 @@ const Calculators = () => {
 
       {/* Calculators */}
       <div className="mt-4">
-        {activeTab === "Aggregator" && <div>Aggregator</div>}
-        {activeTab === "CGPA Calculator" && <div>CGPA</div>}
+        {activeTab === "Aggregator" && <div><Aggregator /></div>}
+        {activeTab === "CGPA Calculator" && <div><CGPA /></div>}
       </div>
     </div>
   );

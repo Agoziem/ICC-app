@@ -30,7 +30,9 @@ const SettingsForm = () => {
   });
   const [submitting, setSubmitting] = useState(false);
 
-//   Delete test
+  // ----------------------------------
+  //   Delete test
+  // ----------------------------------
   const deleteTest = async (testId) => {
     try {
       const response = await fetch(
@@ -62,7 +64,9 @@ const SettingsForm = () => {
     }
   };
 
-//   Fetch tests
+  // ----------------------------------
+  //   Fetch tests
+  // ----------------------------------
   const fetchTests = async () => {
     setLoadingTests(true);
     try {
@@ -82,7 +86,9 @@ const SettingsForm = () => {
     if (OrganizationData.id) fetchTests();
   }, [OrganizationData.id]);
 
-//   Close modal
+  // ----------------------------------
+  //   Close modal
+  // ----------------------------------
   const closeModal = () => {
     setShowModal(false);
     setTesttoDelete({
@@ -92,7 +98,9 @@ const SettingsForm = () => {
     });
   };
 
-// Add test
+  // ----------------------------------
+  // Add test
+  // ----------------------------------
   const addTest = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -151,7 +159,6 @@ const SettingsForm = () => {
       }, 3000);
     }
   };
-
 
   return (
     <div className="row justify-content-between">
@@ -244,14 +251,15 @@ const SettingsForm = () => {
                 )}
               </div>
               <div>
-                <button className="btn btn-accent-secondary rounded me-2"
-                    onClick={() => {
-                        setTest({
-                            year: "",
-                            textType: "",
-                            subjects: [],
-                        });
-                    }}
+                <button
+                  className="btn btn-accent-secondary rounded me-2"
+                  onClick={() => {
+                    setTest({
+                      year: "",
+                      textType: "",
+                      subjects: [],
+                    });
+                  }}
                 >
                   Cancel
                 </button>
@@ -259,7 +267,7 @@ const SettingsForm = () => {
                   type="submit"
                   className="btn btn-primary rounded"
                   disabled={submitting}
-                    onClick={addTest}
+                  onClick={addTest}
                 >
                   {submitting ? (
                     <div className="spinner-border text-light" role="status">
@@ -306,10 +314,13 @@ const SettingsForm = () => {
                     </div>
                   </div>
                   <div className="d-flex justify-content-end">
-                    <button className="btn btn-sm btn-accent-primary me-3 px-3 py-1 rounded"
-                        onClick={() => {
-                            router.push(`/dashboard/configuration/cbt/${test.id}/questions`);
-                        }}
+                    <button
+                      className="btn btn-sm btn-accent-primary me-3 px-3 py-1 rounded"
+                      onClick={() => {
+                        router.push(
+                          `/dashboard/configuration/cbt/${test.id}/questions`
+                        );
+                      }}
                     >
                       edit
                     </button>

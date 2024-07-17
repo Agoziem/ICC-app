@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import TopSellingItem from "./TopSellingItem";
 import "./topSelling.css";
-import { useAdminContext } from "@/data/Admincontextdata";
 import Link from "next/link";
+import { useServiceContext } from "@/data/Servicescontext";
 
 function TopSelling() {
-  const { services } = useAdminContext();
+ const { services } = useServiceContext();
 
 
   return (
