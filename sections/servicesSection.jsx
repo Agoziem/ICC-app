@@ -6,9 +6,13 @@ import Link from "next/link";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
 import { useCart } from "@/data/Cartcontext";
+import { useServiceContext } from "@/data/Servicescontext";
+import { useCategoriesContext } from "@/data/Categoriescontext";
 
 const ServicesSection = () => {
-  const { services, categories, openModal } = useContext(OrganizationContext);
+  const { openModal } = useContext(OrganizationContext);
+  const { servicecategories: categories } = useCategoriesContext();
+  const { services } = useServiceContext();
   const { cart, addToCart, removeFromCart } = useCart();
 
   return (

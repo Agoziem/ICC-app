@@ -23,12 +23,17 @@ const CategoriesForm = ({
   });
   const [modal, setModal] = useState(false);
 
+  // -----------------------------------------
+  // close modal
+  // -----------------------------------------
   const closeModal = () => {
     setItem({ id: null, [itemName]: "" });
     setModal(false);
   };
 
+  // -----------------------------------------
   // handle create and edit item
+  // -----------------------------------------
   const handleItem = async (e, url) => {
     e.preventDefault();
     try {
@@ -70,7 +75,9 @@ const CategoriesForm = ({
     }
   };
 
+  // -----------------------------------------
   // delete item
+  // -----------------------------------------
   const deleteItem = async (id) => {
     try {
       const res = await fetch(`${deleteUrl}/${id}/`, {

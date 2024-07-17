@@ -5,7 +5,7 @@ import React from 'react'
 const ArticlesConfigPage = () => {
   return (
     <div style={{minHeight:"100vh"}}>
-        <PageTitle pathname="articles" />
+        <PageTitle pathname="Articles Settings" />
        <ArticleConf />
     </div>
   )

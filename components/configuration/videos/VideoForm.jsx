@@ -1,43 +1,41 @@
-import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/Imageuploader/ImageUploader";
 import { useCategoriesContext } from "@/data/Categoriescontext";
 import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import React, { useEffect, useState } from "react";
 
-const ServiceForm = ({
-  service,
-  setService,
+const VideoForm = ({
+  video,
+  setVideo,
   handleSubmit,
   addorupdate,
-  OrganizationData,
-  tab,
   categories,
 }) => {
-  const { servicecategories } = useCategoriesContext();
-  const { fetchServiceSubCategories } = useSubCategoriesContext();
+  const { videoCategories } = useCategoriesContext();
+  const { fetchVideoSubCategories } = useSubCategoriesContext();
   const [subcategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch subcategories when the service's category changes or on initial load if there's already a category
-  useEffect(() => {
-    const fetchInitialSubCategories = async () => {
-      if (service.category) {
-        setLoading(true);
-        const data = await fetchServiceSubCategories(service.category.id);
-        setSubCategories(data);
-        setLoading(false);
-      }
-    };
-    fetchInitialSubCategories();
-  }, [service.category]);
+ // Fetch subcategories when the service's category changes or on initial load if there's already a category
+ useEffect(() => {
+  const fetchInitialSubCategories = async () => {
+    if (video.category) {
+      setLoading(true);
+      const data = await fetchVideoSubCategories(video.category.id);
+      setSubCategories(data);
+      setLoading(false);
+    }
+  };
+  fetchInitialSubCategories();
+}, [video.category]);
 
   // Handle category change
   const handleCategoryChange = async (e) => {
-    const selectedCategory = servicecategories.find(
+    const selectedCategory = videoCategories.find(
       (category) => category.category === e.target.value
     );
-    setService({ ...service, category: selectedCategory, subcategory: null });
+    setVideo({ ...video, category: selectedCategory });
     setLoading(true);
-    const data = await fetchServiceSubCategories(selectedCategory.id);
+    const data = await fetchVideoSubCategories(selectedCategory.id);
     setSubCategories(data);
     setLoading(false);
   };
@@ -47,15 +45,12 @@ const ServiceForm = ({
     const selectedSubCategory = subcategories.find(
       (subcategory) => subcategory.subcategory === e.target.value
     );
-    setService({ ...service, subcategory: selectedSubCategory });
+    setService({ ...video, subcategory: selectedSubCategory });
   };
-
   return (
     <div className="p-3">
       <h5 className="text-center mb-4">
-        {addorupdate.mode === "add"
-          ? `Add ${tab !== "application" ? "service" : "application"}`
-          : `Edit ${tab !== "application" ? "service" : "application"}`}
+        {addorupdate.mode === "add" ? "Add Video" : `Edit ${video.title}`}
       </h5>
       <hr />
       <form
@@ -63,29 +58,28 @@ const ServiceForm = ({
           handleSubmit(e);
         }}
       >
-        {/* Preview */}
         <div className="mb-2">
           <ImageUploader
-            imagekey={"preview"}
+            imagekey={"thumbnail"}
             imageurlkey={"img_url"}
             imagename={"img_name"}
-            formData={service}
-            setFormData={setService}
+            formData={video}
+            setFormData={setVideo}
           />
         </div>
 
         {/* Name */}
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
-            Name
+            Title
           </label>
           <input
             type="text"
             className="form-control"
             id="name"
             name="name"
-            value={service.name}
-            onChange={(e) => setService({ ...service, name: e.target.value })}
+            value={video.title}
+            onChange={(e) => setVideo({ ...video, title: e.target.value })}
             required
           />
         </div>
@@ -99,9 +93,9 @@ const ServiceForm = ({
             className="form-control"
             id="description"
             name="description"
-            value={service.description}
+            value={video.description}
             onChange={(e) =>
-              setService({ ...service, description: e.target.value })
+              setVideo({ ...video, description: e.target.value })
             }
             rows="4"
             required
@@ -118,8 +112,8 @@ const ServiceForm = ({
             className="form-control"
             id="price"
             name="price"
-            value={service.price}
-            onChange={(e) => setService({ ...service, price: e.target.value })}
+            value={video.price}
+            onChange={(e) => setVideo({ ...video, price: e.target.value })}
             required
           />
         </div>
@@ -133,7 +127,7 @@ const ServiceForm = ({
             className="form-select"
             id="category"
             name="category"
-            value={service.category?.category || ""}
+            value={video.category?.category}
             onChange={handleCategoryChange}
             required
           >
@@ -149,48 +143,42 @@ const ServiceForm = ({
         {/* Subcategory */}
         <div className="mb-3">
           <label htmlFor="subcategory" className="form-label">
-            Sub-Category
+            Subcategory
           </label>
           <select
             className="form-select"
             id="subcategory"
             name="subcategory"
-            value={service.subcategory?.subcategory || ""}
+            value={video.subcategory?.subcategory}
             onChange={handleSubCategoryChange}
             required
           >
+            <option value="">Select subcategory</option>
             {loading ? (
               <option>Loading...</option>
             ) : (
-              <>
-                <option value="">Select subcategory</option>
-                {subcategories.map((subcategory) => (
-                  <option key={subcategory.id} value={subcategory.subcategory}>
-                    {subcategory.subcategory}
-                  </option>
-                ))}
-              </>
+              subcategories.map((subcategory) => (
+                <option key={subcategory.id} value={subcategory.subcategory}>
+                  {subcategory.subcategory}
+                </option>
+              ))
             )}
           </select>
         </div>
 
-        {/* Service Flow */}
+        {/* free */}
         <div className="mb-3">
-          <label htmlFor="price" className="form-label">
-            Service flow
+          <label htmlFor="free" className="form-label me-2">
+            Free
           </label>
-          <textarea
-            type="text"
-            className="form-control"
-            id="service_flow"
-            name="service_flow"
-            value={service.service_flow}
-            onChange={(e) =>
-              setService({ ...service, service_flow: e.target.value })
-            }
-            required
-            rows={5}
-          ></textarea>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id="free"
+            name="free"
+            checked={video.free}
+            onChange={(e) => setVideo({ ...video, free: e.target.checked })}
+          />
         </div>
 
         <button type="submit" className="btn btn-primary rounded px-5 mt-3">
@@ -201,4 +189,4 @@ const ServiceForm = ({
   );
 };
 
-export default ServiceForm;
+export default VideoForm;

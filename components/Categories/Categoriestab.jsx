@@ -1,14 +1,14 @@
 import React from "react";
 
 const CategoryTabs = ({ categories, currentCategory, setCurrentCategory, services }) => {
-  const filteredCategories = categories.filter((category) =>
+  const filteredCategories = categories?.filter((category) =>
     services.some((service) => service.category.id === category.id)
   );
 
   return (
     <div>
-      {filteredCategories.length > 0 &&
-        filteredCategories.map((category) => {
+      {filteredCategories?.length > 0 &&
+        filteredCategories?.map((category) => {
           if (category.category !== "application") {
             return (
               <div

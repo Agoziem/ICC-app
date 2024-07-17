@@ -12,10 +12,13 @@ import OrderTableItems from "@/components/orders/OrderTableItems";
 import CartButton from "@/components/Offcanvas/CartButton";
 import CategoryTabs from "@/components/Categories/Categoriestab";
 import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
+import { useServiceContext } from "@/data/Servicescontext";
+import { useCategoriesContext } from "@/data/Categoriescontext";
 
 const ServicesPage = () => {
-  const { services, openModal } = useAdminContext();
-  const { categories } = useContext(OrganizationContext);
+  const { openModal } = useAdminContext();
+  const { services } = useServiceContext();
+  const { servicecategories: categories } = useCategoriesContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const [items, setItems] = useState([]);
@@ -30,8 +33,8 @@ const ServicesPage = () => {
     const category = searchParams.get("category");
     if (category) {
       setCurrentCategory(category);
-    } else if (categories.length > 0) {
-      const firstCategoryWithServices = categories.find((cat) =>
+    } else if (categories?.length > 0) {
+      const firstCategoryWithServices = categories?.find((cat) =>
         services.some((service) => service.category.id === cat.id)
       );
       setCurrentCategory(
@@ -51,6 +54,7 @@ const ServicesPage = () => {
           <CartButton />
         </div>
 
+        {/* Categories list */}
         <div className="mb-4">
           <CategoryTabs
             categories={categories}
@@ -59,6 +63,8 @@ const ServicesPage = () => {
             services={services}
           />
         </div>
+
+        {/* Services cards */}
         <div className="row">
           {services && services.length > 0 ? (
             // Filter services by the current category

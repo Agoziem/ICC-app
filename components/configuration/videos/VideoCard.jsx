@@ -1,10 +1,9 @@
-import React from "react";
-import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
-import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
+import VideosPlaceholder from '@/components/ImagePlaceholders/Videosplaceholder';
+import React from 'react'
 
-const ServiceCard = ({ item, tab, onEdit, onDelete, openModal 
-  }) => (
-  <div className="col-12 col-md-4">
+const VideoCard = ({ openModal, item, onDelete, onEdit, tab }) => {
+  return (
+    <div className="col-12 col-md-4">
     <div className="card p-3 py-4">
       <div className="d-flex justify-content-center align-items-center">
         <div className="me-3">
@@ -22,18 +21,12 @@ const ServiceCard = ({ item, tab, onEdit, onDelete, openModal
               }}
             />
           ) : (
-            <>
-              {item.category.category === "application" ? (
-                <ApplicationPlaceholder />
-              ) : (
-                <ServicesPlaceholder />
-              )}
-            </>
+            <VideosPlaceholder />
           )}
         </div>
 
         <div className="flex-fill py-2">
-          <h6>{item.name}</h6>
+          <h6>{item.title}</h6>
           <p className="text-primary mb-1">
             {item.description.length > 80 ? (
               <span className="text-primary">
@@ -76,6 +69,7 @@ const ServiceCard = ({ item, tab, onEdit, onDelete, openModal
       </div>
     </div>
   </div>
-);
+  )
+}
 
-export default ServiceCard;
+export default VideoCard

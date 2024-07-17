@@ -9,6 +9,11 @@ import { CartProvider } from "@/data/Cartcontext";
 import { AdminContextProvider } from "@/data/Admincontextdata";
 import { UserContextProvider } from "@/data/usercontextdata";
 import OffCanvas from "@/components/Offcanvas/OffCanvas";
+import { ProductProvider } from "@/data/Productcontext";
+import { VideoProvider } from "@/data/Videoscontext";
+import { ServiceProvider } from "@/data/Servicescontext";
+import { CategoriesProvider } from "@/data/Categoriescontext";
+import { Subcategoriesprovider } from "@/data/Subcategoriescontext";
 
 export const metadata = {
   title: "ICC Online Center",
@@ -26,8 +31,18 @@ export default function RootLayout({ children, session }) {
               <AdminContextProvider>
                 <UserContextProvider>
                   <CartProvider>
-                    {children}
-                    <OffCanvas />
+                    <ProductProvider>
+                      <VideoProvider>
+                        <ServiceProvider>
+                          <CategoriesProvider>
+                            <Subcategoriesprovider>
+                            {children}
+                            <OffCanvas />
+                            </Subcategoriesprovider>
+                          </CategoriesProvider>
+                        </ServiceProvider>
+                      </VideoProvider>
+                    </ProductProvider>
                   </CartProvider>
                 </UserContextProvider>
               </AdminContextProvider>

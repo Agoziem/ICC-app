@@ -14,9 +14,6 @@ const OrganizationContextProvider = ({ children }) => {
   const [depts, setDepts] = useState([]);
   const [storedOrganizationalData, setStoredOrganizationalData] =
     useLocalStorage("OrganizationData", OrganizationData);
-
-  const [services, setServices] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalService, setModalService] = useState(null);
 
@@ -45,7 +42,9 @@ const OrganizationContextProvider = ({ children }) => {
     }
   }, [organizationID, storedOrganizationalData]);
 
+  // ---------------------------------------------------------------
   // get messages
+  // ---------------------------------------------------------------
   useEffect(() => {
     fetch(
       `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/emailsapi/emails/${organizationID}/`
@@ -59,40 +58,12 @@ const OrganizationContextProvider = ({ children }) => {
       });
   }, [organizationID]);
 
+  // ---------------------------------------------------------------
   // store data to Local Storage when the OrganizationData changes
+  // ---------------------------------------------------------------
   useEffect(() => {
     setStoredOrganizationalData(OrganizationData);
   }, [OrganizationData]);
-
-  // get services
-  const fetchServices = () => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/services/${organizationID}/`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setServices(data);
-      })
-      .catch((e) => console.log(e.message));
-  };
-
-  const fetchCategories = () => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/categories/`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setCategories(data);
-      })
-      .catch((e) => console.log(e.message));
-  };
-
-  useEffect(() => {
-    if (organizationID) {
-      fetchServices();
-      fetchCategories();
-    }
-  }, [organizationID]);
 
   const openModal = (service) => {
     setModalService(service);
@@ -109,6 +80,7 @@ const OrganizationContextProvider = ({ children }) => {
       value={{
         OrganizationData,
         setOrganizationData,
+        organizationID,
         setorganizationID,
         staffs,
         setStaffs,
@@ -118,10 +90,6 @@ const OrganizationContextProvider = ({ children }) => {
         setSubscriptions,
         messages,
         setMessages,
-        services,
-        setServices,
-        categories,
-        setCategories,
         depts,
         setDepts,
         openModal, // Open Description Modal

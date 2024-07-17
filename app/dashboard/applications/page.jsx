@@ -8,10 +8,11 @@ import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
 import { PiEmptyBold } from "react-icons/pi";
 import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
+import { useServiceContext } from "@/data/Servicescontext";
 
 const ApplicationsPage = () => {
-  const { applications,openModal 
-    } = useAdminContext();
+  const { openModal } = useAdminContext();
+  const { applications } = useServiceContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const [items, setItems] = useState([]);

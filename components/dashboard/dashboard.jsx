@@ -9,16 +9,19 @@ import { useSession } from "next-auth/react";
 import { useAdminContext } from "@/data/Admincontextdata";
 import { useUserContext } from "@/data/usercontextdata";
 import CartButton from "../Offcanvas/CartButton";
+import { useServiceContext } from "@/data/Servicescontext";
 
 const DashboardBody = () => {
-  const { services, applications, totalOrders, totalCustomers } =
-    useAdminContext();
+  const { totalOrders, totalCustomers } = useAdminContext();
   const { userOrder, totalOrder } = useUserContext();
+  const { services, applications } = useServiceContext();
   const { data: session } = useSession();
   return (
     <div className="dashboard">
       <div className="my-4 d-flex justify-content-between align-items-center flex-wrap">
-        <h5 className="mb-3 mb-md-0 me-2 me-md-0">Welcome, {session?.user?.username}</h5>
+        <h5 className="mb-3 mb-md-0 me-2 me-md-0">
+          Welcome, {session?.user?.username}
+        </h5>
         <CartButton />
       </div>
       <div className="row">
