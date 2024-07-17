@@ -79,11 +79,7 @@ const Videos = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "add", state: false });
-  const [currentCategory, setCurrentCategory] = useState("all");
-
-  useEffect(() => {
-    setCurrentCategory(categories[0]?.category);
-  }, [categories]);
+  const [currentCategory, setCurrentCategory] = useState(categories[0]?.category);
 
   const closeModal = () => {
     setShowModal(false);

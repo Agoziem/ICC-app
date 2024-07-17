@@ -1,12 +1,16 @@
-import PageTitle from '@/components/PageTitle/PageTitle'
-import React from 'react'
+import Calculators from "@/components/Calc/Calculators";
+import PageTitle from "@/components/PageTitle/PageTitle";
+import React from "react";
 
 const CalculatorPage = () => {
   return (
     <div style={{ minHeight: "100vh" }}>
-        <PageTitle pathname="Calculators" />
+      <PageTitle pathname="Calculators" />
+      <div>
+        <Calculators />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default CalculatorPage
+export default CalculatorPage;

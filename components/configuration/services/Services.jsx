@@ -69,11 +69,8 @@ const Services = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "", state: false });
-  const [currentCategory, setCurrentCategory] = useState("application");
+  const [currentCategory, setCurrentCategory] = useState(categories[0]?.category);
 
-  useEffect(() => {
-    if (categories.length > 0) setCurrentCategory(categories[0].category);
-  }, [categories]);
 
   // ----------------------------------------------------
   // Close the modal
