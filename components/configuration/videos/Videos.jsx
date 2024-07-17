@@ -14,41 +14,6 @@ import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
 import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
 
 const Videos = () => {
-  // {
-  //     "id": 4,
-  //     "organization": {
-  //       "id": 1,
-  //       "name": "Innovations Cybercafe"
-  //     },
-  //     "thumbnail": null,
-  //     "video": null,
-  //     "video_url": null,
-  //     "video_name": null,
-  //     "img_url": null,
-  //     "img_name": null,
-  //     "category": {
-  //       "id": 2,
-  //       "category": "PostUTME",
-  //       "description": "This is a Postutme Video"
-  //     },
-  //     "subcategory": {
-  //       "id": 4,
-  //       "category": {
-  //         "id": 2,
-  //         "category": "PostUTME",
-  //         "description": "This is a Postutme Video"
-  //       },
-  //       "subcategory": "Physical Science"
-  //     },
-  //     "title": "Physical Science PostUtme intro",
-  //     "description": "This is a Physical Science Introduction Video",
-  //     "price": "3000.00",
-  //     "video_token": "a8b535f14e1f429bbc7705f710b82ef1",
-  //     "created_at": "2024-07-17T00:12:14.532976Z",
-  //     "updated_at": "2024-07-17T00:12:14.532976Z",
-  //     "free": false,
-  //     "userIDs_that_bought_this_video": []
-  //   },
   const { openModal } = useAdminContext();
   const { videos, createVideo, updateVideo, deleteVideo, loading } =
     useVideoContext();

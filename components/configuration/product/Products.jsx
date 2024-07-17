@@ -12,36 +12,6 @@ import { useProductContext } from "@/data/Productcontext";
 import { useCategoriesContext } from "@/data/Categoriescontext";
 
 const Products = () => {
-  // [
-  // //     //     {
-  //   "id": 3,
-  //   "organization": {
-  //     "id": 1,
-  //     "name": "Innovations Cybercafe"
-  //   },
-  //   "preview": null,
-  //   "img_url": null,
-  //   "img_name": null,
-  //   "product": null,
-  //   "product_url": null,
-  //   "product_name": null,
-  //   "category": {
-  //     "id": 1,
-  //     "category": "Jamb",
-  //     "description": null
-  //   },
-  //   "name": "AI Tutor for Exam Preparations",
-  //   "description": "No description available",
-  //   "price": "2500.00",
-  //   "rating": 0,
-  //   "product_token": "eddc95530ca84141bafb2a3bdd0d695d",
-  //   "digital": true,
-  //   "created_at": "2024-05-29T10:03:26.614597Z",
-  //   "last_updated_date": "2024-07-16T04:50:08.986147Z",
-  //   "free": false,
-  //   "userIDs_that_bought_this_product": []
-  // },
-  //   ]
   const { openModal } = useAdminContext();
   const { products, createProduct, updateProduct, deleteProduct, loading } = useProductContext();
   const { OrganizationData } = useContext(OrganizationContext);

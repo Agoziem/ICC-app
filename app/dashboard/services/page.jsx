@@ -1,19 +1,18 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PiEmptyBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { useAdminContext } from "@/data/Admincontextdata";
 import { useCart } from "@/data/Cartcontext";
 import { useUserContext } from "@/data/usercontextdata";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import Datatable from "@/components/Datatable/Datatable";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import OrderTableItems from "@/components/orders/OrderTableItems";
 import CartButton from "@/components/Offcanvas/CartButton";
 import CategoryTabs from "@/components/Categories/Categoriestab";
-import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
 import { useServiceContext } from "@/data/Servicescontext";
 import { useCategoriesContext } from "@/data/Categoriescontext";
+import ServiceCard from "@/components/Services/ServiceCard";
 
 const ServicesPage = () => {
   const { openModal } = useAdminContext();
@@ -77,75 +76,13 @@ const ServicesPage = () => {
                 )
                 .map((service) => (
                   <div key={service.id} className="col-12 col-md-4">
-                    <div className="card p-4 py-4">
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          {service.preview ? (
-                            <img
-                              src={service.img_url}
-                              alt="services"
-                              width={68}
-                              height={68}
-                              className="rounded-circle object-fit-cover"
-                              style={{ objectPosition: "center" }}
-                            />
-                          ) : (
-                            <ServicesPlaceholder />
-                          )}
-                        </div>
-
-                        <div
-                          className="flex-fill d-flex flex-column justify-content-between"
-                          style={{ height: "100%" }}
-                        >
-                          <h6 className="flex-grow-1">{service.name}</h6>
-                          {/* Shorten the lenght by 100 characters */}
-                          <p className="text-primary mb-1">
-                            {service.description.length > 80 ? (
-                              <span>
-                                {service.description.substring(0, 80)}...{" "}
-                                <span
-                                  className="text-secondary fw-bold"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => openModal(service)}
-                                >
-                                  view more
-                                </span>
-                              </span>
-                            ) : (
-                              service.description
-                            )}
-                          </p>
-                          <div className="d-flex justify-content-between mt-3 flex-wrap">
-                            <span className="fw-bold text-primary me-2">
-                              &#8358;{parseFloat(service.price)}
-                            </span>
-
-                            <div className="me-2 me-md-3">
-                              {cart.find((item) => item.id === service.id) ? (
-                                <span
-                                  className="badge bg-secondary-light text-secondary p-2"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => removeFromCart(service.id)}
-                                >
-                                  remove Service {"  "}
-                                  <i className="bi bi-cart-dash"></i>
-                                </span>
-                              ) : (
-                                <span
-                                  className="badge bg-success-light text-success p-2"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => addToCart(service)}
-                                >
-                                  Add Service {"  "}
-                                  <i className="bi bi-cart-plus"></i>
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <ServiceCard
+                      service={service}
+                      openModal={openModal}
+                      cart={cart}
+                      addToCart={addToCart}
+                      removeFromCart={removeFromCart}
+                    />
                   </div>
                 ))
             ) : (
@@ -176,18 +113,19 @@ const ServicesPage = () => {
               <p className="mt-3 mb-3">no services available at the moment</p>
             </div>
           )}
+        </div>
 
-          <div className="mt-2">
-            <h5>Services Ordered</h5>
-            <Datatable
-              items={items}
-              setItems={setItems}
-              label={"Orders"}
-              filteritemlabel={"reference"}
-            >
-              <OrderTableItems />
-            </Datatable>
-          </div>
+        {/* Order table */}
+        <div className="mt-2">
+          <h5>Services Ordered</h5>
+          <Datatable
+            items={items}
+            setItems={setItems}
+            label={"Orders"}
+            filteritemlabel={"reference"}
+          >
+            <OrderTableItems />
+          </Datatable>
         </div>
       </div>
     </div>
