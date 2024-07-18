@@ -15,6 +15,8 @@ import {
 } from "react-icons/md";
 
 const Toolbar = ({ editor, content }) => {
+
+  // add image
   const addImage = useCallback(() => {
     const url = window.prompt("URL");
 

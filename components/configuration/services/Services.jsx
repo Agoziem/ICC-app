@@ -69,8 +69,7 @@ const Services = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "", state: false });
-  const [currentCategory, setCurrentCategory] = useState('');
-
+  const [currentCategory, setCurrentCategory] = useState("");
 
   // ----------------------------------------------------
   // Close the modal
@@ -250,7 +249,11 @@ const Services = () => {
             ))}
       </div>
 
-      <Modal showmodal={showModal} toggleModal={closeModal}>
+      <Modal
+        showmodal={showModal}
+        toggleModal={closeModal}
+        overlayclose={false}
+      >
         <ServiceForm
           service={service}
           setService={setService}

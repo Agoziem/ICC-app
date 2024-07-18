@@ -35,7 +35,7 @@ const ServiceProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error fetching services" };
+      return { type: "danger", message: "Error fetching services" };
     }
   };
 
@@ -59,7 +59,7 @@ const ServiceProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error fetching service" };
+      return { type: "danger", message: "Error fetching service" };
     }
   };
 
@@ -84,11 +84,11 @@ const ServiceProvider = ({ children }) => {
         return { type: "success", message: "Service created successfully" };
       } else {
         setLoading(false);
-        return { type: "error", message: "Error creating service" };
+        return { type: "danger", message: "Error creating service" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error creating service" };
+      return { type: "danger", message: "Error creating service" };
     }
   };
 
@@ -120,11 +120,11 @@ const ServiceProvider = ({ children }) => {
         return { type: "success", message: "Service updated successfully" };
       } else {
         setLoading(false);
-        return { type: "error", message: "Error updating service" };
+        return { type: "danger", message: "Error updating service" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error updating service" };
+      return { type: "danger", message: "Error updating service" };
     }
   };
 
@@ -146,11 +146,11 @@ const ServiceProvider = ({ children }) => {
         return { type: "success", message: "Service deleted successfully" };
       } else {
         setLoading(false);
-        return { type: "error", message: "Error deleting service" };
+        return { type: "danger", message: "Error deleting service" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error deleting service" };
+      return { type: "danger", message: "Error deleting service" };
     }
   };
 

@@ -29,7 +29,7 @@ const ProductProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error fetching products" };
+      return { type: "danger", message: "Error fetching products" };
     }
   };
 
@@ -49,7 +49,7 @@ const ProductProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error fetching product" };
+      return { type: "danger", message: "Error fetching product" };
     }
   };
 
@@ -74,11 +74,11 @@ const ProductProvider = ({ children }) => {
         return { type: "success", message: "Product added successfully " };
       } else {
         setLoading(false);
-        return { type: "error", message: "Error adding product" };
+        return { type: "danger", message: "Error adding product" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error adding product" };
+      return { type: "danger", message: "Error adding product" };
     }
   };
 
@@ -101,6 +101,7 @@ const ProductProvider = ({ children }) => {
         }
       );
       if (response.ok) {
+        const updatedProduct = await response.json();
         const updatedProducts = products.map((product) =>
           product.id === id ? updatedProduct : product
         );
@@ -109,11 +110,11 @@ const ProductProvider = ({ children }) => {
         return { type: "success", message: "Product updated successfully" };
       } else {
         setLoading(false);
-        return { type: "error", message: "Error updating product  " };
+        return { type: "danger", message: "Error updating product  " };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error updating product " };
+      return { type: "danger", message: "Error updating product " };
     }
   };
 
@@ -135,11 +136,11 @@ const ProductProvider = ({ children }) => {
         return { type: "success", message: "Product deleted successfully" };
       } else {
         setLoading(false);
-        return { type: "error", message: "Error deleting product" };
+        return { type: "danger", message: "Error deleting product" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error deleting product" };
+      return { type: "danger", message: "Error deleting product" };
     }
   };
 

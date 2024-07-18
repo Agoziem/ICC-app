@@ -44,7 +44,7 @@ const Videos = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "add", state: false });
-  const [currentCategory, setCurrentCategory] = useState('');
+  const [currentCategory, setCurrentCategory] = useState("");
 
   const closeModal = () => {
     setShowModal(false);
@@ -59,7 +59,7 @@ const Videos = () => {
   };
 
   //----------------------------------------------------
-  // Create a new product or update an existing product
+  // Create a new video or update an existing video
   //----------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -180,7 +180,11 @@ const Videos = () => {
             ))}
       </div>
 
-      <Modal showmodal={showModal} toggleModal={closeModal}>
+      <Modal
+        showmodal={showModal}
+        toggleModal={closeModal}
+        overlayclose={false}
+      >
         <VideoForm
           video={video}
           setVideo={setVideo}

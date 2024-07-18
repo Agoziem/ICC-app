@@ -13,7 +13,8 @@ import { useCategoriesContext } from "@/data/Categoriescontext";
 
 const Products = () => {
   const { openModal } = useAdminContext();
-  const { products, createProduct, updateProduct, deleteProduct, loading } = useProductContext();
+  const { products, createProduct, updateProduct, deleteProduct, loading } =
+    useProductContext();
   const { OrganizationData } = useContext(OrganizationContext);
   const { productcategories: categories, setProductCategories: setCategories } =
     useCategoriesContext();
@@ -41,8 +42,7 @@ const Products = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "add", state: false });
-  const [currentCategory, setCurrentCategory] = useState('');
-
+  const [currentCategory, setCurrentCategory] = useState("");
 
   const closeModal = () => {
     setShowModal(false);
@@ -167,7 +167,11 @@ const Products = () => {
             ))}
       </div>
 
-      <Modal showmodal={showModal} toggleModal={closeModal}>
+      <Modal
+        showmodal={showModal}
+        toggleModal={closeModal}
+        overlayclose={false}
+      >
         <ProductForm
           product={product}
           setProduct={setProduct}

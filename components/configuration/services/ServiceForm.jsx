@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/Imageuploader/ImageUploader";
 import { useCategoriesContext } from "@/data/Categoriescontext";
 import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import Tiptap from "@/components/Richtexteditor/Tiptap";
 
 const ServiceForm = ({
   service,
@@ -179,18 +180,11 @@ const ServiceForm = ({
           <label htmlFor="price" className="form-label">
             Service flow
           </label>
-          <textarea
-            type="text"
-            className="form-control"
-            id="service_flow"
-            name="service_flow"
-            value={service.service_flow}
-            onChange={(e) =>
-              setService({ ...service, service_flow: e.target.value })
-            }
-            required
-            rows={5}
-          ></textarea>
+          <Tiptap
+            item={service}
+            setItem={setService}
+            keylabel={"service_flow"}
+          />
         </div>
 
         <button type="submit" className="btn btn-primary rounded px-5 mt-3">

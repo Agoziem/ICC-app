@@ -30,7 +30,7 @@ const VideoProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error fetching videos" };
+      return { type: "danger", message: "Error fetching videos" };
     }
   };
 
@@ -50,7 +50,7 @@ const VideoProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error fetching video" };
+      return { type: "danger", message: "Error fetching video" };
     }
   };
 
@@ -73,10 +73,13 @@ const VideoProvider = ({ children }) => {
         setVideos([data, ...videos]);
         setLoading(false);
         return { type: "success", message: "Video created successfully" };
+      } else {
+        setLoading(false);
+        return { type: "danger", message: "Error creating video" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error creating video" };
+      return { type: "danger", message: "Error creating video" };danger
     }
   };
 
@@ -103,10 +106,13 @@ const VideoProvider = ({ children }) => {
         setVideos(videos.map((video) => (video.id === id ? data : video)));
         setLoading(false);
         return { type: "success", message: "Video updated successfully" };
+      } else {
+        setLoading(false);
+        return { type: "danger", message: "Error updating video" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error updating video" };
+      return { type: "danger", message: "Error updating video" };
     }
   };
 
@@ -126,10 +132,13 @@ const VideoProvider = ({ children }) => {
         setVideos(videos.filter((video) => video.id !== id));
         setLoading(false);
         return { type: "success", message: "Video deleted successfully" };
+      } else {
+        setLoading(false);
+        return { type: "danger", message: "Error deleting video" };
       }
     } catch (error) {
       setLoading(false);
-      return { type: "error", message: "Error deleting video" };
+      return { type: "danger", message: "Error deleting video" };
     }
   };
 

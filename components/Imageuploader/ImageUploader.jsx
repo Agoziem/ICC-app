@@ -4,7 +4,13 @@ import { FaRegFileImage } from "react-icons/fa6";
 import { IoIosImages } from "react-icons/io";
 import { LuUpload } from "react-icons/lu";
 
-const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData }) => {
+const ImageUploader = ({
+  imagekey,
+  imageurlkey,
+  imagename,
+  formData,
+  setFormData,
+}) => {
   const fileInput = useRef(null);
   const [fileName, setFileName] = useState("No Selected file");
   const [image, setImage] = useState(null);
@@ -16,26 +22,48 @@ const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData
     }
   }, [formData[imageurlkey]]);
 
+  const handleFileChange = ({ target: { files } }) => {
+    const file = files[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Only image files are allowed");
+        return;
+      }
+      setFileName(file.name);
+      setImage(URL.createObjectURL(file));
+      setFormData({
+        ...formData,
+        [imagekey]: file,
+      });
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setFileName("No Selected file");
+    setImage(null);
+    setFormData({
+      ...formData,
+      [imagekey]: null,
+    });
+    if (fileInput.current) {
+      fileInput.current.value = null; // Reset file input value
+    }
+  };
+
   return (
     <div>
       <div className="d-flex align-items-center mt-2">
+        {/* hidden image file input */}
         <input
           ref={fileInput}
           type="file"
+          accept="image/*" // Restrict file picker to images
           id="file"
-          onChange={({ target: { files } }) => {
-            files[0] && setFileName(files[0].name);
-            if (files[0]) {
-              setImage(URL.createObjectURL(files[0]));
-              setFormData({
-                ...formData,
-                [imagekey]: files[0],
-              });
-            }
-          }}
+          onChange={handleFileChange}
           hidden
         />
 
+        {/* selected image display */}
         <div>
           {image ? (
             <img
@@ -61,6 +89,7 @@ const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData
           )}
         </div>
 
+        {/* select image button */}
         <div>
           <button
             className="btn btn-sm btn-accent-primary shadow-none mt-3"
@@ -74,6 +103,7 @@ const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData
           </button>
         </div>
       </div>
+      
       {/* display the file name & the delete icon */}
       <div className="d-flex align-items-center rounded py-3">
         <FaRegFileImage className="h4 text-primary" />
@@ -83,14 +113,7 @@ const ImageUploader = ({ imagekey, imageurlkey, imagename, formData, setFormData
         {formData[imagekey] && (
           <FaTimes
             className="h-5 w-6 text-danger ms-2"
-            onClick={() => {
-              setFileName("No Selected file");
-              setImage(null);
-              setFormData({
-                ...formData,
-                [imagekey]: null,
-              });
-            }}
+            onClick={handleRemoveFile}
             style={{ cursor: "pointer" }}
           />
         )}
