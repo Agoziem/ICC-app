@@ -74,7 +74,7 @@ const VideoUploader = ({
 
   return (
     <div>
-      <div className="d-flex align-items-center mt-2">
+      <div className=" d-md-flex align-items-center mt-2">
         <input
           ref={fileInput}
           type="file"
@@ -111,7 +111,7 @@ const VideoUploader = ({
           )}
         </div>
 
-        <div>
+        <div className="mt-3 mt-md-0">
           {erroralert.show && (
             <Alert type={"danger"}>{erroralert.message}</Alert>
           )}
