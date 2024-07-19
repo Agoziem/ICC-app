@@ -1,5 +1,6 @@
 import React from "react";
 import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
+import { useSession } from "next-auth/react";
 // {
 //   "id": 14,
 //   "organization": {
@@ -24,6 +25,7 @@ import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlacehol
 //   "updated_at": "2024-07-16T17:14:16.796299Z",
 //   "userIDs_that_bought_this_service": []
 // },
+
 const ServiceCard = ({
   service,
   openModal,
@@ -31,6 +33,7 @@ const ServiceCard = ({
   addToCart,
   removeFromCart,
 }) => {
+  const { data: session } = useSession();
   return (
     <div className="card p-4 py-4">
       <div className="d-flex align-items-center">
@@ -76,11 +79,21 @@ const ServiceCard = ({
             </span>
 
             <div className="me-2 me-md-3">
-              {cart.find((item) => item.id === service.id) ? (
+              {service.userIDs_that_bought_this_service.includes(
+                parseInt(session?.user?.id)
+              ) ? (
+                <span className="badge bg-primary-light text-primary p-2">
+                  Purchased
+                  <i className="bi bi-check-circle ms-2"></i>
+                </span>
+              ) : cart.find(
+                  (item) =>
+                    item.id === service.id && item.cartType === "service"
+                ) ? (
                 <span
                   className="badge bg-secondary-light text-secondary p-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => removeFromCart(service.id)}
+                  onClick={() => removeFromCart(service.id, "service")}
                 >
                   remove Service {"  "}
                   <i className="bi bi-cart-dash"></i>
@@ -89,7 +102,7 @@ const ServiceCard = ({
                 <span
                   className="badge bg-success-light text-success p-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => addToCart(service)}
+                  onClick={() => addToCart(service, "service")}
                 >
                   Add Service {"  "}
                   <i className="bi bi-cart-plus"></i>

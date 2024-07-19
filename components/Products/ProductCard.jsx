@@ -1,38 +1,37 @@
 import React from "react";
 import ProductPlaceholder from "../ImagePlaceholders/Productplaceholder";
-
+import { useSession } from "next-auth/react";
 // [
-  // //     //     {
-  //   "id": 3,
-  //   "organization": {
-  //     "id": 1,
-  //     "name": "Innovations Cybercafe"
-  //   },
-  //   "preview": null,
-  //   "img_url": null,
-  //   "img_name": null,
-  //   "product": null,
-  //   "product_url": null,
-  //   "product_name": null,
-  //   "category": {
-  //     "id": 1,
-  //     "category": "Jamb",
-  //     "description": null
-  //   },
-  //   "name": "AI Tutor for Exam Preparations",
-  //   "description": "No description available",
-  //   "price": "2500.00",
-  //   "rating": 0,
-  //   "product_token": "eddc95530ca84141bafb2a3bdd0d695d",
-  //   "digital": true,
-  //   "created_at": "2024-05-29T10:03:26.614597Z",
-  //   "last_updated_date": "2024-07-16T04:50:08.986147Z",
-  //   "free": false,
-  //   "userIDs_that_bought_this_product": []
-  // },
-  //   ]
+// //     //     {
+//   "id": 3,
+//   "organization": {
+//     "id": 1,
+//     "name": "Innovations Cybercafe"
+//   },
+//   "preview": null,
+//   "img_url": null,
+//   "img_name": null,
+//   "product": null,
+//   "product_url": null,
+//   "product_name": null,
+//   "category": {
+//     "id": 1,
+//     "category": "Jamb",
+//     "description": null
+//   },
+//   "name": "AI Tutor for Exam Preparations",
+//   "description": "No description available",
+//   "price": "2500.00",
+//   "rating": 0,
+//   "product_token": "eddc95530ca84141bafb2a3bdd0d695d",
+//   "digital": true,
+//   "created_at": "2024-05-29T10:03:26.614597Z",
+//   "last_updated_date": "2024-07-16T04:50:08.986147Z",
+//   "free": false,
+//   "userIDs_that_bought_this_product": []
+// },
+//   ]
 
-  
 const ProductCard = ({
   product,
   openModal,
@@ -40,6 +39,7 @@ const ProductCard = ({
   addToCart,
   removeFromCart,
 }) => {
+  const { data: session } = useSession();
   return (
     <div className="card p-4 py-4">
       <div className="d-flex align-items-center">
@@ -76,7 +76,7 @@ const ProductCard = ({
                 </span>
               </span>
             ) : (
-                product.description
+              product.description
             )}
           </p>
           <div className="d-flex justify-content-between mt-3 flex-wrap">
@@ -85,11 +85,21 @@ const ProductCard = ({
             </span>
 
             <div className="me-2 me-md-3">
-              {cart.find((item) => item.id === product.id) ? (
+              {product.userIDs_that_bought_this_product.includes(
+                parseInt(session?.user?.id)
+              ) ? (
+                <span className="badge bg-primary-light text-primary p-2">
+                  Purchased
+                  <i className="bi bi-check-circle ms-2"></i>
+                </span>
+              ) : cart.find(
+                  (item) =>
+                    item.id === product.id && item.cartType === "product"
+                ) ? (
                 <span
                   className="badge bg-secondary-light text-secondary p-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => removeFromCart(product.id)}
+                  onClick={() => removeFromCart(product.id, "product")}
                 >
                   remove product {"  "}
                   <i className="bi bi-cart-dash"></i>
@@ -98,7 +108,7 @@ const ProductCard = ({
                 <span
                   className="badge bg-success-light text-success p-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => addToCart(product)}
+                  onClick={() => addToCart(product, "product")}
                 >
                   Add product {"  "}
                   <i className="bi bi-cart-plus"></i>

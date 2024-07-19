@@ -146,6 +146,7 @@ const VideoProvider = ({ children }) => {
     <VideoContext.Provider
       value={{
         videos,
+        setVideos,
         fetchVideos,
         fetchVideoById,
         createVideo,

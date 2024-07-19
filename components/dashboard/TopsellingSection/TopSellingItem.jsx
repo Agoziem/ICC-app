@@ -1,8 +1,10 @@
 import { useCart } from "@/data/Cartcontext";
 import React from "react";
+import { useSession } from "next-auth/react";
 
 function TopSellingItem({ item }) {
   const { cart, addToCart, removeFromCart } = useCart();
+  const { data: session } = useSession();
   return (
     <tr>
       <th scope="row">
@@ -26,11 +28,21 @@ function TopSellingItem({ item }) {
       <td>{item.category.category}</td>
       <td>&#8358;{parseFloat(item.price)}</td>
       <td>
-        {cart.find((service) => service.id === item.id) ? (
+        {item.userIDs_that_bought_this_service.includes(
+          parseInt(session?.user?.id)
+        ) ? (
+          <span className="badge bg-primary-light text-primary p-2">
+            Purchased
+            <i className="bi bi-check-circle ms-2"></i>
+          </span>
+        ) : cart.find(
+            (service) =>
+              service.id === item.id && service.cartType === "service"
+          ) ? (
           <span
             className="badge bg-secondary-light text-secondary p-2"
             style={{ cursor: "pointer" }}
-            onClick={() => removeFromCart(item.id)}
+            onClick={() => removeFromCart(item.id, "service")}
           >
             remove Service {"  "}
             <i className="bi bi-cart-dash"></i>
@@ -39,7 +51,7 @@ function TopSellingItem({ item }) {
           <span
             className="badge bg-success-light text-success p-2"
             style={{ cursor: "pointer" }}
-            onClick={() => addToCart(item)}
+            onClick={() => addToCart(item, "service")}
           >
             Add Service {"  "}
             <i className="bi bi-cart-plus"></i>

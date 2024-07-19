@@ -27,15 +27,15 @@ const navList = [
   },
   {
     _id: uuidv4(),
-    name: "My Orders",
-    icon: "bi bi-cart3",
-    link: "/dashboard/my-orders",
-  },
-  {
-    _id: uuidv4(),
     name: "Videos",
     icon: "bi bi-camera-reels",
     link: "/dashboard/videos",
+  },
+  {
+    _id: uuidv4(),
+    name: "My Orders",
+    icon: "bi bi-cart3",
+    link: "/dashboard/my-orders",
   },
   {
     _id: uuidv4(),

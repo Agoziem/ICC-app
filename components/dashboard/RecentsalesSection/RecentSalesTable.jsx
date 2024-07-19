@@ -23,8 +23,7 @@ function RecentSalesTable({ items, session }) {
         <tr>
           <th scope="col">Order id</th>
           {session?.user?.is_staff ? <th scope="col">Customer</th> : null}
-          <th scope="col">Order (Services/Products)</th>
-          <th scope="col">Price</th>
+          <th scope="col">Payment Ref</th>
           <th scope="col">Total</th>
           <th scope="col">Status</th>
         </tr>
@@ -38,27 +37,11 @@ function RecentSalesTable({ items, session }) {
               </th>
               {session?.user?.is_staff ? <td>{item.customer.name}</td> : null}
               <td>
-                <a href="#" className="text-primary">
-                  <ul className="list-unstyled">
-                    {item.services &&
-                      item.services.map((service) => (
-                        <li key={service.id}>{service.name}</li>
-                      ))}
-                  </ul>
-                </a>
-              </td>
-              <td>
-                <ul className="list-unstyled">
-                  {item.services &&
-                    item.services.map((service) => (
-                      <li key={service.id}>&#8358;{service.price}</li>
-                    ))}
-                </ul>
+                {item.reference}
               </td>
               <td className="fw-bold">
                 &#8358;
-                {item.services &&
-                  item.services.reduce((acc, item) => acc + item.price, 0)}
+                {parseFloat(item.amount).toLocaleString()}
               </td>
               <td>
                 <span

@@ -34,7 +34,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
 
   return (
     <div className="mt-4">
-      <h4>{addorupdate.type} Testimonial</h4>
+      <h4>{addorupdate.type} Feedback</h4>
       <hr />
       <form onSubmit={handleSubmit}>
         <div className="form-group mb-3">
@@ -56,6 +56,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             name="name"
             value={formData.name}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="form-group mb-3">
@@ -68,6 +69,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             name="role"
             value={formData.role}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="form-group mb-3">
@@ -79,6 +81,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             name="content"
             value={formData.content}
             onChange={handleChange}
+            required
           ></textarea>
         </div>
         <div className="form-group mb-3">
@@ -93,6 +96,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             min={1}
             value={formData.rating}
             onChange={handleChange}
+            required
           />
         </div>
 

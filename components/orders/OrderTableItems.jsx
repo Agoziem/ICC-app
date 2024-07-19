@@ -26,11 +26,7 @@ const OrderTableItems = ({ currentItems }) => {
         <thead>
           <tr>
             <th scope="col">Order ID</th>
-            {
-              session?.user?.is_staff && <th scope="col">Customer</th>
-            }
-            <th scope="col">Services</th>
-            <th scope="col">Prices</th>
+            {session?.user?.is_staff && <th scope="col">Customer</th>}
             <th scope="col">Total Amount</th>
             <th scope="col">Payment ref</th>
             <th scope="col">status</th>
@@ -41,32 +37,14 @@ const OrderTableItems = ({ currentItems }) => {
             currentItems.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
-                {
-                  session?.user?.is_staff && <td>{item.customer.name}</td>
-                }
-                <td>
-                  <ul>
-                    {item.services &&
-                      item.services.map((service) => (
-                        <li key={service.id}>{service.name}</li>
-                      ))}
-                  </ul>
-                </td>
-                <td>
-                  <ul>
-                    {item.services &&
-                      item.services.map((service) => (
-                        <li key={service.id}>&#8358;{service.price}</li>
-                      ))}
-                  </ul>
-                </td>
-                <td>
+                {session?.user?.is_staff && <td>{item.customer.name}</td>}
+
+                <td className="fw-bold">
                   {/* total Amount */}
-                  &#8358; {item.amount}
+                  &#8358;
+                  {parseFloat(item.amount).toLocaleString()}
                 </td>
-                <td>
-                  {item.reference}
-                </td>
+                <td>{item.reference}</td>
                 <td>
                   <span
                     className={`badge text-${handleStatus(
@@ -80,7 +58,9 @@ const OrderTableItems = ({ currentItems }) => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="text-center">No order found</td>
+              <td colSpan="7" className="text-center">
+                No order found
+              </td>
             </tr>
           )}
         </tbody>
@@ -88,6 +68,5 @@ const OrderTableItems = ({ currentItems }) => {
     </div>
   );
 };
-
 
 export default OrderTableItems;

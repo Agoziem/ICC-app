@@ -9,6 +9,7 @@ import { useUserContext } from "@/data/usercontextdata";
 import { PiEmptyBold } from "react-icons/pi";
 import ApplicationPlaceholder from "@/components/ImagePlaceholders/ApplicationPlaceholder";
 import { useServiceContext } from "@/data/Servicescontext";
+import { useSession } from "next-auth/react";
 
 const ApplicationsPage = () => {
   const { openModal } = useAdminContext();
@@ -16,6 +17,7 @@ const ApplicationsPage = () => {
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const [items, setItems] = useState([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
     setItems(userOrder);
@@ -78,7 +80,7 @@ const ApplicationsPage = () => {
                           <span>
                             {application.description.substring(0, 80)}...{" "}
                             <span
-                              className="text-secondary fw-bold"
+                              className="text-secondary fw-bold text-break text-wrap"
                               style={{ cursor: "pointer" }}
                               onClick={() => openModal(application)}
                             >
@@ -94,22 +96,35 @@ const ApplicationsPage = () => {
                           &#8358;{parseFloat(application.price)}
                         </span>
                         <span className="me-2 me-md-4">
-                          {cart.find((item) => item.id === application.id) ? (
+                          {application.userIDs_that_bought_this_service.includes(
+                            parseInt(session?.user?.id)
+                          ) ? (
+                            <span className="badge bg-success-light text-success p-2">
+                              Purchased
+                              <i className="bi bi-check-circle ms-2"></i>
+                            </span>
+                          ) : cart.find(
+                              (item) =>
+                                item.id === application.id &&
+                                item.cartType === "service"
+                            ) ? (
                             <span
                               className="badge bg-secondary-light text-secondary p-2"
                               style={{ cursor: "pointer" }}
-                              onClick={() => removeFromCart(application.id)}
+                              onClick={() =>
+                                removeFromCart(application.id, "service")
+                              }
                             >
-                              remove from Cart {"  "}
+                              remove application {"  "}
                               <i className="bi bi-cart-dash"></i>
                             </span>
                           ) : (
                             <span
                               className="badge bg-success-light text-success p-2"
                               style={{ cursor: "pointer" }}
-                              onClick={() => addToCart(application)}
+                              onClick={() => addToCart(application, "service")}
                             >
-                              Add to Cart {"  "}
+                              Add to cart {"  "}
                               <i className="bi bi-cart-plus"></i>
                             </span>
                           )}

@@ -1,42 +1,43 @@
 import React from "react";
 import VideosPlaceholder from "../ImagePlaceholders/Videosplaceholder";
-
+import { useSession } from "next-auth/react";
 // {
-  //     "id": 4,
-  //     "organization": {
-  //       "id": 1,
-  //       "name": "Innovations Cybercafe"
-  //     },
-  //     "thumbnail": null,
-  //     "video": null,
-  //     "video_url": null,
-  //     "video_name": null,
-  //     "img_url": null,
-  //     "img_name": null,
-  //     "category": {
-  //       "id": 2,
-  //       "category": "PostUTME",
-  //       "description": "This is a Postutme Video"
-  //     },
-  //     "subcategory": {
-  //       "id": 4,
-  //       "category": {
-  //         "id": 2,
-  //         "category": "PostUTME",
-  //         "description": "This is a Postutme Video"
-  //       },
-  //       "subcategory": "Physical Science"
-  //     },
-  //     "title": "Physical Science PostUtme intro",
-  //     "description": "This is a Physical Science Introduction Video",
-  //     "price": "3000.00",
-  //     "video_token": "a8b535f14e1f429bbc7705f710b82ef1",
-  //     "created_at": "2024-07-17T00:12:14.532976Z",
-  //     "updated_at": "2024-07-17T00:12:14.532976Z",
-  //     "free": false,
-  //     "userIDs_that_bought_this_video": []
-  //   },
+//     "id": 4,
+//     "organization": {
+//       "id": 1,
+//       "name": "Innovations Cybercafe"
+//     },
+//     "thumbnail": null,
+//     "video": null,
+//     "video_url": null,
+//     "video_name": null,
+//     "img_url": null,
+//     "img_name": null,
+//     "category": {
+//       "id": 2,
+//       "category": "PostUTME",
+//       "description": "This is a Postutme Video"
+//     },
+//     "subcategory": {
+//       "id": 4,
+//       "category": {
+//         "id": 2,
+//         "category": "PostUTME",
+//         "description": "This is a Postutme Video"
+//       },
+//       "subcategory": "Physical Science"
+//     },
+//     "title": "Physical Science PostUtme intro",
+//     "description": "This is a Physical Science Introduction Video",
+//     "price": "3000.00",
+//     "video_token": "a8b535f14e1f429bbc7705f710b82ef1",
+//     "created_at": "2024-07-17T00:12:14.532976Z",
+//     "updated_at": "2024-07-17T00:12:14.532976Z",
+//     "free": false,
+//     "userIDs_that_bought_this_video": []
+//   },
 const VideoCard = ({ video, openModal, cart, addToCart, removeFromCart }) => {
+  const { data: session } = useSession();
   return (
     <div className="card p-4 py-4">
       <div className="d-flex align-items-center">
@@ -82,11 +83,20 @@ const VideoCard = ({ video, openModal, cart, addToCart, removeFromCart }) => {
             </span>
 
             <div className="me-2 me-md-3">
-              {cart.find((item) => item.id === video.id) ? (
+              {video.userIDs_that_bought_this_video.includes(
+                parseInt(session?.user?.id)
+              ) ? (
+                <span className="badge bg-primary-light text-primary p-2">
+                  Purchased
+                  <i className="bi bi-check-circle ms-2"></i>
+                </span>
+              ) : cart.find(
+                  (item) => item.id === video.id && item.cartType === "video"
+                ) ? (
                 <span
                   className="badge bg-secondary-light text-secondary p-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => removeFromCart(video.id)}
+                  onClick={() => removeFromCart(video.id, "video")}
                 >
                   remove video {"  "}
                   <i className="bi bi-cart-dash"></i>
@@ -95,7 +105,7 @@ const VideoCard = ({ video, openModal, cart, addToCart, removeFromCart }) => {
                 <span
                   className="badge bg-success-light text-success p-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => addToCart(video)}
+                  onClick={() => addToCart(video, "video")}
                 >
                   Add video {"  "}
                   <i className="bi bi-cart-plus"></i>

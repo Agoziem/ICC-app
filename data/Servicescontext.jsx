@@ -158,6 +158,7 @@ const ServiceProvider = ({ children }) => {
     <ServiceContext.Provider
       value={{
         services,
+        setServices,
         applications,
         setApplications,
         fetchServices,

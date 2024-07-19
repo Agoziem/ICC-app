@@ -40,21 +40,23 @@ const CartProvider = ({ children }) => {
   // Add to Cart
   // ----------------------------------------------------
 
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-    setStoredCart([...cart, item]);
+  const addToCart = (item, type) => {
+    const newItem = { ...item, cartType: type };
+    setCart([...cart, newItem]);
+    setStoredCart([...cart, newItem]);
     setTotal(total + parseFloat(item.price));
   };
-
+  
   // ----------------------------------------------------
   // Remove from Cart
   // ----------------------------------------------------
-  const removeFromCart = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
-    setStoredCart(cart.filter((item) => item.id !== id));
-    const item = cart.find((item) => item.id === id);
-    setTotal(total - parseFloat(item.price));
+  const removeFromCart = (itemId, type) => {
+    const itemToRemove = cart.find((item) => item.id === itemId && item.cartType === type);
+    setCart(cart.filter((item) => !(item.id === itemId && item.cartType === type)));
+    setStoredCart(cart.filter((item) => !(item.id === itemId && item.cartType === type)));
+    setTotal(total - parseFloat(itemToRemove.price));
   };
+  
 
   // ----------------------------------------------------
   // Reset Cart
@@ -72,7 +74,9 @@ const CartProvider = ({ children }) => {
   const checkout = (organizationid) => {
     const order = {
       customerid: session?.user.id,
-      services: cart.map((item) => item.id),
+      services: cart.filter((item) => item.cartType === "service").map((item) => item.id),
+      products: cart.filter((item) => item.cartType === "product").map((item) => item.id),
+      videos: cart.filter((item) => item.cartType === "video").map((item) => item.id),
       total,
     };
     fetch(

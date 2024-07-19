@@ -69,7 +69,7 @@ const UserContextProvider = ({ children }) => {
   const updateUserOrder = (item) => {
     const updatedOrder = userOrder.map((order) => {
       if (order.id === item.id) {
-        return { ...order, status: item.status };
+        return item;
       }
       return order;
     });

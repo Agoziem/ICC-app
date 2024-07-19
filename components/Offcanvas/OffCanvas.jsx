@@ -36,38 +36,38 @@ const OffCanvas = () => {
             <ul className="list-group">
               {cart.map((item) => (
                 <li
-                  key={item.id}
+                  key={`${item.cartType}-${item.id}`}
                   className="list-group-item"
                   style={{
                     backgroundColor: "var(--bgLightColor)",
                     borderColor: "var(--bgDarkColor)",
                   }}
                 >
-                  <div>
-                    {item.name} -{" "}
-                    <span className="float-md-end fw-bold">
-                      &#8358;{item.price}
-                    </span>
+                  <div className="d-flex justify-content-between">
+                    <div className="flex-fill">{item.name || item.title}</div>
+                    <div className="fw-bold">&#8358;{item.price}</div>
                   </div>
-                  <span className="fw-bold small text-secondary">
-                    {item.category.category !== "application" ? (
-                      <i className="bi bi-person-fill-gear me-2 h5"></i>
-                    ) : (
-                      <i className="bi bi-google-play me-2 "></i>
-                    )}
-                    {item.category.category}
-                  </span>
-                  <span
-                    className="float-end badge bg-secondary-light text-secondary ms-2"
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      removeFromCart(item.id);
-                    }}
-                  >
-                    remove
-                  </span>
+                  <div className="d-flex justify-content-between mt-2">
+                    <div className="fw-bold small text-secondary">
+                      {item.category.category !== "application" ? (
+                        <i className="bi bi-person-fill-gear me-2 h5"></i>
+                      ) : (
+                        <i className="bi bi-google-play me-2 "></i>
+                      )}
+                      {item.category.category} <span className="ms-2 badge bg-primary-light text-primary">{item.cartType}</span>
+                    </div>
+                    <div
+                      className="badge bg-secondary-light text-secondary ms-2"
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        removeFromCart(item.id, item.cartType);
+                      }}
+                    >
+                      remove
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>

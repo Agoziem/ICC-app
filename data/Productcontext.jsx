@@ -148,6 +148,7 @@ const ProductProvider = ({ children }) => {
     <ProductContext.Provider
       value={{
         products,
+        setProducts,
         fetchProducts,
         fetchProductById,
         createProduct,

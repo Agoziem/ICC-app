@@ -8,12 +8,14 @@ import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
 import { useCart } from "@/data/Cartcontext";
 import { useServiceContext } from "@/data/Servicescontext";
 import { useCategoriesContext } from "@/data/Categoriescontext";
+import { useSession } from "next-auth/react";
 
 const ServicesSection = () => {
   const { openModal } = useContext(OrganizationContext);
   const { servicecategories: categories } = useCategoriesContext();
   const { services } = useServiceContext();
   const { cart, addToCart, removeFromCart } = useCart();
+  const { data: session } = useSession();
 
   return (
     <section id="services" className="features p-2 py-5 p-md-5">
@@ -150,29 +152,43 @@ const ServicesSection = () => {
                                 )}
                               </p>
                               <hr />
-                              <div className="d-flex justify-content-around mt-4">
-                                <span className="fw-bold text-primary me-2">
+                              <div className="d-flex justify-content-between mt-4">
+                                <div className="fw-bold text-primary me-2">
                                   &#8358;{parseFloat(service.price)}
-                                </span>
-
-                                {cart.find((item) => item.id === service.id) ? (
-                                  <span
+                                </div>
+                                {service.userIDs_that_bought_this_service.includes(
+                                  parseInt(session?.user?.id)
+                                ) ? (
+                                  <div className="badge bg-primary-light text-primary p-2">
+                                    Purchased
+                                    <i className="bi bi-check-circle ms-2"></i>
+                                  </div>
+                                ) : cart.find(
+                                    (item) =>
+                                      item.id === service.id &&
+                                      item.cartType === "service"
+                                  ) ? (
+                                  <div
                                     className="badge bg-secondary-light text-secondary p-2"
                                     style={{ cursor: "pointer" }}
-                                    onClick={() => removeFromCart(service.id)}
+                                    onClick={() =>
+                                      removeFromCart(service.id, "service")
+                                    }
                                   >
                                     remove Service {"  "}
                                     <i className="bi bi-cart-dash"></i>
-                                  </span>
+                                  </div>
                                 ) : (
-                                  <span
+                                  <div
                                     className="badge bg-success-light text-success p-2"
                                     style={{ cursor: "pointer" }}
-                                    onClick={() => addToCart(service)}
+                                    onClick={() =>
+                                      addToCart(service, "service")
+                                    }
                                   >
                                     Add Service {"  "}
                                     <i className="bi bi-cart-plus"></i>
-                                  </span>
+                                  </div>
                                 )}
                               </div>
                             </div>
@@ -247,29 +263,42 @@ const ServicesSection = () => {
                               )}
                             </p>
                             <hr />
-                            <div className="d-flex justify-content-around mt-4">
-                              <span className="fw-bold text-primary me-2">
+                            <div className="d-flex justify-content-between mt-4">
+                              <div className="fw-bold text-primary me-2">
                                 &#8358;{parseFloat(service.price)}
-                              </span>
+                              </div>
 
-                              {cart.find((item) => item.id === service.id) ? (
-                                <span
+                              {service.userIDs_that_bought_this_service.includes(
+                                parseInt(session?.user?.id)
+                              ) ? (
+                                <div className="badge bg-primary-light text-primary p-2">
+                                  Purchased
+                                  <i className="bi bi-check-circle ms-2"></i>
+                                </div>
+                              ) : cart.find(
+                                  (item) =>
+                                    item.id === service.id &&
+                                    item.cartType === "service"
+                                ) ? (
+                                <div
                                   className="badge bg-secondary-light text-secondary p-2"
                                   style={{ cursor: "pointer" }}
-                                  onClick={() => removeFromCart(service.id)}
+                                  onClick={() =>
+                                    removeFromCart(service.id, "service")
+                                  }
                                 >
-                                  remove application {"  "}
+                                  remove Service {"  "}
                                   <i className="bi bi-cart-dash"></i>
-                                </span>
+                                </div>
                               ) : (
-                                <span
+                                <div
                                   className="badge bg-success-light text-success p-2"
                                   style={{ cursor: "pointer" }}
-                                  onClick={() => addToCart(service)}
+                                  onClick={() => addToCart(service, "service")}
                                 >
-                                  Add application {"  "}
+                                  Add Service {"  "}
                                   <i className="bi bi-cart-plus"></i>
-                                </span>
+                                </div>
                               )}
                             </div>
                           </div>

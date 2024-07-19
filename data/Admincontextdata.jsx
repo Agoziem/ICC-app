@@ -89,7 +89,7 @@ const AdminContextProvider = ({ children }) => {
   const updateOrder = (item) => {
     const updatedOrder = orders.map((order) => {
       if (order.id === item.id) {
-        return { ...order, status: item.status };
+        return item;
       }
       return order;
     });

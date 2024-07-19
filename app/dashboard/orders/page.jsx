@@ -40,7 +40,7 @@ const OrderPage = () => {
       >
         <div className="row">
           <div className="col-12">
-            <h4 className="text-center">Order Page</h4>
+            <h4 className="text-center">Order List</h4>
             <ul className="list-group list-group-flush">
               <li className="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 <div className="py-2 fw-bold">Services Order</div>
@@ -48,29 +48,31 @@ const OrderPage = () => {
               <li className="list-group-item text-primary" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 {cart && cart.length > 0 ? (
                   cart.map((item) => (
-                    <div key={item.id} className="mb-2">
-                      <span>
+                    <div key={`${item.cartType}-${item.id}`} className="mb-2 d-flex justify-content-between">
+                      <div className="flex-fill">
                         <i className="bi bi-check2-circle me-3 h5 text-secondary fw-bold"></i>
-                        {item.name}
-                      </span>
-                      <span className="float-md-end ms-3 fw-bold">
+                        {item.name || item.title}
+                      </div>
+                      <div className="float-md-end ms-3 fw-bold">
                         &#8358;{item.price}
-                      </span>
+                      </div>
                     </div>
                   ))
                 ) : (
                   <span>No items to order</span>
                 )}
               </li>
-              <li className="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
+              <li className="list-group-item mt-2" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
+                <div className="text-center">
                 Total Amount to pay
-                <span className="float-md-end ms-3 fw-bold">&#8358;{total}</span>
+                </div>
+                <h3 className="text-center mt-2 fw-bold">&#8358;{total}</h3>
               </li>
             </ul>
             <div className="d-flex justify-content-center">
               <PaystackButton
                 {...componentProps}
-                className="btn btn-primary w-100 mt-4"
+                className="btn btn-primary w-100 mt-2"
               />
             </div>
           </div>
