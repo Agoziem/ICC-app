@@ -9,6 +9,7 @@ import NextBreadcrumb from "../Breadcrumb/breadcrumb";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ArticlePlaceholder from "../configuration/articles/ArticlePlaceholder";
+import BackButton from "../backbutton/BackButton";
 
 const ArticlesList = () => {
   const { articles, categories } = useArticleContext();
@@ -76,6 +77,7 @@ const ArticlesList = () => {
 
         <div className="ps-3">
           <NextBreadcrumb capitalizeLinks />
+          <BackButton />
         </div>
         <div>
           <h4 className="my-3 text-center">{currentCategory} Articles</h4>

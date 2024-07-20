@@ -116,6 +116,11 @@ const VideoUploader = ({
             <Alert type={"danger"}>{erroralert.message}</Alert>
           )}
           <p className="mb-2">Your Product Video</p>
+          <div className="mb-2 small" style={{
+            color: "var(--bgDarkerColor)",
+          }}>
+            Only video files are allowed. File size should not exceed 64MB
+          </div>
           <button
             className="btn btn-sm btn-accent-primary shadow-none rounded"
             onClick={(e) => {

@@ -64,6 +64,26 @@ const ServiceProvider = ({ children }) => {
   };
 
   // ------------------------------------------------------
+  // fetch service by token
+  // ------------------------------------------------------
+  const fetchServiceByToken = async (token) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/service_by_token/${token}/`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setLoading(false);
+        return data;
+      }
+    } catch (error) {
+      setLoading(false);
+      return { type: "danger", message: "Error fetching service" };
+    }
+  };
+
+  // ------------------------------------------------------
   // Create a new service
   // ------------------------------------------------------
   const createService = async (service) => {
@@ -163,6 +183,7 @@ const ServiceProvider = ({ children }) => {
         setApplications,
         fetchServices,
         fetchServiceById,
+        fetchServiceByToken,
         createService,
         updateService,
         deleteService,

@@ -3,7 +3,7 @@ import { FaTimes } from "react-icons/fa";
 import { FaRegFileImage } from "react-icons/fa6";
 import { IoIosImages } from "react-icons/io";
 import { LuUpload } from "react-icons/lu";
-
+import Alert from "../Alert/Alert";
 const ImageUploader = ({
   imagekey,
   imageurlkey,
@@ -14,6 +14,10 @@ const ImageUploader = ({
   const fileInput = useRef(null);
   const [fileName, setFileName] = useState("No Selected file");
   const [image, setImage] = useState(null);
+  const [erroralert, setErrorAlert] = useState({
+    show: false,
+    message: "",
+  });
 
   useEffect(() => {
     if (formData[imageurlkey]) {
@@ -26,7 +30,16 @@ const ImageUploader = ({
     const file = files[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        alert("Only image files are allowed");
+        setErrorAlert({
+          show: true,
+          message: "Only image files are allowed",
+        });
+        setTimeout(() => {
+          setErrorAlert({
+            show: false,
+            message: "",
+          });
+        }, 3000);
         return;
       }
       setFileName(file.name);
@@ -64,6 +77,7 @@ const ImageUploader = ({
         />
 
         {/* selected image display */}
+        {erroralert.show && <Alert type="danger">{erroralert.message}</Alert>}
         <div>
           {image ? (
             <img
@@ -91,8 +105,16 @@ const ImageUploader = ({
 
         {/* select image button */}
         <div>
+          <div
+            className="mb-2 small"
+            style={{
+              color: "var(--bgDarkerColor)",
+            }}
+          >
+            only .jpg, .jpeg, .png files are allowed
+          </div>
           <button
-            className="btn btn-sm btn-accent-primary shadow-none mt-3"
+            className="btn btn-sm btn-accent-primary shadow-none mt-1"
             onClick={(e) => {
               e.preventDefault();
               fileInput.current.click();
@@ -103,7 +125,7 @@ const ImageUploader = ({
           </button>
         </div>
       </div>
-      
+
       {/* display the file name & the delete icon */}
       <div className="d-flex align-items-center rounded py-3">
         <FaRegFileImage className="h4 text-primary" />

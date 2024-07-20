@@ -11,6 +11,7 @@ import Toast from "../Toast/toast";
 import { useSession } from "next-auth/react";
 import { MdOutlineArticle } from "react-icons/md";
 import NextBreadcrumb from "../Breadcrumb/breadcrumb"
+import BackButton from "../backbutton/BackButton";
 
 
 const Article = ({ params }) => {
@@ -97,6 +98,7 @@ const Article = ({ params }) => {
         >
           <div className="pt-2 ps-3">
             <NextBreadcrumb capitalizeLinks />
+            <BackButton />
           </div>
           <div className="article-header pb-4">
             <h1 className="text-wrap text-break">{article.title}</h1>

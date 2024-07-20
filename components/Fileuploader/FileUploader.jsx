@@ -110,8 +110,16 @@ const FileUploader = ({
         {erroralert.show && <Alert type={"danger"}>{erroralert.message}</Alert>}
         {!fileName ? (
           <div className="">
+            <div
+              className="mb-2 small"
+              style={{
+                color: "var(--bgDarkerColor)",
+              }}
+            >
+              only PDF, Word, Excel, and Image files are allowed
+            </div>
             <button
-              className="btn btn-accent-secondary shadow-none mt-3 w-100 rounded py-3 text-center"
+              className="btn btn-accent-secondary shadow-none mt-2 w-100 rounded py-3 text-center"
               onClick={(e) => {
                 e.preventDefault();
                 fileInput.current.click();

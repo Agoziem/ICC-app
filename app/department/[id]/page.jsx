@@ -7,6 +7,7 @@ import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
 import { TbBooks } from "react-icons/tb";
 import { RiCustomerService2Line } from "react-icons/ri";
+import BackButton from "@/components/backbutton/BackButton";
 
 const Department = ({ params }) => {
   const { depts } = useContext(OrganizationContext);
@@ -53,6 +54,7 @@ const Department = ({ params }) => {
 
   return (
     <section className="px-5 pt-3">
+      <BackButton />
       <h1 className="text-center mb-4">{department?.name} Department</h1>
       <div className="row p-md-4">
         <div className="col-12 col-md-6 ps-0">
@@ -157,7 +159,7 @@ const Department = ({ params }) => {
                 <div className="card-body">
                   <div className="d-flex flex-column justify-content-center align-items-center mb-3">
                     <span className="dept-icon h1 mb-3 text-secondary">
-                      {dept_icons.find((icon) => icon.id === dept.id).icon}
+                      {dept_icons.find((icon) => icon.id === dept.id)?.icon}
                     </span>
                     <h4 className="mb-0">{dept.name}</h4>
                   </div>

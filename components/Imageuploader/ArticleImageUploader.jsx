@@ -3,6 +3,7 @@ import { FaTimes } from "react-icons/fa";
 import { FaRegFileImage } from "react-icons/fa6";
 import { LuUpload } from "react-icons/lu";
 import { MdOutlineArticle } from "react-icons/md";
+import Alert from "../Alert/Alert";
 
 const ArticleImageUploader = ({
   imagekey,
@@ -14,6 +15,10 @@ const ArticleImageUploader = ({
   const fileInput = useRef(null);
   const [fileName, setFileName] = useState("No Selected file");
   const [image, setImage] = useState(null);
+  const [erroralert, setErrorAlert] = useState({
+    show: false,
+    message: "",
+  });
 
   useEffect(() => {
     if (formData[imageurlkey]) {
@@ -26,9 +31,19 @@ const ArticleImageUploader = ({
     const file = files[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        alert("Only image files are allowed");
+        setErrorAlert({
+          show: true,
+          message: "Only image files are allowed",
+        });
+        setTimeout(() => {
+          setErrorAlert({
+            show: false,
+            message: "",
+          });
+        }, 3000);
         return;
       }
+
       setFileName(file.name);
       setImage(URL.createObjectURL(file));
       setFormData({
@@ -64,6 +79,7 @@ const ArticleImageUploader = ({
           hidden
         />
 
+        {erroralert.show && <Alert type="danger">{erroralert.message}</Alert>}
         <div>
           {image ? (
             <img

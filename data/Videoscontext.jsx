@@ -55,6 +55,26 @@ const VideoProvider = ({ children }) => {
   };
 
   // ------------------------------------------------------
+  // fetch video by token
+  // ------------------------------------------------------
+  const fetchVideoByToken = async (token) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/video_by_token/${token}/`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setLoading(false);
+        return data;
+      }
+    } catch (error) {
+      setLoading(false);
+      return { type: "danger", message: "Error fetching video" };
+    }
+  };
+
+  // ------------------------------------------------------
   // Create a new video
   // ------------------------------------------------------
   const createVideo = async (video) => {
@@ -149,6 +169,7 @@ const VideoProvider = ({ children }) => {
         setVideos,
         fetchVideos,
         fetchVideoById,
+        fetchVideoByToken,
         createVideo,
         updateVideo,
         deleteVideo,

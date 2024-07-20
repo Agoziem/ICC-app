@@ -1,97 +1,95 @@
 import { useUserContext } from "@/data/usercontextdata";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { PiEmptyBold } from "react-icons/pi";
+import VideosPlaceholder from "../ImagePlaceholders/Videosplaceholder";
+import Link from "next/link";
 
 const UserVideos = () => {
   const { userOrder } = useUserContext();
   const { data: session } = useSession();
-//   {
-//     "id": 5,
-//     "organization": {
-//         "id": 1,
-//         "name": "Innovations Cybercafe"
-//     },
-//     "thumbnail": null,
-//     "video": "/media/videos/Lawson_example.mp4",
-//     "video_url": "http://127.0.0.1:8000/media/videos/Lawson_example.mp4",
-//     "video_name": "Lawson_example.mp4",
-//     "img_url": null,
-//     "img_name": null,
-//     "category": {
-//         "id": 1,
-//         "category": "Jamb",
-//         "description": "This is the Jamb Category for the Videos"
-//     },
-//     "subcategory": {
-//         "id": 1,
-//         "category": {
-//             "id": 1,
-//             "category": "Jamb",
-//             "description": "This is the Jamb Category for the Videos"
-//         },
-//         "subcategory": "Chemistry"
-//     },
-//     "title": "My Test Video Project",
-//     "description": "My Test Video Project",
-//     "price": "2999.00",
-//     "video_token": "aeb98620724043779bd2e6f96095e684",
-//     "number_of_times_bought": 2,
-//     "created_at": "2024-07-18T11:55:33.451609Z",
-//     "updated_at": "2024-07-19T20:56:52.880137Z",
-//     "free": false,
-//     "userIDs_that_bought_this_video": [
-//         1
-//     ]
-// }
+  const [video, setVideo] = useState("");
+  const [paidVideos, setPaidVideos] = useState([]);
+  
+
+  useEffect(() => {
+    if (userOrder.length > 0 && session?.user?.id) {
+      const userId = parseInt(session.user.id);
+      const allPaidVideos = userOrder.flatMap((order) =>
+        order.videos.filter((video) =>
+          video.userIDs_that_bought_this_video.includes(userId)
+        )
+      );
+      setPaidVideos(allPaidVideos);
+    }
+  }, [userOrder, session]);
 
   return (
-    <div>
-      {userOrder.length > 0 ? (
-        userOrder.map((order) => {
-          const paidVideos = order.videos.filter((video) =>
-            video.userIDs_that_bought_this_video.includes(
-              parseInt(session?.user?.id)
-            )
-          );
-
-          return (
-            <div key={order.id}>
-              {paidVideos.length > 0 ? (
-                paidVideos.map((video) => (
-                  <div key={video.id}>
-                    <h1>{video.title}</h1>
-                    <p>{video.description}</p>
-                    <p>{video.price}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center">
-                  <PiEmptyBold
-                    className="mt-2"
-                    style={{
-                      fontSize: "6rem",
-                      color: "var(--bgDarkerColor)",
-                    }}
-                  />
-                  <h4>videos</h4>
-                  <p>No videos paid for this order</p>
+    <div className="row">
+    <h4 className="my-3">Videos Purchased</h4>
+      {paidVideos.length > 0 ? (
+        paidVideos.map((video) => (
+          <div key={video.id} className="col-12 col-md-4">
+            <div className="card p-4">
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="me-3">
+                  {video.thumbnail ? (
+                    <img
+                      src={video.img_url}
+                      alt="video"
+                      width={68}
+                      height={68}
+                      className="rounded-circle object-fit-cover"
+                      style={{ objectPosition: "center" }}
+                    />
+                  ) : (
+                    <VideosPlaceholder />
+                  )}
                 </div>
-              )}
+                <div className="flex-fill">
+                  <h6 className="text-capitalize">{video.title}</h6>
+                  <p className="text-capitalize mb-1">
+                    {video.description.length > 80 ? (
+                      <span>
+                        {video.description.substring(0, 80)}...{" "}
+                      </span>
+                    ) : (
+                      video.description
+                    )}
+                  </p>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <p className="small mb-1">{video.category.category} Video</p>
+                    <div
+                      className="badge bg-primary-light text-primary py-2 px-2"
+                      style={{ cursor: "pointer" }}
+                    
+                    >
+                      <Link
+                        href={`/dashboard/my-orders/video/?videotoken=${video.video_token}`}
+                        className="text-primary"
+                      >
+                        View Video
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          );
-        })
+          </div>
+        ))
       ) : (
-        <div className="text-center">
-          <PiEmptyBold
-            className="mt-2"
-            style={{
-              fontSize: "6rem",
-              color: "var(--bgDarkerColor)",
-            }}
-          />
-          <h4>Orders</h4>
-          <p>It seems you have not placed any orders yet.</p>
+        <div className="col-12">
+          <div className="card p-4">
+            <div className="d-flex justify-content-center align-items-center">
+              <PiEmptyBold size={68} color="#000" />
+            </div>
+            <div className="text-center mt-4">
+              <h6 className="text-capitalize">No Videos Available</h6>
+              <p className="text-capitalize mb-1">
+                You have not purchased any videos yet.
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
