@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import ArticlePlaceholder from "./ArticlePlaceholder";
-import { TiArrowBack } from "react-icons/ti";
+import { TiArrowBack, TiArrowForward } from "react-icons/ti";
+
 const ArticleList = ({
   articles,
   setArticles,
@@ -72,8 +73,10 @@ const ArticleList = ({
   };
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    fetchArticles(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      fetchArticles(page);
+    }
   };
 
   return (
@@ -160,7 +163,7 @@ const ArticleList = ({
           ))}
 
           {/* ServerSide Pagination */}
-          <div>
+          <div className="d-flex justify-content-center mt-4">
             {currentPage > 1 && (
               <TiArrowBack
                 className="text-primary me-2"
@@ -168,33 +171,23 @@ const ArticleList = ({
                 style={{ cursor: "pointer", fontSize: "1.5rem" }}
               />
             )}
-            {Array.from({ length: totalPages }, (_, index) => {
-              if (index <= 1) {
-                return null;
-              } else {
-                return (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      if (currentPage !== index + 1) {
-                        handlePageChange(index + 1);
-                      }
-                    }}
-                    className={`me-2 ${
-                      currentPage === index + 1
-                        ? "text-light badge bg-secondary py-2 px-2"
-                        : "text-primary"
-                    }`}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {index + 1}
-                  </div>
-                );
-              }
-            })}
+            {Array.from({ length: totalPages }, (_, index) => (
+              <div
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                className={`me-2 ${
+                  currentPage === index + 1
+                    ? "text-light badge bg-secondary py-2 px-2"
+                    : "text-primary"
+                }`}
+                style={{ cursor: "pointer" }}
+              >
+                {index + 1}
+              </div>
+            ))}
             {currentPage < totalPages && (
-              <TiArrowBack
-                className="text-primary ms-2 "
+              <TiArrowForward
+                className="text-primary ms-2"
                 onClick={() => handlePageChange(currentPage + 1)}
                 style={{ cursor: "pointer", fontSize: "1.5rem" }}
               />
