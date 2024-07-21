@@ -41,11 +41,11 @@ const ArticlesList = () => {
 
   // filter categories with articles
   const filteredCategories = categories.filter((category) =>
-    articles.some((article) => article.category.id === category.id)
+    articles?.some((article) => article.category.id === category.id)
   );
 
   // filter articles by category
-  const filteredArticles = articles.filter(
+  const filteredArticles = articles?.filter(
     (article) => article.category.category === currentCategory
   );
 

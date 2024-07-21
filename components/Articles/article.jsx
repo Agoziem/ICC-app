@@ -10,9 +10,8 @@ import ArticleCommentsForm from "./ArticleCommentsForm";
 import Toast from "../Toast/toast";
 import { useSession } from "next-auth/react";
 import { MdOutlineArticle } from "react-icons/md";
-import NextBreadcrumb from "../Breadcrumb/breadcrumb"
+import NextBreadcrumb from "../Breadcrumb/breadcrumb";
 import BackButton from "../backbutton/BackButton";
-
 
 const Article = ({ params }) => {
   const { slug } = params;
@@ -254,7 +253,7 @@ const Article = ({ params }) => {
             <h4 className="fw-bold mb-4">Related Articles</h4>
             <div className="row justify-content-center">
               {otherArticles &&
-                otherArticles.slice(0,6).map((blog, index) => (
+                otherArticles.slice(0, 6).map((blog, index) => (
                   <div
                     key={blog.id}
                     className="col-12 col-md d-flex justify-content-center"
@@ -321,6 +320,15 @@ const Article = ({ params }) => {
                     </div>
                   </div>
                 ))}
+              {otherArticles && otherArticles.length > 1 && (
+                <div>
+                  <div className="d-flex justify-content-center mt-0 mb-5">
+                    <Link href="/articles" className="btn btn-primary px-5">
+                      View articles
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

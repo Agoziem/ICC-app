@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import ArticlePlaceholder from "./ArticlePlaceholder";
+import { TiArrowBack } from "react-icons/ti";
 const ArticleList = ({
   articles,
   setArticles,
@@ -158,7 +159,7 @@ const ArticleList = ({
             </div>
           ))}
 
-          {/* Pagination icon */}
+          {/* ServerSide Pagination */}
           <div>
             {currentPage > 1 && (
               <TiArrowBack
