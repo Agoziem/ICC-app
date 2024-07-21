@@ -83,76 +83,92 @@ const ArticleList = ({
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {articles && articles.length > 0 ? (
         <div className="">
-          {articles.map((article) => (
-            <div key={article.id} className="card px-4 py-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="me-3">
-                  {article.img ? (
-                    <img
-                      src={article.img_url}
-                      className="rounded object-fit-cover "
-                      alt="profile"
-                      height={90}
-                      width={90}
-                      style={{ objectPosition: "top center" }}
-                    />
-                  ) : (
-                    <ArticlePlaceholder />
-                  )}
+          {loading ? (
+            articles.map((article) => (
+              <div key={article.id} className="card px-4 py-3">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="me-3">
+                    {article.img ? (
+                      <img
+                        src={article.img_url}
+                        className="rounded object-fit-cover "
+                        alt="profile"
+                        height={90}
+                        width={90}
+                        style={{ objectPosition: "top center" }}
+                      />
+                    ) : (
+                      <ArticlePlaceholder />
+                    )}
+                  </div>
+                  <div className="flex-fill">
+                    <h6 className="text-wrap text-break">{article.title}</h6>
+                    <p className="text-wrap text-break">{article.subtitle}</p>
+                  </div>
                 </div>
-                <div className="flex-fill">
-                  <h6 className="text-wrap text-break">{article.title}</h6>
-                  <p className="text-wrap text-break">{article.subtitle}</p>
+
+                <div className="d-flex justify-content-end">
+                  <button
+                    className="btn btn-sm btn-accent-primary me-2 rounded"
+                    onClick={() => {
+                      setArticle({
+                        id: article.id,
+                        img: article.img,
+                        img_url: article.img_url,
+                        img_name: article.img_name,
+                        title: article.title,
+                        subtitle: article.subtitle,
+                        body: article.body,
+                        tags: article.tags.map((t) => t.tag),
+                        slug: article.slug,
+                        category: article.category.category,
+                        readTime: article.readTime,
+                      });
+                      setEditMode(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger rounded"
+                    onClick={() => {
+                      setArticle({
+                        id: article.id,
+                        img: article.img,
+                        img_url: article.img_url,
+                        img_name: article.img_name,
+                        title: article.title,
+                        subtitle: article.subtitle,
+                        body: article.body,
+                        tags: article.tags.map((t) => t.tag),
+                        slug: article.slug,
+                        category: article.category.category,
+                        readTime: article.readTime,
+                      });
+                      setShowModal(true);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
-
-              <div className="d-flex justify-content-end">
-                <button
-                  className="btn btn-sm btn-accent-primary me-2 rounded"
-                  onClick={() => {
-                    setArticle({
-                      id: article.id,
-                      img: article.img,
-                      img_url: article.img_url,
-                      img_name: article.img_name,
-                      title: article.title,
-                      subtitle: article.subtitle,
-                      body: article.body,
-                      tags: article.tags.map((t) => t.tag),
-                      slug: article.slug,
-                      category: article.category.category,
-                      readTime: article.readTime,
-                    });
-                    setEditMode(true);
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-sm btn-danger rounded"
-                  onClick={() => {
-                    setArticle({
-                      id: article.id,
-                      img: article.img,
-                      img_url: article.img_url,
-                      img_name: article.img_name,
-                      title: article.title,
-                      subtitle: article.subtitle,
-                      body: article.body,
-                      tags: article.tags.map((t) => t.tag),
-                      slug: article.slug,
-                      category: article.category.category,
-                      readTime: article.readTime,
-                    });
-                    setShowModal(true);
-                  }}
-                >
-                  Delete
-                </button>
+            ))
+          ) : (
+            <div className="d-flex justify-content-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
             </div>
-          ))}
+          )}
           <div>
+            {currentPage < totalPages && (
+              <button
+                className="btn btn-primary rounded mt-3"
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                next
+              </button>
+            )}
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index}
@@ -163,6 +179,14 @@ const ArticleList = ({
                 {index + 1}
               </button>
             ))}
+            {currentPage > 1 && (
+              <button
+                className="btn btn-primary rounded mt-3"
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                prev
+              </button>
+            )}
           </div>
         </div>
       ) : (
