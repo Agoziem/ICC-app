@@ -12,7 +12,16 @@ import ArticlePlaceholder from "../configuration/articles/ArticlePlaceholder";
 import BackButton from "../backbutton/BackButton";
 
 const ArticlesList = () => {
-  const { articles, categories } = useArticleContext();
+  const {
+    articles,
+    categories,
+    fetchArticles,
+    loading,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+
+  } = useArticleContext();
   const [currentCategory, setCurrentCategory] = useState("");
   const searchParams = useSearchParams();
 
@@ -113,8 +122,12 @@ const ArticlesList = () => {
                     </div>
 
                     <div className="ms-2">
-                      <h5 className="mb-1 text-wrap text-break">{item.title}</h5>
-                      <p className="my-0 mb-1 text-wrap text-break">{item.subtitle}...</p>
+                      <h5 className="mb-1 text-wrap text-break">
+                        {item.title}
+                      </h5>
+                      <p className="my-0 mb-1 text-wrap text-break">
+                        {item.subtitle}...
+                      </p>
                       <div
                         className="d-flex align-items-center"
                         style={{ color: "var(--bgDarkerColor)" }}
@@ -150,8 +163,8 @@ const ArticlesList = () => {
           <h3 className="text-center my-4">Top trending Articles</h3>
           <hr />
           <ul className="list-group list-group-flush mx-auto mb-5">
-            {articles && articles.length > 0  ? (
-              articles.slice(0,6).map((item, index) => (
+            {articles && articles.length > 0 ? (
+              articles.slice(0, 6).map((item, index) => (
                 <Link href={`/articles/${item.slug}`} key={item.id}>
                   <li
                     className="list-group-item d-flex align-items-center py-3"
@@ -180,8 +193,12 @@ const ArticlesList = () => {
                     </div>
 
                     <div className="ms-2">
-                      <h5 className="mb-1 text-wrap text-break">{item.title}</h5>
-                      <p className="my-0 mb-1 text-wrap text-break">{item.subtitle}...</p>
+                      <h5 className="mb-1 text-wrap text-break">
+                        {item.title}
+                      </h5>
+                      <p className="my-0 mb-1 text-wrap text-break">
+                        {item.subtitle}...
+                      </p>
                       <div
                         className="d-flex align-items-center"
                         style={{ color: "var(--bgDarkerColor)" }}

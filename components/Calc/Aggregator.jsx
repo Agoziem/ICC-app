@@ -57,7 +57,7 @@ const Aggregator = () => {
         style={{ maxWidth: "700px" }}
       >
         <p className="my-1 text-center">
-          Enter your JAMB and Post UTME scores to calculate your aggregate score
+          Enter your JAMB and Post UTME scores to calculate your <span className="fw-bold">Aggregate Score</span>
         </p>
         <hr />
         <form

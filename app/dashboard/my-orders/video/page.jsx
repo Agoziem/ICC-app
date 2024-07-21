@@ -65,6 +65,7 @@ const VideoPage = () => {
           <div className="row justify-content-between">
             <div className="col-12 col-md-7">
               <video
+                onContextMenu={(e) => e.preventDefault()}
                 src={video?.video_url}
                 controls
                 style={{

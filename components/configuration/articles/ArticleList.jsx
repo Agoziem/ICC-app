@@ -9,6 +9,11 @@ const ArticleList = ({
   setArticle,
   editMode,
   setEditMode,
+  currentPage,
+  setCurrentPage,
+  totalPages,
+  fetchArticles,
+  loading,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [alert, setAlert] = useState({
@@ -65,10 +70,15 @@ const ArticleList = ({
     });
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchArticles(page);
+  };
+
   return (
     <div>
       <h4 className="mb-3">
-        {articles?.length} Article{articles.length > 1 ? "s" : ""}
+        {articles?.length} Article{articles?.length > 1 ? "s" : ""}
       </h4>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {articles && articles.length > 0 ? (
@@ -142,6 +152,18 @@ const ArticleList = ({
               </div>
             </div>
           ))}
+          <div>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                disabled={currentPage === index + 1}
+                className="btn btn-sm btn-primary rounded me-2"
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="card-body">

@@ -7,8 +7,17 @@ import { useSession } from "next-auth/react";
 import ArticleCategoryForm from "./ArticleCategoryForm";
 
 const ArticleConf = () => {
-  const { articles, setArticles, categories, setCategories } =
-    useArticleContext();
+  const {
+    articles,
+    setArticles,
+    categories,
+    setCategories,
+    fetchArticles,
+    loading,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+  } = useArticleContext();
   const { data: session } = useSession();
   const [article, setArticle] = useState({
     id: null,
@@ -24,7 +33,6 @@ const ArticleConf = () => {
     readTime: 0,
   });
   const [editMode, setEditMode] = useState(false);
-
 
   return (
     <div className="row mt-4 justify-content-between">
@@ -54,6 +62,11 @@ const ArticleConf = () => {
           setArticle={setArticle}
           editMode={editMode}
           setEditMode={setEditMode}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          fetchArticles={fetchArticles}
+          loading={loading}
         />
       </div>
     </div>

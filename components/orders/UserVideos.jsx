@@ -81,8 +81,8 @@ const UserVideos = () => {
             className="mt-2"
             style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
           />
-          <h4>Services</h4>
-          <p>you have purchased any video</p>
+          <h4>Videos</h4>
+          <p>you have not purchased any video</p>
         </div>
       )}
     </div>
