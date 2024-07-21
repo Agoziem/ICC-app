@@ -10,7 +10,6 @@ const UserVideos = () => {
   const { data: session } = useSession();
   const [video, setVideo] = useState("");
   const [paidVideos, setPaidVideos] = useState([]);
-  
 
   useEffect(() => {
     if (userOrder.length > 0 && session?.user?.id) {
@@ -26,7 +25,7 @@ const UserVideos = () => {
 
   return (
     <div className="row">
-    <h4 className="my-3">Videos Purchased</h4>
+      <h4 className="my-3">Videos Purchased</h4>
       {paidVideos.length > 0 ? (
         paidVideos.map((video) => (
           <div key={video.id} className="col-12 col-md-4">
@@ -50,19 +49,18 @@ const UserVideos = () => {
                   <h6 className="text-capitalize">{video.title}</h6>
                   <p className="text-capitalize mb-1">
                     {video.description.length > 80 ? (
-                      <span>
-                        {video.description.substring(0, 80)}...{" "}
-                      </span>
+                      <span>{video.description.substring(0, 80)}... </span>
                     ) : (
                       video.description
                     )}
                   </p>
                   <div className="d-flex justify-content-between align-items-center mt-3">
-                    <p className="small mb-1">{video.category.category} Video</p>
+                    <p className="small mb-1">
+                      {video.category.category} Video
+                    </p>
                     <div
                       className="badge bg-primary-light text-primary py-2 px-2"
                       style={{ cursor: "pointer" }}
-                    
                     >
                       <Link
                         href={`/dashboard/my-orders/video/?videotoken=${video.video_token}`}
@@ -78,18 +76,13 @@ const UserVideos = () => {
           </div>
         ))
       ) : (
-        <div className="col-12">
-          <div className="card p-4">
-            <div className="d-flex justify-content-center align-items-center">
-              <PiEmptyBold size={68} color="#000" />
-            </div>
-            <div className="text-center mt-4">
-              <h6 className="text-capitalize">No Videos Available</h6>
-              <p className="text-capitalize mb-1">
-                You have not purchased any videos yet.
-              </p>
-            </div>
-          </div>
+        <div className="text-center">
+          <PiEmptyBold
+            className="mt-2"
+            style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
+          />
+          <h4>Services</h4>
+          <p>you have purchased any video</p>
         </div>
       )}
     </div>

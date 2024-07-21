@@ -86,7 +86,9 @@ const UserProducts = () => {
                     )}
                   </p>
                   <div className="d-flex justify-content-between align-items-center mt-3">
-                    <p className="small mb-1">{product.category.category} Product</p>
+                    <p className="small mb-1">
+                      {product.category.category} Product
+                    </p>
                     <div
                       className="badge bg-primary py-2 px-2"
                       style={{ cursor: "pointer" }}
@@ -106,10 +108,13 @@ const UserProducts = () => {
           </div>
         ))
       ) : (
-        <div className="col-12">
-          <div className="card p-4 text-center">
-            <h6>No products available</h6>
-          </div>
+        <div className="text-center">
+          <PiEmptyBold
+            className="mt-2"
+            style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
+          />
+          <h4>Products</h4>
+          <p>you have not purchased any Products so far</p>
         </div>
       )}
     </div>
