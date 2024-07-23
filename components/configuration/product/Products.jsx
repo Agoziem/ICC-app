@@ -91,6 +91,7 @@ const Products = () => {
     } else {
       fetchProductsByCategory(currentCategory, page);
     }
+    setCurrentPage(1);
   };
 
   // ----------------------------------------------------

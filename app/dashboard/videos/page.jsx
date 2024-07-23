@@ -82,6 +82,7 @@ const VideosPage = () => {
     } else {
       fetchVideosByCategory(currentCategory, page);
     }
+    setCurrentPage(1);
   };
 
   return (

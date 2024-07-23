@@ -107,6 +107,7 @@ const Services = () => {
     } else {
       fetchServicesByCategory(currentCategory, page);
     }
+    setCurrentPage(1);
   };
   // ----------------------------------------------------
   // Close the modal
@@ -251,16 +252,14 @@ const Services = () => {
           ))
         ) : (
           <div className="mt-3 mb-3 text-center">
-            <BsPersonFillGear 
+            <BsPersonFillGear
               className="mt-2"
               style={{
                 fontSize: "6rem",
                 color: "var(--bgDarkerColor)",
               }}
             />
-            <p className="mt-3 mb-3">
-              no Services available
-            </p>
+            <p className="mt-3 mb-3">no Services available</p>
           </div>
         )}
 

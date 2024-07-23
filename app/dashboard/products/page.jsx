@@ -14,6 +14,7 @@ import { useProductContext } from "@/data/Productcontext";
 import ProductCard from "@/components/Products/ProductCard";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import { RiShoppingBasketFill } from "react-icons/ri";
+import Pagination from "@/components/Pagination/Pagination";
 
 const ProductsPage = () => {
   const { openModal } = useAdminContext();
@@ -86,7 +87,9 @@ const ProductsPage = () => {
     } else {
       fetchProductsByCategory(currentCategory, page);
     }
+    setCurrentPage(1);
   };
+
   return (
     <div>
       <PageTitle pathname="Products" />
@@ -112,9 +115,8 @@ const ProductsPage = () => {
         <div className="row">
           {products && products.length > 0 ? (
             products.map((product) => (
-              <div className="col-12 col-md-4">
+              <div key={product.id} className="col-12 col-md-4">
                 <ProductCard
-                  key={product.id}
                   product={product}
                   addToCart={addToCart}
                   removeFromCart={removeFromCart}

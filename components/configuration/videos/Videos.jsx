@@ -92,6 +92,7 @@ const Videos = () => {
     } else {
       fetchVideosByCategory(currentCategory, page);
     }
+    setCurrentPage(1);
   };
 
   // ------------------------------------------------------

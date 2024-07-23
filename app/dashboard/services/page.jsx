@@ -88,6 +88,7 @@ const ServicesPage = () => {
     } else {
       fetchServicesByCategory(currentCategory, page);
     }
+    setCurrentPage(1);
   };
 
   return (
@@ -115,9 +116,8 @@ const ServicesPage = () => {
         <div className="row">
           {services && services.length > 0 ? (
             services.map((service) => (
-              <div className="col-12 col-md-4">
+              <div key={service.id} className="col-12 col-md-4">
                 <ServiceCard
-                  key={service.id}
                   service={service}
                   addToCart={addToCart}
                   removeFromCart={removeFromCart}
