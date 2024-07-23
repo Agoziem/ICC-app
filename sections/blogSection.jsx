@@ -8,7 +8,7 @@ import { MdOutlineArticle } from "react-icons/md";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
 const BlogSection = () => {
-  const { articles,fetchArticles } = useArticleContext();
+  const { articles,fetchArticles,totalArticles } = useArticleContext();
   const { OrganizationData } = useContext(OrganizationContext);
 
   useEffect(() => {
@@ -110,7 +110,7 @@ const BlogSection = () => {
           )}
         </div>
 
-        {articles && articles.length > 3 && (
+        {articles && totalArticles > 3 && (
           <div>
             <div className="d-flex justify-content-center mt-0 mb-5">
               <Link href="/articles" className="btn btn-primary px-5">
