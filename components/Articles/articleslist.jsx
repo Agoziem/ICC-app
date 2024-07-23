@@ -11,6 +11,7 @@ import ArticlePlaceholder from "../configuration/articles/ArticlePlaceholder";
 import BackButton from "../backbutton/BackButton";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import Pagination from "../Pagination/Pagination";
+import CategoryTabs from "../Categories/Categoriestab";
 
 const ArticlesList = () => {
   const {
@@ -67,34 +68,13 @@ const ArticlesList = () => {
         {/* categories */}
         <div className="mb-3 ps-2 ps-md-0">
           {/* Categories */}
-          <div className="mb-1 fw-bold">categories</div>
-          {filteredCategories.length > 0 &&
-            filteredCategories.map((category) => {
-              return (
-                <div
-                  key={category.id}
-                  className={`badge rounded-5 px-4 py-2 me-2 mb-3 mb-md-0`}
-                  style={{
-                    color:
-                      currentCategory === category.category
-                        ? "var(--secondary)"
-                        : "var(--primary)",
-                    backgroundColor:
-                      currentCategory === category.category
-                        ? "var(--secondary-300)"
-                        : " ",
-                    border:
-                      currentCategory === category.category
-                        ? "1.5px solid var(--secondary)"
-                        : "1.5px solid var(--bgDarkerColor)",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setCurrentCategory(category.category)}
-                >
-                  {category.category}
-                </div>
-              );
-            })}
+          <h5 className="mb-3 fw-bold">categories</h5>
+          <CategoryTabs
+            categories={filteredCategories}
+            currentCategory={currentCategory}
+            setCurrentCategory={setCurrentCategory}
+            services={articles}
+          />
         </div>
 
         <div className="ps-3">
@@ -184,7 +164,7 @@ const ArticlesList = () => {
               )}
             </>
           </ul>
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

@@ -114,7 +114,18 @@ const ServicesPage = () => {
 
         {/* Services cards */}
         <div className="row">
-          {services && services.length > 0 ? (
+          {
+            // loading
+            loading && (
+              <div className="d-flex justify-content-center">
+                {/* spinner */}
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            )
+          }
+          {!loading && services && services.length > 0 ? (
             services.map((service) => (
               <div key={service.id} className="col-12 col-md-4">
                 <ServiceCard
@@ -140,7 +151,7 @@ const ServicesPage = () => {
             </div>
           )}
 
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

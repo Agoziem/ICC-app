@@ -113,7 +113,18 @@ const ProductsPage = () => {
 
         {/* Services cards */}
         <div className="row">
-          {products && products.length > 0 ? (
+          {
+            // loading
+            loading && (
+              <div className="d-flex justify-content-center">
+                {/* spinner */}
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            )
+          }
+          {!loading && products && products.length > 0 ? (
             products.map((product) => (
               <div key={product.id} className="col-12 col-md-4">
                 <ProductCard
@@ -137,7 +148,7 @@ const ProductsPage = () => {
               <p className="mt-3 mb-3">no services available at the moment</p>
             </div>
           )}
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

@@ -205,7 +205,18 @@ const Products = () => {
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {products?.length > 0 ? (
+        {
+          // loading
+          loading && (
+            <div className="d-flex justify-content-center">
+              {/* spinner */}
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )
+        }
+        {!loading && products?.length > 0 ? (
           products.map((product) => (
             <ProductCard
               openModal={openModal}
@@ -218,7 +229,7 @@ const Products = () => {
           ))
         ) : (
           <div className="mt-3 mb-3 text-center">
-            <RiShoppingBasketFill 
+            <RiShoppingBasketFill
               className="mt-2"
               style={{
                 fontSize: "6rem",
@@ -229,7 +240,7 @@ const Products = () => {
           </div>
         )}
 
-        {totalPages > 1 && (
+        {!loading && totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

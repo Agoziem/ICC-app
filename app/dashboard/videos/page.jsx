@@ -108,7 +108,18 @@ const VideosPage = () => {
 
         {/* Services cards */}
         <div className="row">
-          {videos && videos.length > 0 ? (
+          {
+            // loading
+            loading && (
+              <div className="d-flex justify-content-center">
+                {/* spinner */}
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            )
+          }
+          {!loading && videos && videos.length > 0 ? (
             videos.map((video) => (
               <div key={video.id} className="col-12 col-md-4 mb-3">
                 <VideoCard
@@ -133,7 +144,7 @@ const VideosPage = () => {
               <p className="mt-3 mb-3">no videos available at the moment</p>
             </div>
           )}
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

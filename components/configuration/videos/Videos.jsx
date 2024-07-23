@@ -217,7 +217,18 @@ const Videos = () => {
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {videos.length > 0 ? (
+        {
+          // loading
+          loading && (
+            <div className="d-flex justify-content-center">
+              {/* spinner */}
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )
+        }
+        {!loading && videos.length > 0 ? (
           videos.map((video) => (
             <VideoCard
               openModal={openModal}
@@ -240,7 +251,7 @@ const Videos = () => {
             <p className="mt-3 mb-3">No Videos available</p>
           </div>
         )}
-        {totalPages > 1 && (
+        {!loading && totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

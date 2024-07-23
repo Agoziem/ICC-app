@@ -239,7 +239,18 @@ const Services = () => {
       {/* The Services & Application list */}
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {services?.length > 0 ? (
+        {
+          // loading
+          loading && (
+            <div className="d-flex justify-content-center">
+              {/* spinner */}
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )
+        }
+        {!loading && services?.length > 0 ? (
           services.map((service) => (
             <ServiceCard
               openModal={openModal}
@@ -263,7 +274,7 @@ const Services = () => {
           </div>
         )}
 
-        {totalPages > 1 && (
+        {!loading && totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
