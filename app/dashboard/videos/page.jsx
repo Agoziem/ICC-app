@@ -141,7 +141,7 @@ const VideosPage = () => {
                   color: "var(--bgDarkerColor)",
                 }}
               />
-              <p className="mt-3 mb-3">no videos available at the moment</p>
+              <p className="mt-3 mb-3">No video available at the moment</p>
             </div>
           )}
           {!loading && totalPages > 1 && (

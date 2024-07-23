@@ -147,7 +147,7 @@ const ServicesPage = () => {
                   color: "var(--bgDarkerColor)",
                 }}
               />
-              <p className="mt-3 mb-3">no services available at the moment</p>
+              <p className="mt-3 mb-3">No Service available at the moment</p>
             </div>
           )}
 

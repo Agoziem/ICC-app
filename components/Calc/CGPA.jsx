@@ -74,18 +74,18 @@ const CGPA = () => {
 
   return (
     <div className="my-3">
-      <div className="text-center">
-        <BsCalculator
-          className="mb-3"
-          style={{
-            color: "var(--primary)",
-            fontSize: "3.5rem",
-            transform: "rotate(45deg)",
-          }}
-        />
-      </div>
-      <h3 className="text-center">CGPA Calculator</h3>
       <div className="card p-4 py-4 mx-auto my-3" style={{ maxWidth: "700px" }}>
+        <div className="text-center">
+          <BsCalculator
+            className="mb-3"
+            style={{
+              color: "var(--primary)",
+              fontSize: "3.5rem",
+              transform: "rotate(45deg)",
+            }}
+          />
+        </div>
+        <h3 className="text-center">CGPA Calculator</h3>
         <p className="my-1 text-center">
           This CGPA Calculator is based on the Nigeria University grading system
         </p>

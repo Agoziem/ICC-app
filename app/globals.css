@@ -489,6 +489,11 @@
   color: var(--primary);
 }
 
+.body table tbody tr td {
+  color: var(--primary-600);
+}
+
+
 /* Sections design */
 .body section {
   scroll-snap-align: start;
