@@ -10,10 +10,10 @@ function News() {
   const { OrganizationData } = useContext(OrganizationContext);
 
   useEffect(() => {
-    if (OrganizationData) {
+    if (OrganizationData.id) {
       fetchArticles(OrganizationData.id);
     }
-  }, [OrganizationData]);
+  }, [OrganizationData.id]);
 
   
   return (

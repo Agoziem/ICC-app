@@ -12,10 +12,10 @@ const BlogSection = () => {
   const { OrganizationData } = useContext(OrganizationContext);
 
   useEffect(() => {
-    if (OrganizationData) {
+    if (OrganizationData.id) {
       fetchArticles(OrganizationData.id, 1, 3);
     }
-  }, [OrganizationData]);
+  }, [OrganizationData.id]);
 
   return (
     <>

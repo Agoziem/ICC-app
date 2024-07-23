@@ -12,14 +12,14 @@ import { RiShoppingBasketFill } from "react-icons/ri";
 import { FaVideo } from "react-icons/fa6";
 
 function TopSelling({ itemName }) {
-  const { services, fetchServices } = useServiceContext();
-  const { products, fetchProducts } = useProductContext();
-  const { videos, fetchVideos } = useVideoContext();
+  const { services, fetchServices, totalServices } = useServiceContext();
+  const { products, fetchProducts, totalProducts } = useProductContext();
+  const { videos, fetchVideos, totalVideos } = useVideoContext();
   const [topSelling, setTopSelling] = useState([]);
   const { OrganizationData } = useContext(OrganizationContext);
 
   useEffect(() => {
-    if (OrganizationData) {
+    if (OrganizationData.id) {
       if (itemName === "Services") {
         fetchServices(OrganizationData.id, 1, 6);
       } else if (itemName === "Products") {
@@ -28,7 +28,7 @@ function TopSelling({ itemName }) {
         fetchVideos(OrganizationData.id, 1, 6);
       }
     }
-  }, [OrganizationData]);
+  }, [OrganizationData.id]);
 
   useEffect(() => {
     if (itemName === "Services") {
@@ -119,7 +119,11 @@ function TopSelling({ itemName }) {
             )}
           </tbody>
         </table>
-        {topSelling && topSelling.length > 6 ? (
+        {(itemName === "Services"
+          ? totalServices
+          : itemName === "Products"
+          ? totalProducts
+          : totalVideos) > 6 ? (
           <Link
             href={`/dashboard/${
               itemName === "Services"

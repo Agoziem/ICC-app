@@ -1,6 +1,5 @@
 "use client";
 import React, { createContext, useEffect, useState } from "react";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { useSession } from "next-auth/react";
 
 const UserContext = createContext();
@@ -12,40 +11,21 @@ const UserContextProvider = ({ children }) => {
   const [totalOrder, setTotalOrder] = useState(0);
 
   // ----------------------------------------------------
-  // get it from local storage if it's there on mount
-  // ----------------------------------------------------
-
-  const [storedUserOrder, setStoredUserOrder] = useLocalStorage(
-    "userOrder",
-    userOrder
-  );
-
-  // ----------------------------------------------------
-  // set it to local storage if it's there on mount and not empty
+  // get user data from session on mount
   // ----------------------------------------------------
   useEffect(() => {
     if (session && session.user.id) {
       setUserData(session.user);
+      fetchUserOrder(session.user.id);
     }
-  }, [session?.user.id]);
-
-  useEffect(() => {
-    if (session && session.user.id) {
-      if (storedUserOrder && storedUserOrder.length > 0) {
-        setUserOrder(storedUserOrder);
-      } else {
-        fetchUserOrder();
-      }
-    }
-  }, [session?.user.id]);
+  }, [session]);
 
   // ----------------------------------------------------
-  // fetch data from the backend and update LocalStorage
+  // fetch data from the backend
   // ----------------------------------------------------
-
-  const fetchUserOrder = () => {
+  const fetchUserOrder = (userId) => {
     fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/paymentsbyuser/${session?.user.id}/`
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/paymentsbyuser/${userId}/`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -54,14 +34,6 @@ const UserContextProvider = ({ children }) => {
       })
       .catch((e) => console.log(e.message));
   };
-
-  // ----------------------------------------------------
-  // update local storage when the state changes
-  // ----------------------------------------------------
-
-  useEffect(() => {
-    setStoredUserOrder(userOrder);
-  }, [userOrder]);
 
   // ----------------------------------------------------
   // update userOrder
@@ -73,7 +45,6 @@ const UserContextProvider = ({ children }) => {
       }
       return order;
     });
-    setStoredUserOrder(updatedOrder);
     setUserOrder(updatedOrder);
   };
 
@@ -82,7 +53,6 @@ const UserContextProvider = ({ children }) => {
   // ----------------------------------------------------
   const deleteUserOrder = (item) => {
     const updatedOrder = userOrder.filter((order) => order.id !== item.id);
-    setStoredUserOrder(updatedOrder);
     setUserOrder(updatedOrder);
   };
 
