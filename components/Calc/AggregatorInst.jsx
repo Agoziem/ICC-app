@@ -6,7 +6,7 @@ const AggregatorInst = () => {
       {/* Introduction */}
       <div>
         <h4 className="mb-2">
-          What is "Aggregate Score" for University Admissions?
+          What is &ldquo;Aggregate Score&rdquo; for University Admissions?
         </h4>
         <p>
           An aggregate score (or cumulative score), is a calculated numerical
