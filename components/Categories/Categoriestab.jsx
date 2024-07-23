@@ -12,7 +12,7 @@ const CategoryTabs = ({
         categories?.map((category) => (
           <div
             key={category.id}
-            className={`badge rounded-5 px-4 py-2 me-2 mb-2 mb-md-0`}
+            className={`badge rounded-5 px-4 py-2 me-2 mb-2`}
             style={{
               color:
                 currentCategory === category.category

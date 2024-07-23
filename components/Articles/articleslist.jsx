@@ -117,7 +117,7 @@ const ArticlesList = () => {
                   </div>
                 )
               }
-              {articles && articles.length > 0 ? (
+              {!loading && articles && articles.length > 0 ? (
                 articles.map((item, index, articles) => (
                   <Link href={`/articles/${item.slug}`} key={item.id}>
                     <li
