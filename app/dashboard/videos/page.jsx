@@ -64,10 +64,11 @@ const VideosPage = () => {
   // ----------------------------------------------------
   useEffect(() => {
     if (OrganizationData.id) {
+      setCurrentPage(1)
       if (currentCategory === "All") {
-        fetchVideos(OrganizationData.id, currentPage);
+        fetchVideos(OrganizationData.id, 1);
       } else {
-        fetchVideosByCategory(currentCategory, currentPage);
+        fetchVideosByCategory(currentCategory, 1);
       }
     }
   }, [OrganizationData.id, currentCategory]);
@@ -82,7 +83,6 @@ const VideosPage = () => {
     } else {
       fetchVideosByCategory(currentCategory, page);
     }
-    setCurrentPage(1);
   };
 
   return (

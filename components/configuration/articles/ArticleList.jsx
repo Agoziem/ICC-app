@@ -32,6 +32,7 @@ const ArticleList = ({
       fetchArticles(OrganizationData.id, currentPage, 10);
   }, [OrganizationData.id, currentPage]);
 
+  // handle Article Delete
   const deleteArticle = async (id) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/deleteblog/${id}`,

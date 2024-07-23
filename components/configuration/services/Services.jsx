@@ -89,6 +89,7 @@ const Services = () => {
   // ----------------------------------------------------
   useEffect(() => {
     if (OrganizationData.id) {
+      setCurrentPage(1)
       if (currentCategory === "All") {
         fetchServices(OrganizationData.id, currentPage);
       } else {
@@ -107,7 +108,6 @@ const Services = () => {
     } else {
       fetchServicesByCategory(currentCategory, page);
     }
-    setCurrentPage(1);
   };
   // ----------------------------------------------------
   // Close the modal

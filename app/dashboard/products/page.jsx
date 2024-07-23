@@ -69,10 +69,11 @@ const ProductsPage = () => {
   // ----------------------------------------------------
   useEffect(() => {
     if (OrganizationData.id) {
+      setCurrentPage(1)
       if (currentCategory === "All") {
-        fetchProducts(OrganizationData.id, currentPage);
+        fetchProducts(OrganizationData.id, 1);
       } else {
-        fetchProductsByCategory(currentCategory, currentPage);
+        fetchProductsByCategory(currentCategory, 1);
       }
     }
   }, [OrganizationData.id, currentCategory]);
@@ -87,7 +88,6 @@ const ProductsPage = () => {
     } else {
       fetchProductsByCategory(currentCategory, page);
     }
-    setCurrentPage(1);
   };
 
   return (

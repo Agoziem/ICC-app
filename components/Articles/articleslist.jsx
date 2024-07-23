@@ -44,10 +44,11 @@ const ArticlesList = () => {
   // Fetch Articles on Page Change
   useEffect(() => {
     if (OrganizationData.id) {
+      setCurrentPage(1)
       if (currentCategory === "All") {
-        fetchArticles(OrganizationData.id, currentPage);
+        fetchArticles(OrganizationData.id, 1);
       } else {
-        fetchArticlesByCategory(currentCategory, currentPage);
+        fetchArticlesByCategory(currentCategory, 1);
       }
     }
   }, [OrganizationData.id, currentCategory]);

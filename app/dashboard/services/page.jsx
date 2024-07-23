@@ -70,10 +70,11 @@ const ServicesPage = () => {
   // ----------------------------------------------------
   useEffect(() => {
     if (OrganizationData.id) {
+      setCurrentPage(1)
       if (currentCategory === "All") {
-        fetchServices(OrganizationData.id, currentPage);
+        fetchServices(OrganizationData.id, 1);
       } else {
-        fetchServicesByCategory(currentCategory, currentPage);
+        fetchServicesByCategory(currentCategory, 1);
       }
     }
   }, [OrganizationData.id, currentCategory]);
@@ -88,7 +89,6 @@ const ServicesPage = () => {
     } else {
       fetchServicesByCategory(currentCategory, page);
     }
-    setCurrentPage(1);
   };
 
   return (
