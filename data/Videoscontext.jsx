@@ -10,23 +10,46 @@ const VideoProvider = ({ children }) => {
   const { organizationID } = useContext(OrganizationContext);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (organizationID) fetchVideos();
-  }, [organizationID]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalVideos, setTotalVideos] = useState(0);
 
   // ------------------------------------------------------
-  // Fetch all videos
+  // Fetch all videos and paginate them
   // ------------------------------------------------------
-  const fetchVideos = async () => {
+  const fetchVideos = async (organizationID, page = 1, pageSize = 10) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/videos/${organizationID}/`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/videos/${organizationID}/?page=${page}&page_size=${pageSize}`
       );
       if (response.ok) {
         const data = await response.json();
-        setVideos(data);
+        setVideos(data.results);
+        setTotalVideos(data.count);
+        setTotalPages(Math.ceil(data.count / pageSize));
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      return { type: "danger", message: "Error fetching videos" };
+    }
+  };
+
+  // ------------------------------------------------------
+  // Fetch all videos by category and paginate them
+  // ------------------------------------------------------
+  const fetchVideosByCategory = async (category, page = 1, pageSize = 10) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/videos/${organizationID}/?category=${category}&page=${page}&page_size=${pageSize}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setVideos(data.results);
+        setTotalVideos(data.count);
+        setTotalPages(Math.ceil(data.count / pageSize));
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);
@@ -79,7 +102,11 @@ const VideoProvider = ({ children }) => {
   // ------------------------------------------------------
   const createVideo = async (video) => {
     setLoading(true);
-    const formData = converttoformData(video, ["category", "organization","subcategory"]);
+    const formData = converttoformData(video, [
+      "category",
+      "organization",
+      "subcategory",
+    ]);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/add_video/${organizationID}/`,
@@ -99,7 +126,8 @@ const VideoProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      return { type: "danger", message: "Error creating video" };danger
+      return { type: "danger", message: "Error creating video" };
+      danger;
     }
   };
 
@@ -170,10 +198,13 @@ const VideoProvider = ({ children }) => {
         fetchVideos,
         fetchVideoById,
         fetchVideoByToken,
+        fetchVideosByCategory,
         createVideo,
         updateVideo,
         deleteVideo,
         loading,
+        totalPages,
+        totalVideos,
       }}
     >
       {children}

@@ -24,8 +24,11 @@ const ArticleImageUploader = ({
     if (formData[imageurlkey]) {
       setFileName(formData[imagename]);
       setImage(formData[imageurlkey]);
+    } else {
+      setFileName("No Selected file");
+      setImage(null);
     }
-  }, [formData[imageurlkey], formData[imagename]]);
+  }, [formData]);
 
   const handleFileChange = ({ target: { files } }) => {
     const file = files[0];
@@ -44,11 +47,15 @@ const ArticleImageUploader = ({
         return;
       }
 
+      const imageUrl = URL.createObjectURL(file);
+
       setFileName(file.name);
-      setImage(URL.createObjectURL(file));
+      setImage(imageUrl);
       setFormData({
         ...formData,
         [imagekey]: file,
+        [imageurlkey]: imageUrl,
+        [imagename]: file.name,
       });
     }
   };
@@ -107,7 +114,15 @@ const ArticleImageUploader = ({
         </div>
 
         <div>
-          <p className="mb-2">Article Thumbnail</p>
+          <p className="mb-0">Article Thumbnail</p>
+          <div
+            className="mb-3 small"
+            style={{
+              color: "var(--bgDarkerColor)",
+            }}
+          >
+            only .jpg, .jpeg, .png files are allowed
+          </div>
           <button
             className="btn btn-sm btn-accent-primary shadow-none"
             onClick={(e) => {

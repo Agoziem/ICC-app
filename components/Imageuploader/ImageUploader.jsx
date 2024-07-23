@@ -23,8 +23,11 @@ const ImageUploader = ({
     if (formData[imageurlkey]) {
       setFileName(formData[imagename]);
       setImage(formData[imageurlkey]);
+    } else {
+      setFileName("No Selected file");
+      setImage(null);
     }
-  }, [formData[imageurlkey]]);
+  }, [formData]);
 
   const handleFileChange = ({ target: { files } }) => {
     const file = files[0];

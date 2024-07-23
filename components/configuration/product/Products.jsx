@@ -10,11 +10,22 @@ import CategoryTabs from "@/components/Categories/Categoriestab";
 import CategoriesForm from "@/components/Categories/Categories";
 import { useProductContext } from "@/data/Productcontext";
 import { useCategoriesContext } from "@/data/Categoriescontext";
+import Pagination from "@/components/Pagination/Pagination";
+import { RiShoppingBasketFill } from "react-icons/ri";
 
 const Products = () => {
   const { openModal } = useAdminContext();
-  const { products, createProduct, updateProduct, deleteProduct, loading } =
-    useProductContext();
+  const {
+    products,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    loading,
+    totalPages,
+    totalProducts,
+    fetchProducts,
+    fetchProductsByCategory,
+  } = useProductContext();
   const { OrganizationData } = useContext(OrganizationContext);
   const { productcategories: categories, setProductCategories: setCategories } =
     useCategoriesContext();
@@ -42,8 +53,49 @@ const Products = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "add", state: false });
-  const [currentCategory, setCurrentCategory] = useState("");
+  const [currentCategory, setCurrentCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
+  // ----------------------------------------------------
+  // Add a new category to the list of categories
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (categories.length > 0)
+      setFilteredCategories([
+        { id: 0, category: "All", description: "All Categories" },
+        ...categories,
+      ]);
+  }, [categories]);
+
+  // ----------------------------------------------------
+  // Fetch Services on Page Change
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (OrganizationData.id) {
+      if (currentCategory === "All") {
+        fetchProducts(OrganizationData.id, currentPage);
+      } else {
+        fetchProductsByCategory(currentCategory, currentPage);
+      }
+    }
+  }, [OrganizationData.id, currentCategory]);
+
+  // ----------------------------------------------------
+  // handle page change
+  // ----------------------------------------------------
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (currentCategory === "All") {
+      fetchProducts(OrganizationData.id, page);
+    } else {
+      fetchProductsByCategory(currentCategory, page);
+    }
+  };
+
+  // ----------------------------------------------------
+  // close modal
+  // ----------------------------------------------------
   const closeModal = () => {
     setShowModal(false);
     setShowModal2(false);
@@ -130,7 +182,7 @@ const Products = () => {
 
       <div className="d-flex flex-wrap align-items-center mb-4">
         <CategoryTabs
-          categories={categories}
+          categories={filteredCategories}
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
           services={products}
@@ -152,19 +204,37 @@ const Products = () => {
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {products.length > 0 &&
-          products
-            .filter((product) => currentCategory === product.category.category)
-            .map((product) => (
-              <ProductCard
-                openModal={openModal}
-                key={product.id}
-                tab={currentCategory}
-                item={product}
-                onEdit={handleEdit}
-                onDelete={handleDeleteConfirm}
-              />
-            ))}
+        {products?.length > 0 ? (
+          products.map((product) => (
+            <ProductCard
+              openModal={openModal}
+              key={product.id}
+              tab={currentCategory}
+              item={product}
+              onEdit={handleEdit}
+              onDelete={handleDeleteConfirm}
+            />
+          ))
+        ) : (
+          <div className="mt-3 mb-3 text-center">
+            <RiShoppingBasketFill 
+              className="mt-2"
+              style={{
+                fontSize: "6rem",
+                color: "var(--bgDarkerColor)",
+              }}
+            />
+            <p className="mt-3 mb-3">no Products available</p>
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
+        )}
       </div>
 
       <Modal

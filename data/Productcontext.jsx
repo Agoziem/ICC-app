@@ -9,23 +9,47 @@ const ProductProvider = ({ children }) => {
   const { organizationID } = useContext(OrganizationContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (organizationID) fetchProducts();
-  }, [organizationID]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   // ---------------------------------------
-  // Fetch all products
+  // Fetch all products and paginate them
   // ---------------------------------------
-  const fetchProducts = async () => {
+  const fetchProducts = async (organizationID, page = 1, pageSize = 10) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/products/${organizationID}/`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/products/${organizationID}/?page=${page}&page_size=${pageSize}`
       );
       if (response.ok) {
         const data = await response.json();
-        setProducts(data);
+        // console.log(data.results);
+        setProducts(data.results);
+        setTotalProducts(data.count);
+        setTotalPages(Math.ceil(data.count / pageSize));
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      return { type: "danger", message: "Error fetching products" };
+    }
+  };
+
+  // ---------------------------------------
+  // Fetch by category and paginate them
+  // ---------------------------------------
+  const fetchProductsByCategory = async (category, page = 1, pageSize = 10) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/products/${organizationID}/?category=${category}&page=${page}&page_size=${pageSize}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.results);
+        setTotalProducts(data.count);
+        setTotalPages(Math.ceil(data.count / 10));
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);
@@ -151,10 +175,13 @@ const ProductProvider = ({ children }) => {
         setProducts,
         fetchProducts,
         fetchProductById,
+        fetchProductsByCategory,
         createProduct,
         updateProduct,
         deleteProduct,
         loading,
+        totalPages,
+        totalProducts,
       }}
     >
       {children}

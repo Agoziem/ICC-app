@@ -14,7 +14,7 @@ import { useServiceContext } from "@/data/Servicescontext";
 const DashboardBody = () => {
   const { totalOrders, totalCustomers } = useAdminContext();
   const { userOrder, totalOrder } = useUserContext();
-  const { services, applications } = useServiceContext();
+  const { totalServices } = useServiceContext();
   const { data: session } = useSession();
   return (
     <div className="dashboard">
@@ -34,14 +34,10 @@ const DashboardBody = () => {
                 <div className="col-12 col-md-4">
                   <HorizontalCard
                     iconcolor="primary"
-                    cardtitle="Services & Apps"
+                    cardtitle="Services"
                     icon="bi bi-person-fill-gear"
-                    cardbody={
-                      services &&
-                      applications &&
-                      services.length + applications.length
-                    }
-                    cardspan="Services/applications"
+                    cardbody={totalServices}
+                    cardspan="Services"
                   />
                 </div>
                 <div className="col-12 col-md-4">
@@ -72,14 +68,10 @@ const DashboardBody = () => {
                   <div className="col-12 col-md-4">
                     <HorizontalCard
                       iconcolor="primary"
-                      cardtitle="Services & Apps"
+                      cardtitle="Services"
                       icon="bi bi-person-fill-gear"
-                      cardbody={
-                        services &&
-                        applications &&
-                        services.length + applications.length
-                      }
-                      cardspan="Services/applications"
+                      cardbody={totalServices}
+                      cardspan="Services"
                     />
                   </div>
                   <div className="col-12 col-md-4">
@@ -118,10 +110,21 @@ const DashboardBody = () => {
               <RecentSales session={session} />
             </div>
 
-            {/* Display Services & Products Available */}
+            {/* Display Services Available */}
             <div className="col-12">
-              <TopSelling />
+              <TopSelling itemName={"Services"} />
             </div>
+
+            {/* Display Products Available */}
+            <div className="col-12">
+              <TopSelling itemName={"Products"} />
+            </div>
+
+            {/* Display Videos Available */}
+            <div className="col-12">
+              <TopSelling itemName={"Videos"} />
+            </div>
+
           </div>
         </div>
 

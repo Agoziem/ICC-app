@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import NewsPostItem from "./NewsPostItem";
 import "./news.css";
 import { useArticleContext } from "@/data/Articlescontextdata";
 import Link from "next/link";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
 function News() {
-  const { articles } = useArticleContext();
+  const { articles, fetchArticles } = useArticleContext();
+  const { OrganizationData } = useContext(OrganizationContext);
+
+  useEffect(() => {
+    if (OrganizationData) {
+      fetchArticles(OrganizationData.id);
+    }
+  }, [OrganizationData]);
+
+  
   return (
     <div className="card ">
       <div className="card-body pb-4">
@@ -31,12 +41,14 @@ function News() {
               </p>
             </div>
           )}
-          <Link
-            href={"/articles"}
-            className="text-center text-secondary text-decoration-none"
-          >
-            View All Articles
-          </Link>
+          {articles && articles.length > 5 && (
+            <Link
+              href={"/articles"}
+              className="text-center text-secondary text-decoration-none"
+            >
+              View All Articles
+            </Link>
+          )}
         </div>
       </div>
     </div>

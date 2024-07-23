@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PiEmptyBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { useAdminContext } from "@/data/Admincontextdata";
@@ -13,35 +13,76 @@ import CategoryTabs from "@/components/Categories/Categoriestab";
 import { useCategoriesContext } from "@/data/Categoriescontext";
 import { useVideoContext } from "@/data/Videoscontext";
 import VideoCard from "@/components/Videos/VideoCard";
-
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { FaVideo } from "react-icons/fa6";
+import Pagination from "@/components/Pagination/Pagination";
 
 const VideosPage = () => {
   const { openModal } = useAdminContext();
-  const { videos } = useVideoContext();
+  const { videos, totalPages, fetchVideos, fetchVideosByCategory, loading } =
+    useVideoContext();
+  const { OrganizationData } = useContext(OrganizationContext);
   const { videoCategories: categories } = useCategoriesContext();
   const { cart, addToCart, removeFromCart } = useCart();
   const { userOrder } = useUserContext();
   const [items, setItems] = useState([]);
   const searchParams = useSearchParams();
-  const [currentCategory, setCurrentCategory] = useState("");
+  const [currentCategory, setCurrentCategory] = useState("All");
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // ---------------------------------------
+  // set items in the order table
+  // ---------------------------------------
   useEffect(() => {
     setItems(userOrder);
   }, [userOrder]);
 
+  // ---------------------------------------
+  // Fetch videos on page load
+  // ---------------------------------------
   useEffect(() => {
     const category = searchParams.get("category");
     if (category) {
       setCurrentCategory(category);
-    } else if (categories?.length > 0) {
-      const firstCategoryWithServices = categories?.find((cat) =>
-        videos.some((video) => video.category.id === cat.id)
-      );
-      setCurrentCategory(
-        firstCategoryWithServices?.category || categories[0].category
-      );
     }
-  }, [categories, videos, searchParams]);
+  }, [searchParams]);
+
+  // ----------------------------------------------------
+  // Add a new category to the list of categories
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (categories.length > 0)
+      setFilteredCategories([
+        { id: 0, category: "All", description: "All Categories" },
+        ...categories,
+      ]);
+  }, [categories]);
+
+  // ----------------------------------------------------
+  // Fetch Services on Page Change
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (OrganizationData.id) {
+      if (currentCategory === "All") {
+        fetchVideos(OrganizationData.id, currentPage);
+      } else {
+        fetchVideosByCategory(currentCategory, currentPage);
+      }
+    }
+  }, [OrganizationData.id, currentCategory]);
+
+  // ----------------------------------------------------
+  // handle page change
+  // ----------------------------------------------------
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (currentCategory === "All") {
+      fetchVideos(OrganizationData.id, page);
+    } else {
+      fetchVideosByCategory(currentCategory, page);
+    }
+  };
 
   return (
     <div>
@@ -57,7 +98,7 @@ const VideosPage = () => {
         {/* Categories list */}
         <div className="mb-4">
           <CategoryTabs
-            categories={categories}
+            categories={filteredCategories}
             currentCategory={currentCategory}
             setCurrentCategory={setCurrentCategory}
             services={videos}
@@ -67,44 +108,21 @@ const VideosPage = () => {
         {/* Services cards */}
         <div className="row">
           {videos && videos.length > 0 ? (
-            // Filter videos by the current category
-            videos.filter(
-              (video) => currentCategory === video.category.category
-            ).length > 0 ? (
-              videos
-                .filter(
-                  (video) => currentCategory === video.category.category
-                )
-                .map((video) => (
-                  <div key={video.id} className="col-12 col-md-4">
-                    <VideoCard
-                      video={video}
-                      openModal={openModal}
-                      cart={cart}
-                      addToCart={addToCart}
-                      removeFromCart={removeFromCart}
-                    />
-                  </div>
-                ))
-            ) : (
-              // Show "no services available" message if no services in the category
-              <div className="mt-3 mb-3 text-center">
-                <PiEmptyBold
-                  className="mt-2"
-                  style={{
-                    fontSize: "6rem",
-                    color: "var(--bgDarkerColor)",
-                  }}
+            videos.map((video) => (
+              <div key={video.id} className="col-12 col-md-4 mb-3">
+                <VideoCard
+                  video={video}
+                  addToCart={addToCart}
+                  removeFromCart={removeFromCart}
+                  cart={cart}
+                  openModal={openModal}
                 />
-                <p className="mt-3 mb-3">
-                  no videos available for the {currentCategory} category
-                </p>
               </div>
-            )
+            ))
           ) : (
             // Show "no services available" message if no services at all
             <div className="mt-3 mb-3 text-center">
-              <PiEmptyBold
+              <FaVideo
                 className="mt-2"
                 style={{
                   fontSize: "6rem",
@@ -113,6 +131,13 @@ const VideosPage = () => {
               />
               <p className="mt-3 mb-3">no videos available at the moment</p>
             </div>
+          )}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            />
           )}
         </div>
 

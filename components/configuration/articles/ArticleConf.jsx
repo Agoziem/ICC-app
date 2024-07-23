@@ -10,13 +10,12 @@ const ArticleConf = () => {
   const {
     articles,
     setArticles,
+    fetchArticles,
     categories,
     setCategories,
-    fetchArticles,
     loading,
-    currentPage,
-    setCurrentPage,
     totalPages,
+    totalArticles,
   } = useArticleContext();
   const { data: session } = useSession();
   const [article, setArticle] = useState({
@@ -62,11 +61,10 @@ const ArticleConf = () => {
           setArticle={setArticle}
           editMode={editMode}
           setEditMode={setEditMode}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
+          loading={loading}
           totalPages={totalPages}
           fetchArticles={fetchArticles}
-          loading={loading}
+          totalArticles={totalArticles}
         />
       </div>
     </div>

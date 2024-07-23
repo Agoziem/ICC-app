@@ -1,13 +1,21 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./section.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { useArticleContext } from "@/data/Articlescontextdata";
 import { MdOutlineArticle } from "react-icons/md";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
 
 const BlogSection = () => {
-  const { articles } = useArticleContext();
+  const { articles,fetchArticles } = useArticleContext();
+  const { OrganizationData } = useContext(OrganizationContext);
+
+  useEffect(() => {
+    if (OrganizationData) {
+      fetchArticles(OrganizationData.id, 1, 3);
+    }
+  }, [OrganizationData]);
 
   return (
     <>
@@ -102,7 +110,7 @@ const BlogSection = () => {
           )}
         </div>
 
-        {articles && articles.length > 1 && (
+        {articles && articles.length > 3 && (
           <div>
             <div className="d-flex justify-content-center mt-0 mb-5">
               <Link href="/articles" className="btn btn-primary px-5">

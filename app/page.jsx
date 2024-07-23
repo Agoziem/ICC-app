@@ -10,6 +10,8 @@ import ContactSection from "@/sections/contactSection";
 import FooterSection from "@/sections/footerSection";
 import BackToTop from "@/components/backtotopbutton/BackToTop";
 import Feedback from "@/components/Feedback/ModalFeedback";
+import CBTSection from "@/sections/CBTSection";
+import ChatSection from "@/sections/ChatSection";
 
 
 export default function Home() {
@@ -19,6 +21,8 @@ export default function Home() {
       <StatisticsSection />
       <AboutSection />
       <ServicesSection />
+      <CBTSection />
+      <ChatSection />
       <StaffSection />
       <BlogSection />
       <TestimonialSection />

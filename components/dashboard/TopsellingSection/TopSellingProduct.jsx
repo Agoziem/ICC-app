@@ -1,8 +1,9 @@
 import { useCart } from "@/data/Cartcontext";
 import React from "react";
 import { useSession } from "next-auth/react";
+import { RiShoppingBasketFill } from "react-icons/ri";
 
-function TopSellingItem({ item }) {
+function TopSellingProduct({ item }) {
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();
   return (
@@ -20,7 +21,7 @@ function TopSellingItem({ item }) {
               color: "var(--bgDarkerColor)",
             }}
           >
-            <i className="bi bi-person-fill-gear h3 mb-0"></i>
+            <RiShoppingBasketFill className={"h3 mb-0"} />
           </div>
         )}
       </th>
@@ -28,7 +29,7 @@ function TopSellingItem({ item }) {
       <td>{item.category.category}</td>
       <td>&#8358;{parseFloat(item.price)}</td>
       <td>
-        {item.userIDs_that_bought_this_service.includes(
+        {item.userIDs_that_bought_this_product.includes(
           parseInt(session?.user?.id)
         ) ? (
           <span className="badge bg-primary-light text-primary p-2">
@@ -36,24 +37,24 @@ function TopSellingItem({ item }) {
             <i className="bi bi-check-circle ms-2"></i>
           </span>
         ) : cart.find(
-            (service) =>
-              service.id === item.id && service.cartType === "service"
+            (product) =>
+                product.id === item.id && product.cartType === "product"
           ) ? (
           <span
             className="badge bg-secondary-light text-secondary p-2"
             style={{ cursor: "pointer" }}
-            onClick={() => removeFromCart(item.id, "service")}
+            onClick={() => removeFromCart(item.id, "product")}
           >
-            remove Service {"  "}
+            remove Product {"  "}
             <i className="bi bi-cart-dash"></i>
           </span>
         ) : (
           <span
             className="badge bg-success-light text-success p-2"
             style={{ cursor: "pointer" }}
-            onClick={() => addToCart(item, "service")}
+            onClick={() => addToCart(item, "product")}
           >
-            Add Service {"  "}
+            Add Product {"  "}
             <i className="bi bi-cart-plus"></i>
           </span>
         )}
@@ -62,4 +63,4 @@ function TopSellingItem({ item }) {
   );
 }
 
-export default TopSellingItem;
+export default TopSellingProduct;

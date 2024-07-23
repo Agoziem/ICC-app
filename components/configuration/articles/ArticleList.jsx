@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import ArticlePlaceholder from "./ArticlePlaceholder";
-import { TiArrowBack, TiArrowForward } from "react-icons/ti";
+import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import Pagination from "@/components/Pagination/Pagination";
 
 const ArticleList = ({
   articles,
@@ -11,18 +12,25 @@ const ArticleList = ({
   setArticle,
   editMode,
   setEditMode,
-  currentPage,
-  setCurrentPage,
   totalPages,
   fetchArticles,
+  totalArticles,
   loading,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     type: "",
   });
+  const { OrganizationData } = useContext(OrganizationContext);
+
+  // Fetch Articles on Page Change
+  useEffect(() => {
+    if (OrganizationData.id)
+      fetchArticles(OrganizationData.id, currentPage, 10);
+  }, [OrganizationData.id, currentPage]);
 
   const deleteArticle = async (id) => {
     const res = await fetch(
@@ -82,7 +90,7 @@ const ArticleList = ({
   return (
     <div>
       <h4 className="mb-3">
-        {articles?.length} Article{articles?.length > 1 ? "s" : ""}
+        {totalArticles} Article{articles?.length > 1 ? "s" : ""}
       </h4>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {articles && articles.length > 0 ? (
@@ -163,36 +171,13 @@ const ArticleList = ({
           ))}
 
           {/* ServerSide Pagination */}
-          <div className="d-flex justify-content-center mt-4">
-            {currentPage > 1 && (
-              <TiArrowBack
-                className="text-primary me-2"
-                onClick={() => handlePageChange(currentPage - 1)}
-                style={{ cursor: "pointer", fontSize: "1.5rem" }}
-              />
-            )}
-            {Array.from({ length: totalPages }, (_, index) => (
-              <div
-                key={index}
-                onClick={() => handlePageChange(index + 1)}
-                className={`me-2 ${
-                  currentPage === index + 1
-                    ? "text-light badge bg-secondary py-2 px-2"
-                    : "text-primary"
-                }`}
-                style={{ cursor: "pointer" }}
-              >
-                {index + 1}
-              </div>
-            ))}
-            {currentPage < totalPages && (
-              <TiArrowForward
-                className="text-primary ms-2"
-                onClick={() => handlePageChange(currentPage + 1)}
-                style={{ cursor: "pointer", fontSize: "1.5rem" }}
-              />
-            )}
-          </div>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            />
+          )}
         </div>
       ) : (
         <div className="card-body">

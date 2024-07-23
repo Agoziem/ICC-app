@@ -11,26 +11,23 @@ const ServiceProvider = ({ children }) => {
   const [services, setServices] = useState([]);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalServices, setTotalServices] = useState(0);
 
-  // Fetch all services
-  const fetchServices = async () => {
+  // ------------------------------------------------------
+  // Fetch all services and paginate them
+  // ------------------------------------------------------
+  const fetchServices = async (OrganizationalID, page = 1, pageSize = 10) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/services/${organizationID}/`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/services/${OrganizationalID}/?page=${page}&page_size=${pageSize}`
       );
       if (response.ok) {
         const data = await response.json();
-        setServices(
-          data
-            .filter((item) => item.category.category !== "application")
-            .map((item) => item)
-        );
-        setApplications(
-          data
-            .filter((item) => item.category.category === "application")
-            .map((item) => item)
-        );
+        setServices(data.results);
+        setTotalServices(data.count);
+        setTotalPages(Math.ceil(data.count / pageSize));
         setLoading(false);
       }
     } catch (error) {
@@ -39,9 +36,28 @@ const ServiceProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    if (organizationID) fetchServices();
-  }, [organizationID]);
+
+// ------------------------------------------------------
+// Fetch services by category and paginate them
+// ------------------------------------------------------
+const fetchServicesByCategory = async (category, page = 1, pageSize = 10) => {
+  setLoading(true);
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/services/${organizationID}/?category=${category}&page=${page}&page_size=${pageSize}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      setServices(data.results);
+      setTotalServices(data.count);
+      setTotalPages(Math.ceil(data.count / pageSize));
+      setLoading(false);
+    }
+  } catch (error) {
+    setLoading(false);
+    return { type: "danger", message: "Error fetching services" };
+  }
+};
 
   // ------------------------------------------------------
   // Fetch a single service by ID
@@ -183,11 +199,14 @@ const ServiceProvider = ({ children }) => {
         setApplications,
         fetchServices,
         fetchServiceById,
+        fetchServicesByCategory,
         fetchServiceByToken,
         createService,
         updateService,
         deleteService,
         loading,
+        totalPages,
+        totalServices,
       }}
     >
       {children}

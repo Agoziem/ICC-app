@@ -12,11 +12,21 @@ import CategoryTabs from "@/components/Categories/Categoriestab";
 import CategoriesForm from "@/components/Categories/Categories";
 import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
 import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import { FaVideo } from "react-icons/fa6";
+import Pagination from "@/components/Pagination/Pagination";
 
 const Videos = () => {
   const { openModal } = useAdminContext();
-  const { videos, createVideo, updateVideo, deleteVideo, loading } =
-    useVideoContext();
+  const {
+    videos,
+    createVideo,
+    updateVideo,
+    deleteVideo,
+    loading,
+    totalPages,
+    fetchVideos,
+    fetchVideosByCategory,
+  } = useVideoContext();
   const { OrganizationData } = useContext(OrganizationContext);
   const { videoCategories: categories, setVideoCategories: setCategories } =
     useCategoriesContext();
@@ -44,8 +54,49 @@ const Videos = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "add", state: false });
-  const [currentCategory, setCurrentCategory] = useState("");
+  const [currentCategory, setCurrentCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
+  // ----------------------------------------------------
+  // Add a new category to the list of categories
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (categories.length > 0)
+      setFilteredCategories([
+        { id: 0, category: "All", description: "All Categories" },
+        ...categories,
+      ]);
+  }, [categories]);
+
+  // ----------------------------------------------------
+  // Fetch Services on Page Change
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (OrganizationData.id) {
+      if (currentCategory === "All") {
+        fetchVideos(OrganizationData.id, currentPage);
+      } else {
+        fetchVideosByCategory(currentCategory, currentPage);
+      }
+    }
+  }, [OrganizationData.id, currentCategory]);
+
+  // ----------------------------------------------------
+  // handle page change
+  // ----------------------------------------------------
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (currentCategory === "All") {
+      fetchVideos(OrganizationData.id, page);
+    } else {
+      fetchVideosByCategory(currentCategory, page);
+    }
+  };
+
+  // ------------------------------------------------------
+  // Fetch all videos and paginate them
+  // ------------------------------------------------------
   const closeModal = () => {
     setShowModal(false);
     setShowModal2(false);
@@ -143,7 +194,7 @@ const Videos = () => {
 
       <div className="d-flex flex-wrap align-items-center mb-4">
         <CategoryTabs
-          categories={categories}
+          categories={filteredCategories}
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
           services={videos}
@@ -165,19 +216,36 @@ const Videos = () => {
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {videos.length > 0 &&
-          videos
-            .filter((video) => currentCategory === video.category.category)
-            .map((video) => (
-              <VideoCard
-                openModal={openModal}
-                key={video.id}
-                tab={currentCategory}
-                item={video}
-                onEdit={handleEdit}
-                onDelete={handleDeleteConfirm}
-              />
-            ))}
+        {videos.length > 0 ? (
+          videos.map((video) => (
+            <VideoCard
+              openModal={openModal}
+              key={video.id}
+              tab={currentCategory}
+              item={video}
+              onEdit={handleEdit}
+              onDelete={handleDeleteConfirm}
+            />
+          ))
+        ) : (
+          <div className="mt-3 mb-3 text-center">
+            <FaVideo
+              className="mt-2"
+              style={{
+                fontSize: "6rem",
+                color: "var(--bgDarkerColor)",
+              }}
+            />
+            <p className="mt-3 mb-3">No Videos available</p>
+          </div>
+        )}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
+        )}
       </div>
 
       <Modal

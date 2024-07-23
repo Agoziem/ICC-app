@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Alert from "@/components/Alert/Alert";
 import Tiptap from "@/components/Richtexteditor/Tiptap";
 import { TiTimes } from "react-icons/ti";
-import RichtextEditor from "@/components/Richtexteditor/Reactquill";
 
 const ArticleForm = ({
   article,

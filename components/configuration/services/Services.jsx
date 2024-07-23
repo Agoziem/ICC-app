@@ -12,6 +12,8 @@ import { useServiceContext } from "@/data/Servicescontext";
 import { useCategoriesContext } from "@/data/Categoriescontext";
 import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
 import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import Pagination from "@/components/Pagination/Pagination";
+import { BsPersonFillGear } from "react-icons/bs";
 
 // {
 //   "id": 3,
@@ -40,12 +42,13 @@ const Services = () => {
   const { openModal } = useAdminContext();
   const {
     services,
-    setServices,
-    applications,
-    setApplications,
     createService,
     updateService,
     deleteService,
+    fetchServices,
+    fetchServicesByCategory,
+    loading,
+    totalPages,
   } = useServiceContext();
   const { OrganizationData } = useContext(OrganizationContext);
   const { servicecategories: categories, setServiceCategories: setCategories } =
@@ -69,8 +72,42 @@ const Services = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "", state: false });
-  const [currentCategory, setCurrentCategory] = useState("");
+  const [currentCategory, setCurrentCategory] = useState("All");
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    if (categories.length > 0)
+      setFilteredCategories([
+        { id: 0, category: "All", description: "All Categories" },
+        ...categories,
+      ]);
+  }, [categories]);
+
+  // ----------------------------------------------------
+  // Fetch Services on Page Change
+  // ----------------------------------------------------
+  useEffect(() => {
+    if (OrganizationData.id) {
+      if (currentCategory === "All") {
+        fetchServices(OrganizationData.id, currentPage);
+      } else {
+        fetchServicesByCategory(currentCategory, currentPage);
+      }
+    }
+  }, [OrganizationData.id, currentCategory]);
+
+  // ----------------------------------------------------
+  // handle page change
+  // ----------------------------------------------------
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (currentCategory === "All") {
+      fetchServices(OrganizationData.id, page);
+    } else {
+      fetchServicesByCategory(currentCategory, page);
+    }
+  };
   // ----------------------------------------------------
   // Close the modal
   // ----------------------------------------------------
@@ -177,32 +214,11 @@ const Services = () => {
       <div className="d-flex flex-wrap align-items-center mb-4">
         {/* other services tabs */}
         <CategoryTabs
-          categories={categories}
+          categories={filteredCategories}
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
           services={services}
         />
-
-        {/* Application tab */}
-        <div
-          className={`badge rounded-5 px-4 py-2 me-2 mb-2 mb-md-0`}
-          style={{
-            color:
-              currentCategory === "application"
-                ? "var(--secondary)"
-                : "var(--primary)",
-            backgroundColor:
-              currentCategory === "application" ? "var(--secondary-300)" : " ",
-            border:
-              currentCategory === "application"
-                ? "1.5px solid var(--secondary)"
-                : "1.5px solid var(--bgDarkerColor)",
-            cursor: "pointer",
-          }}
-          onClick={() => setCurrentCategory("application")}
-        >
-          Applications
-        </div>
       </div>
 
       <div className="d-flex flex-wrap justify-content-between pe-3 pb-3 mb-3">
@@ -222,31 +238,39 @@ const Services = () => {
       {/* The Services & Application list */}
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
-        {currentCategory !== "application"
-          ? services
-              .filter(
-                (service) => currentCategory === service.category.category
-              )
-              .map((service) => (
-                <ServiceCard
-                  openModal={openModal}
-                  key={service.id}
-                  tab={currentCategory}
-                  item={service}
-                  onEdit={handleEdit}
-                  onDelete={handleDeleteConfirm}
-                />
-              ))
-          : applications.map((application) => (
-              <ServiceCard
-                openModal={openModal}
-                key={application.id}
-                item={application}
-                tab={currentCategory}
-                onEdit={handleEdit}
-                onDelete={handleDeleteConfirm}
-              />
-            ))}
+        {services?.length > 0 ? (
+          services.map((service) => (
+            <ServiceCard
+              openModal={openModal}
+              key={service.id}
+              tab={currentCategory}
+              item={service}
+              onEdit={handleEdit}
+              onDelete={handleDeleteConfirm}
+            />
+          ))
+        ) : (
+          <div className="mt-3 mb-3 text-center">
+            <BsPersonFillGear 
+              className="mt-2"
+              style={{
+                fontSize: "6rem",
+                color: "var(--bgDarkerColor)",
+              }}
+            />
+            <p className="mt-3 mb-3">
+              no Services available
+            </p>
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
+        )}
       </div>
 
       <Modal

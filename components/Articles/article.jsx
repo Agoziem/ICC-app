@@ -12,27 +12,14 @@ import { useSession } from "next-auth/react";
 import { MdOutlineArticle } from "react-icons/md";
 import NextBreadcrumb from "../Breadcrumb/breadcrumb";
 import BackButton from "../backbutton/BackButton";
+import Pagination from "../Pagination/Pagination";
 
 const Article = ({ params }) => {
   const { slug } = params;
-  const { articles } = useArticleContext();
+  const { articles, fetchArticlesByCategory, fetchArticleBySlug } =
+    useArticleContext();
   const [article, setArticle] = useState(null);
   const [otherArticles, setOtherArticles] = useState([]);
-
-  const fetchData = () => {
-    if (!articles) return;
-    const article = articles.find((item) => item.slug === slug);
-    if (article) {
-      setArticle(article);
-      const otherArticles = articles.filter((item) => item.slug !== slug);
-      setOtherArticles(otherArticles);
-    }
-  };
-
-  useEffect(() => {
-    if (slug && articles && articles.length > 0) fetchData();
-  }, [slug, articles]);
-
   const { data: session } = useSession();
   const [toastmessage, setToastMessage] = useState({
     title: "",
@@ -40,15 +27,46 @@ const Article = ({ params }) => {
     time: "",
   });
   const [comments, setComments] = useState([]);
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+  const [totalCommentPages, setTotalCommentPages] = useState(1);
 
-  const fetchComments = async () => {
+  // ------------------------------------------------------------
+  // Fetch article by slug and fetch other articles by category
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (slug) {
+      fetchArticleBySlug(slug)
+        .then((data) => {
+          setArticle(data);
+          return data;
+        })
+        .then((data) => {
+          fetchArticlesByCategory(data.category.category, 1, 6);
+        });
+    }
+  }, [slug]);
+
+  // ------------------------------------------------------------
+  // Filter other articles
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (articles.length > 0) {
+      setOtherArticles(articles.filter((blog) => blog.id !== article?.id));
+    }
+  }, [articles]);
+
+  // ------------------------------------------------------------
+  // Fetch comments and paginate them
+  // ------------------------------------------------------------
+  const fetchComments = async (page = 1, page_size = 10) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getcomments/${article.id}`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getcomments/${article.id}?page=${page}&page_size=${page_size}`
       );
       const data = await response.json();
       if (response.ok) {
-        setComments(data);
+        setComments(data.results);
+        setTotalCommentPages(Math.ceil(data.count / page_size));
       } else {
         throw new Error("Something went wrong");
       }
@@ -57,6 +75,17 @@ const Article = ({ params }) => {
     }
   };
 
+  // ------------------------------------------------------------
+  // handle comment page change
+  // ------------------------------------------------------------
+  const handleCommentPageChange = (page) => {
+    setCurrentCommentPage(page);
+    fetchComments(page);
+  };
+
+  // ------------------------------------------------------------
+  // Increment views
+  // ------------------------------------------------------------
   const incrementViews = async () => {
     try {
       const response = await fetch(
@@ -81,6 +110,9 @@ const Article = ({ params }) => {
     }
   };
 
+  // ------------------------------------------------------------
+  // Fetch comments and increment views on article load
+  // ------------------------------------------------------------
   useEffect(() => {
     if (article?.id) {
       fetchComments();
@@ -243,6 +275,13 @@ const Article = ({ params }) => {
                 </div>
               </div>
             )}
+            {totalCommentPages > 1 && (
+              <Pagination
+                currentPage={currentCommentPage}
+                totalPages={totalCommentPages}
+                handlePageChange={handleCommentPageChange}
+              />
+            )}
           </div>
         </section>
       )}
@@ -252,8 +291,8 @@ const Article = ({ params }) => {
           <div className="text-center">
             <h4 className="fw-bold mb-4">Related Articles</h4>
             <div className="row justify-content-center">
-              {otherArticles &&
-                otherArticles.slice(0, 6).map((blog, index) => (
+              {otherArticles.length > 0 ? (
+                otherArticles.map((blog, index) => (
                   <div
                     key={blog.id}
                     className="col-12 col-md d-flex justify-content-center"
@@ -319,7 +358,21 @@ const Article = ({ params }) => {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))
+              ) : (
+                <div className="mt-3 mb-3 text-center">
+                  <MdOutlineArticle
+                    className="mt-0"
+                    style={{
+                      fontSize: "6rem",
+                      color: "var(--bgDarkerColor)",
+                    }}
+                  />
+                  <p className="mt-3 mb-3">
+                    No Related Articles found 
+                  </p>
+                </div>
+              )}
               {otherArticles && otherArticles.length > 1 && (
                 <div>
                   <div className="d-flex justify-content-center mt-0 mb-5">

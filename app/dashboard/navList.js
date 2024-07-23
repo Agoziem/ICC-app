@@ -21,12 +21,6 @@ const navList = [
   },
   {
     _id: uuidv4(),
-    name: "Applications",
-    icon: "bi bi-google-play",
-    link: "/dashboard/applications",
-  },
-  {
-    _id: uuidv4(),
     name: "Videos",
     icon: "bi bi-camera-reels",
     link: "/dashboard/videos",
