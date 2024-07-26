@@ -5,7 +5,12 @@ const AggregatorInst = () => {
     <div className="col-12 col-md-7 px-3 px-md-5 py-2 py-md-4">
       {/* Introduction */}
       <div>
-        <h4 className="mb-2">
+        <h4
+          className="mb-2"
+          style={{
+            lineHeight: "2.3rem",
+          }}
+        >
           What is &ldquo;Aggregate Score&rdquo; for University Admissions?
         </h4>
         <p>
@@ -27,7 +32,12 @@ const AggregatorInst = () => {
       <hr className="py-2" />
       {/* Steps to Calc Aggregate */}
       <div>
-        <h4 className="mb-2 text-wrap text-break">
+        <h4
+          className="mb-2 text-wrap text-break"
+          style={{
+            lineHeight: "2.3rem",
+          }}
+        >
           <span
             className="badge bg-secondary-light text-secondary me-3"
             style={{
@@ -74,7 +84,12 @@ const AggregatorInst = () => {
       <hr className="py-2" />
       {/* Weac Grade Points */}
       <div>
-        <h4 className="mb-2 text-wrap text-break">
+        <h4
+          className="mb-2 text-wrap text-break"
+          style={{
+            lineHeight: "2.3rem",
+          }}
+        >
           <span
             className="badge bg-secondary-light text-secondary me-3"
             style={{
@@ -83,7 +98,7 @@ const AggregatorInst = () => {
           >
             Step 2
           </span>
-          Weac Grade Points
+          O'level Grade Points
         </h4>
         <p>
           Assign grade points to your secondary school exam results based on the
@@ -136,7 +151,12 @@ const AggregatorInst = () => {
       <hr className="py-2" />
       {/* Post-UTME Exam */}
       <div>
-        <h4 className="mb-2 text-wrap text-break">
+        <h4
+          className="mb-2 text-wrap text-break"
+          style={{
+            lineHeight: "2.3rem",
+          }}
+        >
           <span
             className="badge bg-secondary-light text-secondary me-3"
             style={{
@@ -158,7 +178,12 @@ const AggregatorInst = () => {
       <hr className="py-2" />
       {/* Calculate Aggregate Score */}
       <div>
-        <h4 className="mb-2 text-wrap text-break">
+        <h4
+          className="mb-2 text-wrap text-break"
+          style={{
+            lineHeight: "2.3rem",
+          }}
+        >
           <span
             className="badge bg-secondary-light text-secondary me-3"
             style={{

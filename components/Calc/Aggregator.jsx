@@ -169,6 +169,7 @@ const Aggregator = () => {
                 />
               </div>
               <h5 className="text-center mb-3">Calculate Your Aggregate</h5>
+              <hr />
               {/* Jamb Input */}
               <div className="form-group">
                 <label htmlFor="jamb">JAMB Score</label>
@@ -301,20 +302,22 @@ const Aggregator = () => {
                 ))}
 
               {/* Calculate and Reset Buttons */}
-              <div className="my-3">
+              <div className="d-flex flex-md-row flex-column flex-md-fill my-3">
                 <button
-                  className="btn btn-primary me-2"
+                  className="btn btn-primary me-0 me-md-3 mb-3 mb-md-0 rounded"
                   onClick={calculateAggregate}
                 >
                   <BsCalculator className="me-2" />
                   Calculate
                 </button>
-                <button className="btn btn-secondary" onClick={reset}>
+                <button className="btn btn-secondary rounded" onClick={reset}>
                   <MdRefresh className="me-2" />
                   Reset
                 </button>
               </div>
+              
               {/* Display Aggregate Score */}
+              <hr />
               <h4 className="mt-3">Aggregate Score: {aggregate}</h4>
             </div>
           </div>
