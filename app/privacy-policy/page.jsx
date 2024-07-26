@@ -15,9 +15,20 @@ const PrivacyPage = () => {
       <h4>Privacy Policy</h4>
       <hr />
       {OrganizationData?.privacyPolicy ? (
-        <div
-          dangerouslySetInnerHTML={{ __html: OrganizationData.privacyPolicy }}
-        />
+        <div style={{ width: "100%" }}>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: OrganizationData.privacyPolicy,
+            }}
+            style={{
+              fontSize: "1.1rem",
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+          />
+        </div>
       ) : (
         <div className="d-flex justify-content-center">
           <p

@@ -87,10 +87,20 @@ const ServicePage = () => {
                 {service?.category.category} Service
               </p>
               <hr />
-              <div
-                className="d-flex justify-content-between align-items-center"
-                dangerouslySetInnerHTML={{ __html: service?.service_flow }}
-              />
+              <div style={{ width: "100%" }}>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: service?.service_flow,
+                  }}
+                  style={{
+                    fontSize: "1.1rem",
+                    whiteSpace: "pre-wrap",
+                    wordWrap: "break-word",
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word",
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

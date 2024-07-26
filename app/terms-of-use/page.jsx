@@ -3,7 +3,7 @@ import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import React, { useContext } from "react";
 
 const TermsPage = () => {
-  const { OrganizationData } = useContext(OrganizationContext)
+  const { OrganizationData } = useContext(OrganizationContext);
   return (
     <div
       className="mx-auto mt-3 px-4 px-md-0"
@@ -13,22 +13,31 @@ const TermsPage = () => {
     >
       <h4>Terms of Use</h4>
       <hr />
-      {
-        OrganizationData?.termsOfUse ? (
+      {OrganizationData?.termsOfUse ? (
+        <div style={{ width: "100%" }}>
           <div
-            dangerouslySetInnerHTML={{ __html: OrganizationData.termsOfUse }}
+            dangerouslySetInnerHTML={{
+              __html: OrganizationData.termsOfUse,
+            }}
+            style={{
+              fontSize: "1.1rem",
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
           />
-        ) : (
-          <div className="d-flex justify-content-center">
-            <p
-              className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded"
-              style={{ minWidth: "300px" }}
-            >
-              No Terms of Use yet
-            </p>
-          </div>
-        )
-      }
+        </div>
+      ) : (
+        <div className="d-flex justify-content-center">
+          <p
+            className="p-3 text-primary text-center bg-primary-light mt-1 mb-3 rounded"
+            style={{ minWidth: "300px" }}
+          >
+            No Terms of Use yet
+          </p>
+        </div>
+      )}
     </div>
   );
 };

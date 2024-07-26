@@ -97,53 +97,36 @@ const AggregatorInst = () => {
                 <th scope="col" colSpan={2}>
                   WITHOUT POST-UTME
                 </th>
-                <th scope="col" colSpan={2}>
-                  WITH POST-UTME
-                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>GRADE</td>
                 <td>GRADE POINT</td>
-                <td>GRADE</td>
-                <td>GRADE POINT</td>
               </tr>
               <tr>
                 <td>A1</td>
                 <td>10 Points</td>
-                <td>A1</td>
-                <td>4.0 Points</td>
               </tr>
               <tr>
                 <td>B2</td>
                 <td>9 Points</td>
-                <td>B2</td>
-                <td>3.6 Points</td>
               </tr>
               <tr>
                 <td>B3</td>
                 <td>8 Points</td>
-                <td>B3</td>
-                <td>3.2 Points</td>
               </tr>
               <tr>
                 <td>C4</td>
                 <td>7 Points</td>
-                <td>C4</td>
-                <td>2.8 Points</td>
               </tr>
               <tr>
                 <td>C5</td>
                 <td>6 Points</td>
-                <td>C5</td>
-                <td>2.4 Points</td>
               </tr>
               <tr>
                 <td>C6</td>
                 <td>5 Points</td>
-                <td>C6</td>
-                <td>2.0 Points</td>
               </tr>
             </tbody>
           </table>

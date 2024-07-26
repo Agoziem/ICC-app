@@ -12,6 +12,8 @@ import { useProductContext } from "@/data/Productcontext";
 import { useCategoriesContext } from "@/data/Categoriescontext";
 import Pagination from "@/components/Pagination/Pagination";
 import { RiShoppingBasketFill } from "react-icons/ri";
+import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
+import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
 
 const Products = () => {
   const { openModal } = useAdminContext();
@@ -29,6 +31,7 @@ const Products = () => {
   const { OrganizationData } = useContext(OrganizationContext);
   const { productcategories: categories, setProductCategories: setCategories } =
     useCategoriesContext();
+  const { fetchProductsSubCategories } = useSubCategoriesContext();
   const initialProductState = {
     id: null,
     organization: OrganizationData.id,
@@ -73,7 +76,7 @@ const Products = () => {
   // ----------------------------------------------------
   useEffect(() => {
     if (OrganizationData.id) {
-      setCurrentPage(1)
+      setCurrentPage(1);
       if (currentCategory === "All") {
         fetchProducts(OrganizationData.id, 1);
       } else {
@@ -169,16 +172,28 @@ const Products = () => {
   return (
     <div>
       <hr />
-      <div style={{ maxWidth: "650px" }}>
-        <CategoriesForm
-          items={categories}
-          setItems={setCategories}
-          itemName="category"
-          itemLabel="Category"
-          addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/add_category/`}
-          updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/update_category`}
-          deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/delete_category`}
-        />
+      <div className="row">
+        <div className="col-12 col-md-7">
+          <CategoriesForm
+            items={categories}
+            setItems={setCategories}
+            itemName="category"
+            itemLabel="Category"
+            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/add_category/`}
+            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/update_category`}
+            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/delete_category`}
+          />
+        </div>
+
+        <div className="col-12 col-md-5">
+          <SubCategoriesForm
+            categories={categories}
+            fetchSubCategories={fetchProductsSubCategories}
+            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/create_subcategory/`}
+            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/update_subcategory`}
+            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/delete_subcategory`}
+          />
+        </div>
       </div>
 
       <div className="d-flex flex-wrap align-items-center mb-4">

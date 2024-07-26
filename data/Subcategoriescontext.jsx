@@ -6,9 +6,11 @@ const SubCategoriesContext = createContext();
 const Subcategoriesprovider = ({ children }) => {
   const [videosubcategories, setVideoSubcategories] = useState([]);
   const [servicesubcategories, setServiceSubcategories] = useState([]);
+  const [productsSubcategories, setProductsSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // fetch video subcategories
   const fetchVideoSubCategories = async (category_id) => {
     setLoading(true);
     try {
@@ -27,6 +29,7 @@ const Subcategoriesprovider = ({ children }) => {
     }
   };
 
+  // fetch service subcategories
   const fetchServiceSubCategories = async (category_id) => {
     setLoading(true);
     try {
@@ -44,6 +47,27 @@ const Subcategoriesprovider = ({ children }) => {
       setLoading(false);
     }
   };
+
+
+  // fetch products subcategories
+  const fetchProductsSubCategories = async (category_id) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/subcategories/${category_id}/`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setProductsSubcategories(data);
+        return data;
+      }
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SubCategoriesContext.Provider
       value={{
@@ -51,6 +75,8 @@ const Subcategoriesprovider = ({ children }) => {
         fetchVideoSubCategories,
         servicesubcategories,
         fetchServiceSubCategories,
+        productsSubcategories,
+        fetchProductsSubCategories,
         loading,
       }}
     >

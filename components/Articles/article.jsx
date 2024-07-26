@@ -368,9 +368,7 @@ const Article = ({ params }) => {
                       color: "var(--bgDarkerColor)",
                     }}
                   />
-                  <p className="mt-3 mb-3">
-                    No Related Articles found 
-                  </p>
+                  <p className="mt-3 mb-3">No Related Articles found</p>
                 </div>
               )}
               {otherArticles && otherArticles.length > 1 && (
