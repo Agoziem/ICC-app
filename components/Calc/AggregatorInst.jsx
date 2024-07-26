@@ -98,7 +98,7 @@ const AggregatorInst = () => {
           >
             Step 2
           </span>
-          O'level Grade Points
+          O&apos;level Grade Points
         </h4>
         <p>
           Assign grade points to your secondary school exam results based on the
