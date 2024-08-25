@@ -61,12 +61,21 @@ const UserServices = () => {
                       className="badge bg-primary-light text-primary py-2 px-2"
                       style={{ cursor: "pointer" }}
                     >
-                      <Link
-                        href={`/dashboard/my-orders/service?servicetoken=${service.service_token}`}
-                        className="text-primary"
-                      >
-                        View Service Flow
-                      </Link>
+                      {
+                        // check if the service is already completed for the user
+                        service.userIDs_whose_services_have_been_completed.includes(
+                          parseInt(session.user.id)
+                        ) ? (
+                          <span>Service Completed</span>
+                        ) : (
+                          <Link
+                            href={`/dashboard/my-orders/service?servicetoken=${service.service_token}`}
+                            className="text-primary"
+                          >
+                            View Service Flow
+                          </Link>
+                        )
+                      }
                     </div>
                   </div>
                 </div>

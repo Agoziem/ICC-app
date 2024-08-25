@@ -20,14 +20,9 @@ const ImageUploader = ({
   });
 
   useEffect(() => {
-    if (formData[imageurlkey]) {
-      setFileName(formData[imagename]);
-      setImage(formData[imageurlkey]);
-    } else {
-      setFileName("No Selected file");
-      setImage(null);
-    }
-  }, [formData]);
+    formData?.[imagekey] && setFileName(formData[imagename]);
+    formData?.[imageurlkey] && setImage(formData[imageurlkey]);
+  }, []);
 
   const handleFileChange = ({ target: { files } }) => {
     const file = files[0];
