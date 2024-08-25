@@ -222,8 +222,6 @@ const ChatroomContextProvider = ({ children }) => {
         groupChats,
         selectedChat,
         setSelectedChat,
-        groupChatMessages,
-        setGroupChatMessages,
         fetchGroupChats,
         createGroupChat,
         editChatRoom,
