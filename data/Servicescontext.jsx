@@ -17,7 +17,7 @@ const ServiceProvider = ({ children }) => {
   // ------------------------------------------------------
   // Fetch all services and paginate them
   // ------------------------------------------------------
-  const fetchServices = async (OrganizationalID, page = 1, pageSize = 10) => {
+  const fetchServices = async (page = 1, pageSize = 10) => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -44,7 +44,7 @@ const fetchServicesByCategory = async (category, page = 1, pageSize = 10) => {
   setLoading(true);
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/services/${organizationID}/?category=${category}&page=${page}&page_size=${pageSize}`
+      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/services/${OrganizationalID}/?category=${category}&page=${page}&page_size=${pageSize}`
     );
     if (response.ok) {
       const data = await response.json();
@@ -107,7 +107,7 @@ const fetchServicesByCategory = async (category, page = 1, pageSize = 10) => {
     const formData = converttoformData(service, ["category", "organization"]);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/add_service/${organizationID}/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/add_service/${OrganizationalID}/`,
         {
           method: "POST",
           body: formData,
