@@ -14,38 +14,40 @@ const WhatsappAPIProvider = ({ children }) => {
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   // ------------------------------------------------------
   // Fetch contacts
   // ------------------------------------------------------
   useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/contacts/`);
-        setContacts(response.data);
-      } catch (error) {
-        console.error("Failed to fetch contacts", error);
-      }
-    };
-
     fetchContacts();
   }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/contacts/`);
+      setContacts(response.data);
+    } catch (error) {
+      console.error("Failed to fetch contacts", error);
+    }
+  };
 
   // ------------------------------------------------------
   // Fetch messages for a specific contact
   // ------------------------------------------------------
   useEffect(() => {
     if (selectedContact) {
-      const fetchMessages = async () => {
-        try {
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/messages/${selectedContact.id}/`);
-          setMessages(response.data);
-        } catch (error) {
-          console.error("Failed to fetch messages", error);
-        }
-      };
+      const allMessages = [
+        ...selectedContact.recieved_messages,
+        ...selectedContact.sent_messages,
+      ];
 
-      fetchMessages();
+      // Sort messages by timestamp
+      allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      setMessages(allMessages);
+    } else {
+      setMessages([]); // Clear messages when no contact is selected
     }
   }, [selectedContact]);
 
@@ -79,17 +81,25 @@ const WhatsappAPIProvider = ({ children }) => {
     }
   };
 
-
   // ------------------------------------------------------
-  // send message to the contact and returning the message
+  // send message to the contact and updating the UI
   // ------------------------------------------------------
   const sendMessage = async (messageData) => {
     try {
+      setSendingMessage(true);
       const response = await axios.post(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/${selectedContact.id}/send_message/`, messageData);
+      // Append the new message to the messages state
+      setMessages(prevMessages => [
+        ...prevMessages,
+        response.data
+      ]);
+
       return response.data;
     } catch (error) {
       console.error("Failed to send message", error);
       return null;
+    } finally {
+      setSendingMessage(false);
     }
   };
 
@@ -100,9 +110,11 @@ const WhatsappAPIProvider = ({ children }) => {
         contacts,
         messages,
         selectedContact,
+        fetchContacts,
         setSelectedContact,
         sendWhatsappTemplateMessage,
         sendMessage, // send Message to the selected contact
+        sendingMessage,
         getMedia,
       }}
     >

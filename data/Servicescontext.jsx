@@ -7,7 +7,7 @@ import { converttoformData } from "@/utils/formutils";
 const ServiceContext = createContext();
 
 const ServiceProvider = ({ children }) => {
-  const { organizationID } = useContext(OrganizationContext);
+  const [OrganizationalID, setOrganizationalID] = useState(process.env.NEXT_PUBLIC_ORGANIZATION_ID);
   const [services, setServices] = useState([]);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);

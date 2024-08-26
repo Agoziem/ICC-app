@@ -12,13 +12,6 @@ const ChatroomContextProvider = ({ children }) => {
   const [groupChats, setGroupChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
 
-  useEffect(() => {
-    // Fetch all group chats on mount
-    if (organizationID) {
-      fetchGroupChats();
-    }
-  }, [organizationID]);
-
 
   // ------------------------------------------------------
   // Fetch group chats from the API
@@ -26,8 +19,8 @@ const ChatroomContextProvider = ({ children }) => {
   const fetchGroupChats = async (user_id = null) => {
     try {
       const url = user_id
-        ? `/api/chatrooms/${organizationID}/${user_id}/list/`
-        : `/api/chatrooms/${organizationID}/list/`;
+        ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${organizationID}/${user_id}/list/`
+        : `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${organizationID}/list/`;
       const response = await axios.get(url);
       setGroupChats(response.data);
     } catch (error) {
@@ -40,7 +33,7 @@ const ChatroomContextProvider = ({ children }) => {
   //------------------------------------------------------ 
   const createGroupChat = async (user_id, data) => {
     try {
-      const response = await axios.post(`/api/chatrooms/${user_id}/create/`, data);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${user_id}/create/`, data);
       setGroupChats([...groupChats, response.data]);
     } catch (error) {
       console.error("Failed to create group chat", error);
@@ -53,7 +46,7 @@ const ChatroomContextProvider = ({ children }) => {
   const editChatRoom = async (chatroomId, user_id, data) => {
     try {
       const response = await axios.put(
-        `/api/chatrooms/${chatroomId}/${user_id}/edit/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${user_id}/edit/`,
         data
       );
       setGroupChats(
@@ -71,7 +64,7 @@ const ChatroomContextProvider = ({ children }) => {
   // ------------------------------------------------------
   const deleteChatRoom = async (chatroomId, user_id) => {
     try {
-      await axios.delete(`/api/chatrooms/${chatroomId}/${user_id}/delete/`);
+      await axios.delete(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${user_id}/delete/`);
       setGroupChats(groupChats.filter((chat) => chat.id !== chatroomId));
     } catch (error) {
       console.error("Failed to delete chat room", error);
@@ -85,7 +78,7 @@ const ChatroomContextProvider = ({ children }) => {
   const addUsersToChatRoom = async (chatroomId, admin_id, users) => {
     try {
       await axios.post(
-        `/api/chatrooms/${chatroomId}/${admin_id}/add-users/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${admin_id}/add-users/`,
         { users }
       );
       fetchGroupChats();
@@ -100,7 +93,7 @@ const ChatroomContextProvider = ({ children }) => {
   const addUserToChatRoom = async (chatroomId, admin_id, user_id) => {
     try {
       await axios.post(
-        `/api/chatrooms/${chatroomId}/${admin_id}/add-user/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${admin_id}/add-user/`,
         { user_id }
       );
       fetchGroupChats();
@@ -115,7 +108,7 @@ const ChatroomContextProvider = ({ children }) => {
   const removeMembersFromChatRoom = async (chatroomId, admin_id, users) => {
     try {
       await axios.delete(
-        `/api/chatrooms/${chatroomId}/${admin_id}/remove-members/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${admin_id}/remove-members/`,
         { data: { users } }
       );
       fetchGroupChats();
@@ -130,7 +123,7 @@ const ChatroomContextProvider = ({ children }) => {
   const removeMemberFromChatRoom = async (chatroomId, admin_id, user_id) => {
     try {
       await axios.delete(
-        `/api/chatrooms/${chatroomId}/${admin_id}/remove-member/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${admin_id}/remove-member/`,
         { data: { user_id } }
       );
       fetchGroupChats();
@@ -145,7 +138,7 @@ const ChatroomContextProvider = ({ children }) => {
   const addAdminsToChatRoom = async (chatroomId, owner_id, users) => {
     try {
       await axios.post(
-        `/api/chatrooms/${chatroomId}/${owner_id}/add-admins/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${owner_id}/add-admins/`,
         { users }
       );
       fetchGroupChats();
@@ -160,7 +153,7 @@ const ChatroomContextProvider = ({ children }) => {
   const addAdminToChatRoom = async (chatroomId, owner_id, user_id) => {
     try {
       await axios.post(
-        `/api/chatrooms/${chatroomId}/${owner_id}/add-admin/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${owner_id}/add-admin/`,
         { user_id }
       );
       fetchGroupChats();
@@ -175,7 +168,7 @@ const ChatroomContextProvider = ({ children }) => {
   const removeAdminsFromChatRoom = async (chatroomId, owner_id, users) => {
     try {
       await axios.delete(
-        `/api/chatrooms/${chatroomId}/${owner_id}/remove-admins/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${owner_id}/remove-admins/`,
         { data: { users } }
       );
       fetchGroupChats();
@@ -190,7 +183,7 @@ const ChatroomContextProvider = ({ children }) => {
   const removeAdminFromChatRoom = async (chatroomId, owner_id, user_id) => {
     try {
       await axios.delete(
-        `/api/chatrooms/${chatroomId}/${owner_id}/remove-admin/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${owner_id}/remove-admin/`,
         { data: { user_id } }
       );
       fetchGroupChats();
@@ -205,7 +198,7 @@ const ChatroomContextProvider = ({ children }) => {
   const viewChatRoom = async (chatroomId, user_id) => {
     try {
       const response = await axios.get(
-        `/api/chatrooms/${chatroomId}/${user_id}/view/`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/chatroomapi/chatrooms/${chatroomId}/${user_id}/view/`
       );
       setSelectedChat(response.data);
     } catch (error) {
