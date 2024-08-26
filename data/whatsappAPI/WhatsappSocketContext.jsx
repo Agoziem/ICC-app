@@ -63,9 +63,9 @@ const WhatsappAPISocketProvider = ({ children }) => {
     ws.onclose = (event) => {
       console.log("WebSocket connection closed:", event.code, event.reason);
       // retry connection after 5 seconds
-      setTimeout(() => {
-        setSocket(new WebSocket(`${NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/`));
-      }, 5000);
+      // setTimeout(() => {
+      //   setSocket(new WebSocket(`${NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/`));
+      // }, 5000);
     };
 
     // Handle WebSocket error event
