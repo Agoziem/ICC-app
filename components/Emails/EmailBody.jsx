@@ -1,6 +1,6 @@
 import React from "react";
 import ProfileimagePlaceholders from "../ImagePlaceholders/ProfileimagePlaceholders";
-import EmailInput from "../Inputs/EmailInput";
+import EmailInput from "./EmailInput";
 
 const EmailBody = () => {
   return (

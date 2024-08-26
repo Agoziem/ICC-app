@@ -21,5 +21,6 @@ const EmailInput = () => {
     </div>
   );
 };
+// 
 
 export default EmailInput;
