@@ -41,11 +41,11 @@ const ChatBody = () => {
       className="mt-3 p-4 rounded text-white"
       style={{
         backgroundColor: "var(--bgDarkerColor)",
-        minHeight: "100vh",
+        height: "calc(100vh - 200px)",
         display: "flex",
         flexDirection: "column",
         justifyContent: messages.length > 0 ? "flex-end" : "center",
-        overflowY: "auto",
+        overflowY: "scroll",
       }}
     >
       {messages.length > 0 ? (

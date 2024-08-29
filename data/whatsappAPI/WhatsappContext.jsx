@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
-
+import SortContacts from "@/utils/sortcontacts";
 // ------------------------------------------------------
 // Create the context
 // ------------------------------------------------------
@@ -25,8 +25,12 @@ const WhatsappAPIProvider = ({ children }) => {
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/contacts/`);
-      setContacts(response.data);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/contacts/`
+      );
+      // Sort contacts by the most recent message timestamp
+      const contacts = SortContacts(response.data);
+      setContacts(contacts);
     } catch (error) {
       console.error("Failed to fetch contacts", error);
     }
@@ -54,17 +58,24 @@ const WhatsappAPIProvider = ({ children }) => {
   // ------------------------------------------------------
   // Send WhatsApp Template message
   // ------------------------------------------------------
-  const sendWhatsappTemplateMessage = async (to_phone_number, template_name, language_code = "en_US") => {
+  const sendWhatsappTemplateMessage = async (
+    to_phone_number,
+    template_name,
+    language_code = "en_US"
+  ) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/send-template-message/`, {
-        to_phone_number,
-        template_name,
-        language_code,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/send-template-message/`,
+        {
+          to_phone_number,
+          template_name,
+          language_code,
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Failed to send WhatsApp message", error);
-      return { status: 'error', message: error.response.data };
+      return { status: "error", message: error.response.data };
     }
   };
 
@@ -73,7 +84,10 @@ const WhatsappAPIProvider = ({ children }) => {
   // ------------------------------------------------------
   const getMedia = async (media_id) => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`, { responseType: 'blob' });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`,
+        { responseType: "blob" }
+      );
       return response.data;
     } catch (error) {
       console.error("Failed to fetch media", error);
@@ -87,12 +101,21 @@ const WhatsappAPIProvider = ({ children }) => {
   const sendMessage = async (messageData) => {
     try {
       setSendingMessage(true);
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/${selectedContact.id}/send_message/`, messageData);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/${selectedContact.id}/send_message/`,
+        messageData
+      );
       // Append the new message to the messages state
-      setMessages(prevMessages => [
-        ...prevMessages,
-        response.data
-      ]);
+      setMessages((prevMessages) => [...prevMessages, response.data]);
+      setContacts((prevContacts) => {
+        const updatedContacts = [...prevContacts];
+        const index = updatedContacts.findIndex(
+          (contact) => contact.id === selectedContact.id
+        );
+        updatedContacts.splice(index, 1);
+        updatedContacts.unshift(response.data.contact);
+        return updatedContacts;
+      });
 
       return response.data;
     } catch (error) {
