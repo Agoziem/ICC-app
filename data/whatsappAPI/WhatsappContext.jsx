@@ -108,6 +108,7 @@ const WhatsappAPIProvider = ({ children }) => {
       value={{
         organizationID,
         contacts,
+        setContacts,
         messages,
         setMessages,
         selectedContact,

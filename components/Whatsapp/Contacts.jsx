@@ -115,7 +115,6 @@ useEffect(() => {
   if (socket) {
     const handleMessage = (e) => {
       const data = JSON.parse(e.data);
-      console.log(data);
       if (data.contact) {
         setContacts((prevContacts) => {
           const index = prevContacts.findIndex(
@@ -124,10 +123,8 @@ useEffect(() => {
           if (index === -1) {
             return [data.contact, ...prevContacts];
           } else {
-            console.log("contact exist");
             const updatedContacts = [...prevContacts];
             updatedContacts.splice(index, 1);
-            console.log(updatedContacts);
             updatedContacts.unshift(data.contact); 
             return updatedContacts;
           }
