@@ -124,8 +124,10 @@ useEffect(() => {
           if (index === -1) {
             return [data.contact, ...prevContacts];
           } else {
+            console.log("contact exist");
             const updatedContacts = [...prevContacts];
             updatedContacts.splice(index, 1);
+            console.log(updatedContacts);
             updatedContacts.unshift(data.contact); 
             return updatedContacts;
           }
