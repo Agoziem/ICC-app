@@ -17,7 +17,7 @@ export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
       <body className="body">
-        <SessionProvider session={session}> 
+        <SessionProvider session={session}>
           <ContextProviders>
             {children}
             <OffCanvas />

@@ -4,16 +4,34 @@ import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import { useWhatsappAPISocketContext } from "@/data/whatsappAPI/WhatsappSocketContext";
 import { BsWhatsapp } from "react-icons/bs";
 
+// {
+//   "message": {
+//       "id": 19,
+//       "message_id": "wamid.HBgNMjM0ODA4MDk4MjYwNhUCABIYEjFGOUU2NjdCQUVFRUMxMjVCNQA=",
+//       "message_type": "text",
+//       "body": "Okay Sir",
+//       "media_id": "",
+//       "mime_type": "",
+//       "timestamp": "2024-08-29T15:23:16.370103Z",
+//       "message_mode": "received message",
+//       "contact": 15
+//   }
+// }
 
 const ChatBody = () => {
-  const { messages } = useWhatsappAPIContext();
+  const { messages,setMessages } = useWhatsappAPIContext();
   const { chatsocket } = useWhatsappAPISocketContext();
 
+  // append new message to the messages list
   useEffect(() => {
     if (chatsocket) {
       chatsocket.onmessage = (e) => {
         const data = JSON.parse(e.data);
-        console.log(data);
+        if (data.message) {
+          setMessages((prevMessages) => {
+            return [...prevMessages, data.message];
+          });
+        }
       };
     }
   }, [chatsocket]);

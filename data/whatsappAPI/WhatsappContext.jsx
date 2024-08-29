@@ -109,6 +109,7 @@ const WhatsappAPIProvider = ({ children }) => {
         organizationID,
         contacts,
         messages,
+        setMessages,
         selectedContact,
         fetchContacts,
         setSelectedContact,
