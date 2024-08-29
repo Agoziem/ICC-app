@@ -110,29 +110,37 @@ const Contacts = () => {
   const { contacts, setContacts } = useWhatsappAPIContext();
   const { socket } = useWhatsappAPISocketContext();
 
-  // update the contact and fix it at the top of the list
-  useEffect(() => {
-    if (socket) {
-      socket.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        if (data.contact) {
-          setContacts((prevContacts) => {
-            const index = prevContacts.findIndex(
-              (contact) => contact.id === data.contact.id
-            );
-            if (index === -1) {
-              return [data.contact, ...prevContacts];
-            } else {
-              const updatedContacts = [...prevContacts];
-              updatedContacts.splice(index, 1);
-              updatedContacts.unshift(data.contact);
-              return updatedContacts;
-            }
-          });
-        }
-      };
-    }
-  }, [socket]);
+  // update the contact and fix it at the top of the list if it exist
+useEffect(() => {
+  if (socket) {
+    const handleMessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.contact) {
+        setContacts((prevContacts) => {
+          const index = prevContacts.findIndex(
+            (contact) => contact.id === data.contact.id
+          );
+          if (index === -1) {
+            return [data.contact, ...prevContacts];
+          } else {
+            const updatedContacts = [...prevContacts];
+            updatedContacts.splice(index, 1);
+            updatedContacts.unshift(data.contact); 
+            return updatedContacts;
+          }
+        });
+      }
+    };
+
+    // Attach the handler
+    socket.onmessage = handleMessage;
+
+    // Cleanup on component unmount
+    return () => {
+      socket.onmessage = null;
+    };
+  }
+}, [socket]);
 
   return (
     <div>
