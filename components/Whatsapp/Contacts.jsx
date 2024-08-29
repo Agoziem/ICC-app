@@ -115,6 +115,7 @@ useEffect(() => {
   if (socket) {
     const handleMessage = (e) => {
       const data = JSON.parse(e.data);
+      console.log(data);
       if (data.contact) {
         setContacts((prevContacts) => {
           const index = prevContacts.findIndex(
@@ -131,10 +132,8 @@ useEffect(() => {
         });
       }
     };
-
     // Attach the handler
     socket.onmessage = handleMessage;
-
     // Cleanup on component unmount
     return () => {
       socket.onmessage = null;
