@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import SortContacts from "@/utils/sortcontacts";
 // ------------------------------------------------------
@@ -15,6 +15,20 @@ const WhatsappAPIProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [atthebottom, setAtthebottom] = useState(false);
+
+  // ------------------------------------------------------
+  // Reference to the bottom of the chat messages
+  // ------------------------------------------------------
+  const bottomRef = useRef(null);
+
+  // ------------------------------------------------------
+  // function that scrolls to the bottom of the chat messages
+  // ------------------------------------------------------
+  const scrollToBottom = () => {
+    bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    setAtthebottom(true);
+  };
 
   // ------------------------------------------------------
   // Fetch contacts
@@ -129,18 +143,22 @@ const WhatsappAPIProvider = ({ children }) => {
   return (
     <WhatsappAPIContext.Provider
       value={{
-        organizationID,
-        contacts,
-        setContacts,
-        messages,
-        setMessages,
-        selectedContact,
-        fetchContacts,
-        setSelectedContact,
-        sendWhatsappTemplateMessage,
+        organizationID, // organization ID
+        contacts, // contacts
+        setContacts, // set contacts
+        messages, // messages
+        setMessages, // messages
+        selectedContact, // selected contact
+        fetchContacts, // fetch contacts
+        setSelectedContact, // set the selected contact
+        sendWhatsappTemplateMessage, // send WhatsApp Template message
         sendMessage, // send Message to the selected contact
-        sendingMessage,
-        getMedia,
+        sendingMessage, // sending message status
+        getMedia, // fetch media by ID
+        bottomRef, // reference to the bottom of the chat messages
+        scrollToBottom, // function that scrolls to the bottom of the chat messages
+        atthebottom, // at the bottom of the chat messages
+        setAtthebottom, // set at the bottom of the chat messages
       }}
     >
       {children}
