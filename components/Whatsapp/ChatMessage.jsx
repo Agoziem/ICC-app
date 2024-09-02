@@ -68,12 +68,9 @@ const ChatMessage = ({ message }) => {
       >
         {
           // Display the message body if the message type is text
-          message.message_type === "text" && message.body
-        }
-
-        {
-          // Display the message body if the message type is media
-          message.message_type === "media" && (
+          message.message_type === "text" ? (
+            message.body
+          ) : (
             <img
               src={getMedia(message.media_id)}
               alt="Media"
@@ -81,6 +78,7 @@ const ChatMessage = ({ message }) => {
             />
           )
         }
+
         <div className="d-flex justify-content-end">
           <small
             style={{
