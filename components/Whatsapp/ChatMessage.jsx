@@ -1,5 +1,6 @@
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 // /   {
 //   //     "id": 1,
 //     "wa_id": "12345",
@@ -35,7 +36,24 @@ import React from "react";
 // }
 
 const ChatMessage = ({ message }) => {
+  const [mediaUrl, setMediaUrl] = useState(null);
+  const [mediaLoading, setMediaLoading] = useState(false);
   const { getMedia } = useWhatsappAPIContext();
+
+  useEffect(() => {
+    // Fetch media if the message type is media and media_id is available
+    if (message.message_type !== "text" && message.media_id) {
+      const fetchMedia = async () => {
+        setMediaLoading(true);
+        const url = await getMedia(message.media_id);
+        setMediaUrl(url);
+        setMediaLoading(false);
+      };
+
+      fetchMedia();
+    }
+  }, [message.media_id, message.message_type]);
+
   const messageTime = new Date(message.timestamp);
 
   return (
@@ -68,14 +86,32 @@ const ChatMessage = ({ message }) => {
       >
         {
           // Display the message body if the message type is text
-          message.message_type === "text" ? (
-            message.body
-          ) : (
-            <img
-              src={getMedia(message.media_id)}
-              alt="Media"
-              style={{ maxWidth: "100%" }}
-            />
+          message.message_type === "text"
+            ? message.body
+            : null
+        }
+
+        {
+          // Show a loading spinner while the media is loading
+          mediaLoading && (
+            <div className="d-flex justify-content-center mt-2">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          // Display the media if the message type is media
+          message.message_type === "media" && mediaUrl && (
+            <div className="mt-2">
+              <img
+                src={mediaUrl}
+                alt="media"
+                style={{ maxWidth: "100%", borderRadius: "10px" }}
+              />
+            </div>
           )
         }
 

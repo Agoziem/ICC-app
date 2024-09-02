@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext, useRef } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import axios from "axios";
 import SortContacts from "@/utils/sortcontacts";
 // ------------------------------------------------------
@@ -97,12 +103,27 @@ const WhatsappAPIProvider = ({ children }) => {
   // Fetch media by ID
   // ------------------------------------------------------
   const getMedia = async (media_id) => {
+    console.log("Fetching media", media_id);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`,
-        { responseType: "blob" }
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`
       );
-      return response.data;
+
+      // fetch the media binary
+      const mediabinary = await axios.get(
+        response.data.url,
+        {
+          responseType: 'arraybuffer',
+          headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_WHATSAPPAPI_ACCESS_TOKEN}` }
+        }
+      );
+
+      console.log("Media binary", mediabinary);
+      
+      // create a blob URL for the media
+      const blob = new Blob([mediabinary], { type: response.data.mime_type });
+      const url = URL.createObjectURL(blob);
+      return url;
     } catch (error) {
       console.error("Failed to fetch media", error);
       return null;
