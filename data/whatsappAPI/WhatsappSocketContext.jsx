@@ -54,12 +54,10 @@ const WhatsappAPISocketProvider = ({ children }) => {
       `${NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/`
     );
 
-    // Handle WebSocket open event
     ws.onopen = () => {
       console.log("Connected to WebSocket");
     };
 
-    // Handle WebSocket close event
     ws.onclose = (event) => {
       console.log("WebSocket connection closed:", event.code, event.reason);
       // retry connection after 5 seconds
@@ -68,15 +66,11 @@ const WhatsappAPISocketProvider = ({ children }) => {
       }, 5000);
     };
 
-    // Handle WebSocket error event
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
-    // Set the WebSocket connection to the state
     setSocket(ws);
-
-    // Cleanup function to close WebSocket on component unmount
     return () => {
       if (ws && ws.readyState === WebSocket.OPEN) {
         console.log("Closing WebSocket connection");

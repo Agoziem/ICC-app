@@ -70,7 +70,10 @@ const ChatMessage = ({ message }) => {
               fontSize: "0.7rem",
             }}
           >
-            {messageTime.toLocaleTimeString()}
+            {messageTime.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
           </small>
         </div>
       </div>

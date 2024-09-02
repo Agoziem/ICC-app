@@ -5,7 +5,7 @@ import Chat from "./Chat";
 
 const WhatsappContainer = () => {
   return (
-    <div className="row mt-3">
+    <div className="row mt-1">
       <div className="col-md-4">
         <Contacts />
       </div>

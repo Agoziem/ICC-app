@@ -16,6 +16,7 @@ import Scrolltobottom from "./Scrolltobottom";
 //       "mime_type": "",
 //       "timestamp": "2024-08-29T15:23:16.370103Z",
 //       "message_mode": "received message",
+//        "seen": false,
 //       "contact": 15
 //   }
 // }
