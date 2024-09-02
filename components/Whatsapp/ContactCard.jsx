@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import ProfileimagePlaceholders from "../ImagePlaceholders/ProfileimagePlaceholders";
 import "./whatsapp.css";
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
@@ -9,7 +9,6 @@ const ContactCard = ({ contact }) => {
     useWhatsappAPIContext();
   const { socket, setContactwaID } = useWhatsappAPISocketContext();
   const [numOfUnreadMessages, setNumOfUnreadMessages] = useState(0);
-  const [currentContact, setCurrentContact] = useState(null);
 
   // ------------------------------------------------------
   // update num of unread messages on mount
@@ -93,6 +92,10 @@ const ContactCard = ({ contact }) => {
     });
   };
 
+
+  // ------------------------------------------------------
+  // handle contact click
+  // ------------------------------------------------------
   const handleContactClick = async () => {
     try {
       // First, select the contact and set the wa_id

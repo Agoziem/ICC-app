@@ -12,7 +12,10 @@ const Contacts = () => {
   const { contacts, setContacts } = useWhatsappAPIContext();
   const { socket } = useWhatsappAPISocketContext();
 
+
+  // ------------------------------------------------------
   // Function to handle incoming contact updates when a new message is received
+  // ------------------------------------------------------
   const handleIncomingContact = useCallback(
     (data) => {
       setContacts((prevContacts) => {
