@@ -109,7 +109,7 @@ const ChatMessage = ({ message }) => {
               <img
                 src={mediaUrl}
                 alt="media"
-                style={{ maxWidth: "100%", borderRadius: "10px" }}
+                style={{ maxWidth: "70%", borderRadius: "10px" }}
               />
               {message?.caption}
             </div>
@@ -123,7 +123,7 @@ const ChatMessage = ({ message }) => {
               <img
                 src={mediaUrl}
                 alt="media"
-                style={{ maxWidth: "100%", borderRadius: "10px" }}
+                style={{ maxWidth: "70%", borderRadius: "10px" }}
               />
             </div>
           )
@@ -136,7 +136,7 @@ const ChatMessage = ({ message }) => {
               <video
                 src={mediaUrl}
                 controls
-                style={{ maxWidth: "100%", borderRadius: "10px" }}
+                style={{ maxWidth: "70%", borderRadius: "10px" }}
               />
               {message.filename && <h6 className="mt-2">{message.filename}</h6>}
               {message?.caption}
@@ -158,7 +158,7 @@ const ChatMessage = ({ message }) => {
         {
           // Display the media if the message type is media
           message.message_type === "document" && mediaUrl && (
-            <div>
+            <div style={{ width:"40vw"}}>
               <div className="mb-2 d-flex">
                 <div>
                   <FaRegFileImage
@@ -178,7 +178,7 @@ const ChatMessage = ({ message }) => {
                 target="_blank"
                 rel="noreferrer"
                 style={{ color: "var(--primary)" }}
-              ></Link>
+              >download</Link>
               <div>{message?.caption}</div>
             </div>
           )
