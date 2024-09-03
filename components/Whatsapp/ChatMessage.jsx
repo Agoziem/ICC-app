@@ -132,7 +132,7 @@ const ChatMessage = ({ message }) => {
         {
           // Display the media if the message type is media
           message.message_type === "video" && mediaUrl && (
-            <div className="mt-2">
+            <div className="mt-2 pt-2">
               <video
                 src={mediaUrl}
                 controls
@@ -158,28 +158,34 @@ const ChatMessage = ({ message }) => {
         {
           // Display the media if the message type is media
           message.message_type === "document" && mediaUrl && (
-            <div style={{ width: "40vw" }}>
-              <div className="mb-2 d-flex">
+            <div style={{ width: "35vw" }}>
+              <div className="mb-2 d-flex pt-2">
                 <div>
                   <FaRegFileImage
-                  className="me-2"
+                    className="me-2"
                     style={{
                       fontSize: "1.5rem",
                       color: "var(--primary)",
                     }}
                   />
                 </div>
-                <div>{message.filename && <p className="fw-bold">{message.filename}</p>}</div>
+                <div>
+                  {message.filename && (
+                    <p className="fw-bold">{message.filename}</p>
+                  )}
+                </div>
+              </div>
+              <div className="d-flex justify-content-end">
+                <Link
+                  href={mediaUrl}
+                  className="btn btn-primary mb-2 rounded"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  download
+                </Link>
               </div>
 
-              <Link
-                href={mediaUrl}
-                className="btn btn-primary mb-2 rounded"
-                target="_blank"
-                rel="noreferrer"
-              >
-                download
-              </Link>
               <div>{message?.caption}</div>
             </div>
           )
