@@ -110,11 +110,7 @@ const WhatsappAPIProvider = ({ children }) => {
         `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`,
         { responseType: 'arraybuffer' } // Ensure binary data is handled correctly
       );
-  
-      // Create a blob from the binary data
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });
-      // Create a URL for the blob to be used in the frontend
-      const url = URL.createObjectURL(blob);  
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });      const url = URL.createObjectURL(blob);  
       return url;
     } catch (error) {
       console.error("Failed to fetch media", error);

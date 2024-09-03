@@ -1,5 +1,7 @@
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { FaRegFileImage } from "react-icons/fa6";
 
 // /   {
 //   //     "id": 1,
@@ -46,7 +48,6 @@ const ChatMessage = ({ message }) => {
       const fetchMedia = async () => {
         setMediaLoading(true);
         const url = await getMedia(message.media_id);
-        console.log("Media URL", url);
         setMediaUrl(url);
         setMediaLoading(false);
       };
@@ -87,9 +88,7 @@ const ChatMessage = ({ message }) => {
       >
         {
           // Display the message body if the message type is text
-          message.message_type === "text"
-            ? message.body
-            : null
+          message.message_type === "text" ? message.body : null
         }
 
         {
@@ -105,13 +104,82 @@ const ChatMessage = ({ message }) => {
 
         {
           // Display the media if the message type is media
-          message.message_type !== "text" && mediaUrl && (
+          message.message_type === "image" && mediaUrl && (
             <div className="mt-2">
               <img
                 src={mediaUrl}
                 alt="media"
                 style={{ maxWidth: "100%", borderRadius: "10px" }}
               />
+              {message?.caption}
+            </div>
+          )
+        }
+
+        {
+          // Display the media if the message type is media
+          message.message_type === "sticker" && mediaUrl && (
+            <div className="mt-2">
+              <img
+                src={mediaUrl}
+                alt="media"
+                style={{ maxWidth: "100%", borderRadius: "10px" }}
+              />
+            </div>
+          )
+        }
+
+        {
+          // Display the media if the message type is media
+          message.message_type === "video" && mediaUrl && (
+            <div className="mt-2">
+              <video
+                src={mediaUrl}
+                controls
+                style={{ maxWidth: "100%", borderRadius: "10px" }}
+              />
+              {message.filename && <h6 className="mt-2">{message.filename}</h6>}
+              {message?.caption}
+            </div>
+          )
+        }
+
+        {
+          // Display the media if the message type is media
+          message.message_type === "audio" && mediaUrl && (
+            <div className="mt-2">
+              <audio controls>
+                <source src={mediaUrl} type="audio/mpeg" />
+              </audio>
+            </div>
+          )
+        }
+
+        {
+          // Display the media if the message type is media
+          message.message_type === "document" && mediaUrl && (
+            <div>
+              <div className="mb-2 d-flex">
+                <div>
+                  <FaRegFileImage
+                    style={{
+                      fontSize: "1.5rem",
+                      marginRight: "5px",
+                      color: "var(--primary)",
+                    }}
+                  />
+                </div>
+                <div>{message.filename && <h6>{message.filename}</h6>}</div>
+              </div>
+
+              <Link
+                href={mediaUrl}
+                className="btn btn-primary w-100 mb-2"
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: "var(--primary)" }}
+              ></Link>
+              <div>{message?.caption}</div>
             </div>
           )
         }
