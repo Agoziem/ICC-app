@@ -158,27 +158,28 @@ const ChatMessage = ({ message }) => {
         {
           // Display the media if the message type is media
           message.message_type === "document" && mediaUrl && (
-            <div style={{ width:"40vw"}}>
+            <div style={{ width: "40vw" }}>
               <div className="mb-2 d-flex">
                 <div>
                   <FaRegFileImage
+                  className="me-2"
                     style={{
                       fontSize: "1.5rem",
-                      marginRight: "5px",
                       color: "var(--primary)",
                     }}
                   />
                 </div>
-                <div>{message.filename && <h6>{message.filename}</h6>}</div>
+                <div>{message.filename && <p className="fw-bold">{message.filename}</p>}</div>
               </div>
 
               <Link
                 href={mediaUrl}
-                className="btn btn-primary w-100 mb-2"
+                className="btn btn-primary mb-2 rounded"
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: "var(--primary)" }}
-              >download</Link>
+              >
+                download
+              </Link>
               <div>{message?.caption}</div>
             </div>
           )
