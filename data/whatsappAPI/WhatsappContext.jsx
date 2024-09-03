@@ -105,24 +105,16 @@ const WhatsappAPIProvider = ({ children }) => {
   const getMedia = async (media_id) => {
     console.log("Fetching media", media_id);
     try {
+      // Fetch the media binary from Django backend
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`,
+        { responseType: 'arraybuffer' } // Ensure binary data is handled correctly
       );
-
-      // fetch the media binary
-      const mediabinary = await axios.get(
-        response.data.url,
-        {
-          responseType: 'arraybuffer',
-          headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_WHATSAPPAPI_ACCESS_TOKEN}` }
-        }
-      );
-
-      console.log("Media binary", mediabinary);
-      
-      // create a blob URL for the media
-      const blob = new Blob([mediabinary], { type: response.data.mime_type });
-      const url = URL.createObjectURL(blob);
+  
+      // Create a blob from the binary data
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      // Create a URL for the blob to be used in the frontend
+      const url = URL.createObjectURL(blob);  
       return url;
     } catch (error) {
       console.error("Failed to fetch media", error);

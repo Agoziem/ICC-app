@@ -46,6 +46,7 @@ const ChatMessage = ({ message }) => {
       const fetchMedia = async () => {
         setMediaLoading(true);
         const url = await getMedia(message.media_id);
+        console.log("Media URL", url);
         setMediaUrl(url);
         setMediaLoading(false);
       };
@@ -104,7 +105,7 @@ const ChatMessage = ({ message }) => {
 
         {
           // Display the media if the message type is media
-          message.message_type === "media" && mediaUrl && (
+          message.message_type !== "text" && mediaUrl && (
             <div className="mt-2">
               <img
                 src={mediaUrl}
