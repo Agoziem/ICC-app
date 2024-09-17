@@ -1,91 +1,132 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 
-const WhatsappAPISocketContext = createContext();
+// -----------------------------------------------------------
+// Helper function to create a new WebSocket connection
+// -----------------------------------------------------------
+const createWebSocket = (url, onOpen, onClose, onError) => {
+  const ws = new WebSocket(url);
+
+  ws.onopen = onOpen || (() => console.log("Connected to WebSocket:", url));
+  ws.onclose =
+    onClose ||
+    ((event) => console.log("WebSocket closed:", event.code, event.reason));
+  ws.onerror = onError || ((error) => console.error("WebSocket error:", error));
+
+  return ws;
+};
+
+// ----------------------------------------------------------
+// The context itself
+// ----------------------------------------------------------
+const WhatsappAPISocketContext = createContext(null);
 
 const WhatsappAPISocketProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(
     process.env.NEXT_PUBLIC_ORGANIZATION_ID
   );
-  const [
-    NEXT_PUBLIC_DJANGO_WEBSOCKET_URL,
-    setNEXT_PUBLIC_DJANGO_WEBSOCKET_URL,
-  ] = useState(process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL);
-
-  const [chatsocket, setChatSocket] = useState(null);
-  const [socket, setSocket] = useState(null);
+  const [generalSocket, setGeneralSocket] = useState(null);
+  const [chatSocket, setChatSocket] = useState(null);
   const [contactwaID, setContactwaID] = useState(null);
+  const [retryInterval, setRetryInterval] = useState(5000); // Retry interval in case of disconnection
 
   // ------------------------------------------------------
-  // Create a WebSocket connection when contactwaID changes
+  // General WebSocket connection (for all contacts/events)
+  // ------------------------------------------------------
+  const connectGeneralSocket = useCallback(() => {
+    const wsUrl = `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/`;
+    const ws = createWebSocket(
+      wsUrl,
+      () => console.log("Connected to General WebSocket"),
+      (event) => {
+        console.log("General WebSocket closed:", event.code, event.reason);
+        // Reconnect logic with delay
+        setTimeout(connectGeneralSocket, retryInterval);
+      },
+      (error) => console.error("General WebSocket error:", error)
+    );
+
+    setGeneralSocket(ws);
+  }, [retryInterval]);
+
+  // ------------------------------------------------------
+  // Specific WebSocket connection for a contact
+  // ------------------------------------------------------
+  const connectChatSocket = useCallback((waID) => {
+    if (!waID) return;
+
+    const wsUrl = `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/${waID}/`;
+    const ws = createWebSocket(
+      wsUrl,
+      () => console.log("Connected to Chat WebSocket for:", waID),
+      (event) => {
+        console.log("Chat WebSocket closed:", event.code, event.reason);
+        // Optional reconnection logic for specific chat
+      },
+      (error) => console.error("Chat WebSocket error for", waID, ":", error)
+    );
+
+    setChatSocket(ws);
+  }, []);
+
+  // ------------------------------------------------------
+  // Connect to general WebSocket on mount
+  // ------------------------------------------------------
+  useEffect(() => {
+    if (!generalSocket) connectGeneralSocket();
+    return () => {
+      if (generalSocket) generalSocket.close(); // Cleanup on unmount
+    };
+  }, [connectGeneralSocket, generalSocket]);
+
+  // ------------------------------------------------------
+  // Connect to a specific chat WebSocket when `contactwaID` changes
   // ------------------------------------------------------
   useEffect(() => {
     if (contactwaID) {
-      const ws = new WebSocket(
-        `${NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/${contactwaID}/`
-      );
-
-      ws.onopen = () => {
-        console.log("Connected to WebSocket");
-      };
-
-      ws.onclose = () => {
-        console.log("WebSocket connection closed");
-      };
-
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-
-      setChatSocket(ws);
-      return () => {
-        if (ws) ws.close();
-      };
+      connectChatSocket(contactwaID);
+    } else if (chatSocket) {
+      chatSocket.close(); // Cleanup previous chat socket if no contact ID is set
     }
   }, [contactwaID]);
 
   // ------------------------------------------------------
-  //  connect the general whatsapp websocket on mount
-  //  ------------------------------------------------------
-  useEffect(() => {
-    if (!NEXT_PUBLIC_DJANGO_WEBSOCKET_URL) return;
+  // Disconnect general and specific WebSockets
+  // ------------------------------------------------------
+  const disconnectGeneralSocket = () => {
+    if (generalSocket) {
+      generalSocket.close();
+      setGeneralSocket(null);
+    }
+  };
 
-    const ws = new WebSocket(
-      `${NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/`
-    );
-
-    ws.onopen = () => {
-      console.log("Connected to WebSocket");
-    };
-
-    ws.onclose = (event) => {
-      console.log("WebSocket connection closed:", event.code, event.reason);
-      // retry connection after 5 seconds
-      setTimeout(() => {
-        setSocket(new WebSocket(`${NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/`));
-      }, 5000);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    setSocket(ws);
-    return () => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        console.log("Closing WebSocket connection");
-        ws.close();
-      }
-    };
-  }, [NEXT_PUBLIC_DJANGO_WEBSOCKET_URL]);
+  const disconnectChatSocket = () => {
+    if (chatSocket) {
+      chatSocket.close();
+      setChatSocket(null);
+    }
+  };
 
   return (
     <WhatsappAPISocketContext.Provider
       value={{
         organizationID,
+        setOrganizationID,
+        contactwaID,
         setContactwaID,
-        chatsocket, // WebSocket connection for onmessage event on a specific contact
-        socket, // WebSocket connection for onmessage event
+        generalSocket,
+        chatSocket,
+        connectGeneralSocket,
+        connectChatSocket,
+        disconnectGeneralSocket,
+        disconnectChatSocket,
+        setRetryInterval,
       }}
     >
       {children}
@@ -93,6 +134,7 @@ const WhatsappAPISocketProvider = ({ children }) => {
   );
 };
 
+// Hook to access the WebSocket context
 const useWhatsappAPISocketContext = () => {
   return useContext(WhatsappAPISocketContext);
 };

@@ -17,26 +17,20 @@ const useLocalStorage = (key, initialValue) => {
         }
     });
 
+    // Function that sets the item to Local Storage 
     const setValue = value => {
         try {
             const valueToStore = value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
             if (isClient) {
                 window.localStorage.setItem(key, JSON.stringify(valueToStore));
+                setStoredValue(valueToStore);
+            } else {
+                console.log("window object is not defined yet");
             }
         } catch (error) {
             console.log(error);
         }
     };
-
-    useEffect(() => {
-        if (isClient) {
-            const item = window.localStorage.getItem(key);
-            if (item) {
-                setStoredValue(JSON.parse(item));
-            }
-        }
-    }, [key, isClient]);
 
     return [storedValue, setValue];
 }

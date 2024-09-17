@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ProfileimagePlaceholders from "../ImagePlaceholders/ProfileimagePlaceholders";
 import "./whatsapp.css";
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import { useWhatsappAPISocketContext } from "@/data/whatsappAPI/WhatsappSocketContext";
 
 const ContactCard = ({ contact }) => {
-  const { setSelectedContact, setContacts } =
-    useWhatsappAPIContext();
-  const { socket, setContactwaID } = useWhatsappAPISocketContext();
+  const { setSelectedContact } = useWhatsappAPIContext();
   const [numOfUnreadMessages, setNumOfUnreadMessages] = useState(0);
+  const { generalSocket,setContactwaID } = useWhatsappAPISocketContext();
 
   // ------------------------------------------------------
-  // update num of unread messages on mount
+  // update number of unread messages on mount
   // ------------------------------------------------------
   useEffect(() => {
     if (contact.recieved_messages) {
@@ -25,85 +24,50 @@ const ContactCard = ({ contact }) => {
   // ------------------------------------------------------
   // Function to update the seen status of unread messages
   // ------------------------------------------------------
-  const updateSeenStatus = async () => {
-    if (socket) {
-      const unseenMessageIds = contact.recieved_messages
-        .filter((message) => !message.seen)
-        .map((message) => message.message_id);
-
-      if (unseenMessageIds.length > 0) {
-        console.log("Sending update for unseen messages:", unseenMessageIds);
-        try {
-          await socket.send(
-            JSON.stringify({
-              action: "update_seen_status",
-              wa_id: contact.wa_id,
-              message_ids: unseenMessageIds,
-            })
-          );
-
-        } catch (error) {
-          console.error("Failed to send update for seen status:", error);
-        }
-      }
-    }
-  };
-
-  // ------------------------------------------------------
-  // Listen for socket messages to update contacts list
-  // ------------------------------------------------------
-  useEffect(() => {
-    if (socket) {
-      const handleSocket = (e) => {
-        const data = JSON.parse(e.data);
-        if (data.operation === "update_status" && data.message) {
-          handleIncomingMessagesStatus(data);
-        }
-      };
-      socket.addEventListener("message", handleSocket);
-      return () => {
-        socket.removeEventListener("message", handleSocket);
-      };
-    }
-  }, [socket]);
-
-  // ------------------------------------------------------
-  // Function to update the seen status of unread messages
-  // ------------------------------------------------------
-  const handleIncomingMessagesStatus = (data) => {
-    setContacts((prevContacts) => {
-      const updatedContacts = [...prevContacts];
-      const index = updatedContacts.findIndex(
-        (contact) => contact.id === parseInt(data.contact_id)
-      );
-      if (index !== -1) {
-        const updatedContact = { ...updatedContacts[index] };
-        updatedContact.recieved_messages = updatedContact.recieved_messages.map(
-          (message) => {
-            if (data.message.message_ids.includes(message.message_id)) {
-              return { ...message, seen: true };
-            }
-            return message;
-          }
+  const updateSeenStatus = useCallback(() => {
+    const unseenMessageIds = contact.recieved_messages
+      .filter((message) => !message.seen)
+      .map((message) => message.message_id);
+    if (unseenMessageIds.length > 0) {
+      console.log("Sending update for unseen messages to the Server:",unseenMessageIds);
+      try {
+        generalSocket.send(
+          JSON.stringify({
+            action: "update_seen_status",
+            wa_id: contact.wa_id,
+            message_ids: unseenMessageIds,
+          })
         );
-        updatedContacts.splice(index, 1, updatedContact);
+      } catch (error) {
+        console.error("Failed to send update for seen status:", error);
       }
-      return updatedContacts;
-    });
-  };
+    }
+  }, []);
 
+  // ------------------------------------------------------
+  // handle sending the Message to Websocket
+  // ------------------------------------------------------
+  const sendMessage = () => {
+    try {
+      if (generalSocket) {
+        // Send via contact-specific WebSocket
+        updateSeenStatus();
+      } else {
+        console.error("No WebSocket connection available!");
+      }
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
+  };
 
   // ------------------------------------------------------
   // handle contact click
   // ------------------------------------------------------
-  const handleContactClick = async () => {
+  const handleContactClick = () => {
     try {
-      // First, select the contact and set the wa_id
       setSelectedContact(contact);
-      setContactwaID(contact.wa_id);
-
-      // Then, update the seen status of unseen messages
-      await updateSeenStatus();
+      setContactwaID(contact.wa_id)
+      sendMessage();
     } catch (error) {
       console.error("Error handling contact click:", error);
     }
@@ -133,9 +97,7 @@ const ContactCard = ({ contact }) => {
             <h6>{contact.profile_name}</h6>
             <p
               className={`small ${
-                numOfUnreadMessages === 0
-                  ? "text-primary"
-                  : "text-secondary"
+                numOfUnreadMessages === 0 ? "text-primary" : "text-secondary"
               } mb-1`}
             >
               {lastMessage

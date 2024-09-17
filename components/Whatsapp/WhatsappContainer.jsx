@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
 import Contacts from "./Contacts";
 import Chat from "./Chat";
 
 const WhatsappContainer = () => {
+  
   return (
     <div className="row mt-1">
       <div className="col-md-4">

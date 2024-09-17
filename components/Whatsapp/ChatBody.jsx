@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
-import { useWhatsappAPISocketContext } from "@/data/whatsappAPI/WhatsappSocketContext";
 import { BsWhatsapp } from "react-icons/bs";
 import "./whatsapp.css";
 import Scrolltobottom from "./Scrolltobottom";
+import { useWhatsappAPISocketContext } from "@/data/whatsappAPI/WhatsappSocketContext";
 
 // {
 //   "message": {
@@ -18,34 +18,46 @@ import Scrolltobottom from "./Scrolltobottom";
 //       "message_mode": "received message",
 //        "seen": false,
 //       "contact": 15
-//   }
+//   }`
 // }
 
 const ChatBody = () => {
-  const { messages, setMessages, bottomRef, scrollToBottom, setAtthebottom } =
-    useWhatsappAPIContext();
-  const { chatsocket } = useWhatsappAPISocketContext();
+  const { chatSocket, contactwaID } = useWhatsappAPISocketContext();
+  const {
+    messages,
+    setMessages,
+    bottomRef,
+    scrollToBottom,
+    setAtthebottom,
+  } = useWhatsappAPIContext();
 
   // ------------------------------------------------------
   // Reference to the chat container for scroll detection
   // ------------------------------------------------------
   const chatContainerRef = useRef(null);
 
+
   // ------------------------------------------------------
   // append new message to the messages list
-  // ------------------------------------------------------
+  // -----------------------------------------------------
   useEffect(() => {
-    if (chatsocket) {
-      chatsocket.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        if (data.message) {
-          setMessages((prevMessages) => {
-            return [...prevMessages, data.message];
-          });
-        }
-      };
+    if (chatSocket && contactwaID) {
+      chatSocket.onmessage = appendMessage;
     }
-  }, [chatsocket]);
+    // Cleanup: Remove event listeners when the component unmounts
+    return () => {
+      if (chatSocket && contactwaID) chatSocket.onmessage = null;
+    };
+  }, [chatSocket, contactwaID]);
+
+  const appendMessage = (e) => {
+    const data = JSON.parse(e.data);
+    if (data.message) {
+      setMessages((prevMessages) => {
+        return [...prevMessages, data.message];
+      });
+    }
+  };
 
   // ------------------------------------------------------
   // Scroll to the bottom whenever messages change
@@ -74,10 +86,8 @@ const ChatBody = () => {
         }
       }
     };
-
     const chatContainer = chatContainerRef.current;
     chatContainer.addEventListener("scroll", handleScroll);
-
     // Cleanup on component unmount
     return () => {
       chatContainer.removeEventListener("scroll", handleScroll);

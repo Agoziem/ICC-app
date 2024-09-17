@@ -11,7 +11,7 @@ import SortContacts from "@/utils/sortcontacts";
 // ------------------------------------------------------
 // Create the context
 // ------------------------------------------------------
-const WhatsappAPIContext = createContext();
+const WhatsappAPIContext = createContext( null);
 
 const WhatsappAPIProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(
@@ -67,8 +67,7 @@ const WhatsappAPIProvider = ({ children }) => {
       ];
 
       // Sort messages by timestamp
-      allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
+      allMessages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
       setMessages(allMessages);
     } else {
       setMessages([]); // Clear messages when no contact is selected
@@ -108,9 +107,12 @@ const WhatsappAPIProvider = ({ children }) => {
       // Fetch the media binary from Django backend
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`,
-        { responseType: 'arraybuffer' } // Ensure binary data is handled correctly
+        { responseType: "arraybuffer" } // Ensure binary data is handled correctly
       );
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });      const url = URL.createObjectURL(blob);  
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+      const url = URL.createObjectURL(blob);
       return url;
     } catch (error) {
       console.error("Failed to fetch media", error);

@@ -14,7 +14,6 @@ const Chat = () => {
     caption: "", // image or document caption
   });
 
-
   return (
     <div
       className="rounded ps-0 ps-md-4 mb-4"
