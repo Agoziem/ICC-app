@@ -54,13 +54,21 @@ export const sendPasswordResetEmail = async (email, token) => {
 };
 
 // reply to email messages
-export const sendReplyEmail = async (email, message, subject) => {
+
+/**
+ * Description placeholder
+ *
+ * @async
+ * @param {EmailResponse} response
+ */
+export const sendReplyEmail = async (response) => {
+  const {response_message,response_subject,recipient_email} = response
   try {
     await resend.emails.send({
       from: "ICCapp <emails@innovationscybercafe.com>",
-      to: email,
-      subject: subject,
-      html: `<p>${message}</p>`,
+      to: recipient_email,
+      subject: response_subject,
+      html: `<p>${response_message}</p>`,
       reply_to: "innovationscybercafe@gmail.com",
     });
     return {
@@ -69,9 +77,8 @@ export const sendReplyEmail = async (email, message, subject) => {
     };
   } catch (error) {
     return {
-      success: false,
-      message: "Failed to send message",
-      error: error.message,
+      error: true,
+      message: "Failed to send message"
     };
   }
 };

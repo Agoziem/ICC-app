@@ -1,124 +1,90 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 
-const useWebSocket = ({
+/**
+ * Custom WebSocket hook for managing connection lifecycle.
+ *
+ *
+ * @param {string} url - The WebSocket URL.
+ * @param {boolean} [autoReconnect=true] - Whether to automatically reconnect on disconnect.
+ * @param {number} [reconnectInterval=5000] - The interval (in ms) between reconnection attempts.
+ *
+ * @returns {{
+ *   ws: WebSocket | null; // WebSocket instance, or null if not connected.
+ *   isConnected: boolean; // True if the WebSocket is connected.
+ *   error: string | null; // Error message, or null if no error occurred.
+ *   closeWebSocket: () => void; // Function to manually close the WebSocket connection.
+ * }}
+ */
+
+const useWebSocket = (
   url, // WebSocket URL
-  onOpen = () => {}, // Custom callback when the connection opens
-  onClose = () => {}, // Custom callback when the connection closes
-  onMessage = (e) => {}, // Custom callback when a message is received
-  onError = (e) => {}, // Custom callback for error handling
   autoReconnect = true, // Automatically try to reconnect
-  reconnectInterval = 5000, // Interval between reconnection attempts
-}) => {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [ws, setWs] = useState(null); // Store WebSocket object
+  reconnectInterval = 5000 // Interval between reconnection attempts
+) => {
   const [isConnected, setIsConnected] = useState(false);
+  const [ws, setWs] = useState(null); // Store WebSocket instance
+  const [error, setError] = useState(null);
 
-  const handleError = (e) => {
-    setError(e);
-    setLoading(false);
-    onError(e);
-  };
-
+  // ---------------------------------------------
   // Function to initialize WebSocket connection
+  // ---------------------------------------------
   const connectWebSocket = useCallback(() => {
     if (!url) return;
 
     const wsInstance = new WebSocket(url);
-    setWs(wsInstance);
-    setLoading(true);
+    setWs(wsInstance); // Store WebSocket instance
 
+    // When WebSocket is opened
     wsInstance.onopen = () => {
+      console.log(`websocket for ${url} connected `);
       setIsConnected(true);
-      setLoading(false);
-      onOpen();
     };
 
+    // When WebSocket is closed
     wsInstance.onclose = () => {
+      console.log(`websocket for ${url} disconnected `);
       setIsConnected(false);
-      setLoading(false);
-      onClose();
-
-      // Handle auto-reconnect logic if enabled
+      // Attempt to reconnect if autoReconnect is enabled
       if (autoReconnect) {
         setTimeout(() => connectWebSocket(), reconnectInterval);
       }
     };
 
-    wsInstance.onmessage = (e) => {
-      onMessage(e);
-    };
-
+    // Handle connection error
     wsInstance.onerror = (e) => {
-      handleError(e);
+      console.error("WebSocket error", e);
+      setError(e);
     };
-  }, [url, autoReconnect, reconnectInterval, onOpen, onClose, onMessage, onError]);
+  }, [url, autoReconnect, reconnectInterval]);
 
-  // Effect to initialize the WebSocket connection when the URL changes
+  // Initialize WebSocket connection on mount and when URL changes
   useEffect(() => {
     if (url) {
       connectWebSocket();
     }
 
+    // Clean up WebSocket connection on unmount
     return () => {
-      // Clean up WebSocket on component unmount
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
     };
-  }, [url, connectWebSocket]);
+  }, [url]);
 
-  // Send message through WebSocket
-  const sendMessage = useCallback((message) => {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(message));
-    } else {
-      console.error("WebSocket is not open. Unable to send message.");
-    }
-  }, [ws]);
-
-  // Close WebSocket connection
+  // Function to close the WebSocket connection
   const closeWebSocket = useCallback(() => {
-    if (ws) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
       ws.close();
     }
   }, [ws]);
 
   return {
-    isConnected,
-    error,
-    loading,
-    sendMessage,
-    closeWebSocket,
+    ws,
+    isConnected, // Boolean to track connection status
+    error, // Error object if any WebSocket error occurs
+    closeWebSocket, // Function to manually close WebSocket
   };
 };
 
 export default useWebSocket;
-
-
-
-// import useWebSocket from "@/hooks/useWebSocket";
-
-// const WebSocketComponent = () => {
-//   const { isConnected, sendMessage, error, closeWebSocket } = useWebSocket({
-//     url: `ws://example.com/ws/room/1/`,
-//     onOpen: () => console.log("Connected"),
-//     onMessage: (e) => console.log("Received message:", e.data),
-//     onClose: () => console.log("Disconnected"),
-//     onError: (e) => console.error("WebSocket error", e),
-//     autoReconnect: true,
-//     reconnectInterval: 5000,
-//   });
-
-//   return (
-//     <div>
-//       {isConnected ? <p>Connected</p> : <p>Disconnected</p>}
-//       <button onClick={() => sendMessage({ type: "ping" })}>Send Ping</button>
-//       {error && <p>Error: {error.message}</p>}
-//       <button onClick={closeWebSocket}>Close WebSocket</button>
-//     </div>
-//   );
-// };
-
-// export default WebSocketComponent;

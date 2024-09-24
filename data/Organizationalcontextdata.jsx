@@ -2,7 +2,7 @@
 import useLocalStorage from "@/hooks/useLocalStorage";
 import React, { createContext, useEffect, useState } from "react";
 import Modal from "@/components/Modal/modal";
-const OrganizationContext = createContext();
+const OrganizationContext = createContext(null);
 
 const OrganizationContextProvider = ({ children }) => {
   const [organizationID, setorganizationID] = useState(1);

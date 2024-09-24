@@ -1,6 +1,6 @@
 import React from "react";
 
-const SearchInput = () => {
+const SearchInput = ({ searchQuery, setSearchQuery }) => {
   return (
     <div
       className="d-flex align-items-center rounded"
@@ -14,6 +14,8 @@ const SearchInput = () => {
         type="text"
         className="form-control border-0"
         placeholder="Search for message"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
         style={{
           color: "white",
         }}
@@ -23,3 +25,5 @@ const SearchInput = () => {
 };
 
 export default SearchInput;
+
+

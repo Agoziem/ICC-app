@@ -1,23 +1,154 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import MessageCard from "./MessageCard";
 import SearchInput from "../Inputs/SearchInput";
 import "./Email.css";
+import useSWR from "swr";
+import { emailAPIendpoint, fetchEmails } from "@/data/Emails/fetcher";
+import useWebSocket from "@/hooks/useWebSocket";
+import { MessageWebsocketSchema } from "@/utils/validation";
 
-const Messages = () => {
+/**
+ * Holds all the Messages that was sent well paginated with load more button
+ * @param {{ message : Email,
+ * selectMessage:(value:Email)=> void,
+ * showlist:boolean,
+ * setShowlist:(value:boolean)=> void,
+ * }} props
+ * @returns {JSX.Element}
+ */
+const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
+  const { isConnected, ws } = useWebSocket(
+    `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/emailapiSocket/`
+  );
+
+  const {
+    data: messages,
+    isLoading,
+    error,
+    mutate,
+  } = useSWR(
+    `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/`,
+    fetchEmails,
+    {
+      onSuccess: (data) =>
+        data.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ),
+    }
+  );
+
+  const [showUnread, setShowUnread] = useState(false); // State to filter unread messages
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+
+  // Handling WebSocket onmessage event
+  useEffect(() => {
+    if (isConnected && ws) {
+      ws.onmessage = (event) => {
+        const newMessage = JSON.parse(event.data); // Assuming the message comes in JSON format
+        const validateddata = MessageWebsocketSchema.safeParse(newMessage);
+        if (!validateddata.success) {
+          throw new Error(
+            `Validation failed: ${JSON.stringify(validateddata.error.issues)}`
+          );
+        }
+        if (newMessage.operation === "create") {
+          mutate(
+            (existingMessages) => [
+              newMessage.message,
+              ...(existingMessages || []),
+            ],
+            {
+              populateCache: true,
+            }
+          );
+        }
+
+        if (newMessage.operation === "update") {
+          mutate(
+            (existingMessages) => {
+              const updatedMessages = existingMessages.map((message) =>
+                message.id === newMessage.id ? newMessage : message
+              );
+              return updatedMessages;
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
+      };
+    }
+  }, [isConnected, ws, mutate]);
+
+  if (isLoading) {
+    return <p>Loading....</p>;
+  }
+
+  if (error) {
+    return <p>An error just occurred</p>;
+  }
+
+  // Filter messages based on the `read` state
+  let filteredMessages = showUnread
+    ? messages?.filter((message) => !message.read) // Show only unread messages
+    : messages;
+
+  // Filter messages further based on search input
+  if (searchQuery) {
+    filteredMessages = filteredMessages?.filter((message) =>
+      message.subject.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
+  /** @param {Email} updatedMessage */
+  const updateMessage = async (updatedMessage) => {
+    if (!updatedMessage.read) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        /**@type {EmailWebsocket} */
+        const payload = {
+          operation: "update",
+          message: updatedMessage,
+        };
+
+        ws.send(JSON.stringify(payload));
+      } else {
+        console.error("WebSocket is not connected.");
+      }
+    }
+  };
+
   return (
-    <div>
+    <div className={`${!showlist ? "d-none d-md-block" : "d-block"}`}>
       <div className="d-flex">
         <h4 className="flex-fill">Inbox</h4>
         <div className="d-flex bg-primary-light">
-          <button className="btn btn-sm btn-primary rounded me-2">
+          <button
+            className="btn btn-sm btn-primary rounded me-2"
+            style={{
+              backgroundColor: showUnread
+                ? "var(--bgDarkerColor)"
+                : "var(--primary)",
+              borderColor: showUnread
+                ? "var(--bgDarkerColor)"
+                : "var(--primary)",
+            }}
+            onClick={() => setShowUnread(false)} // Show all messages
+          >
             All mail
           </button>
           <button
             className="btn btn-sm btn-primary rounded"
             style={{
-              backgroundColor: "var(--bgDarkerColor)",
-              borderColor: "var(--bgDarkerColor)",
+              backgroundColor: showUnread
+                ? "var(--primary)"
+                : "var(--bgDarkerColor)",
+              borderColor: showUnread
+                ? "var(--primary)"
+                : "var(--bgDarkerColor)",
             }}
+            onClick={() => setShowUnread(true)} // Show only unread messages
           >
             Unread
           </button>
@@ -25,13 +156,26 @@ const Messages = () => {
       </div>
       <hr />
       <div className="mb-4">
-        <SearchInput />
+        {/* Pass searchQuery and setSearchQuery to SearchInput */}
+        <SearchInput
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
       </div>
       <div className="messageslist d-flex flex-column g-1 pe-2">
-        <MessageCard />
-        <MessageCard />
-        <MessageCard />
-        <MessageCard />
+        {filteredMessages ? (
+          filteredMessages.map((message) => (
+            <MessageCard
+              key={message.id}
+              message={message}
+              selectMessage={selectMessage}
+              updateMessagefn={updateMessage}
+              setShowlist={setShowlist}
+            />
+          ))
+        ) : (
+          <div className="my-auto"> No messages found</div>
+        )}
       </div>
     </div>
   );

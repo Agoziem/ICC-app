@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
-const EmailSocketContext = createContext();
+const EmailSocketContext = createContext(null);
 
 const EmailSocketContextProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(

@@ -106,7 +106,7 @@ const ChatBody = () => {
               <ChatMessage key={message.message_id} message={message} />
             ))
           ) : (
-            <div className="text-center mt-4 px-4">
+            <div className="text-center px-4">
               <div>
                 <BsWhatsapp
                   className="mb-3"
