@@ -1,42 +1,15 @@
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { BiCheckDouble } from "react-icons/bi";
 import { FaRegFileImage } from "react-icons/fa6";
 
-// /   {
-//   //     "id": 1,
-//     "wa_id": "12345",
-//     "profile_name": "John Doe",
-//     "recieved_messages": [
-//         {
-//             "id": 1,
-//             "message_id": "msg123",
-//             "contact": 1,
-//             "message_type": "text",
-//             "body": "Hello",
-//             "media_id": null,
-//             "mime_type": null,
-//             "timestamp": "2024-08-20T12:34:56Z",
-//             "message_mode": "received message"
-//         },
-//         ...
-//     ],
-//     "sent_messages": [
-//         {
-//             "id": 2,
-//             "message_id": "msg456",
-//             "contact": 1,
-//             "message_type": "text",
-//             "body": "Hi there!",
-//             "link": null,
-//             "timestamp": "2024-08-20T12:45:00Z",
-//             "message_mode": "sent message",
-//             "status": "sent"
-//         },
-//         ...
-//     ]
-// }
-
+/**
+ * Description placeholder
+ *
+ * @param {{ message: WAMessage; }} props
+ * @returns {JSX.Element}
+ */
 const ChatMessage = ({ message }) => {
   const [mediaUrl, setMediaUrl] = useState(null);
   const [mediaLoading, setMediaLoading] = useState(false);
@@ -61,7 +34,7 @@ const ChatMessage = ({ message }) => {
   return (
     <div
       className={`d-flex mb-3 ${
-        message.message_mode === "sent message"
+        message.message_mode === "sent"
           ? "justify-content-end"
           : "justify-content-start"
       }`}
@@ -69,21 +42,18 @@ const ChatMessage = ({ message }) => {
       <div
         style={{
           backgroundColor:
-            message.message_mode === "sent message"
+            message.message_mode === "sent"
               ? "var(--secondary)"
               : "var(--bgDarkColor)",
           padding: "10px 15px",
           borderRadius: "20px",
           borderBottomLeftRadius:
-            message.message_mode === "sent message" ? "20px" : "0",
+            message.message_mode === "sent" ? "20px" : "0",
           borderBottomRightRadius:
-            message.message_mode === "received message" ? "20px" : "0",
+            message.message_mode === "received" ? "20px" : "0",
           maxWidth: "70%",
           wordWrap: "break-word",
-          color:
-            message.message_mode === "sent message"
-              ? "white"
-              : "var(--primary)",
+          color: message.message_mode === "sent" ? "white" : "var(--primary)",
         }}
       >
         {
@@ -195,9 +165,7 @@ const ChatMessage = ({ message }) => {
           <small
             style={{
               color:
-                message.message_mode === "sent message"
-                  ? "white"
-                  : "var(--primary)",
+                message.message_mode === "sent" ? "white" : "var(--primary)",
               fontSize: "0.7rem",
             }}
           >
@@ -205,6 +173,17 @@ const ChatMessage = ({ message }) => {
               hour: "2-digit",
               minute: "2-digit",
             })}
+
+            {message.message_mode === "sent" && (
+              <BiCheckDouble
+                className="ms-2"
+                style={{
+                  fontSize: "1.2rem",
+                  color:
+                  message.status === "sent" ? "#34B7F1" : "",
+                }}
+              />
+            )}
           </small>
         </div>
       </div>

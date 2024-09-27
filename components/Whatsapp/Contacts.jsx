@@ -1,90 +1,152 @@
 "use client";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ContactCard from "./ContactCard";
 import SearchInput from "../Inputs/SearchInput";
 import "./whatsapp.css";
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import { MdOutlineContacts } from "react-icons/md";
 import BackButton from "../backbutton/BackButton";
-import { useWhatsappAPISocketContext } from "@/data/whatsappAPI/WhatsappSocketContext";
+import useWebSocket from "@/hooks/useWebSocket";
+import useSWR from "swr";
+import {
+  fetchWAContacts,
+  WhatsappAPIendpoint,
+} from "@/data/whatsappAPI/fetcher";
+import { WAContactWebsocketSchema } from "@/utils/validation";
 
-const Contacts = () => {
-  const { contacts, setContacts } = useWhatsappAPIContext();
-  const { generalSocket } = useWhatsappAPISocketContext();
+/**
+ * Holds all the
+ * @param {{showlist:boolean,
+ * setShowlist:(value:boolean)=> void,}} props
+ * @returns {JSX.Element}
+ */
 
-  // -------------------------------------------------------------------------
-  // Open Websocket to recieve immediate Contacts update
-  // -------------------------------------------------------------------------
+const Contacts = ({ showlist, setShowlist }) => {
+  const { selectedContact, setSelectedContact } = useWhatsappAPIContext();
+  const { isConnected, ws } = useWebSocket(
+    `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/contacts/`
+  );
+
+  // fetch all the contacts
+  const {
+    data: contacts,
+    isLoading,
+    error,
+    mutate,
+  } = useSWR(`${WhatsappAPIendpoint}/contacts/`, fetchWAContacts, {
+    onSuccess: (data) =>
+      data.sort(
+        (a, b) =>
+          new Date(b.last_message.timestamp).getTime() -
+          new Date(a.last_message.timestamp).getTime()
+      ),
+  });
+
+  // Handling WebSocket onmessage event
   useEffect(() => {
-    // Attach event listeners for both WebSockets
-    if (generalSocket) {
-      generalSocket.onmessage = handleSocketMessage;
-    }
-    // Cleanup: Remove event listeners when the component unmounts
-    return () => {
-      if (generalSocket) generalSocket.onmessage = null;
-    };
-  }, [generalSocket]);
+    if (isConnected && ws) {
+      ws.onmessage = (event) => {
+        const responseContact = JSON.parse(event.data);
+        const validatedcontact =
+          WAContactWebsocketSchema.safeParse(responseContact);
 
-  // ------------------------------------------------
-  // handle the Socket Message
-  // ------------------------------------------------
-  const handleSocketMessage = useCallback((e) => {
-    const data = JSON.parse(e.data);
-    console.log("updating contact cards list operation");
-    if (data.operation === "chat_message" && data.contact) {
-      contactspostion(data);
-    } else {
-      updateContactsStatus(data);
-    }
-  }, []);
+        // validate the websocket data
+        if (!validatedcontact.success) {
+          console.log(validatedcontact.error.issues);
+        }
+        const newContact = validatedcontact.data;
 
+        // check and confirm the operation and carry out a cache mutation
+        if (newContact.operation === "create") {
+          mutate(
+            (existingContacts) => {
+              const contactExists = existingContacts?.some(
+                (contact) => contact.id === newContact.contact.id
+              );
 
-  // -------------------------------------------------------
-  // for updating the contact card when a message comes
-  // -------------------------------------------------------
-  const contactspostion = (data) => {
-    setContacts((prevContacts) => {
-      const index = prevContacts.findIndex(
-        (contact) => contact.id === data.contact.id
-      );
-      if (index === -1) {
-        // Add new contact at the top
-        return [data.contact, ...prevContacts];
-      } else {
-        // Move existing contact to the top
-        const updatedContacts = [...prevContacts];
-        updatedContacts.splice(index, 1);
-        updatedContacts.unshift(data.contact);
-        return updatedContacts;
-      }
-    });
-  };
-
-
-  // --------------------------------------------------------------------
-  // for updating the contact messages status badge when a message comes
-  // --------------------------------------------------------------------
-  const updateContactsStatus = (data) => {
-    setContacts((prevContacts) => {
-      const updatedContacts = [...prevContacts];
-      const index = updatedContacts.findIndex(
-        (contact) => contact.id === parseInt(data.contact_id)
-      );
-      if (index !== -1) {
-        const updatedContact = { ...updatedContacts[index] };
-        updatedContact.recieved_messages = updatedContact.recieved_messages.map(
-          (message) => {
-            if (data.message.message_ids.includes(message.message_id)) {
-              return { ...message, seen: true };
+              if (contactExists) {
+                return [
+                  newContact.contact,
+                  ...existingContacts.filter(
+                    (contact) => contact.id !== newContact.contact.id
+                  ),
+                ].sort(
+                  (a, b) =>
+                    new Date(b.last_message.timestamp).getTime() -
+                    new Date(a.last_message.timestamp).getTime()
+                );
+              } else {
+                // If the contact doesn't exist, just add it to the top
+                return [newContact.contact, ...(existingContacts || [])].sort(
+                  (a, b) =>
+                    new Date(b.last_message.timestamp).getTime() -
+                    new Date(a.last_message.timestamp).getTime()
+                );
+              }
+            },
+            {
+              populateCache: true,
             }
-            return message;
-          }
-        );
-        updatedContacts.splice(index, 1, updatedContact);
+          );
+        }
+
+        if (newContact.operation === "update_seen_status") {
+          mutate(
+            (existingContacts) => {
+              const updatedMessages = existingContacts.map((contact) =>
+                contact.id === newContact.contact.id
+                  ? newContact.contact
+                  : contact
+              );
+              return updatedMessages;
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
+      };
+    }
+  }, [isConnected, ws, mutate]);
+
+  const [showUnread, setShowUnread] = useState(false); // State to filter unread messages
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+
+  // Filter messages based on the `read` state
+  let filteredContacts = showUnread
+    ? contacts?.filter((contact) => contact.unread_message_count > 0) // Show only unread messages
+    : contacts;
+
+  // Filter messages further based on search input
+  if (searchQuery) {
+    filteredContacts = filteredContacts?.filter((contact) =>
+      contact.profile_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
+  if (isLoading) {
+    return <p>Loading....</p>;
+  }
+
+  if (error) {
+    return <p>An error just occurred</p>;
+  }
+
+  // update a Message and populate/update Cache
+  /** @param {WAContact} updatedContact */
+  const updateContact = async (updatedContact) => {
+    if (updatedContact.unread_message_count !== 0) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        /**@type {WAContactSocket} */
+        const payload = {
+          operation: "update_seen_status",
+          contact: updatedContact,
+        };
+        ws.send(JSON.stringify(payload));
+      } else {
+        console.error("WebSocket is not connected.");
       }
-      return updatedContacts;
-    });
+    }
   };
 
   return (
@@ -92,45 +154,73 @@ const Contacts = () => {
       <div className="mb-2">
         <BackButton />
       </div>
-      <div className="d-flex flex-wrap">
-        <h4 className="flex-fill mb-3">WA Messages</h4>
-        <div className="d-flex bg-primary-light">
-          <button className="btn btn-sm btn-primary rounded me-2">
-            All messages
-          </button>
-          <button
-            className="btn btn-sm btn-primary rounded"
-            style={{
-              backgroundColor: "var(--bgDarkerColor)",
-              borderColor: "var(--bgDarkerColor)",
-            }}
-          >
-            Unread
-          </button>
-        </div>
-      </div>
-      <hr />
-      <div className="mb-4">
-        <SearchInput />
-      </div>
-      <div className="Contacts d-flex flex-column g-1 pe-2">
-        {contacts.length > 0 ? (
-          contacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} />
-          ))
-        ) : (
-          <div className="text-center mt-4">
-            <div className="mb-2">
-              <MdOutlineContacts
-                style={{
-                  fontSize: "3.5rem",
-                  color: "var(--bgDarkerColor)",
-                }}
-              />
-            </div>
-            No contacts found
+      <div
+        className={`${!showlist ? "d-none d-md-block" : "d-flex flex-column"} mt-4 mt-md-3`}
+      >
+        <div className="d-flex flex-wrap">
+          <h4 className="flex-fill mb-3">WA Messages</h4>
+          <div className="d-flex bg-primary-light">
+            <button
+              className="btn btn-sm btn-primary rounded me-2"
+              style={{
+                backgroundColor: showUnread
+                  ? "var(--bgDarkerColor)"
+                  : "var(--primary)",
+                borderColor: showUnread
+                  ? "var(--bgDarkerColor)"
+                  : "var(--primary)",
+              }}
+              onClick={() => setShowUnread(false)} // Show all messages
+            >
+              All Contacts
+            </button>
+            <button
+              className="btn btn-sm btn-primary rounded"
+              style={{
+                backgroundColor: showUnread
+                  ? "var(--primary)"
+                  : "var(--bgDarkerColor)",
+                borderColor: showUnread
+                  ? "var(--primary)"
+                  : "var(--bgDarkerColor)",
+              }}
+              onClick={() => setShowUnread(true)} // Show only unread messages
+            >
+              Unread
+            </button>
           </div>
-        )}
+        </div>
+        <hr />
+        <div className="mb-4">
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        </div>
+        <div className={`d-flex flex-column Contacts g-1 pe-2 `}>
+          {filteredContacts.length > 0 ? (
+            filteredContacts.map((contact) => (
+              <ContactCard
+                key={contact.id}
+                contact={contact}
+                updateContactfn={updateContact}
+                setShowlist={setShowlist}
+              />
+            ))
+          ) : (
+            <div className="text-center mt-4">
+              <div className="mb-2">
+                <MdOutlineContacts
+                  style={{
+                    fontSize: "3.5rem",
+                    color: "var(--bgDarkerColor)",
+                  }}
+                />
+              </div>
+              No contacts found
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

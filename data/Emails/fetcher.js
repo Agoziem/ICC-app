@@ -17,9 +17,7 @@ export const fetchEmails = async () => {
   );
   const validation = emailArraySchema.safeParse(response.data);
   if (!validation.success) {
-    throw new Error(
-      `Validation failed: ${JSON.stringify(validation.error.issues)}`
-    );
+    console.log(validation.error.issues);
   }
   return validation.data;
 };
@@ -36,9 +34,7 @@ export const getResponses = async (data) => {
   );
   const validation = emailResponseArraySchema.safeParse(response.data);
   if (!validation.success) {
-    throw new Error(
-      `Validation failed: ${JSON.stringify(validation.error.issues)}`
-    );
+    console.log(validation.error.issues);
   }
   return validation.data;
 };
@@ -56,9 +52,7 @@ export const submitResponse = async (data) => {
   );
   const validation = emailResponseSchema.safeParse(response.data);
   if (!validation.success) {
-    throw new Error(
-      `Validation failed: ${JSON.stringify(validation.error.issues)}`
-    );
+    console.log(validation.error.issues);
   }
   return validation.data;
 };

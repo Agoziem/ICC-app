@@ -44,6 +44,7 @@ const EmailInput = ({ message }) => {
   const onSubmit = async (data) => {
     try {
       await mutate(submitResponse(data), addMessageResponseOptions(data));
+      reset();
       const result = await sendReplyEmail(data);
       if (!result.error) {
         setSuccess(result.message);
@@ -52,8 +53,6 @@ const EmailInput = ({ message }) => {
       }
     } catch (error) {
       setError(error.message);
-    } finally {
-      reset(); // Reset the form after submission
     }
     setTimeout(() => {
       setError("");

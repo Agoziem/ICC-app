@@ -4,60 +4,85 @@ import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import { BsWhatsapp } from "react-icons/bs";
 import "./whatsapp.css";
 import Scrolltobottom from "./Scrolltobottom";
-import { useWhatsappAPISocketContext } from "@/data/whatsappAPI/WhatsappSocketContext";
+import {
+  fetchWAMessages,
+  WhatsappAPIendpoint,
+} from "@/data/whatsappAPI/fetcher";
+import useSWR from "swr";
+import useWebSocket from "@/hooks/useWebSocket";
+import { WAMessageWebsocketSchema } from "@/utils/validation";
 
-// {
-//   "message": {
-//       "id": 19,
-//       "message_id": "wamid.HBgNMjM0ODA4MDk4MjYwNhUCABIYEjFGOUU2NjdCQUVFRUMxMjVCNQA=",
-//       "message_type": "text",
-//       "body": "Okay Sir",
-//       "media_id": "",
-//       "mime_type": "",
-//       "timestamp": "2024-08-29T15:23:16.370103Z",
-//       "message_mode": "received message",
-//        "seen": false,
-//       "contact": 15
-//   }`
-// }
+// Component to show when there are no chat messages
+const NoMessages = ({ messagesloading, messageserror }) => (
+  <div>
+    {messagesloading && <div>Loading...</div>}
+    {messageserror && <div>Error occurred while fetching messages.</div>}
+    <div className="text-center px-4">
+      <BsWhatsapp
+        className="mb-3"
+        style={{ fontSize: "4.5rem", color: "var(--bgColor)" }}
+      />
+      <div>
+        No chat Messages found. Select a contact to start messaging. Note that
+        messaging must be initiated from the contact side.
+      </div>
+    </div>
+  </div>
+);
 
 const ChatBody = () => {
-  const { chatSocket, contactwaID } = useWhatsappAPISocketContext();
-  const {
-    messages,
-    setMessages,
-    bottomRef,
-    scrollToBottom,
-    setAtthebottom,
-  } = useWhatsappAPIContext();
-
-  // ------------------------------------------------------
-  // Reference to the chat container for scroll detection
-  // ------------------------------------------------------
+  const { selectedContact, setSelectedContact } = useWhatsappAPIContext();
+  const { bottomRef, scrollToBottom, setAtthebottom } = useWhatsappAPIContext();
+  const { isConnected, ws } = useWebSocket(
+    `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/messages/`
+  );
   const chatContainerRef = useRef(null);
 
-
   // ------------------------------------------------------
-  // append new message to the messages list
-  // -----------------------------------------------------
-  useEffect(() => {
-    if (chatSocket && contactwaID) {
-      chatSocket.onmessage = appendMessage;
-    }
-    // Cleanup: Remove event listeners when the component unmounts
-    return () => {
-      if (chatSocket && contactwaID) chatSocket.onmessage = null;
-    };
-  }, [chatSocket, contactwaID]);
+  // Fetch chat messages
+  // ------------------------------------------------------
+  const {
+    data: chatmessages,
+    error: messageserror,
+    isLoading: messagesloading,
+    mutate,
+  } = useSWR(
+    selectedContact
+      ? `${WhatsappAPIendpoint}/messages/${selectedContact.id}`
+      : null,
+    () => fetchWAMessages(selectedContact)
+  );
 
-  const appendMessage = (e) => {
-    const data = JSON.parse(e.data);
-    if (data.message) {
-      setMessages((prevMessages) => {
-        return [...prevMessages, data.message];
-      });
+  // -----------------------------------------------------
+  // append a new upon recieval from websocket
+  // -----------------------------------------------------
+  // Handling WebSocket onmessage event
+  useEffect(() => {
+    if (isConnected && ws) {
+      ws.onmessage = (event) => {
+        const responseMessage = JSON.parse(event.data); // Assuming the message comes in JSON format
+        const validatedmessage =
+          WAMessageWebsocketSchema.safeParse(responseMessage);
+        if (!validatedmessage.success) {
+         console.log(validatedmessage.error.issues)
+        }
+        const newMessage = validatedmessage.data;
+        if (selectedContact.id === newMessage.contact.id) {
+          if (newMessage.operation === "create") {
+            mutate(
+              (existingMessages) => [
+                newMessage.message,
+                ...(existingMessages || []),
+              ],
+              {
+                populateCache: true,
+              }
+            );
+          }
+        }
+      };
     }
-  };
+  }, [isConnected, ws, mutate]);
 
   // ------------------------------------------------------
   // Scroll to the bottom whenever messages change
@@ -66,7 +91,7 @@ const ChatBody = () => {
     if (bottomRef.current) {
       scrollToBottom();
     }
-  }, [messages]);
+  }, [chatmessages,bottomRef]);
 
   // ------------------------------------------------------
   // Handle scroll event to check if the user has scrolled up
@@ -77,52 +102,39 @@ const ChatBody = () => {
         const { scrollTop, scrollHeight, clientHeight } =
           chatContainerRef.current;
 
-        // Check if the user is not at the bottom
-        if (scrollTop + clientHeight < scrollHeight - 50) {
-          // 50px buffer to detect close to bottom
-          setAtthebottom(false);
-        } else {
-          setAtthebottom(true);
-        }
+        setAtthebottom(scrollTop + clientHeight >= scrollHeight - 50);
       }
     };
+
     const chatContainer = chatContainerRef.current;
     chatContainer.addEventListener("scroll", handleScroll);
-    // Cleanup on component unmount
+
+    // Cleanup event listener on component unmount
     return () => {
       chatContainer.removeEventListener("scroll", handleScroll);
     };
-  }, [setAtthebottom]);
+  }, []);
 
   return (
     <div className="position-relative">
       <div
         ref={chatContainerRef}
-        className="chatbody mt-3 p-4 rounded text-white d-flex flex-column "
+        className="chatbody mt-3 p-4 rounded text-white d-flex flex-column"
       >
-        <div className={`${messages.length > 0 ? "mt-auto" : "my-auto"}`}>
-          {messages.length > 0 ? (
-            messages.map((message) => (
-              <ChatMessage key={message.message_id} message={message} />
+        <div className={chatmessages?.length > 0 ? "mt-auto" : "my-auto"}>
+          {chatmessages?.length > 0 ? (
+            chatmessages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
             ))
           ) : (
-            <div className="text-center px-4">
-              <div>
-                <BsWhatsapp
-                  className="mb-3"
-                  style={{
-                    fontSize: "4.5rem",
-                    color: "var(--bgColor)",
-                  }}
-                />
-              </div>
-              No messages found, select a Contact to start messaging, note the
-              messaging must be initiated from the contact side
-            </div>
+            <NoMessages
+              messagesloading={messagesloading}
+              messageserror={messageserror}
+            />
           )}
           {/* Dummy element to scroll into view */}
-          <div ref={bottomRef} />
         </div>
+        <div ref={bottomRef} />
         <Scrolltobottom />
       </div>
     </div>

@@ -3,26 +3,42 @@ import ChatInput from "../Inputs/ChatInput";
 import ProfileimagePlaceholders from "../ImagePlaceholders/ProfileimagePlaceholders";
 import ChatBody from "./ChatBody";
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
-import { BsWhatsapp } from "react-icons/bs";
+import { BsThreeDotsVertical, BsWhatsapp } from "react-icons/bs";
 
-const Chat = () => {
+/**
+ * Holds all the
+ * @param {{showlist:boolean,
+ * setShowlist:(value:boolean)=> void,}} props
+ * @returns {JSX.Element}
+ */
+const Chat = ({ showlist, setShowlist }) => {
   const { selectedContact } = useWhatsappAPIContext();
-  const [messagetoSend, setMessagetoSend] = useState({
-    type: "", // text, image, document
-    body: "", // text message
-    link: "", // image or document link
-    caption: "", // image or document caption
-  });
 
   return (
     <div
-      className="rounded ps-0 ps-md-4 mb-4"
+      className={`rounded ps-0 ps-md-4 mt-4 mb-4 ${
+        showlist ? "d-none d-md-block" : "d-block"
+      }`}
       style={{
         minHeight: "100vh",
       }}
     >
       {selectedContact ? (
         <div className="d-flex align-items-center">
+          <h6
+            className={`my-3 d-block d-md-none ${
+              showlist ? "d-none d-md-block" : ""
+            }`}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setShowlist(true);
+            }}
+          >
+            <BsThreeDotsVertical
+              className="me-3"
+              style={{ fontSize: "1.3rem" }}
+            />
+          </h6>
           <div className="flex-fill d-flex">
             <ProfileimagePlaceholders firstname="John" />
             <div className="ms-3">
@@ -50,7 +66,7 @@ const Chat = () => {
 
       {/* the reply */}
       <div className="mt-3">
-        <ChatInput messagetoSend={messagetoSend} setMessagetoSend={setMessagetoSend} />
+        <ChatInput contact={selectedContact} />
       </div>
     </div>
   );

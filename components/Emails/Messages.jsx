@@ -22,6 +22,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
     `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/emailapiSocket/`
   );
 
+  // fetch all the messages and populate cache
   const {
     data: messages,
     isLoading,
@@ -56,7 +57,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
         if (newMessage.operation === "create") {
           mutate(
             (existingMessages) => [
-              newMessage.message,
+              validateddata.data.message,
               ...(existingMessages || []),
             ],
             {
@@ -65,11 +66,11 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
           );
         }
 
-        if (newMessage.operation === "update") {
+        if (validateddata.data.operation === "update") {
           mutate(
             (existingMessages) => {
               const updatedMessages = existingMessages.map((message) =>
-                message.id === newMessage.id ? newMessage : message
+                message.id === validateddata.data.message.id ? validateddata.data.message : message
               );
               return updatedMessages;
             },
@@ -102,6 +103,8 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
     );
   }
 
+
+  // update a Message and populate/update Cache
   /** @param {Email} updatedMessage */
   const updateMessage = async (updatedMessage) => {
     if (!updatedMessage.read) {

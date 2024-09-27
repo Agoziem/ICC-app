@@ -15,9 +15,6 @@ import { ChatroomSocketProvider } from "@/data/chatroomAPI/ChatroomSocket";
 import { NotificationsContextProvider } from "@/data/notificationsAPI/NotificationContext";
 import { NotificationsSocketContextProvider } from "@/data/notificationsAPI/NotificationSocket";
 import { WhatsappAPIProvider } from "@/data/whatsappAPI/WhatsappContext";
-import { WhatsappAPISocketProvider } from "@/data/whatsappAPI/WhatsappSocketContext";
-// import { EmailContextProvider } from "@/data/Emails/EmailContext";
-import { EmailSocketContextProvider } from "@/data/Emails/EmailSocket";
 
 const ContextProviders = ({ children }) => (
   <OrganizationContextProvider>
@@ -35,13 +32,7 @@ const ContextProviders = ({ children }) => (
                           <NotificationsContextProvider>
                             <NotificationsSocketContextProvider>
                               <WhatsappAPIProvider>
-                                <WhatsappAPISocketProvider>
-                                  {/* <EmailContextProvider> */}
-                                    <EmailSocketContextProvider>
-                                      {children}
-                                    </EmailSocketContextProvider>
-                                  {/* </EmailContextProvider> */}
-                                </WhatsappAPISocketProvider>
+                                {children}
                               </WhatsappAPIProvider>
                             </NotificationsSocketContextProvider>
                           </NotificationsContextProvider>
