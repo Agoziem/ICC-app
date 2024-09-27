@@ -54,9 +54,8 @@ const ChatBody = () => {
   );
 
   // -----------------------------------------------------
-  // append a new upon recieval from websocket
+  // append a new message upon recieval from websocket
   // -----------------------------------------------------
-  // Handling WebSocket onmessage event
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {

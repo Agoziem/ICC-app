@@ -26,6 +26,8 @@ const Contacts = ({ showlist, setShowlist }) => {
   const { isConnected, ws } = useWebSocket(
     `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/whatsappapiSocket/contacts/`
   );
+  const [showUnread, setShowUnread] = useState(false); // State to filter unread messages
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   // fetch all the contacts
   const {
@@ -42,7 +44,9 @@ const Contacts = ({ showlist, setShowlist }) => {
       ),
   });
 
+  // ------------------------------------------
   // Handling WebSocket onmessage event
+  // ------------------------------------------
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {
@@ -109,8 +113,7 @@ const Contacts = ({ showlist, setShowlist }) => {
     }
   }, [isConnected, ws, mutate]);
 
-  const [showUnread, setShowUnread] = useState(false); // State to filter unread messages
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+
 
   // Filter messages based on the `read` state
   let filteredContacts = showUnread
@@ -132,7 +135,9 @@ const Contacts = ({ showlist, setShowlist }) => {
     return <p>An error just occurred</p>;
   }
 
-  // update a Message and populate/update Cache
+  // ----------------------------------------------------------
+  // update a Message and populate/update Cache from Websocket
+  // -----------------------------------------------------------
   /** @param {WAContact} updatedContact */
   const updateContact = async (updatedContact) => {
     if (updatedContact.unread_message_count !== 0) {

@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { emailAPIendpoint, fetchEmails } from "@/data/Emails/fetcher";
 import useWebSocket from "@/hooks/useWebSocket";
 import { MessageWebsocketSchema } from "@/utils/validation";
+import { MdOutlineContacts } from "react-icons/md";
 
 /**
  * Holds all the Messages that was sent well paginated with load more button
@@ -43,7 +44,9 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
   const [showUnread, setShowUnread] = useState(false); // State to filter unread messages
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
+  // -----------------------------------------
   // Handling WebSocket onmessage event
+  // -----------------------------------------
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {
@@ -52,7 +55,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
         if (!validateddata.success) {
           throw new Error(
             `Validation failed: ${JSON.stringify(validateddata.error.issues)}`
-          );
+          ); 
         }
         if (newMessage.operation === "create") {
           mutate(
@@ -70,7 +73,9 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
           mutate(
             (existingMessages) => {
               const updatedMessages = existingMessages.map((message) =>
-                message.id === validateddata.data.message.id ? validateddata.data.message : message
+                message.id === validateddata.data.message.id
+                  ? validateddata.data.message
+                  : message
               );
               return updatedMessages;
             },
@@ -103,8 +108,9 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
     );
   }
 
-
-  // update a Message and populate/update Cache
+  // -----------------------------------------------------------
+  // update a Message and populate/update Cache from Websocket
+  // ------------------------------------------------------------
   /** @param {Email} updatedMessage */
   const updateMessage = async (updatedMessage) => {
     if (!updatedMessage.read) {
@@ -166,7 +172,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
         />
       </div>
       <div className="messageslist d-flex flex-column g-1 pe-2">
-        {filteredMessages ? (
+        {filteredMessages.length > 0 ? (
           filteredMessages.map((message) => (
             <MessageCard
               key={message.id}
@@ -177,7 +183,17 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
             />
           ))
         ) : (
-          <div className="my-auto"> No messages found</div>
+          <div className="text-center mt-4">
+            <div className="mb-2">
+              <MdOutlineContacts
+                style={{
+                  fontSize: "3.5rem",
+                  color: "var(--bgDarkerColor)",
+                }}
+              />
+            </div>
+            No Message found
+          </div>
         )}
       </div>
     </div>
