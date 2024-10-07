@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 import { LuUpload } from "react-icons/lu";
-import {
-  AiFillFileWord,
-  AiFillFileImage,
-  AiFillFileExcel,
-} from "react-icons/ai"; // Add icons for other file types
 import Alert from "../Alert/Alert";
+import {getFileIcon} from "@/utils/selectFileIcon"
+
+
+
 const FileUploader = ({
   filekey,
   fileurlkey,
@@ -65,23 +63,7 @@ const FileUploader = ({
     }
   };
 
-  const getFileIcon = (type) => {
-    switch (type) {
-      case "application/pdf":
-        return <BsFileEarmarkPdfFill className="text-secondary " />;
-      case "application/msword":
-      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        return <AiFillFileWord className="text-secondary " />;
-      case "image/jpeg":
-      case "image/png":
-        return <AiFillFileImage className="text-secondary " />;
-      case "application/vnd.ms-excel":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-        return <AiFillFileExcel className="text-secondary " />;
-      default:
-        return <BsFileEarmarkPdfFill className="text-secondary " />;
-    }
-  };
+  
 
   const handleRemoveFile = () => {
     setFileName(null);

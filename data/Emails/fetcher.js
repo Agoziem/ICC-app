@@ -1,6 +1,8 @@
 import axios from "axios";
 import {
   emailArraySchema,
+  emailMessagesArraySchema,
+  emailMessageSchema,
   emailResponseArraySchema,
   emailResponseSchema,
 } from "@/utils/validation";
@@ -11,6 +13,7 @@ export const axiosInstance = axios.create({
 
 export const emailAPIendpoint = "/emailsapi";
 
+// fetch all the emails
 export const fetchEmails = async () => {
   const response = await axiosInstance.get(
     `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/`
@@ -57,5 +60,37 @@ export const submitResponse = async (data) => {
   return validation.data;
 };
 
+/**
+ * fetches all Responses to a Message from the database
+ * @async
+ * @param {EmailMessage} data
+ * @returns {Promise<EmailMessageArray>}
+ */
+export const getSentEmail = async (data) => {
+  const response = await axiosInstance.get(
+    `${emailAPIendpoint}/emails/getsentemails/`
+  );
+  const validation = emailMessagesArraySchema.safeParse(response.data);
+  if (!validation.success) {
+    console.log(validation.error.issues);
+  }
+  return validation.data;
+};
 
-
+/**
+ * fetches all Responses to a Message from the database
+ * @async
+ * @returns {Promise<EmailMessage>}
+ */
+export const createEmail = async (data) => {
+  const response = await axiosInstance.post(
+    `${emailAPIendpoint}/emails/createsendemails/`,
+    data
+  );
+  console.log(response.data);
+  const validation = emailMessageSchema.safeParse(response.data);
+  if (!validation.success) {
+    console.log(validation.error.issues);
+  }
+  return validation.data;
+};

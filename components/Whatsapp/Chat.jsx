@@ -62,11 +62,13 @@ const Chat = ({ showlist, setShowlist }) => {
       )}
 
       {/* the message */}
-      <ChatBody />
+      <div className="position-relative">
+        <ChatBody />
 
-      {/* the reply */}
-      <div className="mt-3">
-        <ChatInput contact={selectedContact} />
+        {/* the reply */}
+        <div className="mt-3">
+          <ChatInput contact={selectedContact} />
+        </div>
       </div>
     </div>
   );

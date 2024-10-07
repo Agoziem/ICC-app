@@ -89,7 +89,6 @@ const VideoUploader = ({
             <video
               src={video}
               className="rounded object-fit-cover me-3"
-              alt="thumbnail"
               height={200}
               width={200}
               controls

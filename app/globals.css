@@ -338,6 +338,12 @@
   border-color: var(--secondary);
 }
 
+.body .btn-primary:disabled {
+  border-color: none;
+  background-color: hsla(317, 95%, 8%, 0.824);
+  border-color: #27011d;
+}
+
 .body .btn-secondary {
   background-color: var(--secondary);
   border-color: var(--secondary);

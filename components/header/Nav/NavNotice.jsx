@@ -1,178 +1,168 @@
 import React, { useContext, useEffect, useState } from "react";
 import useWebSocket from "@/hooks/useWebSocket";
-import useCurrentUser  from "@/hooks/useCurrentUser";
+import useCurrentUser from "@/hooks/useCurrentUser";
 import Modal from "@/components/Modal/modal";
 import { OrganizationContext } from "@/data/Organizationalcontextdata";
 import { useSession } from "next-auth/react";
+import { shortenMessage, timeSince } from "@/utils/utilities";
+import {
+  fetchNotifications,
+  notificationAPIendpoint,
+} from "@/data/notificationsAPI/fetcher";
+import useSWR from "swr";
+import { notificationActionSchema } from "@/utils/validation";
 
 function NavNotice() {
-  const { data: session } = useSession();
-  const { currentRoot } = useCurrentUser();
-  const [notifications, setNotifications] = useState([]);
-  const { OrganizationData } = useContext(OrganizationContext);
-  const Django_URL = process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL;
-
-  const [user_group, setUserGroup] = useState("");
   const [showmodal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     message: "",
     time: "",
   });
-
-  // const [notificationcheck, setNotificationCheck] = useState(false);
-
-  // set the user group based on the current root
-  const changeUserGroup = () => {
-    if (currentRoot === "admin") {
-      setUserGroup("admin");
-    } else if (currentRoot === "dashboard") {
-      setUserGroup("dashboard");
-    }
-  };
-
-  useEffect(() => {
-    if (currentRoot) {
-      changeUserGroup();
-    }
-  }, [currentRoot]);
+  const { ws, isConnected } = useWebSocket(
+    `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/notifications/`
+  );
 
   // fetch notifications from the server
-  const fetchNotifications = async () => {
-    try {
-      const response = await fetch(
-        `${Django_URL}/api/get_notifications_by_group/${OrganizationData.id}/${user_group}/`,
-        {
-          method: "GET",
-        }
-      );
-      const data = await response.json();
-      setNotifications(data);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
-  useEffect(() => {
-    if (OrganizationData.id && user_group) {
-      fetchNotifications();
-    }
-  }, [OrganizationData.id, user_group]);
-
-
+  const {
+    data: notifications,
+    isLoading,
+    error,
+    mutate,
+  } = useSWR(`${notificationAPIendpoint}/notifications/`, fetchNotifications, {
+    onSuccess: (data) =>
+      data.sort(
+        (a, b) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+      ),
+  });
 
   // WebSocket Connection for notifications
-  // const { error, loading, sendMessage, closeWebSocket } = useWebSocket({
-  //   roomprefix: "notice",
-  //   room_name: `${user_group}`,
-  //   Connect: () => {
-  //     console.log("Connected to notice websocket");
-  //   },
-  //   Disconnect: () => {
-  //     console.log("Disconnected from notice websocket");
-  //   },
-  //   Receive: (e) => {
-  //     handleRecieve(e);
-  //   },
-  // });
+  useEffect(() => {
+    if (isConnected && ws) {
+      ws.onmessage = (event) => {
+        const responseNotification = JSON.parse(event.data);
+        const validatedcontact =
+          notificationActionSchema.safeParse(responseNotification);
 
-  // // handle the received notification
-  // const handleRecieve = (e) => {
-  //   const newnotice = JSON.parse(e.data);
-  //   if (newnotice.action == "delete") {
-  //     setNotifications((prevNotifications) =>
-  //       prevNotifications.filter((n) => n.id !== newnotice.notification.id)
-  //     );
-  //   } else if (newnotice.action == "create") {
-  //     setNotifications((prevNotifications) => [
-  //       newnotice.notification,
-  //       ...prevNotifications,
-  //     ]);
-  //   } else if (newnotice.action == "update") {
-  //     return;
-  //   }
-  // };
+        // validate the websocket data
+        if (!validatedcontact.success) {
+          console.log(validatedcontact.error.issues);
+        }
+        const newNotification = validatedcontact.data;
 
-  // // handle the update/show notification
-  // const handleSend = (notification) => {
-  //   // set the modal content
-  //   setModalContent({
-  //     title: notification.headline,
-  //     message: notification.Notification,
-  //     time: timeSince(notification.Notificationdate),
-  //   });
-  //   // show the modal
-  //   setShowModal(true);
-  //   // if the notification has already been seen by the user, return
-  //   if (notification.users_seen.includes(session?.user.id)) {
-  //     return;
-  //   }
-  //   // Update users_seen
-  //   notification.users_seen.push(session?.user.id);
-  //   const index = notifications.findIndex((n) => n.id === notification.id);
-  //   if (index !== -1) {
-  //     const updatedNotifications = [...notifications];
-  //     updatedNotifications[index] = notification;
-  //     setNotifications(updatedNotifications);
+        // handle create notification action
+        if (newNotification.action === "add") {
+          mutate(
+            (existingNotifications) => {
+              const notificationExists = existingNotifications?.some(
+                (notification) =>
+                  notification.id === newNotification.notification.id
+              );
 
-  //     // Send the updated notification via WebSocket
-  //     sendMessage({
-  //       notification: notification,
-  //     });
-  //   }
-  // };
+              if (notificationExists) {
+                return [
+                  newNotification.notification,
+                  ...existingNotifications.filter(
+                    (notification) =>
+                      notification.id !== newNotification.notification.id
+                  ),
+                ].sort(
+                  (a, b) =>
+                    new Date(b.updated_at).getTime() -
+                    new Date(a.updated_at).getTime()
+                );
+              } else {
+                // If the contact doesn't exist, just add it to the top
+                return [
+                  newNotification.notification,
+                  ...(existingNotifications || []),
+                ].sort(
+                  (a, b) =>
+                    new Date(b.updated_at).getTime() -
+                    new Date(a.updated_at).getTime()
+                );
+              }
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
 
-  // shorten the notification message
-  const shortenMessage = (message) => {
-    if (message.length > 50) {
-      return message.substring(0, 50) + "...";
-    }
-    return message;
-  };
+        // handle update notification action
+        if (newNotification.action === "update") {
+          mutate(
+            (existingNotifications) => {
+              const updatedMessages = existingNotifications.map(
+                (notification) =>
+                  notification.id === newNotification.notification.id
+                    ? newNotification.notification
+                    : notification
+              );
+              return updatedMessages.sort(
+                (a, b) =>
+                  new Date(b.updated_at).getTime() -
+                  new Date(a.updated_at).getTime()
+              );
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
 
-  // return the date as a string like 8 days ago, 2 weeks ago, 3 months ago etc
-  const timeSince = (date) => {
-    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-    let interval = seconds / 31536000;
+        // handle delete notification action
+        if (newNotification.action === "delete") {
+          mutate(
+            (existingNotifications) => {
+              // Remove the notification with the matching ID
+              return existingNotifications.filter(
+                (notification) =>
+                  notification.id !== newNotification.notification.id
+              );
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
 
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        (Math.floor(interval) === 1 ? " year ago" : " years ago")
-      );
+        // handle mark as read notification action
+        if (newNotification.action === "mark_viewed") {
+          mutate(
+            (existingNotifications) => {
+              const updatedMessages = existingNotifications.map(
+                (notification) =>
+                  notification.id === newNotification.notification.id
+                    ? newNotification.notification
+                    : notification
+              );
+              return updatedMessages;
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
+      };
     }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        (Math.floor(interval) === 1 ? " month ago" : " months ago")
-      );
+  }, [isConnected, ws, mutate]);
+
+  /** @param {NotificationMessage} notification */
+  const mark_viewed = (notification) => {
+    if (!notification.viewed) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        /**@type {NotificationAction} */
+        const payload = {
+          action: "mark_viewed",
+          notification: notification,
+        };
+        ws.send(JSON.stringify(payload));
+      } else {
+        console.error("WebSocket is not connected.");
+      }
     }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        (Math.floor(interval) === 1 ? " day ago" : " days ago")
-      );
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        (Math.floor(interval) === 1 ? " hour ago" : " hours ago")
-      );
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        (Math.floor(interval) === 1 ? " minute ago" : " minutes ago")
-      );
-    }
-    return (
-      Math.floor(seconds) +
-      (Math.floor(seconds) === 1 ? " second ago" : " seconds ago")
-    );
   };
 
   return (
@@ -180,95 +170,84 @@ function NavNotice() {
       {/* the Notification bell icon */}
       <a className="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
         <i className="bi bi-bell"></i>
-        {notifications.filter(
-          (notification) =>
-            !notification.users_seen?.includes(session?.user.id)
-        ).length > 0 ? (
-          <span className="badge bg-danger badge-number">
-            {
-              notifications.filter(
-                (notification) =>
-                  !notification.users_seen?.includes(session?.user.id)
-              ).length
-            }
-          </span>
-        ) : null}
+        {(() => {
+          const unseenCount = notifications?.filter(
+            (notification) => !notification?.viewed
+          ).length;
+          return unseenCount > 0 ? (
+            <span className="badge bg-danger badge-number">{unseenCount}</span>
+          ) : null;
+        })()}
       </a>
 
-      {/* the Notification drop down header */}
+      {/* Notification dropdown header */}
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-        {notifications.filter(
-          (notification) =>
-            !notification.users_seen?.includes(session?.user.id)
-        ).length > 0 ? (
-          <React.Fragment>
-            <li className="dropdown-header text-primary">
-              You have{" "}
-              {
-                notifications.filter(
-                  (notification) =>
-                    !notification.users_seen?.includes(session?.user.id)
-                ).length
-              }{" "}
-              unread notifications
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <li className="dropdown-header text-primary">
-              You have no unread notification at the Moment
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-          </React.Fragment>
-        )}
+        {(() => {
+          const unreadNotifications = notifications?.filter(
+            (notification) => !notification.viewed
+          );
+          return unreadNotifications?.length > 0 ? (
+            <>
+              <li className="dropdown-header text-primary">
+                You have {unreadNotifications.length} unread notification
+                {unreadNotifications.length > 1 ? "s" : ""}
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="dropdown-header text-primary">
+                You have no unread notifications at the moment
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+            </>
+          );
+        })()}
 
-        {/* the Notification dropdown messages */}
-        {notifications.length > 0 ? (
-          notifications.map((notification, index) => (
+        {/* Notification dropdown messages */}
+        {notifications?.length > 0 ? (
+          notifications?.map((notification, index) => (
             <React.Fragment key={notification.id}>
               <li
                 className="notification-item"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  handleSend(notification);
+                  mark_viewed(notification);
+                  setModalContent({
+                    title: notification.title,
+                    message: notification.message,
+                    time: timeSince(notification.created_at),
+                  });
+                  setShowModal(true);
                 }}
               >
                 <i
-                  className={`bi bi-exclamation-circle  ${
-                    notification.users_seen?.includes(session?.user.id)
-                      ? "text-muted"
-                      : "text-warning"
+                  className={`bi  ${
+                    notification.viewed
+                      ? "bi-check-all text-primary"
+                      : "bi-exclamation-circle text-secondary"
                   }`}
                 ></i>
                 <div>
                   <h4
                     className={
-                      notification.users_seen?.includes(session?.user.id)
-                        ? "text-muted"
-                        : ""
+                      notification.viewed ? "text-primary" : "text-secondary"
                     }
                   >
-                    {notification.headline}
+                    {notification.title}
                   </h4>
-                  <p
-                    className={
-                      notification.users_seen?.includes(session?.user.id)
-                        ? ""
-                        : "text-dark"
-                    }
-                  >
-                    {shortenMessage(notification.Notification)}
+                  <p className={notification.viewed ? "" : "text-dark"}>
+                    {shortenMessage(notification.message, 50)}
                   </p>
-                  <p>{timeSince(notification.Notificationdate)}</p>
+                  <p>{timeSince(notification.created_at)}</p>
                 </div>
               </li>
               {index === notifications.length - 1 ? null : (
-                <li key={notification.id}>
+                <li key={`divider-${notification.id}`}>
                   <hr className="dropdown-divider" />
                 </li>
               )}
@@ -285,15 +264,19 @@ function NavNotice() {
         )}
       </ul>
 
-      <Modal showmodal={showmodal} toggleModal={()=>setShowModal(!showmodal)} >
-        <h4>{ modalContent.title}</h4>
+      <Modal showmodal={showmodal} toggleModal={() => setShowModal(!showmodal)}>
+        <h6>{modalContent.title}</h6>
         <p className="small text-muted">{modalContent.time}</p>
+        <hr />
         <p>{modalContent.message}</p>
-        <button className="btn btn-primary" onClick={
-          ()=>setShowModal(!showmodal)
-        }>
-          Close
-        </button>
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowModal(!showmodal)}
+          >
+            Close
+          </button>
+        </div>
       </Modal>
     </li>
   );

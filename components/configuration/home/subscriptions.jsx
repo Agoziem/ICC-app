@@ -8,11 +8,13 @@ const Subscriptions = ({
   OrganizationData,
 }) => {
   const [subscription, setSubscription] = useState({
+    id: "",
     email: "",
     date_added: "",
   });
   const [showModal, setShowModal] = useState(false);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
+
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -23,15 +25,18 @@ const Subscriptions = ({
     state: false,
   });
 
+  // function close Modal
   const closeModal = () => {
     setShowModal(false);
     setShowDeleteModal(false);
     setSubscription({
+      id: "",
       email: "",
       date_added: "",
     });
   };
 
+  // function to add or update Subscription
   const addorupdateSubscription = (e, url) => {
     e.preventDefault();
     fetch(url, {
@@ -73,6 +78,7 @@ const Subscriptions = ({
       });
   };
 
+  // function to delete Subscription
   const deleteSubscription = (id) => {
     fetch(
       `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/subscription/delete/${id}/`,
@@ -104,10 +110,12 @@ const Subscriptions = ({
         closeModal();
       });
   };
+
   return (
     <div className="px-3 mb-4">
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="d-flex justify-content-end mb-3">
+        {/* button to add new subscription email */}
         <button
           className="btn btn-primary border-0 rounded mb-2 mb-md-0"
           style={{ backgroundColor: "var(--bgDarkerColor)" }}
@@ -123,6 +131,7 @@ const Subscriptions = ({
         <div>
           <h5 className="mb-3">Subscriptions</h5>
 
+          {/* subscriptions emails list */}
           <ul className="list-group list-group-flush rounded">
             {subscriptions.map((subscription) => (
               <li
@@ -170,6 +179,7 @@ const Subscriptions = ({
         </div>
       )}
 
+      {/* update email modal */}
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>
         <div className="modal-header">
           <h5 className="modal-title">
@@ -224,6 +234,7 @@ const Subscriptions = ({
         </div>
       </Modal>
 
+      {/* delete email modal */}
       <Modal showmodal={showdeleteModal} toggleModal={() => closeModal()}>
         <div>
           <p className="mb-1">{subscription.email}</p>
@@ -246,6 +257,7 @@ const Subscriptions = ({
           </div>
         </div>
       </Modal>
+
     </div>
   );
 };

@@ -105,6 +105,12 @@ const navList = [
       },
       {
         _id: uuidv4(),
+        name: "Messaging & notifications",
+        icon: "bi bi-bell",
+        link: "/dashboard/configuration/messaging",
+      },
+      {
+        _id: uuidv4(),
         name: "Emails",
         icon: "bi bi-envelope-paper",
         link: "/dashboard/configuration/emails",

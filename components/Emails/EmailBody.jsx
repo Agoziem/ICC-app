@@ -33,7 +33,9 @@ const EmailBody = ({ message, selectMessage, showlist, setShowlist }) => {
   return (
     <>
       <h6
-        className={`my-3 d-block d-md-none ${showlist ? "d-none d-md-block" : ""}`}
+        className={`my-3 d-block d-md-none ${
+          showlist ? "d-none d-md-block" : ""
+        }`}
         style={{ cursor: "pointer" }}
         onClick={() => {
           setShowlist(true);
@@ -64,7 +66,14 @@ const EmailBody = ({ message, selectMessage, showlist, setShowlist }) => {
               </div>
             </div>
             <div className="d-none d-md-block">
-              <p className="text-primary">{message.created_at}</p>
+              <p className="text-primary">
+                {new Date(message.created_at).toLocaleTimeString([], {
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
             </div>
           </div>
         ) : null}

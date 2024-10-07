@@ -16,7 +16,9 @@ const WhatsappAPIProvider = ({ children }) => {
   // Reference to the bottom of the chat messages
   // ------------------------------------------------------
   const bottomRef = useRef(null);
-
+  const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const videoInputRef = useRef(null);
   // ------------------------------------------------------
   // function that scrolls to the bottom of the chat messages
   // ------------------------------------------------------
@@ -49,27 +51,7 @@ const WhatsappAPIProvider = ({ children }) => {
     }
   };
 
-  // ------------------------------------------------------
-  // Fetch media by ID
-  // ------------------------------------------------------
-  const getMedia = async (media_id) => {
-    console.log("Fetching media", media_id);
-    try {
-      // Fetch the media binary from Django backend
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/whatsappAPI/media/${media_id}/`,
-        { responseType: "arraybuffer" } // Ensure binary data is handled correctly
-      );
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-      const url = URL.createObjectURL(blob);
-      return url;
-    } catch (error) {
-      console.error("Failed to fetch media", error);
-      return null;
-    }
-  };
+ 
 
   return (
     <WhatsappAPIContext.Provider
@@ -77,8 +59,10 @@ const WhatsappAPIProvider = ({ children }) => {
         selectedContact, // selected contact
         setSelectedContact, // set the selected contact
         sendWhatsappTemplateMessage, // send WhatsApp Template message
-        getMedia, // fetch media by ID
         bottomRef, // reference to the bottom of the chat messages
+        fileInputRef,
+        imageInputRef,
+        videoInputRef,
         scrollToBottom, // function that scrolls to the bottom of the chat messages
         atthebottom, // at the bottom of the chat messages
         setAtthebottom, // set at the bottom of the chat messages

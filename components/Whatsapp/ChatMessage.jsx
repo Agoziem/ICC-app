@@ -1,4 +1,4 @@
-import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
+import { getMedia } from "@/data/whatsappAPI/fetcher";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiCheckDouble } from "react-icons/bi";
@@ -13,7 +13,6 @@ import { FaRegFileImage } from "react-icons/fa6";
 const ChatMessage = ({ message }) => {
   const [mediaUrl, setMediaUrl] = useState(null);
   const [mediaLoading, setMediaLoading] = useState(false);
-  const { getMedia } = useWhatsappAPIContext();
 
   useEffect(() => {
     // Fetch media if the message type is media and media_id is available
@@ -24,12 +23,14 @@ const ChatMessage = ({ message }) => {
         setMediaUrl(url);
         setMediaLoading(false);
       };
-
       fetchMedia();
     }
   }, [message.media_id, message.message_type]);
 
   const messageTime = new Date(message.timestamp);
+
+
+  // TODO: Handle Media Messages and let them display well
 
   return (
     <div
