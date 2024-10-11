@@ -1,6 +1,6 @@
 "use client";
-import { useCart } from "@/data/Cartcontext";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { useCart } from "@/data/carts/Cartcontext";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import ArticlePlaceholder from "./ArticlePlaceholder";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Pagination from "@/components/Pagination/Pagination";
 
 const ArticleList = ({

@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Modal from "@/components/Modal/modal";
 
-const AdminContext = createContext();
+const AdminContext = createContext(null);
 
 const AdminContextProvider = ({ children }) => {
   const [showModal, setShowModal] = useState(false);

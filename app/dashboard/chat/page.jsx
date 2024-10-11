@@ -3,7 +3,7 @@ import PageTitle from '@/components/PageTitle/PageTitle'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { IoChatbubbleEllipsesOutline, IoLogoWhatsapp } from 'react-icons/io5'
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const ChatRoom = () => {
   const { OrganizationData } = useContext(OrganizationContext);

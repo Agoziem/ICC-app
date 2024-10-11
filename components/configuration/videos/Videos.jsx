@@ -1,8 +1,8 @@
 "use client";
-import { useAdminContext } from "@/data/Admincontextdata";
-import { useCategoriesContext } from "@/data/Categoriescontext";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
-import { useVideoContext } from "@/data/Videoscontext";
+import { useAdminContext } from "@/data/users/Admincontextdata";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useVideoContext } from "@/data/videos/Videoscontext";
 import React, { useContext, useEffect, useState } from "react";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
@@ -11,7 +11,7 @@ import VideoForm from "./VideoForm";
 import CategoryTabs from "@/components/Categories/Categoriestab";
 import CategoriesForm from "@/components/Categories/Categories";
 import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
-import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import { FaVideo } from "react-icons/fa6";
 import Pagination from "@/components/Pagination/Pagination";
 

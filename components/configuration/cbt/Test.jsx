@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { FaQuestionCircle } from "react-icons/fa";
 import SubjectDetails from "./SubjectDetails";
 import QuestionForm from "./QuestionForm";

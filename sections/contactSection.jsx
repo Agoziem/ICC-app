@@ -4,7 +4,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { IoIosMailOpen } from "react-icons/io";
 import { FaPhoneVolume } from "react-icons/fa6";
 import ContactForm from "@/components/Contact/ContactForm";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const ContactSection = () => {
   const { OrganizationData, setMessages, messages } = useContext(OrganizationContext);

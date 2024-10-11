@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/Imageuploader/ImageUploader";
-import { useCategoriesContext } from "@/data/Categoriescontext";
-import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
+import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Tiptap from "@/components/Richtexteditor/Tiptap";
 
 const ServiceForm = ({

@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from "react";
 import NewsPostItem from "./NewsPostItem";
 import "./news.css";
-import { useArticleContext } from "@/data/Articlescontextdata";
+import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import Link from "next/link";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 function News() {
   const { articles, fetchArticles } = useArticleContext();

@@ -1,19 +1,19 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { useAdminContext } from "@/data/Admincontextdata";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { useAdminContext } from "@/data/users/Admincontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import ProductCard from "./ProductCard";
 import ProductForm from "./ProductForm";
 import CategoryTabs from "@/components/Categories/Categoriestab";
 import CategoriesForm from "@/components/Categories/Categories";
-import { useProductContext } from "@/data/Productcontext";
-import { useCategoriesContext } from "@/data/Categoriescontext";
+import { useProductContext } from "@/data/product/Productcontext";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import Pagination from "@/components/Pagination/Pagination";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
-import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 
 const Products = () => {
   const { openModal } = useAdminContext();

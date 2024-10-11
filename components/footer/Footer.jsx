@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext } from "react";
 import "./footer.css";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 function Footer() {
   const { OrganizationData } = useContext(OrganizationContext);

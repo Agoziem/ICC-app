@@ -8,7 +8,7 @@ import OrganizationCard from "@/components/configuration/home/organizationcard";
 import Staffs from "@/components/configuration/home/staffs";
 import Subscriptions from "@/components/configuration/home/subscriptions";
 import Testimonials from "@/components/configuration/home/testimonials";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext, useState } from "react";
 
 const HomePageConfigPage = () => {

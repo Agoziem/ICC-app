@@ -2,7 +2,7 @@
 import PageTitle from "@/components/PageTitle/PageTitle";
 import React, { useContext, useEffect, useState } from "react";
 import CbtForm from "@/components/cbt/CbtForm";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import CbtQuiz from "@/components/cbt/CbtQuiz";
 
 const CbtPage = () => {

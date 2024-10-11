@@ -2,7 +2,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-const UserContext = createContext();
+const UserContext = createContext(null);
 
 const UserContextProvider = ({ children }) => {
   const { data: session } = useSession();

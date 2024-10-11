@@ -2,7 +2,7 @@
 import Datatable from "@/components/Datatable/Datatable";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import OrderTableItems from "@/components/orders/OrderTableItems";
-import { useAdminContext } from "@/data/Admincontextdata";
+import { useAdminContext } from "@/data/users/Admincontextdata";
 import React, { useEffect, useState } from "react";
 
 const PaymentsPage = () => {

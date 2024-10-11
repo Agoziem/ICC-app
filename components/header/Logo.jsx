@@ -4,7 +4,7 @@ import './logo.css';
 import Link from 'next/link';
 
 import { RefContext } from '../sidebar/sideBarTogglerContext';
-import { OrganizationContext } from '@/data/Organizationalcontextdata';
+import { OrganizationContext } from '@/data/organization/Organizationalcontextdata';
 import Image from 'next/image';
 
 function Logo({portalname,portallink}) {

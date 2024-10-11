@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { TiTimes } from "react-icons/ti";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import { useRouter } from "next/navigation";

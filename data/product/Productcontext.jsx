@@ -1,10 +1,10 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { OrganizationContext } from "./Organizationalcontextdata";
+import { OrganizationContext } from "../organization/Organizationalcontextdata";
 import { converttoformData } from "@/utils/formutils";
 
 // Create the context
-const ProductContext = createContext();
+const ProductContext = createContext({});
 const ProductProvider = ({ children }) => {
   const { organizationID } = useContext(OrganizationContext);
   const [products, setProducts] = useState([]);

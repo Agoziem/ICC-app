@@ -3,7 +3,7 @@ import TestimonialForm from "@/components/configuration/home/TestimonialForm";
 import React, { useContext, useState } from "react";
 import { converttoformData } from "@/utils/formutils";
 import Alert from "@/components/Alert/Alert";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const FeedbackPage = () => {
   const { OrganizationData, testimonials, setTestimonials } =

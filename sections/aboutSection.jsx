@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { TbTargetArrow } from "react-icons/tb";
 import { FaEye, FaUserGroup } from "react-icons/fa6";
 import "./section.css";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const AboutSection = () => {
   const { OrganizationData } = useContext(OrganizationContext);

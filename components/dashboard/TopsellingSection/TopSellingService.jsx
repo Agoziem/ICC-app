@@ -1,4 +1,4 @@
-import { useCart } from "@/data/Cartcontext";
+import { useCart } from "@/data/carts/Cartcontext";
 import React from "react";
 import { useSession } from "next-auth/react";
 

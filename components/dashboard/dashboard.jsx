@@ -6,10 +6,10 @@ import Reports from "./ReportchartsSection/Reports";
 import News from "./Newsection/News";
 import TopSelling from "./TopsellingSection/TopSelling";
 import { useSession } from "next-auth/react";
-import { useAdminContext } from "@/data/Admincontextdata";
-import { useUserContext } from "@/data/usercontextdata";
+import { useAdminContext } from "@/data/users/Admincontextdata";
+import { useUserContext } from "@/data/users/usercontextdata";
 import CartButton from "../Offcanvas/CartButton";
-import { useServiceContext } from "@/data/Servicescontext";
+import { useServiceContext } from "@/data/services/Servicescontext";
 
 const DashboardBody = () => {
   const { totalOrders, totalCustomers } = useAdminContext();

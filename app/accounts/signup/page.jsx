@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "../accounts.module.css";
 import { useRouter } from "next/navigation";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Alert from "@/components/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
 import PasswordInput from "@/components/Inputs/PasswordInput";

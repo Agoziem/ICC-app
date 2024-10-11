@@ -1,5 +1,5 @@
 import ArticleImageUploader from "@/components/Imageuploader/ArticleImageUploader";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { converttoformData } from "@/utils/formutils";
 import React, { useContext, useEffect, useState } from "react";
 import Alert from "@/components/Alert/Alert";

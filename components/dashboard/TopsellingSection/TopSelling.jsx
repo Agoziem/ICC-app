@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./topSelling.css";
 import Link from "next/link";
-import { useServiceContext } from "@/data/Servicescontext";
-import { useProductContext } from "@/data/Productcontext";
-import { useVideoContext } from "@/data/Videoscontext";
+import { useServiceContext } from "@/data/services/Servicescontext";
+import { useProductContext } from "@/data/product/Productcontext";
+import { useVideoContext } from "@/data/videos/Videoscontext";
 import TopSellingService from "./TopSellingService";
 import TopSellingVideo from "./TopSellingVideo";
 import TopSellingProduct from "./TopSellingProduct";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import { FaVideo } from "react-icons/fa6";
 

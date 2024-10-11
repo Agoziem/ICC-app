@@ -1,8 +1,8 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { OrganizationContext } from './Organizationalcontextdata';
+import { OrganizationContext } from '../organization/Organizationalcontextdata';
 
-const ArticleContext = createContext();
+const ArticleContext = createContext({});
 const ArticleProvider = ({ children }) => {
   const { OrganizationData } = useContext(OrganizationContext);
   const [articles, setArticles] = useState([]);

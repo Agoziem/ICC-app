@@ -1,17 +1,17 @@
 "use client";
-import { useCart } from "@/data/Cartcontext";
+import { useCart } from "@/data/carts/Cartcontext";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useAdminContext } from "@/data/Admincontextdata";
-import { useUserContext } from "@/data/usercontextdata";
+import { useAdminContext } from "@/data/users/Admincontextdata";
+import { useUserContext } from "@/data/users/usercontextdata";
 import { BsFillCartCheckFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import useJsxToPdf from "@/hooks/useJSXtoPDF";
 import { FaCheck, FaRegClipboard } from "react-icons/fa6";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useVideoContext } from "@/data/Videoscontext";
-import { useProductContext } from "@/data/Productcontext";
-import { useServiceContext } from "@/data/Servicescontext";
+import { useVideoContext } from "@/data/videos/Videoscontext";
+import { useProductContext } from "@/data/product/Productcontext";
+import { useServiceContext } from "@/data/services/Servicescontext";
 
 const OrderCompleted = () => {
   const router = useRouter();

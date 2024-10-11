@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext } from "react";
 import "./section.css";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
 import { TbBooks } from "react-icons/tb";

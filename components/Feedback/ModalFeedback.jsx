@@ -2,7 +2,7 @@
 import React, { useContext, useState } from "react";
 import Modal from "@/components/Modal/modal";
 import FeedbackButton from "./FeedbackBtn";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import TestimonialForm from "../configuration/home/TestimonialForm";
 import { converttoformData } from "@/utils/formutils";
 

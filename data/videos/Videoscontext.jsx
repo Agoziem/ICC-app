@@ -1,10 +1,10 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { OrganizationContext } from "./Organizationalcontextdata";
+import { OrganizationContext } from "../organization/Organizationalcontextdata";
 import { converttoformData } from "@/utils/formutils";
 
 // Create the context
-const VideoContext = createContext();
+const VideoContext = createContext({});
 
 const VideoProvider = ({ children }) => {
   const { organizationID } = useContext(OrganizationContext);
@@ -127,7 +127,6 @@ const VideoProvider = ({ children }) => {
     } catch (error) {
       setLoading(false);
       return { type: "danger", message: "Error creating video" };
-      danger;
     }
   };
 
@@ -170,7 +169,7 @@ const VideoProvider = ({ children }) => {
   const deleteVideo = async (id) => {
     setLoading(true);
     try {
-      await fetch(
+      const response = await fetch(
         `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/delete_video/${id}/`,
         {
           method: "DELETE",

@@ -2,18 +2,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PiEmptyBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
-import { useAdminContext } from "@/data/Admincontextdata";
-import { useCart } from "@/data/Cartcontext";
-import { useUserContext } from "@/data/usercontextdata";
+import { useAdminContext } from "@/data/users/Admincontextdata";
+import { useCart } from "@/data/carts/Cartcontext";
+import { useUserContext } from "@/data/users/usercontextdata";
 import Datatable from "@/components/Datatable/Datatable";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import OrderTableItems from "@/components/orders/OrderTableItems";
 import CartButton from "@/components/Offcanvas/CartButton";
 import CategoryTabs from "@/components/Categories/Categoriestab";
-import { useServiceContext } from "@/data/Servicescontext";
-import { useCategoriesContext } from "@/data/Categoriescontext";
+import { useServiceContext } from "@/data/services/Servicescontext";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import ServiceCard from "@/components/Services/ServiceCard";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { BsPersonFillGear } from "react-icons/bs";
 import Pagination from "@/components/Pagination/Pagination";
 

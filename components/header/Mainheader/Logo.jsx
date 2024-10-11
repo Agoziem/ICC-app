@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Link from "next/link";
 
 const MainHeaderLogo = () => {

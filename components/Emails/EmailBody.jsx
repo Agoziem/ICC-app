@@ -3,7 +3,7 @@ import ProfileimagePlaceholders from "../ImagePlaceholders/ProfileimagePlacehold
 import EmailInput from "./EmailInput";
 import { MdOutlineMessage } from "react-icons/md";
 import { emailAPIendpoint, getResponses } from "@/data/Emails/fetcher";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { useContext } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 /**

@@ -1,5 +1,5 @@
 "use client";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext } from "react";
 
 const PrivacyPage = () => {

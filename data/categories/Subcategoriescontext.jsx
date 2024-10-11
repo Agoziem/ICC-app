@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
-const SubCategoriesContext = createContext();
+const SubCategoriesContext = createContext({});
 
 const Subcategoriesprovider = ({ children }) => {
   const [videosubcategories, setVideoSubcategories] = useState([]);

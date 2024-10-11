@@ -1,17 +1,17 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { useAdminContext } from "@/data/Admincontextdata";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { useAdminContext } from "@/data/users/Admincontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/Modal/modal";
 import Alert from "@/components/Alert/Alert";
 import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
 import CategoryTabs from "@/components/Categories/Categoriestab";
 import CategoriesForm from "@/components/Categories/Categories";
-import { useServiceContext } from "@/data/Servicescontext";
-import { useCategoriesContext } from "@/data/Categoriescontext";
+import { useServiceContext } from "@/data/services/Servicescontext";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import SubCategoriesForm from "@/components/SubCategories/SubCategoriesForm";
-import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Pagination from "@/components/Pagination/Pagination";
 import { BsPersonFillGear } from "react-icons/bs";
 

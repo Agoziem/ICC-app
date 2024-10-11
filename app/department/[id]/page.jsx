@@ -1,5 +1,5 @@
 "use client";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";

@@ -3,9 +3,9 @@ import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import "./section.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
-import { useArticleContext } from "@/data/Articlescontextdata";
+import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import { MdOutlineArticle } from "react-icons/md";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const BlogSection = () => {
   const { articles,fetchArticles,totalArticles } = useArticleContext();

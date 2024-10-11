@@ -1,12 +1,12 @@
 "use client";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { useState, createContext, useContext, useEffect, useRef } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useUserContext } from "./usercontextdata";
-import { useAdminContext } from "./Admincontextdata";
+import { useUserContext } from "../users/usercontextdata";
+import { useAdminContext } from "../users/Admincontextdata";
 import { useRouter } from "next/navigation";
 
-const CartContext = createContext();
+const CartContext = createContext({});
 
 const CartProvider = ({ children }) => {
   const router = useRouter();

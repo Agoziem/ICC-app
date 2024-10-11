@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
 import StarRating from "@/components/StarRating/StarRating";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
 import "./section.css";
 

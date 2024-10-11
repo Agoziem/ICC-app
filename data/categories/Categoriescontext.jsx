@@ -1,8 +1,8 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { OrganizationContext } from "./Organizationalcontextdata";
+import { OrganizationContext } from "../organization/Organizationalcontextdata";
 
-const CategoriesContext = createContext();
+const CategoriesContext = createContext({});
 
 const CategoriesProvider = ({ children }) => {
   const { OrganizationData } = useContext(OrganizationContext);

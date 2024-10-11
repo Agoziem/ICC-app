@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ArticleForm from "./ArticleForm";
 import ArticleList from "./ArticleList";
-import { useArticleContext } from "@/data/Articlescontextdata";
+import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import { useSession } from "next-auth/react";
 import ArticleCategoryForm from "./ArticleCategoryForm";
 

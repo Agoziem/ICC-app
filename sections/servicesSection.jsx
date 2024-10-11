@@ -3,11 +3,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { LuCheckCircle } from "react-icons/lu";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Link from "next/link";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
-import { useCart } from "@/data/Cartcontext";
-import { useServiceContext } from "@/data/Servicescontext";
-import { useCategoriesContext } from "@/data/Categoriescontext";
+import { useCart } from "@/data/carts/Cartcontext";
+import { useServiceContext } from "@/data/services/Servicescontext";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import { useSession } from "next-auth/react";
 
 const ServicesSection = () => {

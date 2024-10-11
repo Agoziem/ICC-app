@@ -4,12 +4,12 @@ import "./articles.css";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { BiSolidLike } from "react-icons/bi";
 import Link from "next/link";
-import { useArticleContext } from "@/data/Articlescontextdata";
+import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import NextBreadcrumb from "../Breadcrumb/breadcrumb";
 import { useSearchParams } from "next/navigation";
 import ArticlePlaceholder from "../configuration/articles/ArticlePlaceholder";
 import BackButton from "../backbutton/BackButton";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
+import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Pagination from "../Pagination/Pagination";
 import CategoryTabs from "../Categories/Categoriestab";
 

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import PageTitle from "@/components/PageTitle/PageTitle";
-import { useVideoContext } from "@/data/Videoscontext";
+import { useVideoContext } from "@/data/videos/Videoscontext";
 //   {
 //     "id": 5,
 //     "organization": {

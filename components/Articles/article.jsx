@@ -1,5 +1,5 @@
 "use client";
-import { useArticleContext } from "@/data/Articlescontextdata";
+import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import React, { useEffect, useState } from "react";
 import ArticleComments from "./articlecomments";
 import ShareButtons from "./sharebuttons";

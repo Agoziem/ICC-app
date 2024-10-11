@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/Imageuploader/ImageUploader";
-import { useCategoriesContext } from "@/data/Categoriescontext";
+import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import FileUploader from "@/components/Fileuploader/FileUploader";
-import { useSubCategoriesContext } from "@/data/Subcategoriescontext";
+import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 
 // [
 // //     //     {

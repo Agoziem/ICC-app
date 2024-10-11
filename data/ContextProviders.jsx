@@ -1,15 +1,15 @@
 // ContextProviders.js
 
-import { OrganizationContextProvider } from "@/data/Organizationalcontextdata";
-import { ArticleProvider } from "@/data/Articlescontextdata";
-import { CartProvider } from "@/data/Cartcontext";
-import { AdminContextProvider } from "@/data/Admincontextdata";
-import { UserContextProvider } from "@/data/usercontextdata";
-import { ProductProvider } from "@/data/Productcontext";
-import { VideoProvider } from "@/data/Videoscontext";
-import { ServiceProvider } from "@/data/Servicescontext";
-import { CategoriesProvider } from "@/data/Categoriescontext";
-import { Subcategoriesprovider } from "@/data/Subcategoriescontext";
+import { OrganizationContextProvider } from "@/data/organization/Organizationalcontextdata";
+import { ArticleProvider } from "@/data/articles/Articlescontextdata";
+import { CartProvider } from "@/data/carts/Cartcontext";
+import { AdminContextProvider } from "@/data/users/Admincontextdata";
+import { UserContextProvider } from "@/data/users/usercontextdata";
+import { ProductProvider } from "@/data/product/Productcontext";
+import { VideoProvider } from "@/data/videos/Videoscontext";
+import { ServiceProvider } from "@/data/services/Servicescontext";
+import { CategoriesProvider } from "@/data/categories/Categoriescontext";
+import { Subcategoriesprovider } from "@/data/categories/Subcategoriescontext";
 import { ChatroomContextProvider } from "@/data/chatroomAPI/ChatroomContext";
 import { ChatroomSocketProvider } from "@/data/chatroomAPI/ChatroomSocket";
 import { NotificationsContextProvider } from "@/data/notificationsAPI/NotificationContext";
