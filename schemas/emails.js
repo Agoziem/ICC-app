@@ -1,0 +1,56 @@
+import { z } from "zod";
+
+/**
+ * The available message modes.
+ * @type {["pending", "sent","failed"]}
+ */
+export const MESSAGE_STATUS = ["pending", "sent", "failed"];
+
+// ---------------------------------------------------------------------
+// Validations for emails
+// ---------------------------------------------------------------------
+export const emailSchema = z.object({
+  id: z.number(), // Required field
+  organization: z.number().nullable(), // Nullable but required field
+  name: z.string(), // Required field
+  email: z.string().email(), // Required field with email validation
+  subject: z.string(), // Required field
+  message: z.string(), // Required field
+  created_at: z.string(), // Required field
+  read: z.boolean(),
+});
+
+// Zod Validation for emails Array
+export const emailArraySchema = z.array(emailSchema);
+
+// Zod Validation for emails response
+export const emailResponseSchema = z.object({
+  message: z.number(),
+  recipient_email: z.string(),
+  response_subject: z.string(),
+  response_message: z.string().min(7, { message: "Message cannot be empty" }),
+  created_at: z.string().optional(),
+});
+
+// Zod Validation for emails responses Array
+export const emailResponseArraySchema = z.array(emailResponseSchema);
+
+// Zod Validation for emails message
+export const emailMessageSchema = z.object({
+  id: z.number().optional(),
+  subject: z.string().min(7, { message: "your Email must have a Subject" }),
+  body: z.string().min(7, { message: "Your Email Body cannot be empty" }),
+  template: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+  status: z.enum(MESSAGE_STATUS),
+});
+
+// Zod Validation for emails messages array
+export const emailMessagesArraySchema = z.array(emailMessageSchema);
+
+// Zod Validation for emails Websocket
+export const MessageWebsocketSchema = z.object({
+  operation: z.string(),
+  message: emailSchema,
+});
+

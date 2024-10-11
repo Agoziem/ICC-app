@@ -1,4 +1,4 @@
-import { WATemplateSchema } from "@/utils/validation";
+import { WATemplateSchema } from "@/schemas/whatsapp";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

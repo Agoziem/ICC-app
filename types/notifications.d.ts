@@ -1,9 +1,9 @@
 // types.d.ts
-import { z } from "zod";
 import {
   notificationActionSchema,
   notificationSchema,
-} from "@/utils/validation";
+} from "@/schemas/notifications";
+import { z } from "zod";
 
 declare global {
   type NotificationMessage = z.infer<typeof notificationSchema>;

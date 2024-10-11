@@ -5,7 +5,7 @@ import {
   emailMessageSchema,
   emailResponseArraySchema,
   emailResponseSchema,
-} from "@/utils/validation";
+} from "@/schemas/emails";
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}`,

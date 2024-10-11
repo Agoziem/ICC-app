@@ -6,7 +6,7 @@ import "./Email.css";
 import useSWR from "swr";
 import { emailAPIendpoint, fetchEmails } from "@/data/Emails/fetcher";
 import useWebSocket from "@/hooks/useWebSocket";
-import { MessageWebsocketSchema } from "@/utils/validation";
+import { MessageWebsocketSchema } from "@/schemas/emails";
 import { MdOutlineContacts } from "react-icons/md";
 
 /**

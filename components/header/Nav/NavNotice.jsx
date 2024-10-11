@@ -1,16 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useWebSocket from "@/hooks/useWebSocket";
-import useCurrentUser from "@/hooks/useCurrentUser";
 import Modal from "@/components/Modal/modal";
-import { OrganizationContext } from "@/data/Organizationalcontextdata";
-import { useSession } from "next-auth/react";
 import { shortenMessage, timeSince } from "@/utils/utilities";
 import {
   fetchNotifications,
   notificationAPIendpoint,
 } from "@/data/notificationsAPI/fetcher";
 import useSWR from "swr";
-import { notificationActionSchema } from "@/utils/validation";
+import { notificationActionSchema } from "@/schemas/notifications";
 
 function NavNotice() {
   const [showmodal, setShowModal] = useState(false);

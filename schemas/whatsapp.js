@@ -26,54 +26,6 @@ export const MESSAGE_MODES = ["received", "sent"];
 export const MESSAGE_STATUS = ["pending", "sent", "failed"];
 
 // ---------------------------------------------------------------------
-// Validations for emails
-// ---------------------------------------------------------------------
-export const emailSchema = z.object({
-  id: z.number(), // Required field
-  organization: z.number().nullable(), // Nullable but required field
-  name: z.string(), // Required field
-  email: z.string().email(), // Required field with email validation
-  subject: z.string(), // Required field
-  message: z.string(), // Required field
-  created_at: z.string(), // Required field
-  read: z.boolean(),
-});
-
-// Zod Validation for emails Array
-export const emailArraySchema = z.array(emailSchema);
-
-// Zod Validation for emails response
-export const emailResponseSchema = z.object({
-  message: z.number(),
-  recipient_email: z.string(),
-  response_subject: z.string(),
-  response_message: z.string().min(7, { message: "Message cannot be empty" }),
-  created_at: z.string().optional(),
-});
-
-// Zod Validation for emails responses Array
-export const emailResponseArraySchema = z.array(emailResponseSchema);
-
-// Zod Validation for emails message
-export const emailMessageSchema = z.object({
-  id: z.number().optional(),
-  subject: z.string().min(7, { message: "your Email must have a Subject" }),
-  body: z.string().min(7, { message: "Your Email Body cannot be empty" }),
-  template: z.string().nullable().optional(),
-  created_at: z.string().optional(),
-  status: z.enum(MESSAGE_STATUS),
-});
-
-// Zod Validation for emails messages array
-export const emailMessagesArraySchema = z.array(emailMessageSchema);
-
-// Zod Validation for emails Websocket
-export const MessageWebsocketSchema = z.object({
-  operation: z.string(),
-  message: emailSchema,
-});
-
-// ---------------------------------------------------------------------
 // Validations for WA API
 // ---------------------------------------------------------------------
 
@@ -169,22 +121,4 @@ export const WATemplateSchema = z.object({
 
 export const WATemplateArraySchema = z.array(WATemplateSchema);
 
-// ---------------------------------------------------------------------
-// Validations for Notification data
-// ---------------------------------------------------------------------
-export const notificationSchema = z.object({
-  id: z.number(),
-  title: z.string().min(1, { message: "Title is required" }),
-  message: z.string().min(1, { message: "Message is required" }),
-  viewed: z.boolean(),
-  updated_at: z.string().optional(), // ISO string date format validation can be added if needed
-  created_at: z.string().optional(), // Optional but expect ISO string format
-});
 
-export const notificationArraySchema = z.array(notificationSchema);
-
-// Define the full schema with action and notification
-export const notificationActionSchema = z.object({
-  action: z.enum(["add", "update", "delete", "mark_viewed"]),
-  notification: notificationSchema,
-});

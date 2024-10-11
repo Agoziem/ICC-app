@@ -4,7 +4,7 @@ import {
   WAMessageSchema,
   WATemplateArraySchema,
   WATemplateSchema,
-} from "@/utils/validation";
+} from "@/schemas/whatsapp";
 import axios from "axios";
 
 export const axiosInstance = axios.create({

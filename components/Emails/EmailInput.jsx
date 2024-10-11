@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendReplyEmail } from "@/utils/mail";
-import { emailResponseSchema } from "@/utils/validation";
+import { emailResponseSchema } from "@/schemas/emails";
 import { useState } from "react";
 import Alert from "../Alert/Alert";
 import { emailAPIendpoint, submitResponse } from "@/data/Emails/fetcher";

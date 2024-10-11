@@ -7,12 +7,9 @@ const NotificationsContextProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(
     process.env.NEXT_PUBLIC_ORGANIZATION_ID
   );
-  
+
   return (
-    <NotificationsContext.Provider
-      value={{
-      }}
-    >
+    <NotificationsContext.Provider value={{}}>
       {children}
     </NotificationsContext.Provider>
   );

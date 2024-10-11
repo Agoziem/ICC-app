@@ -1,5 +1,5 @@
 import { createEmail, emailAPIendpoint } from "@/data/Emails/fetcher";
-import { emailMessageSchema } from "@/utils/validation";
+import { emailMessageSchema } from "@/schemas/emails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";

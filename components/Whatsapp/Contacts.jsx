@@ -12,7 +12,7 @@ import {
   fetchWAContacts,
   WhatsappAPIendpoint,
 } from "@/data/whatsappAPI/fetcher";
-import { WAContactWebsocketSchema } from "@/utils/validation";
+import { WAContactWebsocketSchema } from "@/schemas/whatsapp";
 
 /**
  * Holds all the

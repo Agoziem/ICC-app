@@ -1,4 +1,4 @@
-import { notificationSchema } from "@/utils/validation";
+import { notificationSchema } from "@/schemas/notifications";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

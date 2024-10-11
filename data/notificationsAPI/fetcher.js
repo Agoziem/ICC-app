@@ -1,7 +1,7 @@
 import {
   notificationArraySchema,
   notificationSchema,
-} from "@/utils/validation";
+} from "@/schemas/notifications";
 import axios from "axios";
 
 export const axiosInstance = axios.create({

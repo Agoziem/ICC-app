@@ -1,12 +1,11 @@
 // types.d.ts
-import { z } from "zod";
 import {
-  emailArraySchema,
   emailMessageSchema,
   emailResponseSchema,
   emailSchema,
   MessageWebsocketSchema,
-} from "@/utils/validation";
+} from "@/schemas/emails";
+import { z } from "zod";
 
 declare global {
   type Email = z.infer<typeof emailSchema>;

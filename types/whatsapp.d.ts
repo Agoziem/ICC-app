@@ -5,7 +5,7 @@ import {
   WAMessageWebsocketSchema,
   WATemplateArraySchema,
   WATemplateSchema,
-} from "@/utils/validation";
+} from "@/schemas/whatsapp";
 import { z } from "zod";
 
 declare global {

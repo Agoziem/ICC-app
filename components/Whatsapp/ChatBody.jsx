@@ -10,7 +10,7 @@ import {
 } from "@/data/whatsappAPI/fetcher";
 import useSWR from "swr";
 import useWebSocket from "@/hooks/useWebSocket";
-import { WAMessageWebsocketSchema } from "@/utils/validation";
+import { WAMessageWebsocketSchema } from "@/schemas/whatsapp";
 
 // Component to show when there are no chat messages
 const NoMessages = ({ messagesloading, messageserror }) => (
