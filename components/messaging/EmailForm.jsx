@@ -55,6 +55,7 @@ const EmailForm = () => {
         ...data,
         id: getRandomInt(100_000, 1_000_000),
         created_at: new Date().toISOString(),
+        status: "pending"
       };
       mutate(createEmail(data), createEmailOptions(emailData));
       // Send the Email to the subscribed emails later

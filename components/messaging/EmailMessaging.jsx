@@ -2,6 +2,7 @@ import { emailAPIendpoint, getSentEmail } from "@/data/Emails/fetcher";
 import EmailForm from "./EmailForm";
 import useSWR from "swr";
 import { TbMessageCancel } from "react-icons/tb";
+import { PulseLoader } from "react-spinners";
 
 const EmailMessaging = () => {
   // fetch all the messages and populate cache
@@ -18,28 +19,28 @@ const EmailMessaging = () => {
   });
 
   /**
- * @param {string} emailstatus
- */
+   * @param {string} emailstatus
+   */
   const statusComponent = (emailstatus) => {
     switch (emailstatus) {
-      case "sending":
+      case "pending":
         return (
-          <span className="d-inline-flex align-content-center justify-content-between badge bg-secondary-light text-secondary px-3 py-2">
-            {emailstatus}
-            <i className="ms-1 bi bi-three-dots"></i>
+          <span className="d-inline-flex align-items-center justify-content-between gap-2 badge bg-secondary-light text-secondary px-3 py-2">
+            {emailstatus === "pending" && "sending emails"}
+            <PulseLoader size={7} color={"#e88504"} loading={true} />
           </span>
         );
       case "sent":
         return (
-          <span className="d-inline-flex align-content-center justify-content-between badge bg-success-light text-success px-3 py-2">
-            {emailstatus}
+          <span className="d-inline-flex align-items-center justify-content-between gap-1 badge bg-success-light text-success px-3 py-2">
+            {emailstatus === "sent" && "Emails Sent "}
             <i className="ms-1 bi bi-send-check"></i>
           </span>
         );
 
       case "failed":
         return (
-          <span className="d-inline-flex align-content-center justify-content-between badge bg-danger-light text-danger px-3 py-2">
+          <span className="d-inline-flex align-items-center justify-content-between  gap-1 badge bg-danger-light text-danger px-3 py-2">
             {emailstatus}
             <i className="ms-1 bi bi-exclamation-triangle-fill"></i>
           </span>
@@ -72,9 +73,7 @@ const EmailMessaging = () => {
             ? sentemails.map((sentemail) => (
                 <div key={sentemail.id} className="card p-4 py-4">
                   <div className="d-flex justify-content-between">
-                    <p className="mb-1">
-                      <span className="fw-bold">{sentemail.subject}</span>
-                    </p>
+                    <h6 className="mb-1">{sentemail.subject}</h6>
                     <span
                       className="small"
                       style={{
@@ -94,7 +93,7 @@ const EmailMessaging = () => {
                       ? `${sentemail.body.slice(0, 100)}...`
                       : sentemail.body}
                   </p>
-                  <div className="d-flex">
+                  <div className="d-flex justify-content-end">
                     {statusComponent(sentemail.status)}
                   </div>
                 </div>

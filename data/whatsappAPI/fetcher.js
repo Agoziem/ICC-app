@@ -2,6 +2,8 @@ import {
   WAContactArraySchema,
   WAMessageArraySchema,
   WAMessageSchema,
+  WATemplateArraySchema,
+  WATemplateSchema,
 } from "@/utils/validation";
 import axios from "axios";
 
@@ -10,6 +12,7 @@ export const axiosInstance = axios.create({
 });
 
 export const WhatsappAPIendpoint = "/whatsappAPI";
+export const WATemplatescachekey = "whatsapp_templates_data";
 
 // Fetch the Contacts and cache
 export const fetchWAContacts = async () => {
@@ -76,5 +79,32 @@ export const getMedia = async (media_id) => {
   }
 };
 
+export const getSentTemplates = async () => {
+  const response = await axiosInstance.get(`${WhatsappAPIendpoint}/templates/`);
+  const validation = WATemplateArraySchema.safeParse(response.data);
+  if (!validation.success) {
+    console.log(validation.error.issues);
+  }
+  return validation.data;
+};
 
-
+/**
+ * function to fetchWAMessages for a specific contact
+ * @async
+ * @param {WATemplate} Template
+ */
+export const createTemplateMessage = async (Template) => {
+  // Simulate delay (e.g., 2 seconds)
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  const response = await axiosInstance.post(
+    `${WhatsappAPIendpoint}/templates/`,
+    Template
+  );
+  // Validate the response with Zod schema
+  const validation = WATemplateSchema.safeParse(response.data);
+  if (!validation.success) {
+    console.log(validation.error.issues);
+    return null;
+  }
+  return validation.data;
+};

@@ -34,10 +34,7 @@ export const createEmailOptions = (newSentEmail) => {
     /** @param {EmailMessageArray} sentemails */
     optimisticData: (sentemails) => {
       const updatedSentEmails = sentemails ? [...sentemails] : [];
-      return [...updatedSentEmails, newSentEmail].sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      return [newSentEmail, ...updatedSentEmails];
     },
 
     rollbackOnError: true,
@@ -47,12 +44,15 @@ export const createEmailOptions = (newSentEmail) => {
      * @param {EmailMessage} addedResponse
      */
     populateCache: (addedResponse, responses) => {
-      const updatedResponses = responses ? [...responses] : [];
-      // Add the new response and sort by `created_at`
-      return [...updatedResponses, addedResponse].sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      const emailExists = responses.some(
+        (email) => email.id === addedResponse.id
       );
+      if (emailExists) {
+        return responses.map((email) =>
+          email.id === addedResponse.id ? addedResponse : email
+        );
+      }
+      return [addedResponse, ...responses];
     },
 
     revalidate: false,

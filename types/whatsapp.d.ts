@@ -3,6 +3,8 @@ import {
   WAContactWebsocketSchema,
   WAMessageSchema,
   WAMessageWebsocketSchema,
+  WATemplateArraySchema,
+  WATemplateSchema,
 } from "@/utils/validation";
 import { z } from "zod";
 
@@ -18,6 +20,10 @@ declare global {
   type WAContactSocket = z.infer<typeof WAContactWebsocketSchema>;
 
   type WAMessagesSocket = z.infer<typeof WAMessageWebsocketSchema>;
+
+  type WATemplate = z.infer<typeof WATemplateSchema>;
+
+  type WATemplateArray = z.infer<typeof WATemplateArraySchema>;
 
 }
 

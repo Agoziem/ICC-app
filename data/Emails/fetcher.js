@@ -78,11 +78,12 @@ export const getSentEmail = async (data) => {
 };
 
 /**
- * fetches all Responses to a Message from the database
+ * create and send emails to the customers
  * @async
  * @returns {Promise<EmailMessage>}
  */
 export const createEmail = async (data) => {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
   const response = await axiosInstance.post(
     `${emailAPIendpoint}/emails/createsendemails/`,
     data

@@ -1,5 +1,9 @@
 import React from "react";
 
+
+/**
+ * @param {{ type: string; children: React.ReactNode; }} param0
+ */
 const Alert = ({ type, children }) => {
   let icon = "";
   let alertType = "";

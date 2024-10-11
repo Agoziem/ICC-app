@@ -26,3 +26,30 @@ export const sendWAMessageOptions = (WAmessage) => {
     revalidate: false,
   };
 };
+
+/**
+ * @param {WATemplate} WATemplateMessage
+ */
+export const createTemplateMessageOptions = (WATemplateMessage) => {
+  return {
+    /** @param {WATemplateArray} responses */
+    optimisticData: (responses) => [WATemplateMessage,...(responses || [])],
+    rollbackOnError: true,
+    /**
+     * @param {WATemplateArray} responses
+     * @param {WATemplate} addedResponse
+     */
+    populateCache: (addedResponse, responses) => {
+      const messageExists = responses.some(
+        (message) => message.id === addedResponse.id
+      );
+      if (messageExists) {
+        return responses.map((message) =>
+          message.id === addedResponse.id ? addedResponse : message
+        );
+      }
+      return [addedResponse, ...responses];
+    },
+    revalidate: false,
+  };
+};

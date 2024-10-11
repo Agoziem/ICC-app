@@ -1,4 +1,29 @@
 import { z } from "zod";
+/**
+ * Message types tuple
+ *
+ * @type {["text","image","video","audio","document","sticker"]}
+ */
+export const MESSAGE_TYPES = [
+  "text",
+  "image",
+  "video",
+  "audio",
+  "document",
+  "sticker",
+];
+
+/**
+ * The available message modes.
+ * @type {["received", "sent"]}
+ */
+export const MESSAGE_MODES = ["received", "sent"];
+
+/**
+ * The available message modes.
+ * @type {["pending", "sent","failed"]}
+ */
+export const MESSAGE_STATUS = ["pending", "sent", "failed"];
 
 // ---------------------------------------------------------------------
 // Validations for emails
@@ -36,7 +61,7 @@ export const emailMessageSchema = z.object({
   body: z.string().min(7, { message: "Your Email Body cannot be empty" }),
   template: z.string().nullable().optional(),
   created_at: z.string().optional(),
-  status: z.string(),
+  status: z.enum(MESSAGE_STATUS),
 });
 
 // Zod Validation for emails messages array
@@ -48,19 +73,9 @@ export const MessageWebsocketSchema = z.object({
   message: emailSchema,
 });
 
-
 // ---------------------------------------------------------------------
 // Validations for WA API
 // ---------------------------------------------------------------------
-export const MESSAGE_TYPES = [
-  "text",
-  "image",
-  "video",
-  "audio",
-  "document",
-  "sticker",
-];
-export const MESSAGE_MODES = ["received", "sent"];
 
 // Create the Zod schema for the Message model ..
 export const WAMessageSchema = z.object({
@@ -70,14 +85,7 @@ export const WAMessageSchema = z.object({
     .number()
     .positive("Contact ID must be a positive number")
     .nullable(),
-  message_type: z.enum([
-    "text",
-    "image",
-    "video",
-    "audio",
-    "document",
-    "sticker",
-  ]),
+  message_type: z.enum(MESSAGE_TYPES),
   body: z.string().optional(), // Text message body
   media_id: z.string().optional(), // Media message ID
   mime_type: z.string().optional(), // MIME type for media messages
@@ -85,10 +93,10 @@ export const WAMessageSchema = z.object({
   animated: z.boolean().optional(), // For stickers
   caption: z.string().optional(), // Caption for media
   timestamp: z.string().optional(), // ISO date string
-  message_mode: z.enum(["received", "sent"]),
+  message_mode: z.enum(MESSAGE_MODES),
   seen: z.boolean().optional(), // Seen status for received messages
   link: z.string().url().optional(),
-  status: z.enum(["pending", "sent"]).optional(), // Status for sent messages
+  status: z.enum(MESSAGE_STATUS).optional(), // Status for sent messages
 });
 
 export const WAMessageArraySchema = z.array(WAMessageSchema);
@@ -96,14 +104,7 @@ export const WAMessageArraySchema = z.array(WAMessageSchema);
 export const LastMessageSchema = z.object({
   id: z.number().optional(),
   message_id: z.string().min(1, "Message ID is required"),
-  message_type: z.enum([
-    "text",
-    "image",
-    "video",
-    "audio",
-    "document",
-    "sticker",
-  ]),
+  message_type: z.enum(MESSAGE_TYPES),
   body: z.string().optional(),
   timestamp: z.string().optional(),
 });
@@ -131,6 +132,44 @@ export const WAMessageWebsocketSchema = z.object({
 });
 
 // ---------------------------------------------------------------------
+// Validations for Whatsapp Template
+// ---------------------------------------------------------------------
+
+/**
+ * Message types tuple
+ *
+ * @type {["textonly","textwithimage","textwithvideo","textwithaudio","textwithdocument","textwithCTA"]}
+ */
+export const TEMPLATE_NAMES = [
+  "textonly",
+  "textwithimage",
+  "textwithvideo",
+  "textwithaudio",
+  "textwithdocument",
+  "textwithCTA",
+];
+
+// Template names
+export const WATemplateSchema = z.object({
+  id: z.number().optional(),
+
+  template: z.enum(TEMPLATE_NAMES).refine(
+    /**
+   * @param {typeof TEMPLATE_NAMES[number]} value
+   */
+    (value) => TEMPLATE_NAMES.includes(value), {
+    message: "You must select a valid Template",
+  }),  
+  title: z.string(),
+  text: z.string().optional(),
+  link: z.string().optional().nullable(),
+  status: z.enum(MESSAGE_STATUS),
+  created_at: z.string().optional(),
+});
+
+export const WATemplateArraySchema = z.array(WATemplateSchema);
+
+// ---------------------------------------------------------------------
 // Validations for Notification data
 // ---------------------------------------------------------------------
 export const notificationSchema = z.object({
@@ -138,8 +177,8 @@ export const notificationSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   message: z.string().min(1, { message: "Message is required" }),
   viewed: z.boolean(),
-  updated_at: z.string().optional(),  // ISO string date format validation can be added if needed
-  created_at: z.string().optional(),  // Optional but expect ISO string format
+  updated_at: z.string().optional(), // ISO string date format validation can be added if needed
+  created_at: z.string().optional(), // Optional but expect ISO string format
 });
 
 export const notificationArraySchema = z.array(notificationSchema);
@@ -149,6 +188,3 @@ export const notificationActionSchema = z.object({
   action: z.enum(["add", "update", "delete", "mark_viewed"]),
   notification: notificationSchema,
 });
-
-
-

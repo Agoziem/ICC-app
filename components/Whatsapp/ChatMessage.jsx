@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiCheckDouble } from "react-icons/bi";
 import { FaRegFileImage } from "react-icons/fa6";
+import useSWR from "swr";
 
 /**
  * Description placeholder
@@ -11,24 +12,13 @@ import { FaRegFileImage } from "react-icons/fa6";
  * @returns {JSX.Element}
  */
 const ChatMessage = ({ message }) => {
-  const [mediaUrl, setMediaUrl] = useState(null);
-  const [mediaLoading, setMediaLoading] = useState(false);
-
-  useEffect(() => {
-    // Fetch media if the message type is media and media_id is available
-    if (message.message_type !== "text" && message.media_id) {
-      const fetchMedia = async () => {
-        setMediaLoading(true);
-        const url = await getMedia(message.media_id);
-        setMediaUrl(url);
-        setMediaLoading(false);
-      };
-      fetchMedia();
-    }
-  }, [message.media_id, message.message_type]);
+  const {
+    data: mediaUrl,
+    isLoading,
+    error,
+  } = useSWR(message.media_id && null, getMedia);
 
   const messageTime = new Date(message.timestamp);
-
 
   // TODO: Handle Media Messages and let them display well
 
@@ -64,7 +54,7 @@ const ChatMessage = ({ message }) => {
 
         {
           // Show a loading spinner while the media is loading
-          mediaLoading && (
+          isLoading && (
             <div className="d-flex justify-content-center mt-2">
               <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Loading...</span>
@@ -180,8 +170,7 @@ const ChatMessage = ({ message }) => {
                 className="ms-2"
                 style={{
                   fontSize: "1.2rem",
-                  color:
-                  message.status === "sent" ? "#34B7F1" : "",
+                  color: message.status === "sent" ? "#34B7F1" : "",
                 }}
               />
             )}
