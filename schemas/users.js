@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const UserminiSchema = z.object({
   id: z.number(),
   username: z.string(),
-  img: z.string().url(), // Assuming it's a URL
+  img: z.string().url().optional().nullable(), // Assuming it's a URL
 });
 
 
