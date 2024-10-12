@@ -1,21 +1,19 @@
-import React, { useContext, useEffect } from "react";
 import NewsPostItem from "./NewsPostItem";
 import "./news.css";
-import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import Link from "next/link";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import useSWR from "swr";
+import { articleAPIendpoint, fetchArticles } from "@/data/articles/fetcher";
 
 function News() {
-  const { articles, fetchArticles } = useArticleContext();
-  const { OrganizationData } = useContext(OrganizationContext);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  // ----------------------------------------------------------
+  // fetch articles by Categories
+  // ----------------------------------------------------------
+  const { data: articles } = useSWR(
+    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=5/`,
+    fetchArticles
+  );
 
-  useEffect(() => {
-    if (OrganizationData.id) {
-      fetchArticles(OrganizationData.id);
-    }
-  }, [OrganizationData.id]);
-
-  
   return (
     <div className="card ">
       <div className="card-body pb-4">
@@ -23,17 +21,15 @@ function News() {
         <hr />
 
         <div className="news mt-3">
-          {articles && articles.length > 0 ? (
-            articles
-              .slice(0, 5)
-              .map((item, index) => (
-                <NewsPostItem
-                  key={item.id}
-                  item={item}
-                  index={index}
-                  items={articles}
-                />
-              ))
+          {articles && articles.results.length > 0 ? (
+            articles.results.map((item, index) => (
+              <NewsPostItem
+                key={item.id}
+                item={item}
+                index={index}
+                items={articles}
+              />
+            ))
           ) : (
             <div className="d-flex justify-content-center align-items-center">
               <p className="fw-bold mb-1 py-4" style={{ marginLeft: "0px" }}>
@@ -41,7 +37,7 @@ function News() {
               </p>
             </div>
           )}
-          {articles && articles.length > 5 && (
+          {articles && articles.results.length > 5 && (
             <Link
               href={"/articles"}
               className="text-center text-secondary text-decoration-none"

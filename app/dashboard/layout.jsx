@@ -2,7 +2,6 @@ import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
 import Footer from "@/components/blocks/footer/Footer";
 import Header from "@/components/blocks/header/Header";
 import SideBar from "@/components/blocks/sidebar/SideBar";
-import React from "react";
 import NavList from "./navList";
 import Main from "@/components/blocks/Main/Main";
 import { SidebartoggleRefProvider } from "@/components/blocks/sidebar/sideBarTogglerContext";

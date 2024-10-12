@@ -4,7 +4,6 @@ const CategoryTabs = ({
   categories,
   currentCategory,
   setCurrentCategory,
-  services,
 }) => {
   return (
     <div>

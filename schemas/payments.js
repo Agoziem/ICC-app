@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 /**
  * Payment Status tuple
  * @type {['Pending', 'Completed', 'Failed']}
@@ -24,4 +23,9 @@ export const ordersSchema = z.object({
   last_updated_date: z.date().optional(),          // auto_now, handled by the backend
 });
 
-export const ordersArraySchema = z.array(ordersSchema)
+export const ordersResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(ordersSchema),
+});

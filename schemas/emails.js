@@ -7,7 +7,7 @@ import { z } from "zod";
 export const MESSAGE_STATUS = ["pending", "sent", "failed"];
 
 // ---------------------------------------------------------------------
-// Validations for emails
+// Validations for emails sent by user
 // ---------------------------------------------------------------------
 export const emailSchema = z.object({
   id: z.number(), // Required field
@@ -23,6 +23,13 @@ export const emailSchema = z.object({
 // Zod Validation for emails Array
 export const emailArraySchema = z.array(emailSchema);
 
+export const emailsResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(emailSchema),
+});
+
 // Zod Validation for emails response
 export const emailResponseSchema = z.object({
   message: z.number(),
@@ -35,7 +42,9 @@ export const emailResponseSchema = z.object({
 // Zod Validation for emails responses Array
 export const emailResponseArraySchema = z.array(emailResponseSchema);
 
-// Zod Validation for emails message
+// ------------------------------------------------------
+// Zod Validation for emails message to be sent to user
+// ------------------------------------------------------
 export const emailMessageSchema = z.object({
   id: z.number().optional(),
   subject: z.string().min(7, { message: "your Email must have a Subject" }),
@@ -48,7 +57,17 @@ export const emailMessageSchema = z.object({
 // Zod Validation for emails messages array
 export const emailMessagesArraySchema = z.array(emailMessageSchema);
 
+export const emailMessageResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(emailMessageSchema),
+});
+
+
+// -----------------------------------------
 // Zod Validation for emails Websocket
+// -----------------------------------------
 export const MessageWebsocketSchema = z.object({
   operation: z.string(),
   message: emailSchema,

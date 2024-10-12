@@ -2,41 +2,50 @@ import React, { useState, useEffect } from "react";
 import Modal from "../../custom/Modal/modal";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { createComment } from "@/data/articles/fetcher";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { commentSchema } from "@/schemas/articles";
+import Alert from "@/components/custom/Alert/Alert";
 
-const ArticleCommentsForm = ({ article, comments, setComments }) => {
+const ArticleCommentsForm = ({ article, comments, mutate }) => {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
-  const [comment, setComment] = useState({
-    comment: "",
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: zodResolver(
+      commentSchema.pick({
+        comment: true,
+      })
+    ),
+    mode: "onChange",
+    defaultValues: {
+      comment: "",
+    },
   });
 
-  const addComment = async (e) => {
-    e.preventDefault();
+  const addComment = async (data) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/addcomment/${article?.id}/${session?.user?.id}/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(comment),
-        }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        console.log(data);
-        setComments([data, ...comments]);
-      } else {
-        throw new Error("Something went wrong");
-      }
+      mutate(createComment(data), {
+        populateCache: true,
+      });
+      setSuccess("submitted successfully!");
     } catch (error) {
       console.log(error.message);
+      setError("failed to Submit!, try again");
     } finally {
-      setComment({
-        ...comment,
-        comment: "",
-      });
+      reset();
+      setTimeout(() => {
+        setError("");
+        setSuccess("");
+      }, 3000);
       setShowModal(false);
     }
   };
@@ -64,7 +73,7 @@ const ArticleCommentsForm = ({ article, comments, setComments }) => {
       <Modal showmodal={showModal} toggleModal={() => setShowModal(false)}>
         <div className="modal-body">
           <h4 className="text-center">Add comment</h4>
-          <form onSubmit={addComment}>
+          <form onSubmit={handleSubmit(addComment)}>
             <div className="form-group my-3">
               <label htmlFor="name">Name</label>
               <input
@@ -81,12 +90,13 @@ const ArticleCommentsForm = ({ article, comments, setComments }) => {
               <textarea
                 className="form-control"
                 id="comment"
-                name="comment"
-                value={comment.comment}
-                onChange={(e) =>
-                  setComment({ ...comment, comment: e.target.value })
-                }
+                {...register("comment")}
               ></textarea>
+              {errors.comment && (
+                <p className="text-danger small">
+                  {String(errors.comment.message)}
+                </p>
+              )}
             </div>
             <button
               type="submit"
@@ -94,6 +104,11 @@ const ArticleCommentsForm = ({ article, comments, setComments }) => {
             >
               Add Comment
             </button>
+            {/* Error Message */}
+            {error && <Alert type={"danger"}>{error}</Alert>}
+
+            {/* Success Message */}
+            {success && <Alert type={"success"}>{success}</Alert>}
           </form>
         </div>
       </Modal>

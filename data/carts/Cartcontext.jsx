@@ -2,8 +2,8 @@
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useState, createContext, useContext, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useUserContext } from "../users/usercontextdata";
-import { useAdminContext } from "../users/Admincontextdata";
+import { useUserContext } from "../payments/usercontextdata";
+import { useAdminContext } from "../payments/Admincontextdata";
 import { useRouter } from "next/navigation";
 
 const CartContext = createContext(null);

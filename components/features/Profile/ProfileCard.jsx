@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Profile.css";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { useUserContext } from "@/data/users/usercontextdata";
+import { useUserContext } from "@/data/payments/usercontextdata";
 import Link from "next/link";
 import Alert from "../../custom/Alert/Alert";
 import Modal from "../../custom/Modal/modal";

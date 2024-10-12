@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import {
+  addLike,
+  deleteLike,
+} from "@/data/articles/fetcher";
 
-const ArticleLikes = ({ article, setArticle, setToastMessage }) => {
+/**
+ * @param {{ article: Article; setToastMessage: any; mutate:any }} param0
+ */
+const ArticleLikes = ({ article, setToastMessage, mutate }) => {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
 
@@ -21,32 +28,13 @@ const ArticleLikes = ({ article, setArticle, setToastMessage }) => {
       time: new Date().toLocaleTimeString(),
     });
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/${
-          isLiked ? "deletelike" : "addlike"
-        }/${article?.id}/${userId}/`,
-        {
-          method: isLiked ? "DELETE" : "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const updatedLikes = isLiked
-        ? likes.filter((like) => like !== userId)
-        : [...likes, userId];
-
-      setArticle({
-        ...article,
-        likes: updatedLikes,
-        no_of_likes: updatedLikes.length,
-      });
-      setLikes(updatedLikes);
+      isLiked
+        ? await mutate(deleteLike(article, userId), {
+            populateCache: true,
+          })
+        : await mutate(addLike(article, userId), {
+            populateCache: true,
+          });
       document.getElementById("liveToast").classList.replace("show", "hide");
     } catch (error) {
       console.error(error);

@@ -1,8 +1,9 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { OrganizationContext } from '../organization/Organizationalcontextdata';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { OrganizationContext } from "../organization/Organizationalcontextdata";
 
 const ArticleContext = createContext(null);
+
 const ArticleProvider = ({ children }) => {
   const { OrganizationData } = useContext(OrganizationContext);
   const [articles, setArticles] = useState([]);
@@ -12,7 +13,7 @@ const ArticleProvider = ({ children }) => {
   const [totalArticles, setTotalArticles] = useState(0);
 
   // fetch Articles and Paginate it
-  const fetchArticles = async (Organizationid,page = 1, pageSize = 10) => {
+  const fetchArticles = async (Organizationid, page = 1, pageSize = 10) => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -31,7 +32,7 @@ const ArticleProvider = ({ children }) => {
     }
   };
 
-  // fetch Articles by Category and Paginate it 
+  // fetch Articles by Category and Paginate it
   const fetchArticlesByCategory = async (category, page = 1, pageSize = 10) => {
     setLoading(true);
     try {
@@ -51,11 +52,12 @@ const ArticleProvider = ({ children }) => {
     }
   };
 
-
   // fetch Article by Slug
   const fetchArticleBySlug = async (slug) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/blogbyslug/${slug}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/blogbyslug/${slug}`
+      );
       const data = await response.json();
       return data;
     } catch (error) {
@@ -66,7 +68,9 @@ const ArticleProvider = ({ children }) => {
   // fetch Categories
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getCategories/`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getCategories/`
+      );
       const data = await response.json();
       setCategories(data);
     } catch (error) {

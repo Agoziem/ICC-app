@@ -13,12 +13,23 @@ import { MdOutlineArticle } from "react-icons/md";
 import NextBreadcrumb from "../../custom/Breadcrumb/breadcrumb";
 import BackButton from "../../custom/backbutton/BackButton";
 import Pagination from "../../custom/Pagination/Pagination";
+import useSWR from "swr";
+import { useSearchParams } from "next/navigation";
+import {
+  articleAPIendpoint,
+  fetchArticlebySlug,
+  fetchArticles,
+  fetchComments,
+  incrementView,
+} from "@/data/articles/fetcher";
 
 const Article = ({ params }) => {
   const { slug } = params;
-  const { articles, fetchArticlesByCategory, fetchArticleBySlug } =
-    useArticleContext();
-  const [article, setArticle] = useState(null);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+  const [commentpage, setCommentPage] = useState("1");
   const [otherArticles, setOtherArticles] = useState([]);
   const { data: session } = useSession();
   const [toastmessage, setToastMessage] = useState({
@@ -26,99 +37,76 @@ const Article = ({ params }) => {
     message: "",
     time: "",
   });
-  const [comments, setComments] = useState([]);
-  const [currentCommentPage, setCurrentCommentPage] = useState(1);
-  const [totalCommentPages, setTotalCommentPages] = useState(1);
 
   // ------------------------------------------------------------
-  // Fetch article by slug and fetch other articles by category
+  // fetch article by slug
   // ------------------------------------------------------------
-  useEffect(() => {
-    if (slug) {
-      fetchArticleBySlug(slug)
-        .then((data) => {
-          setArticle(data);
-          return data;
-        })
-        .then((data) => {
-          fetchArticlesByCategory(data.category.category, 1, 6);
-        });
-    }
-  }, [slug]);
+  const { data: article, mutate:articlemutate } = useSWR(
+    slug
+      ? `${articleAPIendpoint}/blogbyslug/${slug}`
+      : null,
+    fetchArticlebySlug
+  );
+
+  // ----------------------------------------------------------
+  // fetch articles by Categories
+  // ----------------------------------------------------------
+  const { data: articles } = useSWR(
+    article?.category.id
+      ? `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${article?.category.category}&page=${page}&page_size=${pageSize}`
+      : null,
+      fetchArticles
+  );
 
   // ------------------------------------------------------------
-  // Filter other articles
+  // Filter the main article from the other articles
   // ------------------------------------------------------------
   useEffect(() => {
-    if (articles.length > 0) {
-      setOtherArticles(articles.filter((blog) => blog.id !== article?.id));
+    if (!articles) return
+    if (articles.results.length > 0) {
+      setOtherArticles(
+        articles.results.filter((blog) => blog.id !== article?.id)
+      );
     }
   }, [articles]);
 
   // ------------------------------------------------------------
   // Fetch comments and paginate them
   // ------------------------------------------------------------
-  const fetchComments = async (page = 1, page_size = 10) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/getcomments/${article.id}?page=${page}&page_size=${page_size}`
-      );
-      const data = await response.json();
-      if (response.ok) {
-        setComments(data.results);
-        setTotalCommentPages(Math.ceil(data.count / page_size));
-      } else {
-        throw new Error("Something went wrong");
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  const { data: comments, mutate: commentmutate } = useSWR(
+    article?.id
+      ? `${articleAPIendpoint}/getcomments/${article?.id}?page=${commentpage}&page_size=${pageSize}`
+      : null,
+    fetchComments
+  );
 
   // ------------------------------------------------------------
   // handle comment page change
   // ------------------------------------------------------------
+
+  /** @param {string} page */
   const handleCommentPageChange = (page) => {
-    setCurrentCommentPage(page);
-    fetchComments(page);
+    setCommentPage(page);
   };
 
   // ------------------------------------------------------------
   // Increment views
   // ------------------------------------------------------------
   const incrementViews = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/addviews/${article.id}/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setArticle({
-        ...article,
-        views: data.views,
-      });
-    } catch (error) {
-      console.error("Failed to update views:", error);
-    }
+    await articlemutate(incrementView(article), {
+      populateCache: true,
+    });
   };
 
   // ------------------------------------------------------------
   // Fetch comments and increment views on article load
   // ------------------------------------------------------------
   useEffect(() => {
-    if (article?.id) {
-      fetchComments();
+    if (article) {
       incrementViews();
     }
-  }, [article?.id]);
+  }, []);
+  
 
   return (
     <>
@@ -135,10 +123,10 @@ const Article = ({ params }) => {
             <h1 className="text-wrap text-break">{article.title}</h1>
             <div className="d-flex my-4">
               <div>
-                {article.authordata.img ? (
+                {article.author.img ? (
                   <img
-                    src={article.authordata.img}
-                    alt={article.authordata.name}
+                    src={article.author.img}
+                    alt={article.author.username}
                     width={50}
                     height={50}
                     className="rounded-circle object-fit-cover"
@@ -154,12 +142,12 @@ const Article = ({ params }) => {
                       backgroundColor: "var(--bgDarkerColor)",
                     }}
                   >
-                    {article.authordata.name[0].toUpperCase()}
+                    {article.author.username[0].toUpperCase()}
                   </div>
                 )}
               </div>
               <div className="ms-3">
-                <p className="mb-0 fw-bold">{article.authordata.name}</p>
+                <p className="mb-0 fw-bold">{article.author.username}</p>
                 <div>
                   <span>
                     <small>{article.category.category}</small>
@@ -228,12 +216,12 @@ const Article = ({ params }) => {
                         : "bi-heart-fill text-primary"
                     } me-1`}
                   ></i>
-                  {article.no_of_likes} like{article.no_of_likes > 1 && "s"}
+                  {article.likes.length} like{article.likes.length > 1 && "s"}
                 </span>
                 <span className="me-3">
                   <i className="bi bi-chat-fill me-1"></i>
-                  {comments ? comments.length : "0"} comment
-                  {comments?.length > 1 && "s"}
+                  {comments ? comments.results.length : "0"} comment
+                  {comments?.results.length > 1 && "s"}
                 </span>
               </div>
 
@@ -241,12 +229,12 @@ const Article = ({ params }) => {
                 <ArticleCommentsForm
                   article={article}
                   comments={comments}
-                  setComments={setComments}
-                />
+                  mutate={articlemutate}
+                  />
                 <ArticleLikes
                   article={article}
-                  setArticle={setArticle}
                   setToastMessage={setToastMessage}
+                  mutate={articlemutate}
                 />
               </div>
             </div>
@@ -264,10 +252,11 @@ const Article = ({ params }) => {
                 <hr />
                 <h5 className="my-4">Comments</h5>
                 <div>
-                  {comments.length > 0 ? (
+                  {comments.count > 0 ? (
                     <ArticleComments
-                      comments={comments}
-                      setComments={setComments}
+                      article={article}
+                      comments={comments.results}
+                      mutate={commentmutate}
                     />
                   ) : (
                     <p>No comments yet</p>
@@ -275,10 +264,10 @@ const Article = ({ params }) => {
                 </div>
               </div>
             )}
-            {totalCommentPages > 1 && (
+            {comments?.next && (
               <Pagination
-                currentPage={currentCommentPage}
-                totalPages={totalCommentPages}
+                currentPage={commentpage}
+                totalPages={Math.ceil(comments.count / parseInt(pageSize))}
                 handlePageChange={handleCommentPageChange}
               />
             )}

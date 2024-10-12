@@ -1,5 +1,6 @@
 // types.d.ts
-import { blogSchema, categorySchema, commentSchema, tagSchema } from "@/schemas/articles";
+import { ArticleSchema, categorySchema, commentSchema, tagSchema } from "@/schemas/articles";
+import { z } from "zod";
 
 declare global {
   type Tag = z.infer<typeof tagSchema>;
@@ -10,13 +11,13 @@ declare global {
 
   type ArticleCategories = ArticleCategory[];
 
-  type Blog = z.infer<typeof blogSchema>;
+  type Article = z.infer<typeof ArticleSchema>;
 
-  type Blogs = Blog[];
+  type Articles = Article[];
 
-  type Comment = z.infer<typeof commentSchema>;
+  type ArticleComment = z.infer<typeof commentSchema>;
 
-  type Comments = Comment[]
+  type ArticleComments = ArticleComment[]
 }
 
 export {};

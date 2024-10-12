@@ -3,7 +3,7 @@ import Datatable from "@/components/custom/Datatable/Datatable";
 import Modal from "@/components/custom/Modal/modal";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import CustomersTable from "@/components/features/orders/CustomersTable";
-import { useAdminContext } from "@/data/users/Admincontextdata";
+import { useAdminContext } from "@/data/payments/Admincontextdata";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 

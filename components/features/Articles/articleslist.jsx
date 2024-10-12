@@ -12,55 +12,72 @@ import BackButton from "../../custom/backbutton/BackButton";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Pagination from "../../custom/Pagination/Pagination";
 import CategoryTabs from "../Categories/Categoriestab";
+import useSWR from "swr";
+import {
+  articleAPIendpoint,
+  fetchArticles,
+  fetchArticlesCategories,
+} from "@/data/articles/fetcher";
+import { useRouter } from "next/navigation";
 
 const ArticlesList = () => {
-  const {
-    articles,
-    categories,
-    fetchArticlesByCategory,
-    fetchArticles,
-    loading,
-    totalPages,
-  } = useArticleContext();
-  const [currentCategory, setCurrentCategory] = useState("All");
-  const [filteredCategories, setFilteredCategories] = useState([]);
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(1);
-  const { OrganizationData } = useContext(OrganizationContext);
+  const currentCategory = searchParams.get("category") || "All";
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+  const [allCategories, setAllCategories] = useState([]);
 
-  // structure categories
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  // Fetch categories
+  const {
+    data: categories,
+    isLoading: loadingCategories,
+    error: categoryError,
+  } = useSWR(`${articleAPIendpoint}/getCategories/`, fetchArticlesCategories);
+
+  // --------------------------------------
+  // Add All categories once fetched
+  // -----------------------------------------
   useEffect(() => {
-    if (categories.length > 0)
-      setFilteredCategories([{ id: 0, category: "All" }, ...categories]);
+    if (categories?.length > 0) {
+      setAllCategories([{ id: 0, category: "All" }, ...categories]);
+    }
   }, [categories]);
 
-  // get category from url
-  useEffect(() => {
-    if (searchParams.has("category")) {
-      setCurrentCategory(searchParams.get("category"));
-    }
-  }, [searchParams]);
+  // ----------------------------------------
+  // Fetch articles based on category
+  // ----------------------------------------
+  const {
+    data: articles,
+    isLoading: loadingArticles,
+    error: articleError,
+  } = useSWR(
+    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
+    fetchArticles
+  );
 
-  // Fetch Articles on Page Change
-  useEffect(() => {
-    if (OrganizationData.id) {
-      setCurrentPage(1)
-      if (currentCategory === "All") {
-        fetchArticles(OrganizationData.id, 1);
-      } else {
-        fetchArticlesByCategory(currentCategory, 1);
+  // -----------------------------------------
+  // Handle page change
+  // -----------------------------------------
+  /**  @param {string} newPage */
+  const handlePageChange = (newPage) => {
+    router.push(
+      `?category=${currentCategory}&page=${newPage}&page_size=${pageSize}`,
+      {
+        scroll: false,
       }
-    }
-  }, [OrganizationData.id, currentCategory]);
+    );
+  };
 
-  // handle page change
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    if (currentCategory === "All") {
-      fetchArticles(OrganizationData.id, page);
-    } else {
-      fetchArticlesByCategory(currentCategory, page);
-    }
+  // -------------------------------
+  // Handle category change
+  // -------------------------------
+  /**  @param {string} category */
+  const handleCategoryChange = (category) => {
+    router.push(`?category=${category}&page=${page}&page_size=${pageSize}`, {
+      scroll: false,
+    });
   };
 
   return (
@@ -70,12 +87,21 @@ const ArticlesList = () => {
         <div className="mb-3 ps-2 ps-md-0">
           {/* Categories */}
           <h5 className="mb-3 fw-bold">categories</h5>
-          <CategoryTabs
-            categories={filteredCategories}
-            currentCategory={currentCategory}
-            setCurrentCategory={setCurrentCategory}
-            services={articles}
-          />
+          {loadingCategories && !categoryError ? (
+            <div className="d-flex gap-2 align-items-center">
+              {/* spinner */}
+              <div className="spinner-border spinner-border-sm text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              fetching Article Categories
+            </div>
+          ) : (
+            <CategoryTabs
+              categories={allCategories}
+              currentCategory={currentCategory}
+              setCurrentCategory={handleCategoryChange}
+            />
+          )}
         </div>
 
         <div className="ps-3">
@@ -89,7 +115,7 @@ const ArticlesList = () => {
             <>
               {
                 // loading
-                loading && (
+                loadingArticles && !articleError && (
                   <div className="d-flex justify-content-center">
                     {/* spinner */}
                     <div className="spinner-border text-primary" role="status">
@@ -98,8 +124,9 @@ const ArticlesList = () => {
                   </div>
                 )
               }
-              {!loading && articles && articles.length > 0 ? (
-                articles.map((item, index, articles) => (
+
+              {!loadingArticles && articles && articles.results.length > 0 ? (
+                articles.results.map((item, index, articles) => (
                   <Link href={`/articles/${item.slug}`} key={item.id}>
                     <li
                       className="list-group-item d-flex align-items-center py-3"
@@ -143,11 +170,9 @@ const ArticlesList = () => {
                             {item.views}
                           </span>
                           <span className="me-3 small">
-                            <BiSolidLike className="h5" /> {item.no_of_likes}
+                            <BiSolidLike className="h5" /> {item.likes.length}
                           </span>
-                          <span className="me-3 small">
-                            {item.authordata.name}
-                          </span>
+                          <span className="me-3 small">{item.author.username}</span>
                         </div>
                       </div>
                     </li>
@@ -165,13 +190,15 @@ const ArticlesList = () => {
               )}
             </>
           </ul>
-          {!loading && totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              handlePageChange={handlePageChange}
-            />
-          )}
+          {!loadingArticles &&
+            articles &&
+            Math.ceil(articles.count / parseInt(pageSize)) > 1 && (
+              <Pagination
+                currentPage={page}
+                totalPages={Math.ceil(articles.count / parseInt(pageSize))}
+                handlePageChange={handlePageChange}
+              />
+            )}
         </div>
       </div>
     </div>

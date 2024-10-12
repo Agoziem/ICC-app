@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import CardFilter from "../Card/CardFilter";
 import RecentSalesTable from "./RecentSalesTable";
 import "./recentSales.css";
-import { useAdminContext } from "@/data/users/Admincontextdata";
-import { useUserContext } from "@/data/users/usercontextdata";
+import { useAdminContext } from "@/data/payments/Admincontextdata";
+import { useUserContext } from "@/data/payments/usercontextdata";
 
 function RecentSales({ session }) {
   const { orders } = useAdminContext();

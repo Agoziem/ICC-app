@@ -1,6 +1,6 @@
 // types.d.ts
 import { categoryArraySchema, subcategorySchema } from "@/schemas/categories";
-
+import { z } from "zod";
 declare global {
   type Category = z.infer<typeof categoryArraySchema>;
 

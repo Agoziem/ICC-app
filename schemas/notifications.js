@@ -14,6 +14,13 @@ export const notificationSchema = z.object({
 
 export const notificationArraySchema = z.array(notificationSchema);
 
+export const notificationResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(notificationSchema),
+});
+
 // Define the full schema with action and notification
 export const notificationActionSchema = z.object({
   action: z.enum(["add", "update", "delete", "mark_viewed"]),

@@ -6,8 +6,8 @@ import Reports from "./ReportchartsSection/Reports";
 import News from "./Newsection/News";
 import TopSelling from "./TopsellingSection/TopSelling";
 import { useSession } from "next-auth/react";
-import { useAdminContext } from "@/data/users/Admincontextdata";
-import { useUserContext } from "@/data/users/usercontextdata";
+import { useAdminContext } from "@/data/payments/Admincontextdata";
+import { useUserContext } from "@/data/payments/usercontextdata";
 import CartButton from "../../custom/Offcanvas/CartButton";
 import { useServiceContext } from "@/data/services/Servicescontext";
 
@@ -15,7 +15,7 @@ const DashboardBody = () => {
   const { totalOrders, totalCustomers } = useAdminContext();
   const { userOrder, totalOrder } = useUserContext();
   const { totalServices } = useServiceContext();
-  const { data: session } = useSession();
+  const { data: session } = useSession(); 
   return (
     <div className="dashboard">
       <div className="my-4 d-flex justify-content-between align-items-center flex-wrap">

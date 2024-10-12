@@ -2,9 +2,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PiEmptyBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
-import { useAdminContext } from "@/data/users/Admincontextdata";
+import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useCart } from "@/data/carts/Cartcontext";
-import { useUserContext } from "@/data/users/usercontextdata";
+import { useUserContext } from "@/data/payments/usercontextdata";
 import Datatable from "@/components/custom/Datatable/Datatable";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import OrderTableItems from "@/components/features/orders/OrderTableItems";

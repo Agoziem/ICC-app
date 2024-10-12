@@ -1,8 +1,8 @@
 "use client";
 import { useCart } from "@/data/carts/Cartcontext";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useAdminContext } from "@/data/users/Admincontextdata";
-import { useUserContext } from "@/data/users/usercontextdata";
+import { useAdminContext } from "@/data/payments/Admincontextdata";
+import { useUserContext } from "@/data/payments/usercontextdata";
 import { BsFillCartCheckFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import useJsxToPdf from "@/hooks/useJSXtoPDF";

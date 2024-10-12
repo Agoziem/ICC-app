@@ -3,19 +3,19 @@ import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import "./section.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
-import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import { MdOutlineArticle } from "react-icons/md";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import useSWR from "swr";
+import { articleAPIendpoint, fetchArticles } from "@/data/articles/fetcher";
 
 const BlogSection = () => {
-  const { articles,fetchArticles,totalArticles } = useArticleContext();
-  const { OrganizationData } = useContext(OrganizationContext);
-
-  useEffect(() => {
-    if (OrganizationData.id) {
-      fetchArticles(OrganizationData.id, 1, 3);
-    }
-  }, [OrganizationData.id]);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  // ----------------------------------------------------------
+  // fetch articles by Categories
+  // ----------------------------------------------------------
+  const { data: articles } = useSWR(
+    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=3/`,
+    fetchArticles
+  );
 
   return (
     <>
@@ -30,8 +30,8 @@ const BlogSection = () => {
         </div>
 
         <div className="row px-3 px-md-5">
-          {articles && articles.length > 0 ? (
-            articles.slice(0, 3).map((blog) => (
+          {articles && articles.results.length > 0 ? (
+            articles.results.map((blog) => (
               <div
                 key={blog.id}
                 className="col-12 col-md d-flex justify-content-center"
@@ -110,7 +110,7 @@ const BlogSection = () => {
           )}
         </div>
 
-        {articles && totalArticles > 3 && (
+        {articles && articles.count > 3 && (
           <div>
             <div className="d-flex justify-content-center mt-0 mb-5">
               <Link href="/articles" className="btn btn-primary px-5">

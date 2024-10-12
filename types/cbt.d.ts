@@ -8,6 +8,7 @@ import {
   testTypeSchema,
   yearSchema,
 } from "@/schemas/cbt";
+import { z } from "zod";
 
 declare global {
   type Year = z.infer<typeof yearSchema>;

@@ -21,7 +21,12 @@ export const serviceSchema = z.object({
   updated_at: z.date().optional(), // auto_now, handled by backend
 });
 
-export const serviceArraySchema = z.array(serviceSchema);
+export const servicesResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(serviceSchema),
+});
 
 
 // Product Schema
@@ -47,7 +52,12 @@ export const productSchema = z.object({
   free: z.boolean().default(false), // Boolean flag for free products
 });
 
-export const productArraySchema = z.array(productSchema);
+export const productsResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(productSchema),
+});
 
 // Video Schema
 export const videoSchema = z.object({
@@ -70,4 +80,9 @@ export const videoSchema = z.object({
   free: z.boolean().optional(), // Boolean indicating if the video is free
 });
 
-export const videoArraySchema = z.array(videoSchema);
+export const videosResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(videoSchema),
+});

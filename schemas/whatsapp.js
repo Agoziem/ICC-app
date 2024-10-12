@@ -71,6 +71,13 @@ export const WAContactSchema = z.object({
 
 export const WAContactArraySchema = z.array(WAContactSchema);
 
+export const WAContactResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(WAContactSchema),
+});
+
 // Whatsapp Websocket types
 export const WAContactWebsocketSchema = z.object({
   operation: z.string(),
@@ -121,4 +128,9 @@ export const WATemplateSchema = z.object({
 
 export const WATemplateArraySchema = z.array(WATemplateSchema);
 
-
+export const WATemplateResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(), // next can be null
+  previous: z.string().nullable(), // previous can be null
+  results: z.array(WATemplateSchema),
+});

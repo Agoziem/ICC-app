@@ -3,8 +3,8 @@
 import { OrganizationContextProvider } from "@/data/organization/Organizationalcontextdata";
 import { ArticleProvider } from "@/data/articles/Articlescontextdata";
 import { CartProvider } from "@/data/carts/Cartcontext";
-import { AdminContextProvider } from "@/data/users/Admincontextdata";
-import { UserContextProvider } from "@/data/users/usercontextdata";
+import { AdminContextProvider } from "@/data/payments/Admincontextdata";
+import { UserContextProvider } from "@/data/payments/usercontextdata";
 import { ProductProvider } from "@/data/product/Productcontext";
 import { VideoProvider } from "@/data/videos/Videoscontext";
 import { ServiceProvider } from "@/data/services/Servicescontext";

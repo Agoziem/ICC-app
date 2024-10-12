@@ -7,7 +7,7 @@ import {
   subscriptionSchema,
   testimonialSchema,
 } from "@/schemas/organizations";
-
+import { z } from "zod";
 declare global {
   type Organization = z.infer<typeof organizationSchema>;
 
