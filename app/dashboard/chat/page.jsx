@@ -1,5 +1,5 @@
 "use client";
-import PageTitle from '@/components/PageTitle/PageTitle'
+import PageTitle from '@/components/custom/PageTitle/PageTitle'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { IoChatbubbleEllipsesOutline, IoLogoWhatsapp } from 'react-icons/io5'

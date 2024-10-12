@@ -1,12 +1,12 @@
-import BackToTop from "@/components/backtotopbutton/BackToTop";
-import Footer from "@/components/footer/Footer";
-import Header from "@/components/header/Header";
-import SideBar from "@/components/sidebar/SideBar";
+import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
+import Footer from "@/components/blocks/footer/Footer";
+import Header from "@/components/blocks/header/Header";
+import SideBar from "@/components/blocks/sidebar/SideBar";
 import React from "react";
 import NavList from "./navList";
-import Main from "@/components/Main/Main";
-import { SidebartoggleRefProvider } from "@/components/sidebar/sideBarTogglerContext";
-import Feedback from "@/components/Feedback/ModalFeedback";
+import Main from "@/components/blocks/Main/Main";
+import { SidebartoggleRefProvider } from "@/components/blocks/sidebar/sideBarTogglerContext";
+import Feedback from "@/components/blocks/Feedback/ModalFeedback";
 
 export const metadata = {
   title: "ICC dashboard",

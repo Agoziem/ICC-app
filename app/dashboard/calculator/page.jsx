@@ -1,5 +1,5 @@
-import Calculators from "@/components/Calc/Calculators";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import Calculators from "@/components/features/Calc/Calculators";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React from "react";
 
 const CalculatorPage = () => {

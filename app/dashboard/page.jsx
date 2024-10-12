@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import PageTitle from "@/components/PageTitle/PageTitle";
-import DashboardBody from "@/components/dashboard/dashboard";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
+import DashboardBody from "@/components/blocks/dashboard/dashboard";
 
 const Dashboard = () => {
   return (

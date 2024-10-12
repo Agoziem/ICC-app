@@ -4,7 +4,7 @@ import { LuCheckCircle } from "react-icons/lu";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Link from "next/link";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import ReusableSwiper from "@/components/Swiper/ReusableSwiper";
+import ReusableSwiper from "@/components/custom/Swiper/ReusableSwiper";
 import { useCart } from "@/data/carts/Cartcontext";
 import { useServiceContext } from "@/data/services/Servicescontext";
 import { useCategoriesContext } from "@/data/categories/Categoriescontext";

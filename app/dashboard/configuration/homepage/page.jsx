@@ -1,13 +1,13 @@
 "use client";
-import PageTitle from "@/components/PageTitle/PageTitle";
-import PrivacyPolicy from "@/components/configuration/home/PrivacyPolicy";
-import TermsOfUse from "@/components/configuration/home/TermsOfUse";
-import Depts from "@/components/configuration/home/depts";
-import Messages from "@/components/configuration/home/messages";
-import OrganizationCard from "@/components/configuration/home/organizationcard";
-import Staffs from "@/components/configuration/home/staffs";
-import Subscriptions from "@/components/configuration/home/subscriptions";
-import Testimonials from "@/components/configuration/home/testimonials";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
+import PrivacyPolicy from "@/components/features/configuration/home/PrivacyPolicy";
+import TermsOfUse from "@/components/features/configuration/home/TermsOfUse";
+import Depts from "@/components/features/configuration/home/depts";
+import Messages from "@/components/features/configuration/home/messages";
+import OrganizationCard from "@/components/features/configuration/home/organizationcard";
+import Staffs from "@/components/features/configuration/home/staffs";
+import Subscriptions from "@/components/features/configuration/home/subscriptions";
+import Testimonials from "@/components/features/configuration/home/testimonials";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext, useState } from "react";
 

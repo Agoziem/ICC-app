@@ -6,7 +6,7 @@ import { useUserContext } from "../users/usercontextdata";
 import { useAdminContext } from "../users/Admincontextdata";
 import { useRouter } from "next/navigation";
 
-const CartContext = createContext({});
+const CartContext = createContext(null);
 
 const CartProvider = ({ children }) => {
   const router = useRouter();

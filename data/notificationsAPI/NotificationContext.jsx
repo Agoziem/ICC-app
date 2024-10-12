@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
-const NotificationsContext = createContext({});
+const NotificationsContext = createContext(null);
 
 const NotificationsContextProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(

@@ -1,5 +1,5 @@
-import Email from '@/components/Emails/Email'
-import PageTitle from '@/components/PageTitle/PageTitle'
+import Email from '@/components/features/Emails/Email'
+import PageTitle from '@/components/custom/PageTitle/PageTitle'
 import React from 'react'
 
 const EmailPage = () => {

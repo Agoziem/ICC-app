@@ -4,17 +4,17 @@ import { useSearchParams } from "next/navigation";
 import { useAdminContext } from "@/data/users/Admincontextdata";
 import { useCart } from "@/data/carts/Cartcontext";
 import { useUserContext } from "@/data/users/usercontextdata";
-import Datatable from "@/components/Datatable/Datatable";
-import PageTitle from "@/components/PageTitle/PageTitle";
-import OrderTableItems from "@/components/orders/OrderTableItems";
-import CartButton from "@/components/Offcanvas/CartButton";
-import CategoryTabs from "@/components/Categories/Categoriestab";
+import Datatable from "@/components/custom/Datatable/Datatable";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
+import OrderTableItems from "@/components/features/orders/OrderTableItems";
+import CartButton from "@/components/custom/Offcanvas/CartButton";
+import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import { useProductContext } from "@/data/product/Productcontext";
-import ProductCard from "@/components/Products/ProductCard";
+import ProductCard from "@/components/features/Products/ProductCard";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { RiShoppingBasketFill } from "react-icons/ri";
-import Pagination from "@/components/Pagination/Pagination";
+import Pagination from "@/components/custom/Pagination/Pagination";
 
 const ProductsPage = () => {
   const { openModal } = useAdminContext();

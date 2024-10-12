@@ -4,7 +4,7 @@ import { OrganizationContext } from "../organization/Organizationalcontextdata";
 import { converttoformData } from "@/utils/formutils";
 
 // Create the context
-const VideoContext = createContext({});
+const VideoContext = createContext(null);
 
 const VideoProvider = ({ children }) => {
   const { organizationID } = useContext(OrganizationContext);

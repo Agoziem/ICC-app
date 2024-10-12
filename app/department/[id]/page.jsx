@@ -7,7 +7,7 @@ import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
 import { TbBooks } from "react-icons/tb";
 import { RiCustomerService2Line } from "react-icons/ri";
-import BackButton from "@/components/backbutton/BackButton";
+import BackButton from "@/components/custom/backbutton/BackButton";
 
 const Department = ({ params }) => {
   const { depts } = useContext(OrganizationContext);

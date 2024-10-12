@@ -1,5 +1,5 @@
-import Videos from "@/components/configuration/videos/Videos";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import Videos from "@/components/features/configuration/videos/Videos";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React from "react";
 
 const VideoConfigPage = () => {

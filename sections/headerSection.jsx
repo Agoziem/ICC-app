@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import MainHeader from "@/components/header/Mainheader/MainHeader";
+import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
 import "./section.css";
 import Link from "next/link";
 import { useSession } from "next-auth/react";

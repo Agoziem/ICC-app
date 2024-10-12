@@ -1,5 +1,5 @@
-import Messaging from "@/components/messaging/Messaging";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import Messaging from "@/components/features/messaging/Messaging";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 
 const MessagingPage = () => {
   return (

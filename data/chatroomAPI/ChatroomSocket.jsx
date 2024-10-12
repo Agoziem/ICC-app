@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
-const ChatroomSocketContext = createContext();
+const ChatroomSocketContext = createContext(null);
 
 const ChatroomSocketProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(

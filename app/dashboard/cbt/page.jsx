@@ -1,9 +1,9 @@
 "use client";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React, { useContext, useEffect, useState } from "react";
-import CbtForm from "@/components/cbt/CbtForm";
+import CbtForm from "@/components/features/cbt/CbtForm";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import CbtQuiz from "@/components/cbt/CbtQuiz";
+import CbtQuiz from "@/components/features/cbt/CbtQuiz";
 
 const CbtPage = () => {
   const { OrganizationData } = useContext(OrganizationContext);

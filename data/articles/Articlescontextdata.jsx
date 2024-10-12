@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { OrganizationContext } from '../organization/Organizationalcontextdata';
 
-const ArticleContext = createContext({});
+const ArticleContext = createContext(null);
 const ArticleProvider = ({ children }) => {
   const { OrganizationData } = useContext(OrganizationContext);
   const [articles, setArticles] = useState([]);

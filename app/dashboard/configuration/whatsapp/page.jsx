@@ -1,4 +1,4 @@
-import WhatsappContainer from '@/components/Whatsapp/WhatsappContainer'
+import WhatsappContainer from '@/components/features/Whatsapp/WhatsappContainer'
 import React from 'react'
 
 const WhatsappAPIPage = () => {

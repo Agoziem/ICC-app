@@ -1,11 +1,11 @@
 "use client";
-import FormWrapper from "@/components/auth/FormWrapper";
+import FormWrapper from "@/components/features/auth/FormWrapper";
 import React, { useState } from "react";
 import Image from "next/image";
 import styles from "../accounts.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Alert from "@/components/Alert/Alert";
+import Alert from "@/components/custom/Alert/Alert";
 import { sendPasswordResetEmail } from "@/utils/mail";
 
 const SigninPage = () => {

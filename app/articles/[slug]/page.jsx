@@ -1,4 +1,4 @@
-import Article from "@/components/Articles/article";
+import Article from "@/components/features/Articles/article";
 
 export async function generateMetadata({ params }) {
   const { slug } = params;

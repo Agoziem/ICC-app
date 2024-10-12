@@ -1,14 +1,14 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import FormWrapper from "@/components/auth/FormWrapper";
+import FormWrapper from "@/components/features/auth/FormWrapper";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../accounts.module.css";
 import { useRouter } from "next/navigation";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import Alert from "@/components/Alert/Alert";
+import Alert from "@/components/custom/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
-import PasswordInput from "@/components/Inputs/PasswordInput";
+import PasswordInput from "@/components/custom/Inputs/PasswordInput";
 
 const SignupPage = () => {
   const router = useRouter();

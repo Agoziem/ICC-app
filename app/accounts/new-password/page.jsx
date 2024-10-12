@@ -4,8 +4,8 @@ import styles from "../accounts.module.css";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Alert from "@/components/Alert/Alert";
-import PasswordInput from "@/components/Inputs/PasswordInput";
+import Alert from "@/components/custom/Alert/Alert";
+import PasswordInput from "@/components/custom/Inputs/PasswordInput";
 import { useRouter } from "next/navigation";
 
 const NewPasswordPage = () => {

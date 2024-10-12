@@ -1,5 +1,5 @@
-import PageTitle from '@/components/PageTitle/PageTitle'
-import Test from '@/components/configuration/cbt/Test'
+import PageTitle from '@/components/custom/PageTitle/PageTitle'
+import Test from '@/components/features/configuration/cbt/Test'
 import React from 'react'
 
 const AddingQuestionPage = ({params}) => {

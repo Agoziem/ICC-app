@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { IoIosMailOpen } from "react-icons/io";
 import { FaPhoneVolume } from "react-icons/fa6";
-import ContactForm from "@/components/Contact/ContactForm";
+import ContactForm from "@/components/custom/Contact/ContactForm";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const ContactSection = () => {

@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { OrganizationContext } from "../organization/Organizationalcontextdata";
 
-const CategoriesContext = createContext({});
+const CategoriesContext = createContext(null);
 
 const CategoriesProvider = ({ children }) => {
   const { OrganizationData } = useContext(OrganizationContext);

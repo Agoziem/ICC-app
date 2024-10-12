@@ -1,5 +1,5 @@
-import PageTitle from '@/components/PageTitle/PageTitle'
-import ArticleConf from '@/components/configuration/articles/ArticleConf'
+import PageTitle from '@/components/custom/PageTitle/PageTitle'
+import ArticleConf from '@/components/features/configuration/articles/ArticleConf'
 import React from 'react'
 
 const ArticlesConfigPage = () => {

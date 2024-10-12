@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { FaFacebook, FaInstagram, FaLinkedinIn, FaTiktok, FaXTwitter } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io5";
-import Alert from "@/components/Alert/Alert";
+import Alert from "@/components/custom/Alert/Alert";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const FooterSection = () => {

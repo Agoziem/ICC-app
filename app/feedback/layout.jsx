@@ -1,6 +1,6 @@
 import React from "react";
-import BackToTop from "@/components/backtotopbutton/BackToTop";
-import MainHeader from "@/components/header/Mainheader/MainHeader";
+import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
+import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
 import FooterSection from "@/sections/footerSection";
 import "./feedback.css";
 

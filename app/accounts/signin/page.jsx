@@ -1,5 +1,5 @@
 "use client";
-import FormWrapper from "@/components/auth/FormWrapper";
+import FormWrapper from "@/components/features/auth/FormWrapper";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -7,9 +7,9 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import Image from "next/image";
 import styles from "../accounts.module.css";
 import Link from "next/link";
-import Alert from "@/components/Alert/Alert";
+import Alert from "@/components/custom/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
-import PasswordInput from "@/components/Inputs/PasswordInput";
+import PasswordInput from "@/components/custom/Inputs/PasswordInput";
 
 const SigninPage = () => {
   const router = useRouter();

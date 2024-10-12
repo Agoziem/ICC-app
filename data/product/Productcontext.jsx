@@ -4,7 +4,8 @@ import { OrganizationContext } from "../organization/Organizationalcontextdata";
 import { converttoformData } from "@/utils/formutils";
 
 // Create the context
-const ProductContext = createContext({});
+const ProductContext = createContext(null);
+
 const ProductProvider = ({ children }) => {
   const { organizationID } = useContext(OrganizationContext);
   const [products, setProducts] = useState([]);

@@ -1,7 +1,8 @@
 "use client";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import React, { createContext, useEffect, useState } from "react";
-import Modal from "@/components/Modal/modal";
+import Modal from "@/components/custom/Modal/modal";
+
 const OrganizationContext = createContext(null);
 
 const OrganizationContextProvider = ({ children }) => {

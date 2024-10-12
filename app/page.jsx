@@ -8,8 +8,8 @@ import StaffSection from "@/sections/staffSection";
 import BlogSection from "@/sections/blogSection";
 import ContactSection from "@/sections/contactSection";
 import FooterSection from "@/sections/footerSection";
-import BackToTop from "@/components/backtotopbutton/BackToTop";
-import Feedback from "@/components/Feedback/ModalFeedback";
+import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
+import Feedback from "@/components/blocks/Feedback/ModalFeedback";
 import CBTSection from "@/sections/CBTSection";
 import ChatSection from "@/sections/ChatSection";
 

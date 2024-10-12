@@ -1,8 +1,8 @@
 "use client";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React, { useState } from "react";
-import ProfileForm from "@/components/Profile/ProfileForm";
-import ProfileCard from "@/components/Profile/ProfileCard";
+import ProfileForm from "@/components/features/Profile/ProfileForm";
+import ProfileCard from "@/components/features/Profile/ProfileCard";
 
 const ProfilePage = () => {
   const [editMode, setEditMode] = useState(false);

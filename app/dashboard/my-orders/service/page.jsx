@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import { useServiceContext } from "@/data/services/Servicescontext";
-import ServicesPlaceholder from "@/components/ImagePlaceholders/ServicesPlaceholder";
+import ServicesPlaceholder from "@/components/custom/ImagePlaceholders/ServicesPlaceholder";
 
 // {
 //     "id": 11,

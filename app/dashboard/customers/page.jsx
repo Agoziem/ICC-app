@@ -1,8 +1,8 @@
 "use client";
-import Datatable from "@/components/Datatable/Datatable";
-import Modal from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/PageTitle";
-import CustomersTable from "@/components/orders/CustomersTable";
+import Datatable from "@/components/custom/Datatable/Datatable";
+import Modal from "@/components/custom/Modal/modal";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
+import CustomersTable from "@/components/features/orders/CustomersTable";
 import { useAdminContext } from "@/data/users/Admincontextdata";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";

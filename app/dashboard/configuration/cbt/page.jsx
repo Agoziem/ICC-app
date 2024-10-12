@@ -1,5 +1,5 @@
-import PageTitle from '@/components/PageTitle/PageTitle'
-import SettingsForm from '@/components/configuration/cbt/SettingsForm'
+import PageTitle from '@/components/custom/PageTitle/PageTitle'
+import SettingsForm from '@/components/features/configuration/cbt/SettingsForm'
 import React from 'react'
 
 const CbtConfigPage = () => {

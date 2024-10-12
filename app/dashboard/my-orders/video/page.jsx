@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import { useVideoContext } from "@/data/videos/Videoscontext";
 //   {
 //     "id": 5,

@@ -1,5 +1,5 @@
-import Products from "@/components/configuration/product/Products";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import Products from "@/components/features/configuration/product/Products";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React from "react";
 
 const ProductConfigPage = () => {

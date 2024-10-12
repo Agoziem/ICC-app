@@ -1,5 +1,5 @@
-import UserOrders from "@/components/orders/UserOrders";
-import PageTitle from "@/components/PageTitle/PageTitle";
+import UserOrders from "@/components/features/orders/UserOrders";
+import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React from "react";
 
 const MyOrders = () => {

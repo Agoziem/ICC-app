@@ -1,6 +1,6 @@
 import React from "react";
 import "./photo.css";
-import MainHeader from "@/components/header/Mainheader/MainHeader";
+import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
 
 const photopage = () => {
   return (

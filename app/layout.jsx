@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import BootstrapJs from "@/components/BootstrapJs";
 import { SessionProvider } from "next-auth/react";
-import OffCanvas from "@/components/Offcanvas/OffCanvas";
+import OffCanvas from "@/components/custom/Offcanvas/OffCanvas";
 import ContextProviders from "@/data/ContextProviders";
 
 export const metadata = {

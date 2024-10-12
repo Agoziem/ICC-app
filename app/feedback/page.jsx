@@ -1,8 +1,8 @@
 "use client";
-import TestimonialForm from "@/components/configuration/home/TestimonialForm";
+import TestimonialForm from "@/components/features/configuration/home/TestimonialForm";
 import React, { useContext, useState } from "react";
 import { converttoformData } from "@/utils/formutils";
-import Alert from "@/components/Alert/Alert";
+import Alert from "@/components/custom/Alert/Alert";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 
 const FeedbackPage = () => {

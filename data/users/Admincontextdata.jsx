@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Modal from "@/components/Modal/modal";
+import Modal from "@/components/custom/Modal/modal";
 
 const AdminContext = createContext(null);
 

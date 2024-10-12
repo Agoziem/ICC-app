@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { converttoformData } from "@/utils/formutils";
 
 // Create the context
-const ServiceContext = createContext({});
+const ServiceContext = createContext(null);
 
 const ServiceProvider = ({ children }) => {
   const [OrganizationalID, setOrganizationalID] = useState(process.env.NEXT_PUBLIC_ORGANIZATION_ID);

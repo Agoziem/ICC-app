@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 
 // Create the context
-const ChatroomContext = createContext();
+const ChatroomContext = createContext(null);
 
 const ChatroomContextProvider = ({ children }) => {
   const [organizationID, setOrganizationID] = useState(
