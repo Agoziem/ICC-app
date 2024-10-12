@@ -10,7 +10,7 @@ function News() {
   // fetch articles by Categories
   // ----------------------------------------------------------
   const { data: articles } = useSWR(
-    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=5/`,
+    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=6/`,
     fetchArticles
   );
 
@@ -22,7 +22,7 @@ function News() {
 
         <div className="news mt-3">
           {articles && articles.results.length > 0 ? (
-            articles.results.map((item, index) => (
+            articles.results.slice(0,6).map((item, index) => (
               <NewsPostItem
                 key={item.id}
                 item={item}
