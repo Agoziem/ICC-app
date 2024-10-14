@@ -247,7 +247,7 @@ const Services = () => {
         <div>
           <h5 className="mb-1">{currentCategory} Services</h5>
           <p className="mb-0 text-primary">
-            {services?.count} Service{services?.count > 1 ? "s" : ""}
+            {services?.count} Service{services?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
       </div>

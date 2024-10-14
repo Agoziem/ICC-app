@@ -239,7 +239,7 @@ const Videos = () => {
         <div>
           <h5 className="mb-1">{currentCategory} Videos</h5>
           <p className="mb-0 text-primary">
-            {videos?.count} Service{videos?.count > 1 ? "s" : ""}
+            {videos?.count} Video{videos?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
       </div>

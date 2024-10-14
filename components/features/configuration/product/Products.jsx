@@ -246,7 +246,7 @@ const Products = () => {
         <div>
           <h5 className="mb-1">{currentCategory} Products</h5>
           <p className="mb-0 text-primary">
-            {products?.count} Product{products?.count > 1 ? "s" : ""}
+            {products?.count} Product{products?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
       </div>

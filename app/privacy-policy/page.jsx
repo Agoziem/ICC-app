@@ -7,14 +7,11 @@ const PrivacyPage = () => {
   const { OrganizationData } = useContext(OrganizationContext);
   return (
     <div
-      className="mx-auto mt-3 px-4 px-md-0 py-2"
+      className="mx-auto my-5 px-4 px-md-0 py-2"
       style={{
         maxWidth: "800px",
       }}
     >
-    
-      <h4>Privacy Policy</h4>
-      <hr />
       {OrganizationData?.privacy_policy ? (
         <div style={{ width: "100%" }}>
           <div
