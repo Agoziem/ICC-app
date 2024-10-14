@@ -1,13 +1,18 @@
 "use client";
-import React, { useContext } from "react";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
 import StarRating from "@/components/custom/StarRating/StarRating";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import ReusableSwiper from "@/components/custom/Swiper/ReusableSwiper";
 import "./section.css";
+import { fetchTestimonials, MainAPIendpoint } from "@/data/organization/fetcher";
+import useSWR from "swr";
 
 const CustomSwiper = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+   // for fetching
+   const { data: testimonials } = useSWR(
+    `${MainAPIendpoint}/testimonial/${OrganizationID}/`,
+    fetchTestimonials
+  );
 
   return (
     <>
@@ -19,9 +24,9 @@ const CustomSwiper = () => {
         </div>
 
         <ReusableSwiper noItemsMessage="No Reviews yet">
-          {OrganizationData?.testimonials &&
-            OrganizationData.testimonials.length > 0 &&
-            OrganizationData.testimonials.map((testimonial) => (
+          {testimonials &&
+            testimonials.results?.length > 0 &&
+            testimonials.results?.map((testimonial) => (
               <div key={testimonial.id} className="card p-4" style={{
                 minHeight: "210px",
               }} >

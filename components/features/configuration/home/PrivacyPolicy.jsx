@@ -1,8 +1,13 @@
 import Alert from "@/components/custom/Alert/Alert";
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
+import { updateOrganization } from "@/data/organization/fetcher";
 import React, { useState } from "react";
 
-const PrivacyPolicy = ({ OrganizationData, setOrganizationData }) => {
+/**
+ * @param {{ OrganizationData: Organization, mutate: (data?: any) => Promise<void> }} param0
+ */
+const PrivacyPolicy = ({ OrganizationData, mutate }) => {
+  const [organizationdata,setOrganizationData] = useState(OrganizationData)
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -11,40 +16,32 @@ const PrivacyPolicy = ({ OrganizationData, setOrganizationData }) => {
 
   const editPrivacyPolicy = async (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/organization/editprivacypolicy/${OrganizationData.id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(OrganizationData),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setOrganizationData(data);
+      try {
+        await mutate(updateOrganization(organizationdata))
         setAlert({
           show: true,
-          message: "Privacy Policy updated successfully",
+          message: "Terms of Use updated successfully",
           type: "success",
         })
-      }
-    } catch (error) {
-      console.log(error);
-      setAlert({
-        show: true,
-        message: "An error occurred",
-        type: "danger",
-      })
-    } finally {
-      setTimeout(() => {
+      } catch (error) {
+        console.log(error.message)
         setAlert({
-          show: false,
-          message: "",
-          type: "",
+          show: true,
+          message: "An error occurred",
+          type: "danger",
         })
-      }, 3000)
-    }
-  };
+      } finally {
+        setTimeout(() => {
+          setAlert({
+            show: false,
+            message: "",
+            type: "",
+          })
+        }, 3000)
+      }
+    };
+
+
   return (
     <div className="card p-4 py-5">
       <h5>Privacy Policy</h5>
@@ -52,7 +49,7 @@ const PrivacyPolicy = ({ OrganizationData, setOrganizationData }) => {
       <p>Add or edit Privacy Policy</p>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <Tiptap
-        item={OrganizationData}
+        item={organizationdata}
         setItem={setOrganizationData}
         keylabel={"privacy_policy"}
       />

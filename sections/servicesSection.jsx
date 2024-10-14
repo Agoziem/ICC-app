@@ -7,28 +7,37 @@ import { OrganizationContext } from "@/data/organization/Organizationalcontextda
 import ReusableSwiper from "@/components/custom/Swiper/ReusableSwiper";
 import { useCart } from "@/data/carts/Cartcontext";
 import { useServiceContext } from "@/data/services/Servicescontext";
-import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import { fetchCategories } from "@/data/categories/fetcher";
+import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
 
 const ServicesSection = () => {
-  const { openModal, OrganizationData } = useContext(OrganizationContext);
-  const { servicecategories: categories } = useCategoriesContext();
-  const { services, fetchServices } = useServiceContext();
+  const { openModal } = useContext(OrganizationContext);
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();
   const [categoryServices, setCategoryServices] = useState([]);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
-  useEffect(() => {
-    if (OrganizationData) {
-      fetchServices(OrganizationData.id, 1, 100);
-    }
-  }, [OrganizationData]);
+  const { data: categories } = useSWR(
+    `${servicesAPIendpoint}/categories/`,
+    fetchCategories
+  );
+
+  const {
+    data: services,
+    isLoading: loadingServices,
+    error: error,
+  } = useSWR(
+    `${servicesAPIendpoint}/services/${Organizationid}/?category=All&page=1&page_size=100`,
+    fetchServices
+  );
 
   useEffect(() => {
     if (categories && services) {
       const categoryServices = categories
         .map((category) => {
-          const servicesInCategory = services.filter(
+          const servicesInCategory = services.results.filter(
             (service) => service.category.id === category.id
           );
           return {
@@ -109,6 +118,18 @@ const ServicesSection = () => {
       </div>
 
       <hr className="text-primary pt-4" />
+
+      {loadingServices && !error && (
+        <div
+          className=" d-flex align-items-center  justify-content-center"
+          style={{ minHeight: "100vh" }}
+        >
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      )}
+
       {categoryServices && categoryServices.length > 0 && (
         <>
           {categoryServices.map((category, index) => (

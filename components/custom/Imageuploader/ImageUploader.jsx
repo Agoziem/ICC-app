@@ -4,6 +4,10 @@ import { FaRegFileImage } from "react-icons/fa6";
 import { IoIosImages } from "react-icons/io";
 import { LuUpload } from "react-icons/lu";
 import Alert from "../Alert/Alert";
+
+/**
+ * @param {{ imagekey: string; imageurlkey: string; imagename: string; formData: any; setFormData: any; }} param0
+ */
 const ImageUploader = ({
   imagekey,
   imageurlkey,

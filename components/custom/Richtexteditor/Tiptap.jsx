@@ -7,7 +7,7 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import "./Tiptap.css";
 
-const Tiptap = ({ item, setItem, keylabel, setHasStartedEditing = "" }) => {
+const Tiptap = ({ item, setItem, keylabel, setHasStartedEditing = (value) => {}  }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -20,7 +20,6 @@ const Tiptap = ({ item, setItem, keylabel, setHasStartedEditing = "" }) => {
       Link.configure({
         openOnClick: true,
         autolink: false,
-        defaultProtocol: "https",
         HTMLAttributes: {
           class: "custom-link-class text-secondary",
         },

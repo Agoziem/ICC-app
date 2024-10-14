@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 
-const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) => {
-  const [formData, setFormData] = useState({
-    id: "",
-    name: "",
-    content: "",
-    role: "",
-    rating: 0,
-    img: null,
-    img_url: "",
-    img_name: "",
-  });
-
-  useEffect(() => {
-    if (testimonialData) {
-      setFormData(testimonialData);
-    }
-  }, [testimonialData]);
+/**
+ * @param {{ addorupdate: any; testimonial: Testimony;setTestimonial:(value:Testimony) => void; onSubmit: any; onClose: any; }} param0
+ */
+const TestimonialForm = ({
+  addorupdate,
+  testimonial,
+  setTestimonial,
+  onSubmit,
+  onClose,
+}) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setTestimonial({
+      ...testimonial,
       [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(testimonial);
   };
 
   return (
@@ -42,8 +34,8 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             imagekey={"img"}
             imageurlkey={"img_url"}
             imagename={"img_name"}
-            formData={formData}
-            setFormData={setFormData}
+            formData={testimonial}
+            setFormData={setTestimonial}
           />
         </div>
         <div className="form-group mb-3">
@@ -54,7 +46,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             id="name"
             placeholder="Name"
             name="name"
-            value={formData.name}
+            value={testimonial.name}
             onChange={handleChange}
             required
           />
@@ -67,7 +59,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             id="role"
             placeholder="student or Aspirant etc"
             name="role"
-            value={formData.role}
+            value={testimonial.role}
             onChange={handleChange}
             required
           />
@@ -79,7 +71,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             id="content"
             placeholder="Content"
             name="content"
-            value={formData.content}
+            value={testimonial.content}
             onChange={handleChange}
             required
           ></textarea>
@@ -94,7 +86,7 @@ const TestimonialForm = ({ addorupdate, testimonialData, onSubmit, onClose }) =>
             name="rating"
             max={5}
             min={1}
-            value={formData.rating}
+            value={testimonial.rating}
             onChange={handleChange}
             required
           />

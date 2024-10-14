@@ -1,6 +1,10 @@
 import ImageUploader from '@/components/custom/Imageuploader/ImageUploader'
 import React from 'react'
 
+
+/**
+ * @param {{ handleSubmit: any; OrganizationData: Organization; setOrganizationData: (value:Organization) => void; setEditMode: any; }} param0
+ */
 const OrganizationalForm = ({handleSubmit,OrganizationData,setOrganizationData,setEditMode}) => {
   return (
     <form onSubmit={handleSubmit}>
@@ -38,7 +42,7 @@ const OrganizationalForm = ({handleSubmit,OrganizationData,setOrganizationData,s
             description: e.target.value,
           })
         }
-        rows="5"
+        rows={5}
       ></textarea>
     </div>
     <div className="form-group mb-4">
@@ -55,7 +59,7 @@ const OrganizationalForm = ({handleSubmit,OrganizationData,setOrganizationData,s
             vision: e.target.value,
           })
         }
-        rows="3"
+        rows={3}
       ></textarea>
     </div>
     <div className="form-group mb-4">
@@ -72,7 +76,7 @@ const OrganizationalForm = ({handleSubmit,OrganizationData,setOrganizationData,s
             mission: e.target.value,
           })
         }
-        rows="3"
+        rows={3}
       ></textarea>
     </div>
     <div className="form-group mb-4">

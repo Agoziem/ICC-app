@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import Alert from "@/components/custom/Alert/Alert";
 import { converttoformData } from "@/utils/formutils";
 import OrganizationalForm from "./organizationalform";
-const OrganizationCard = ({ OrganizationData, setOrganizationData }) => {
+import { updateOrganization } from "@/data/organization/fetcher";
+
+/**
+ * @param {{ OrganizationData: Organization; mutate: any; }} param0
+ */
+const OrganizationCard = ({ OrganizationData, mutate }) => {
+  const [Organization, setOrganizationData] = useState(OrganizationData);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -19,6 +25,13 @@ const OrganizationCard = ({ OrganizationData, setOrganizationData }) => {
     "last_updated_date",
   ];
 
+  /**
+   * Description placeholder
+   *
+   * @param {Organization} OrganizationDataObj
+   * @param {typeof keystofilter} keystoremove
+   * @returns {*}
+   */
   const filterData = (OrganizationDataObj, keystoremove) => {
     return Object.keys(OrganizationDataObj)
       .filter((key) => !keystoremove.includes(key))
@@ -31,46 +44,32 @@ const OrganizationCard = ({ OrganizationData, setOrganizationData }) => {
   const handleSubmit = async (e) => {
     const filteredData = filterData(OrganizationData, keystofilter);
     e.preventDefault();
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/organization/update/${OrganizationData.id}/`,
-      {
-        method: "PUT",
-        body: converttoformData(filteredData),
-      }
-    )
-    const data = await response.json();
-    if (response.ok) {
-        setOrganizationData(data);
+    // converttoformData(filteredData) convert Form Data later
+    mutate(updateOrganization(filteredData), {
+      populateCache: true,
+    });
+    try {
+      setAlert({
+        show: true,
+        message: "Organization details updated successfully",
+        type: "success",
+      });
+    } catch (error) {
+      setAlert({
+        show: true,
+        message: "Error updating organization details",
+        type: "danger",
+      });
+    } finally {
+      setEditMode(false);
+      setTimeout(() => {
         setAlert({
-          show: true,
-          message: "Organization details updated successfully",
-          type: "success",
+          show: false,
+          message: "",
+          type: "",
         });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-        setEditMode(false);
-      } else if (response.status !== 400) {
-        setAlert({
-          show: true,
-          message: "Error updating organization details",
-          type: "danger",
-        });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-        setEditMode(false);
-      } else {
-        setEditMode(false);
-      }
+      }, 3000);
+    }
   };
 
   return (
@@ -86,10 +85,15 @@ const OrganizationCard = ({ OrganizationData, setOrganizationData }) => {
             ></i>
           </div>
           <h3 className="text-center mb-4">Edit Organization Details</h3>
-          <OrganizationalForm  handleSubmit={handleSubmit} OrganizationData={OrganizationData} setOrganizationData={setOrganizationData} setEditMode={setEditMode} />
+          <OrganizationalForm
+            handleSubmit={handleSubmit}
+            OrganizationData={Organization}
+            setOrganizationData={setOrganizationData}
+            setEditMode={setEditMode}
+          />
         </div>
       ) : (
-        Object.keys(OrganizationData).length > 0 && (
+        OrganizationData && (
           <div className="">
             <div className="float-end">
               <i
@@ -140,4 +144,4 @@ const OrganizationCard = ({ OrganizationData, setOrganizationData }) => {
 };
 
 export default OrganizationCard;
-// 
+//

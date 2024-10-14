@@ -71,7 +71,7 @@ const SettingsForm = () => {
     setLoadingTests(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/CBTapi/tests/${OrganizationData.id}`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/CBTapi/tests/${OrganizationData?.id}`
       );
       const data = await response.json();
       setTests(data);
@@ -83,8 +83,8 @@ const SettingsForm = () => {
   };
 
   useEffect(() => {
-    if (OrganizationData.id) fetchTests();
-  }, [OrganizationData.id]);
+    if (OrganizationData?.id) fetchTests();
+  }, [OrganizationData?.id]);
 
   // ----------------------------------
   //   Close modal
@@ -106,7 +106,7 @@ const SettingsForm = () => {
     setSubmitting(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/CBTapi/addtest/${OrganizationData.id}/`,
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/CBTapi/addtest/${OrganizationData?.id}/`,
         {
           method: "POST",
           headers: {

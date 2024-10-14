@@ -25,7 +25,7 @@ const CbtForm = ({
     setLoadingExams(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/CBTapi/tests/${OrganizationData.id}`
+        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/CBTapi/tests/${OrganizationData?.id}`
       );
       const data = await response.json();
       setExams(data);
@@ -56,10 +56,10 @@ const CbtForm = ({
   // fetch exams
   // -------------------------------------------------------
   useEffect(() => {
-    if (!OrganizationData.id) return;
+    if (!OrganizationData?.id) return;
     fetchExams();
     setExamDetails({ ...examdetails, user_id: session?.user.id });
-  }, [OrganizationData.id, session?.user.id]);
+  }, [OrganizationData?.id, session?.user.id]);
 
   // -------------------------------------------------------
   // Submit the exam details
@@ -67,20 +67,18 @@ const CbtForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!examdetails.test_id || examdetails.examSubjects.length === 0) {
-      setAlert(
-        {
-          show: true,
-          message: "Please select an exam or exam subjects to continue",
-          type: "danger",
-        },
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000)
-      );
+      setAlert({
+        show: true,
+        message: "Please select an exam or exam subjects to continue",
+        type: "danger",
+      });
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000)
       return;
     }
     setExamDetails((prev) => ({

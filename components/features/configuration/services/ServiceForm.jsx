@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
-import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
 
+/**
+ * @param {{ service: Service; setService: (value:Service) => void; handleSubmit: any; addorupdate: any; OrganizationData: any; tab: any; categories: any; }} param0
+ */
 const ServiceForm = ({
   service,
   setService,
   handleSubmit,
   addorupdate,
-  OrganizationData,
   tab,
-  categories,
+  categories: servicecategories,
 }) => {
-  const { servicecategories } = useCategoriesContext();
   const { fetchServiceSubCategories } = useSubCategoriesContext();
   const [subcategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const ServiceForm = ({
 
   // Handle category change
   const handleCategoryChange = async (e) => {
-    const selectedCategory = servicecategories.find(
+    const selectedCategory = servicecategories?.find(
       (category) => category.category === e.target.value
     );
     setService({ ...service, category: selectedCategory, subcategory: null });
@@ -45,7 +45,7 @@ const ServiceForm = ({
 
   // Handle subcategory change
   const handleSubCategoryChange = (e) => {
-    const selectedSubCategory = subcategories.find(
+    const selectedSubCategory = subcategories?.find(
       (subcategory) => subcategory.subcategory === e.target.value
     );
     setService({ ...service, subcategory: selectedSubCategory });
@@ -104,7 +104,7 @@ const ServiceForm = ({
             onChange={(e) =>
               setService({ ...service, description: e.target.value })
             }
-            rows="4"
+            rows={4}
             required
           ></textarea>
         </div>
@@ -139,7 +139,7 @@ const ServiceForm = ({
             required
           >
             <option value="">Select category</option>
-            {categories.map((category) => (
+            {servicecategories.map((category) => (
               <option key={category.id} value={category.category}>
                 {category.category}
               </option>
@@ -165,7 +165,7 @@ const ServiceForm = ({
             ) : (
               <>
                 <option value="">Select subcategory</option>
-                {subcategories.map((subcategory) => (
+                {subcategories?.map((subcategory) => (
                   <option key={subcategory.id} value={subcategory.subcategory}>
                     {subcategory.subcategory}
                   </option>

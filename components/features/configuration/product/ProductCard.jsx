@@ -1,6 +1,9 @@
 import ProductPlaceholder from "@/components/custom/ImagePlaceholders/Productplaceholder";
-import React from "react";
 
+
+/**
+ * @param {{ openModal: any; item: Product; onDelete: any; onEdit: any; tab: any; }} param0
+ */
 const ProductCard = ({ openModal, item, onDelete, onEdit, tab }) => {
   return (
     <div className="col-12 col-md-4">

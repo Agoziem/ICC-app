@@ -1,38 +1,20 @@
 "use client";
-import React, { useContext } from "react";
 import "./section.css";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import { MdOutlineQuestionAnswer } from "react-icons/md";
-import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
-import { TbBooks } from "react-icons/tb";
-import { RiCustomerService2Line } from "react-icons/ri";
+import { PiGearBold } from "react-icons/pi";
 import Link from "next/link";
+import useSWR from "swr";
+import { fetchDepartments, MainAPIendpoint } from "@/data/organization/fetcher";
+import { dept_icons } from "@/constants";
 
 const StaffSection = () => {
-  const { depts, staffs } = useContext(OrganizationContext);
-  const dept_icons = [
-    {
-      id: 1,
-      icon: <MdOutlineQuestionAnswer />,
-    },
-    {
-      id: 2,
-      icon: <PiGraduationCapBold />,
-    },
-    {
-      id: 3,
-      icon: <TbBooks />,
-    },
-    {
-      id: 4,
-      icon: <RiCustomerService2Line />,
-    },
-    {
-      id: 5,
-      icon: <PiGearBold />,
-    },
-    
-  ];
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+
+   // for data fetching
+   const { data: depts } = useSWR(
+    `${MainAPIendpoint}/department/${OrganizationID}/`,
+    fetchDepartments
+  );
+  
   return (
     <>
       <section
@@ -48,14 +30,14 @@ const StaffSection = () => {
         </div>
 
         <div className="row px-4 px-md-5">
-          {depts && depts.length > 0 ? (
-            depts.map((dept, index) => (
-              <div key={index} className="col-md-6 col-lg-4 mb-4">
+          {depts && depts?.results?.length > 0 ? (
+            depts?.results?.map((dept, index) => (
+              <div key={dept.id} className="col-md-6 col-lg-4 mb-4">
                 <div className="card py-3 mx-auto">
                   <div className="card-body">
                     <div className="d-flex flex-column justify-content-center align-items-center mb-3">
                       <span className="dept-icon h1 mb-3 text-secondary">
-                        {dept_icons.find((icon) => icon.id === dept.id)?.icon || <PiGearBold />}
+                        {dept_icons.find((icon) => icon.id === index + 1)?.icon || <PiGearBold />}
                       </span>
                       <h4 className="mb-0">{dept.name}</h4>
                     </div>

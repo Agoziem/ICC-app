@@ -3,6 +3,7 @@ import { OrganizationContext } from "@/data/organization/Organizationalcontextda
 import React, { useContext } from "react";
 
 const PrivacyPage = () => {
+  /** * @type {{OrganizationData:Organization}}*/
   const { OrganizationData } = useContext(OrganizationContext);
   return (
     <div
@@ -14,11 +15,11 @@ const PrivacyPage = () => {
     
       <h4>Privacy Policy</h4>
       <hr />
-      {OrganizationData?.privacyPolicy ? (
+      {OrganizationData?.privacy_policy ? (
         <div style={{ width: "100%" }}>
           <div
             dangerouslySetInnerHTML={{
-              __html: OrganizationData.privacyPolicy,
+              __html: OrganizationData.privacy_policy,
             }}
             style={{
               fontSize: "1.1rem",

@@ -1,34 +1,31 @@
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
 import React, { useState } from "react";
 import Alert from "@/components/custom/Alert/Alert";
+import { updateOrganization } from "@/data/organization/fetcher";
 
-const TermsOfUse = ({ OrganizationData, setOrganizationData }) => {
+
+/**
+ * @param {{ OrganizationData: Organization, mutate: (data?: any) => Promise<void> }} param0
+ */
+const TermsOfUse = ({ OrganizationData,mutate }) => {
+  const [organizationdata,setOrganizationData] = useState(OrganizationData)
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     type: "",
   })
+
   const editTermsOfUse = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/organization/edittermsofuse/${OrganizationData.id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(OrganizationData),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setOrganizationData(data);
-        setAlert({
-          show: true,
-          message: "Terms of Use updated successfully",
-          type: "success",
-        })
-      }
+      await mutate(updateOrganization(organizationdata))
+      setAlert({
+        show: true,
+        message: "Terms of Use updated successfully",
+        type: "success",
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error.message)
       setAlert({
         show: true,
         message: "An error occurred",
@@ -52,7 +49,7 @@ const TermsOfUse = ({ OrganizationData, setOrganizationData }) => {
       <p>Add or edit Terms of Use</p>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <Tiptap
-        item={OrganizationData}
+        item={organizationdata}
         setItem={setOrganizationData}
         keylabel={"terms_of_use"}
       />

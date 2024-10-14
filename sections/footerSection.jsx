@@ -1,13 +1,20 @@
 "use client";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
-import { FaFacebook, FaInstagram, FaLinkedinIn, FaTiktok, FaXTwitter } from "react-icons/fa6";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTiktok,
+  FaXTwitter,
+} from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import Alert from "@/components/custom/Alert/Alert";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import "./section.css";
 
 const FooterSection = () => {
-  const { OrganizationData} = useContext(OrganizationContext);
+  const { OrganizationData } = useContext(OrganizationContext);
   const [formData, setFormData] = useState({
     email: "",
   });
@@ -17,7 +24,7 @@ const FooterSection = () => {
     message: "",
     show: false,
   });
-  const [formErrors, setFormErrors] = useState({});
+  const [formErrors, setFormErrors] = useState(null);
 
   const validate = () => {
     const errors = {};
@@ -93,9 +100,9 @@ const FooterSection = () => {
           });
         }, 3000);
       }
-      }
     }
-    
+  };
+
   return (
     <section className="footer">
       <div className="p-5 p-md-5">
@@ -118,7 +125,10 @@ const FooterSection = () => {
                     }}
                   />
                 </Link>
-                <Link href={OrganizationData?.whatsapplink || "#"} target="_blank">
+                <Link
+                  href={OrganizationData?.whatsapplink || "#"}
+                  target="_blank"
+                >
                   <IoLogoWhatsapp
                     className="mx-2"
                     style={{
@@ -177,18 +187,18 @@ const FooterSection = () => {
                   products and services
                 </p>
                 {alert.show && (
-                  <Alert type={alert.type} className="mb-2">
-                    {alert.message}
-                  </Alert>
+                  <div className="mb-2">
+                    <Alert type={alert.type}>{alert.message}</Alert>
+                  </div>
                 )}
-                {formErrors.email && (
+                {formErrors?.email && (
                   <div className="text-danger mb-2">{formErrors.email}</div>
                 )}
                 <div className="subscribe-input d-md-flex">
                   <input
                     type="email"
                     className={`form-control ${
-                      formErrors.email ? "is-invalid" : ""
+                      formErrors?.email ? "is-invalid" : ""
                     }`}
                     name="email"
                     placeholder="Enter your email"
@@ -202,9 +212,7 @@ const FooterSection = () => {
                     onClick={handleSubmit}
                     disabled={submitting}
                   >
-                    {
-                      submitting ? "Subscribing..." : "Subscribe"
-                    }
+                    {submitting ? "Subscribing..." : "Subscribe"}
                   </button>
                 </div>
               </div>
@@ -246,7 +254,7 @@ const FooterSection = () => {
             <div className="footer-links">
               <h6>features</h6>
               <ul className="list-unstyled">
-              <li>
+                <li>
                   <Link className="small" href="/articles">
                     Articles
                   </Link>
@@ -279,13 +287,13 @@ const FooterSection = () => {
       {/* subfooter */}
       <div className="subfooter py-3 d-flex justify-content-center align-items-center">
         <p className="text-center  small mb-0">
-          &copy; 2024 <span className="text-secondary">Innovations CyberCafe.</span> All Rights Reserved
+          &copy; 2024{" "}
+          <span className="text-secondary">Innovations CyberCafe.</span> All
+          Rights Reserved
         </p>
       </div>
     </section>
   );
 };
-
-
 
 export default FooterSection;

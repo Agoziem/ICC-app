@@ -2,6 +2,9 @@ import React from "react";
 import ServicesPlaceholder from "@/components/custom/ImagePlaceholders/ServicesPlaceholder";
 import ApplicationPlaceholder from "@/components/custom/ImagePlaceholders/ApplicationPlaceholder";
 
+/**
+ * @param {{ item: Service; tab: any; onEdit: any; onDelete: any; openModal: any; }} param0
+ */
 const ServiceCard = ({ item, tab, onEdit, onDelete, openModal }) => (
   <div className="col-12 col-md-4">
     <div className="card p-3 py-4">

@@ -1,18 +1,12 @@
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 import React from "react";
 
-const StaffForm = ({addStaff, addorupdate, staff,setStaff,OrganizationData}) => {
+/**
+ * @param {{ addStaff: any; addorupdate: any; staff: Staff; setStaff: (value:Staff) => void; closeModal: any; }} param0
+ */
+const StaffForm = ({ addStaff, addorupdate, staff, setStaff, closeModal }) => {
   return (
-    <form
-      onSubmit={(e) =>
-        addStaff(
-          e,
-          addorupdate.mode === "add"
-            ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/staff/add/${OrganizationData?.id}/`
-            : `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/staff/update/${staff.id}/`
-        )
-      }
-    >
+    <form onSubmit={addStaff}>
       <div className="mb-3">
         <ImageUploader
           imagekey={"img"}

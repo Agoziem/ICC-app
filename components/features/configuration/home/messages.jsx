@@ -2,18 +2,16 @@ import React, { useEffect, useState } from "react";
 import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
 import { MdAlternateEmail } from "react-icons/md";
+import { messageDefault } from "@/constants";
+import { deleteEmail, fetchEmails } from "@/data/Emails/fetcher";
+import useSWR from "swr";
+import { MainAPIendpoint } from "@/data/organization/fetcher";
 
-const Messages = ({ messages, setMessages, OrganizationData }) => {
+const Messages = () => {
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [showModal, setShowModal] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
-  const [message, setMessage] = useState({
-    id: "",
-    name: "",
-    subject: "",
-    message: "",
-    email: "",
-    created_at: "",
-  });
+  const [message, setMessage] = useState(messageDefault);
   const [reply, setReply] = useState({
     name: "",
     sending_email: "",
@@ -27,27 +25,28 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
     type: "",
   });
 
-  const deleteMessage = async (id) => {
+
+  const { data: messages } = useSWR(
+    `${MainAPIendpoint}/emails/${OrganizationID}/`,
+    fetchEmails
+  );
+  const { mutate } = useSWR(`${MainAPIendpoint}/emails/${OrganizationID}/`);
+
+  /**
+   * @async
+   * @param {number} id
+   */
+  const removeMessage = async (id) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/emailsapi/delete_email/${id}/`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (res.ok) {
-        const newMessages = messages.filter((message) => message.id !== id);
-        setMessages(newMessages);
-        setAlert({
-          show: true,
-          message: "Message Deleted Successfully",
-          type: "success",
-        });
-      } else {
-        throw new Error("Error Deleting Message");
-      }
+      await mutate(deleteEmail(id), {
+        populateCache: true,
+      });
+      setAlert({
+        show: true,
+        message: "Message Deleted Successfully",
+        type: "success",
+      });
     } catch (error) {
-      console.log(error);
       setAlert({
         show: true,
         message: "Error Deleting Message",
@@ -75,14 +74,7 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
       subject: "",
       message: "",
     });
-    setMessage({
-      id: "",
-      name: "",
-      subject: "",
-      message: "",
-      email: "",
-      created_at: "",
-    });
+    setMessage(messageDefault);
   };
 
   // send a reply to a message
@@ -134,8 +126,8 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
     <div className="px-1 px-md-4">
       <h4>Messages</h4>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-      {messages.length > 0 ? (
-        messages.map((message) => (
+      {messages?.length > 0 ? (
+        messages?.map((message) => (
           <div key={message.id} className="card my-3 p-3">
             <div className="card-body">
               <div className="mb-3">
@@ -171,7 +163,7 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
                   {new Date(message.created_at).toDateString()}
                 </div>
                 <div className="mt-2 mt-md-0">
-                  <button
+                  {/* <button
                     className="btn btn-accent-secondary rounded small mx-0 me-2 mx-md-3"
                     style={{ cursor: "pointer" }}
                     onClick={() => {
@@ -186,7 +178,7 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
                     }}
                   >
                     reply to message
-                  </button>
+                  </button> */}
 
                   <button
                     className="btn btn-sm btn-danger rounded px-4 px-md-3 mt-3 mt-md-0"
@@ -284,7 +276,7 @@ const Messages = ({ messages, setMessages, OrganizationData }) => {
               <button
                 className="btn btn-sm btn-danger rounded px-3 me-3"
                 onClick={() => {
-                  deleteMessage(message.id);
+                  removeMessage(message.id);
                 }}
               >
                 Delete

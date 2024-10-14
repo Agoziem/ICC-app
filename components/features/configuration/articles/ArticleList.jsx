@@ -4,33 +4,32 @@ import Alert from "@/components/custom/Alert/Alert";
 import ArticlePlaceholder from "./ArticlePlaceholder";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Pagination from "@/components/custom/Pagination/Pagination";
+import { ArticleDefault } from "@/constants";
+import { useRouter } from "next/navigation";
 
+
+/**
+ * Description placeholder
+ *
+ * @param {{ articles: any; article: any; setArticle: any; editMode: any; setEditMode: any; loading: any; currentPage: any; pageSize: any; }} param0
+ */
 const ArticleList = ({
   articles,
-  setArticles,
   article,
   setArticle,
   editMode,
   setEditMode,
-  totalPages,
-  fetchArticles,
-  totalArticles,
   loading,
+  currentPage,
+  pageSize
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     type: "",
   });
-  const { OrganizationData } = useContext(OrganizationContext);
-
-  // Fetch Articles on Page Change
-  useEffect(() => {
-    if (OrganizationData.id)
-      fetchArticles(OrganizationData.id, currentPage, 10);
-  }, [OrganizationData.id, currentPage]);
+  const router = useRouter();
 
   // handle Article Delete
   const deleteArticle = async (id) => {
@@ -41,7 +40,7 @@ const ArticleList = ({
       }
     );
     if (res.ok) {
-      setArticles(articles.filter((article) => article.id !== id));
+      // setArticles(articles.filter((article) => article.id !== id));
       setAlert({
         show: true,
         message: "Article deleted successfully",
@@ -66,32 +65,26 @@ const ArticleList = ({
 
   const closeModal = () => {
     setShowModal(false);
-    setArticle({
-      id: null,
-      img: null,
-      img_url: null,
-      img_name: "",
-      title: "",
-      subtitle: "",
-      body: "",
-      tags: [],
-      slug: "",
-      category: "",
-      readTime: 0,
-    });
+    setArticle(ArticleDefault);
   };
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-      fetchArticles(page);
-    }
+  // -----------------------------------------
+  // Handle page change
+  // -----------------------------------------
+  /**  @param {string} newPage */
+  const handlePageChange = (newPage) => {
+    router.push(
+      `?category=All&page=${newPage}&page_size=${pageSize}`,
+      {
+        scroll: false,
+      }
+    );
   };
 
   return (
     <div>
       <h4 className="mb-3">
-        {totalArticles} Article{articles?.length > 1 ? "s" : ""}
+        {articles} Article{articles?.length > 1 ? "s" : ""}
       </h4>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {articles && articles.length > 0 ? (
@@ -179,13 +172,15 @@ const ArticleList = ({
             ))}
 
           {/* ServerSide Pagination */}
-          {!loading && totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              handlePageChange={handlePageChange}
-            />
-          )}
+          {!loading &&
+            articles &&
+            Math.ceil(articles.count / parseInt(pageSize)) > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(articles.count / parseInt(pageSize))}
+                handlePageChange={handlePageChange}
+              />
+            )}
         </div>
       ) : (
         <div className="card-body">

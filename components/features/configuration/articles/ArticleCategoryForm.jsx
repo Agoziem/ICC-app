@@ -1,16 +1,15 @@
-import React from "react";
 import CategoriesForm from "@/components/features/Categories/Categories";
 
-const ArticleCategoryForm = ({ categories, setCategories }) => {
+const ArticleCategoryForm = ({ categories,mutate }) => {
   return (
     <CategoriesForm
       items={categories}
-      setItems={setCategories}
+      mutate={mutate}
       itemName="category"
       itemLabel="Category"
-      addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/addCategory/`}
-      updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/updateCategory`}
-      deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/deleteCategory`}
+      addUrl={"/blogsapi/addCategory/"}
+      updateUrl={"/blogsapi/updateCategory/"}
+      deleteUrl={"/blogsapi/deleteCategory/"}
     />
   );
 };

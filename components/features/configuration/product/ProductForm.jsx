@@ -1,48 +1,18 @@
 import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
-import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import FileUploader from "@/components/custom/Fileuploader/FileUploader";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 
-// [
-// //     //     {
-//   "id": 3,
-//   "organization": {
-//     "id": 1,
-//     "name": "Innovations Cybercafe"
-//   },
-//   "preview": null,
-//   "img_url": null,
-//   "img_name": null,
-//   "product": null,
-//   "product_url": null,
-//   "product_name": null,
-//   "category": {
-//     "id": 1,
-//     "category": "Jamb",
-//     "description": null
-//   },
-//   "name": "AI Tutor for Exam Preparations",
-//   "description": "No description available",
-//   "price": "2500.00",
-//   "rating": 0,
-//   "product_token": "eddc95530ca84141bafb2a3bdd0d695d",
-//   "digital": true,
-//   "created_at": "2024-05-29T10:03:26.614597Z",
-//   "last_updated_date": "2024-07-16T04:50:08.986147Z",
-//   "free": false,
-//   "userIDs_that_bought_this_product": []
-// },
-//   ]
-
+/**
+ * @param {{ product: Product; setProduct: (value:Product) => void; handleSubmit: any; addorupdate: any; categories: Categories; }} param0
+ */
 const ProductForm = ({
   product,
   setProduct,
   handleSubmit,
   addorupdate,
-  categories,
+  categories: productcategories,
 }) => {
-  const { productcategories } = useCategoriesContext();
   const { fetchProductsSubCategories } = useSubCategoriesContext();
   const [subcategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -64,7 +34,7 @@ const ProductForm = ({
   // Handle category change
   // -------------------------------
   const handleCategoryChange = (e) => {
-    const selectedCategory = productcategories.find(
+    const selectedCategory = productcategories?.find(
       (category) => category.category === e.target.value
     );
     setProduct({ ...product, category: selectedCategory, subcategory: null });
@@ -78,7 +48,7 @@ const ProductForm = ({
   // Handle subcategory change
   //  -------------------------------
   const handleSubCategoryChange = (e) => {
-    const selectedSubCategory = subcategories.find(
+    const selectedSubCategory = subcategories?.find(
       (subcategory) => subcategory.subcategory === e.target.value
     );
     setProduct({ ...product, subcategory: selectedSubCategory });
@@ -137,7 +107,7 @@ const ProductForm = ({
             onChange={(e) =>
               setProduct({ ...product, description: e.target.value })
             }
-            rows="4"
+            rows={4}
             required
           ></textarea>
         </div>
@@ -167,12 +137,12 @@ const ProductForm = ({
             className="form-select"
             id="category"
             name="category"
-            value={product.category?.category}
+            value={product.category.category}
             onChange={handleCategoryChange}
             required
           >
             <option value="">Select category</option>
-            {categories.map((category) => (
+            {productcategories?.map((category) => (
               <option key={category.id} value={category.category}>
                 {category.category}
               </option>
@@ -198,7 +168,7 @@ const ProductForm = ({
             ) : (
               <>
                 <option value="">Select subcategory</option>
-                {subcategories.map((subcategory) => (
+                {subcategories?.map((subcategory) => (
                   <option key={subcategory.id} value={subcategory.subcategory}>
                     {subcategory.subcategory}
                   </option>

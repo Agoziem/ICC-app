@@ -4,20 +4,12 @@ import React, { useContext, useState } from "react";
 import { converttoformData } from "@/utils/formutils";
 import Alert from "@/components/custom/Alert/Alert";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { testimonialDefault } from "@/constants";
 
 const FeedbackPage = () => {
   const { OrganizationData, testimonials, setTestimonials } =
     useContext(OrganizationContext);
-  const [testimonial, setTestimonial] = useState({
-    id: "",
-    name: "",
-    content: "",
-    role: "",
-    rating: 0,
-    img: null,
-    img_url: "",
-    img_name: "",
-  });
+  const [testimonial, setTestimonial] = useState(testimonialDefault);
   const [addorupdate, setAddOrUpdate] = useState({
     type: "add",
     state: true,
@@ -71,16 +63,7 @@ const FeedbackPage = () => {
   };
 
   const resetForm = () => {
-    setTestimonial({
-      id: "",
-      name: "",
-      content: "",
-      role: "",
-      rating: 0,
-      img: null,
-      img_url: "",
-      img_name: "",
-    });
+    setTestimonial(testimonialDefault);
     setAddOrUpdate({
       type: "add",
       state: true,
@@ -98,7 +81,8 @@ const FeedbackPage = () => {
         {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
         <TestimonialForm
           addorupdate={addorupdate}
-          testimonialData={testimonial}
+          testimonial={testimonial}
+          setTestimonial={setTestimonial}
           onSubmit={handleFormSubmit}
           onClose={resetForm}
         />

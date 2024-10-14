@@ -3,58 +3,22 @@ import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
 import { converttoformData } from "@/utils/formutils";
 import DepartmentForm from "./DepartmentForm";
-// [
-//     {
-//         "id": 1,
-//         "img": null,
-//         "img_url": null,
-//         "img_name": null,
-//         "staff_in_charge": {
-//             "id": 5,
-//             "name": "Edward Andreas",
-//             "img_url": null
-//         },
-//         "organization": {
-//             "id": 1,
-//             "name": "Innovations Cybercafe"
-//         },
-//         "services": [
-//             {
-//                 "id": 1,
-//                 "name": "Registering PostUtme",
-//                 "created_at": "2024-06-27T09:46:01.943745Z"
-//             },
-//             {
-//                 "id": 2,
-//                 "name": "Date Confirmation",
-//                 "created_at": "2024-06-27T09:46:45.576125Z"
-//             },
-//             {
-//                 "id": 3,
-//                 "name": "Data Correction",
-//                 "created_at": "2024-06-27T09:47:06.970061Z"
-//             }
-//         ],
-//         "name": "Post Utme",
-//         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nibh. Etiam non elit dui. Nullam vel eros sit amet arcu vestibulum accumsan in in leo. Fusce malesuada vulputate faucibus. Integer in hendrerit nisi. Praesent a hendrerit urna. In non imperdiet elit. Nulla feugiat dolor vel justo. Vestibulum auctor erat in purus sollicitudin, et elementum augue elementum. Cras non tincidunt mi. Etiam sit amet dui volutpat, cursus diam sit amet, accumsan odio. Suspendisse interdum mauris vel justo hendrerit, non lacinia lorem fermentum. Donec sagittis, libero nec pharetra aliquam, ex leo pharetra sem, vel lacinia mi justo nec tellus. Phasellus sit amet est pharetra, sodales mi vitae, ultrices ipsum. Nulla facilisi. Sed nec purus euismod, aliquam urna sit amet, euismod nunc. Nulla nec libero et nunc facilisis dictum",
-//         "created_at": "2024-06-27T09:47:09.792477Z",
-//         "last_updated_date": "2024-06-27T09:47:09.792477Z"
-//     },
-// ]
-const Depts = ({ depts, setDepts, OrganizationData }) => {
+import { deptDefault } from "@/constants";
+import {
+  createDepartment,
+  deleteTestimonial,
+  fetchDepartments,
+  MainAPIendpoint,
+  updateDepartment,
+} from "@/data/organization/fetcher";
+import useSWR from "swr";
+
+const Depts = ({staffs}) => {
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [showModal, setShowModal] = useState(false);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
   const [service, setService] = useState("");
-  const [department, setDepartment] = useState({
-    id: null,
-    img: null,
-    img_url: null,
-    img_name: null,
-    staff_in_charge: null, // This is an id of staff_in_charge,
-    services: [], // This is an array of services name,
-    name: "",
-    description: "",
-  });
+  const [department, setDepartment] = useState(deptDefault);
 
   const [alert, setAlert] = useState({
     show: false,
@@ -67,50 +31,56 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
     state: false,
   });
 
+  // for data fetching
+  const { data: depts } = useSWR(
+    `${MainAPIendpoint}/department/${OrganizationID}/`,
+    fetchDepartments
+  );
+
+  // for data fetching
+  const { mutate } = useSWR(
+    `${MainAPIendpoint}/department/${OrganizationID}/`,
+  );
+
   // -------------------------------------------------------------
   // Function to handle form submission
   // -------------------------------------------------------------
 
-  const handleSubmit = (e, url) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Convert the department object to FormData, specifying 'services' as a key to be serialized
-    const formData = converttoformData(department, ["services"]);
-
-    fetch(url, {
-      method: addorupdate.type === "add" ? "POST" : "PUT",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (addorupdate.type === "add") {
-          setDepts([...depts, data]);
-        } else {
-          setDepts(
-            depts.map((dept) =>
-              dept.id === data.id ? { ...dept, ...data } : dept
-            )
-          );
-        }
-        setAlert({
-          show: true,
-          message: `Department ${addorupdate.type}ed successfully`,
-          type: "success",
+    // const formData = converttoformData(department, ["services"]);  convert to FormData Later
+    try {
+      if (addorupdate.type === "add") {
+        await mutate(createDepartment(department), {
+          populateCache: true,
         });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error adding Department data:", error);
-      })
-      .finally(() => {
-        closeModal();
+      } else {
+        mutate(updateDepartment(department), {
+          populateCache: true,
+        });
+      }
+      setAlert({
+        show: true,
+        message: `Department ${addorupdate.type}ed successfully`,
+        type: "success",
       });
+    } catch (error) {
+      console.error("Error adding Department data:", error);
+      setAlert({
+        show: true,
+        message: "Error adding Department data",
+        type: "danger",
+      });
+    } finally {
+      closeModal();
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    }
   };
 
   // -------------------------------------------------------------
@@ -124,51 +94,45 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
       type: "add",
       state: false,
     });
-    setDepartment({
-      id: null,
-      img: null,
-      img_url: null,
-      img_name: null,
-      staff_in_charge: null, // This is an id of staff_in_charge,
-      services: [], // This is an array of services name,
-      name: "",
-      description: "",
-    });
+    setDepartment(deptDefault);
     setService("");
   };
 
   // -------------------------------------------------------------
   // Function to delete a testimonial
   // -------------------------------------------------------------
-  const deleteTestimonial = (id) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/department/delete/${id}/`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then(() => {
-        setDepts(depts.filter((dept) => dept.id !== id));
-        setAlert({
-          show: true,
-          message: "Department deleted successfully",
-          type: "success",
-        });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error deleting department data:", error);
-      })
-      .finally(() => {
-        closeModal();
+  /**
+   * @param {number} id
+   */
+  const removeTestimonial = (id) => {
+    try {
+      mutate(deleteTestimonial(id), {
+        populateCache: true,
       });
+      setAlert({
+        show: true,
+        message: "Department deleted successfully",
+        type: "success",
+      });
+    } catch (error) {
+      setAlert({
+        show: true,
+        message: "An error occurred while deleting Department",
+        type: "danger",
+      });
+    } finally {
+      closeModal();
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    }
   };
+
+
   return (
     <div className="px-1 px-md-4">
       <div className="mb-5 mb-md-0">
@@ -193,10 +157,10 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
       {/* set of horizontal Cards that are clickable */}
       <div className="mt-4">
         {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-        {depts.length === 0 ? (
+        {depts?.results.length === 0 ? (
           <p>No testimonials available</p>
         ) : (
-          depts.map((department) => (
+          depts?.results.map((department) => (
             <div key={department.id} className="card my-3 p-3">
               <div className="card-body">
                 <h5>{department.name} Department</h5>
@@ -225,7 +189,9 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
                         backgroundColor: "var(--bgDarkerColor)",
                       }}
                     >
-                      {department.staff_in_charge?.name?.charAt(0).toUpperCase()}
+                      {department.staff_in_charge?.name
+                        ?.charAt(0)
+                        .toUpperCase()}
                     </div>
                   )}
                   <div className="ms-3">
@@ -243,16 +209,7 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
                           type: "update",
                           state: true,
                         });
-                        setDepartment({
-                          id: department.id,
-                          img: department.img,
-                          img_url: department.img_url,
-                          img_name: department.img_name,
-                          staff_in_charge: department.staff_in_charge.id,
-                          services: department.services,
-                          name: department.name,
-                          description: department.description,
-                        });
+                        setDepartment(department);
                         setShowModal(true);
                       }}
                     >
@@ -262,16 +219,7 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
                     <button
                       className="btn btn-sm btn-danger rounded px-3"
                       onClick={() => {
-                        setDepartment({
-                          id: department.id,
-                          img: department.img,
-                          img_url: department.img_url,
-                          img_name: department.img_name,
-                          staff_in_charge: department.staff_in_charge.id,
-                          services: department.services,
-                          name: department.name,
-                          description: department.description,
-                        });
+                        setDepartment(department);
                         setShowDeleteModal(true);
                       }}
                     >
@@ -289,16 +237,13 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>
         <div className="modal-body">
           {addorupdate.state ? (
-            <DepartmentForm
+            <DepartmentForm 
               addorupdate={addorupdate}
               department={department}
               setDepartment={setDepartment}
-              OrganizationData={OrganizationData}
               handleSubmit={handleSubmit}
               closeModal={closeModal}
-              setAlert={setAlert}
-              setDepts={setDepts}
-              depts={depts}
+              staffs={staffs.results}
             />
           ) : null}
         </div>
@@ -314,7 +259,7 @@ const Depts = ({ depts, setDepts, OrganizationData }) => {
             <button
               className="btn btn-accent-secondary border-0 text-secondary mt-3 rounded"
               onClick={() => {
-                deleteTestimonial(department.id);
+                removeTestimonial(department.id);
               }}
             >
               Delete Testimonial

@@ -1,55 +1,36 @@
 "use client";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { MdOutlineQuestionAnswer } from "react-icons/md";
-import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
-import { TbBooks } from "react-icons/tb";
-import { RiCustomerService2Line } from "react-icons/ri";
 import BackButton from "@/components/custom/backbutton/BackButton";
+import { dept_icons } from "@/constants";
+import useSWR from "swr";
+import { fetchDepartments, MainAPIendpoint } from "@/data/organization/fetcher";
 
 const Department = ({ params }) => {
-  const { depts } = useContext(OrganizationContext);
   const { id } = params;
   const [department, setDepartment] = useState(null);
   const [otherDepartments, setOtherDepartments] = useState([]);
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
-  const fetchdepartment = () => {
+   // for data fetching
+   const { data: depts } = useSWR(
+    `${MainAPIendpoint}/department/${OrganizationID}/`,
+    fetchDepartments
+  );
+
+ const fetchdepartment = () => {
     if (!depts) return;
-    const department = depts.find((item) => item.id === parseInt(id));
+    const department = depts.results.find((item) => item.id === parseInt(id));
     if (department) {
       setDepartment(department);
-      const otherDepartments = depts.filter((item) => item.id !== parseInt(id));
+      const otherDepartments = depts.results.filter((item) => item.id !== parseInt(id));
       setOtherDepartments(otherDepartments);
-    }
+    } 
   };
 
-  const dept_icons = [
-    {
-      id: 1,
-      icon: <MdOutlineQuestionAnswer />,
-    },
-    {
-      id: 2,
-      icon: <PiGraduationCapBold />,
-    },
-    {
-      id: 3,
-      icon: <TbBooks />,
-    },
-    {
-      id: 4,
-      icon: <RiCustomerService2Line />,
-    },
-    {
-      id: 5,
-      icon: <PiGearBold />,
-    },
-  ];
-
   useEffect(() => {
-    if (id && depts && depts.length > 0) fetchdepartment();
+    if (id && depts && depts.results.length > 0) fetchdepartment();
   }, [id, depts]);
 
   return (

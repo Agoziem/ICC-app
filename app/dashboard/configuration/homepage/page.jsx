@@ -8,29 +8,32 @@ import OrganizationCard from "@/components/features/configuration/home/organizat
 import Staffs from "@/components/features/configuration/home/staffs";
 import Subscriptions from "@/components/features/configuration/home/subscriptions";
 import Testimonials from "@/components/features/configuration/home/testimonials";
+import { fetchEmails } from "@/data/Emails/fetcher";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import {
+  fetchDepartments,
+  fetchStaffs,
+  fetchSubscriptions,
+  fetchTestimonials,
+  MainAPIendpoint,
+} from "@/data/organization/fetcher";
 import React, { useContext, useState } from "react";
+import useSWR from "swr";
 
 const HomePageConfigPage = () => {
   const [currentSection, setCurrentSection] = useState(1);
-  const {
-    OrganizationData,
-    setOrganizationData,
-    staffs,
-    setStaffs,
-    testimonials,
-    setTestimonials,
-    subscriptions,
-    setSubscriptions,
-    messages,
-    setMessages,
-    depts,
-    setDepts,
-  } = useContext(OrganizationContext);
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const { OrganizationData, mutate: organizationmutate } =
+    useContext(OrganizationContext);
 
+  // for data fetching
+  const { data: staffs } = useSWR(
+    `${MainAPIendpoint}/staff/${OrganizationID}/`,
+    fetchStaffs
+  );
 
   return (
-    <div style={{minHeight:"100vh"}}>
+    <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Homepage Settings" />
       <h3 className="my-3 mt-4">Sections</h3>
       <div className="row justify-content-between">
@@ -43,7 +46,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 1 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 1
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 1 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(1)}
@@ -56,7 +62,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 2 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 2
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 2 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(2)}
@@ -69,7 +78,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 3 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 3
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 3 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(3)}
@@ -82,7 +94,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 4 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 4
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 4 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(4)}
@@ -96,7 +111,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 5 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 5
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 5 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(5)}
@@ -109,7 +127,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 6 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 6
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 6 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(6)}
@@ -122,7 +143,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 7 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 7
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 7 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(7)}
@@ -135,7 +159,10 @@ const HomePageConfigPage = () => {
                   background: "var(--bgLighterColor)",
                   borderColor: "var(--bgDarkColor)",
                   cursor: "pointer",
-                  color: currentSection === 8 ? "var(--secondary)" : "var(--primary)",
+                  color:
+                    currentSection === 8
+                      ? "var(--secondary)"
+                      : "var(--primary)",
                   fontWeight: currentSection === 8 ? "bold" : "",
                 }}
                 onClick={() => setCurrentSection(8)}
@@ -147,47 +174,30 @@ const HomePageConfigPage = () => {
         </div>
 
         <div className="col-md-7">
-          {
-            currentSection === 1 && (
-              <OrganizationCard OrganizationData={OrganizationData} setOrganizationData={setOrganizationData} />
-            )
-          }
-          {
-            currentSection === 2 && (
-              <Testimonials testimonials={testimonials} setTestimonials={setTestimonials} OrganizationData={OrganizationData}  />
-            )
-          }
-          {
-            currentSection === 3 && (
-              <Staffs staffs={staffs} setStaffs={setStaffs} OrganizationData={OrganizationData} />
-            )
-          }
-          {
-            currentSection === 4 && (
-              <Depts depts={depts} setDepts={setDepts} OrganizationData={OrganizationData} />
-            )
-          }
-          {
-            currentSection === 5 && (
-              <Subscriptions subscriptions={subscriptions} setSubscriptions={setSubscriptions} OrganizationData={OrganizationData} />
-            )
-          }
-          {
-            currentSection === 6 && (
-              <Messages messages={messages} setMessages={setMessages} OrganizationData={OrganizationData}/>
-            )
-          }
-           {
-            currentSection === 7 && (
-              <TermsOfUse OrganizationData={OrganizationData} setOrganizationData={setOrganizationData} />
-            )
-          }
-           {
-            currentSection === 8 && (
-              <PrivacyPolicy OrganizationData={OrganizationData} setOrganizationData={setOrganizationData} />
-            )
-          }
+          {currentSection === 1 && (
+            <OrganizationCard
+              OrganizationData={OrganizationData}
+              mutate={organizationmutate}
+            />
+          )}
+          {currentSection === 2 && <Testimonials />}
 
+          {currentSection === 3 && <Staffs staffs={staffs} />}
+          {currentSection === 4 && <Depts staffs={staffs} />}
+          {currentSection === 5 && <Subscriptions />}
+          {currentSection === 6 && <Messages />}
+          {currentSection === 7 && (
+            <TermsOfUse
+              OrganizationData={OrganizationData}
+              mutate={organizationmutate}
+            />
+          )}
+          {currentSection === 8 && (
+            <PrivacyPolicy
+              OrganizationData={OrganizationData}
+              mutate={organizationmutate}
+            />
+          )}
         </div>
       </div>
     </div>

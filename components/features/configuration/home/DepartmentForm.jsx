@@ -2,28 +2,21 @@ import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 import React, { useState } from "react";
 import { TiTimes } from "react-icons/ti";
 
+/**
+ * @param {{ addorupdate: {type: string;state: boolean;}; department: Department; setDepartment: (value:Department) => void; handleSubmit: any; closeModal: any;staffs:Staffs }} param0
+ */
 const DepartmentForm = ({
   addorupdate,
   department,
   setDepartment,
-  OrganizationData,
   handleSubmit,
+  staffs,
   closeModal,
 }) => {
   const [service, setService] = useState("");
 
   const handleFormSubmit = (e) => {
-    if (addorupdate.type === "add") {
-      handleSubmit(
-        e,
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/department/add/${OrganizationData.id}/`
-      );
-    } else {
-      handleSubmit(
-        e,
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/department/update/${department.id}/`
-      );
-    }
+    handleSubmit(e);
   };
 
   return (
@@ -73,17 +66,20 @@ const DepartmentForm = ({
           <label className="form-label">Staff in Charge</label>
           <select
             className="form-select"
-            value={department.staff_in_charge || ""}
+            value={department.staff_in_charge.name || ""}
             onChange={(e) =>
               setDepartment({
                 ...department,
-                staff_in_charge: e.target.value,
+                staff_in_charge: {
+                  ...department.staff_in_charge,
+                  name:e.target.value
+                },
               })
             }
             required
           >
             <option value="">Select Staff in Charge</option>
-            {OrganizationData.staffs.map((staff) => (
+            {staffs.map((staff) => (
               <option key={staff.id} value={staff.id}>
                 {staff.first_name} {staff.last_name}
               </option>
@@ -147,10 +143,7 @@ const DepartmentForm = ({
         </div>
 
         <hr />
-        <button
-          type="submit"
-          className="btn btn-primary border-0 mt-3 rounded"
-        >
+        <button type="submit" className="btn btn-primary border-0 mt-3 rounded">
           {addorupdate.type === "add" ? "Add Department" : "Update Department"}
         </button>
       </form>

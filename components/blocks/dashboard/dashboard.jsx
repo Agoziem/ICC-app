@@ -1,8 +1,8 @@
 import React from "react";
 import HorizontalCard from "./Card/horizontalcard";
-import RecentActivity from "./RecentactionsSections/RecentActivity";
+// import RecentActivity from "./RecentactionsSections/RecentActivity";
 import RecentSales from "./RecentsalesSection/RecentSales";
-import Reports from "./ReportchartsSection/Reports";
+// import Reports from "./ReportchartsSection/Reports";
 import News from "./Newsection/News";
 import TopSelling from "./TopsellingSection/TopSelling";
 import { useSession } from "next-auth/react";

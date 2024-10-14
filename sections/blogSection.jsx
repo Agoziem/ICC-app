@@ -13,7 +13,7 @@ const BlogSection = () => {
   // fetch articles by Categories
   // ----------------------------------------------------------
   const { data: articles } = useSWR(
-    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=3/`,
+    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=3`,
     fetchArticles
   );
 
@@ -31,7 +31,7 @@ const BlogSection = () => {
 
         <div className="row px-3 px-md-5">
           {articles && articles.results.length > 0 ? (
-            articles.results.slice(0,3).map((blog) => (
+            articles.results.map((blog) => (
               <div
                 key={blog.id}
                 className="col-12 col-md d-flex justify-content-center"
@@ -110,7 +110,7 @@ const BlogSection = () => {
           )}
         </div>
 
-        {articles && articles.count > 3 && (
+        {articles?.count > 3 && (
           <div>
             <div className="d-flex justify-content-center mt-0 mb-5">
               <Link href="/articles" className="btn btn-primary px-5">

@@ -1,17 +1,19 @@
 import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
+import { subscriptionDefault } from "@/constants";
+import {
+  createSubscription,
+  deleteSubscription,
+  fetchSubscriptions,
+  MainAPIendpoint,
+  updateSubscription,
+} from "@/data/organization/fetcher";
 import React, { useState } from "react";
+import useSWR from "swr";
 
-const Subscriptions = ({
-  subscriptions,
-  setSubscriptions,
-  OrganizationData,
-}) => {
-  const [subscription, setSubscription] = useState({
-    id: "",
-    email: "",
-    date_added: "",
-  });
+const Subscriptions = () => {
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const [subscription, setSubscription] = useState(subscriptionDefault);
   const [showModal, setShowModal] = useState(false);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
 
@@ -25,90 +27,92 @@ const Subscriptions = ({
     state: false,
   });
 
+  // for data fetching
+  const { data: subscriptions } = useSWR(
+    `${MainAPIendpoint}/subscription/${OrganizationID}/`,
+    fetchSubscriptions
+  );
+
+  // for mutation
+  const { mutate } = useSWR(
+    `${MainAPIendpoint}/subscription/${OrganizationID}/`
+  );
+
   // function close Modal
   const closeModal = () => {
     setShowModal(false);
     setShowDeleteModal(false);
-    setSubscription({
-      id: "",
-      email: "",
-      date_added: "",
-    });
+    setSubscription(subscriptionDefault);
   };
 
   // function to add or update Subscription
-  const addorupdateSubscription = (e, url) => {
+  const addorupdateSubscription = async (e) => {
     e.preventDefault();
-    fetch(url, {
-      method: addorupdate.mode === "add" ? "POST" : "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(subscription),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (addorupdate.mode === "add") {
-          setSubscriptions([data, ...subscriptions]);
-        } else {
-          setSubscriptions(
-            subscriptions.map((subscription) =>
-              subscription.id === data.id ? data : subscription
-            )
-          );
-        }
-        setAlert({
-          show: true,
-          message: `email ${addorupdate.mode}ed successfully`,
-          type: "success",
+    try {
+      if (addorupdate.mode === "add") {
+        await mutate(createSubscription(subscription), {
+          populateCache: true,
         });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error adding email:", error);
-      })
-      .finally(() => {
-        closeModal();
+      } else {
+        await mutate(updateSubscription(subscription), {
+          populateCache: true,
+        });
+      }
+      setAlert({
+        show: true,
+        message: `email ${addorupdate.mode}ed successfully`,
+        type: "success",
       });
+    } catch (error) {
+      console.log(error.message);
+      setAlert({
+        show: true,
+        message: `An error occured while submitting`,
+        type: "danger",
+      });
+    } finally {
+      closeModal();
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    }
   };
 
   // function to delete Subscription
-  const deleteSubscription = (id) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/subscription/delete/${id}/`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then(() => {
-        setSubscriptions(
-          subscriptions.filter((subscription) => subscription.id !== id)
-        );
-        setAlert({
-          show: true,
-          message: "email deleted successfully",
-          type: "success",
-        });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error deleting email :", error);
-      })
-      .finally(() => {
-        closeModal();
+  /**
+   * @param {number} id
+   */
+  const removeSubscription = async (id) => {
+    try {
+      await mutate(deleteSubscription(id), {
+        populateCache: true,
       });
+      setAlert({
+        show: true,
+        message: "email deleted successfully",
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting email :", error);
+      setAlert({
+        show: true,
+        message: "An error just occured",
+        type: "danger",
+      });
+    } finally {
+      closeModal();
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    }
   };
 
   return (
@@ -127,13 +131,13 @@ const Subscriptions = ({
           <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add email
         </button>
       </div>
-      {subscriptions.length > 0 ? (
+      {subscriptions?.results.length > 0 ? (
         <div>
           <h5 className="mb-3">Subscriptions</h5>
 
           {/* subscriptions emails list */}
           <ul className="list-group list-group-flush rounded">
-            {subscriptions.map((subscription) => (
+            {subscriptions?.results.map((subscription) => (
               <li
                 key={subscription.id}
                 className="list-group-item d-flex flex-wrap justify-content-between align-items-center p-4 py-md-4 px-md-5"
@@ -189,17 +193,7 @@ const Subscriptions = ({
           </h5>
         </div>
         <div className="modal-body">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              addorupdateSubscription(
-                e,
-                addorupdate.mode === "add"
-                  ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/subscription/add/${OrganizationData.id}/`
-                  : `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/subscription/update/${subscription.id}/`
-              );
-            }}
-          >
+          <form onSubmit={addorupdateSubscription}>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Email
@@ -249,7 +243,7 @@ const Subscriptions = ({
             <button
               className="btn btn-danger"
               onClick={() => {
-                deleteSubscription(subscription.id);
+                removeSubscription(subscription.id);
               }}
             >
               Yes
@@ -257,7 +251,6 @@ const Subscriptions = ({
           </div>
         </div>
       </Modal>
-
     </div>
   );
 };

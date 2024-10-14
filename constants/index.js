@@ -1,3 +1,8 @@
+import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { PiGearBold, PiGraduationCapBold } from "react-icons/pi";
+import { RiCustomerService2Line } from "react-icons/ri";
+import { TbBooks } from "react-icons/tb";
+
 /**
  * @type {WAMessage}
  */
@@ -18,3 +23,233 @@ export const WAMessageDefault = {
   link: "https://www.example.com", // Default to an empty string for media link
   status: "pending", // Default to "pending" for message status
 };
+
+/**
+ * Default for Organization Data
+ * @type {Organization }}
+ */
+export const OrganizationDefault = {
+  id: null,
+  logo: null,
+  Organizationlogoname: null,
+  Organizationlogo: null,
+  name: "",
+  description: "",
+  vision: "",
+  mission: "",
+  email: "",
+  phone: "",
+  address: "",
+  whatsapplink: null,
+  facebooklink: null,
+  instagramlink: null,
+  twitterlink: null,
+  tiktoklink: null,
+  linkedinlink: null,
+  youtubechannel: null,
+  privacy_policy: "",
+  terms_of_use: "",
+  created_at: new Date(),
+  last_updated_date: new Date(),
+};
+
+/**
+ * Default for Testimonials
+ * @type {Testimony}
+ */
+export const testimonialDefault = {
+  id: null,
+  name: "",
+  content: "",
+  role: "",
+  rating: 0,
+  img: null,
+  img_url: null,
+  img_name: null,
+  created_at: new Date(),
+  last_updated_date: new Date()
+};
+
+/**
+ * Default for Staff
+ * @type {Staff}
+ */
+export const staffdefault = {
+  id: null,
+  first_name: "",
+  last_name: "",
+  other_names: "",
+  email: "",
+  phone: "",
+  address: "",
+  img: null,
+  img_url: null,
+  img_name: "",
+  role: "",
+  facebooklink: "",
+  instagramlink: "",
+  twitterlink: "",
+  linkedinlink: "",
+  created_at: new Date(),
+  last_updated_date: new Date(),
+};
+
+/**
+ * Default for Department
+ * @type {Department}
+ */
+export const deptDefault = {
+  id: 1,
+  img: null,
+  img_url: null,
+  img_name: null,
+  staff_in_charge: null,
+  organization: {},
+  services: [],
+  name: "",
+  description: "",
+  created_at: new Date(),
+  last_updated_date: new Date(),
+};
+
+/**
+ * Default for Article
+ * @type {Article}
+ */
+export const ArticleDefault = {
+  id: null,
+  img: null,
+  img_url: null,
+  img_name: "",
+  title: "",
+  subtitle: "",
+  body: "",
+  tags: [],
+  slug: "",
+  category: {},
+  readTime: 0,
+};
+
+/**
+ * Description placeholder
+ *
+ * @type {Video}
+ */
+export const VideoDefault = {
+  id: null,
+  organization: {},
+  thumbnail: null,
+  video: null,
+  video_url: null,
+  video_name: null,
+  img_url: null,
+  img_name: null,
+  category: {},
+  subcategory: {},
+  title: "",
+  description: "",
+  price: "",
+  video_token: "",
+  created_at: new Date(),
+  updated_at: new Date(),
+  free: false,
+  userIDs_that_bought_this_video: [],
+};
+
+/**
+ * Default of Service
+ * @type {Service}
+ */
+export const serviceDefault = {
+  id: null,
+  organization: {},
+  preview: null,
+  img_url: null,
+  img_name: null,
+  category: {},
+  subcategory: {},
+  name: "",
+  description: "",
+  service_flow: null,
+  price: "",
+  number_of_times_bought: 0,
+  created_at: new Date(),
+  updated_at: new Date(),
+  userIDs_that_bought_this_service: [],
+};
+
+/**
+ * Default for a Product
+ * @type {Product}
+ */
+export const defaultProduct = {
+  id: 3,
+  organization: {},
+  preview: null,
+  img_url: null,
+  img_name: null,
+  product: null,
+  product_url: null,
+  product_name: null,
+  category: {},
+  subcategory: {},
+  name: "",
+  description: "",
+  price: "",
+  rating: 0,
+  product_token: "",
+  digital: true,
+  created_at: new Date(),
+  last_updated_date: new Date(),
+  free: false,
+  userIDs_that_bought_this_product: [],
+};
+
+/**
+ * Default for Subscription
+ * @type {Subscription}
+ */
+export const subscriptionDefault = {
+  id: null,
+  email: "",
+  date_added: new Date(),
+};
+
+/**
+ * Default for Message
+ * @type {Email}
+ */
+export const messageDefault = {
+  id: null,
+  name: "",
+  subject: "",
+  message: "",
+  email: "",
+  created_at: "",
+  organization: null,
+  read: false,
+};
+
+
+export const dept_icons = [
+  {
+    id: 1,
+    icon: <MdOutlineQuestionAnswer />,
+  },
+  {
+    id: 2,
+    icon: <PiGraduationCapBold />,
+  },
+  {
+    id: 3,
+    icon: <TbBooks />,
+  },
+  {
+    id: 4,
+    icon: <RiCustomerService2Line />,
+  },
+  {
+    id: 5,
+    icon: <PiGearBold />,
+  },
+];

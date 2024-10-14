@@ -4,20 +4,22 @@ import Modal from "@/components/custom/Modal/modal";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
 import Alert from "@/components/custom/Alert/Alert";
 import TestimonialForm from "./TestimonialForm";
+import { converttoformData } from "@/utils/formutils";
+import {
+  createTestimonial,
+  deleteTestimonial,
+  fetchTestimonials,
+  MainAPIendpoint,
+  updateTestimonial,
+} from "@/data/organization/fetcher";
+import { testimonialDefault } from "@/constants";
+import useSWR from "swr";
 
-const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
+const Testimonials = () => {
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [testimonial, setTestimonial] = useState({
-    id: "",
-    name: "",
-    content: "",
-    role: "",
-    rating: 0,
-    img: null,
-    img_url: "",
-    img_name: "",
-  });
+  const [testimonial, setTestimonial] = useState(testimonialDefault);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -29,50 +31,53 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
     state: false,
   });
 
+  // for fetching
+  const { data: testimonials } = useSWR(
+    `${MainAPIendpoint}/testimonial/${OrganizationID}/`,
+    fetchTestimonials
+  );
+
+  // for mutation
+  const { mutate } = useSWR(
+    `${MainAPIendpoint}/testimonial/${OrganizationID}/`
+  );
   // -------------------------------------------------------------
   // Function to handle form submission
   // -------------------------------------------------------------
 
-  const handleFormSubmit = (formData) => {
-    const url =
-      addorupdate.type === "add"
-        ? `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/add/${OrganizationData.id}/`
-        : `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/update/${formData.id}/`;
-
-    fetch(url, {
-      method: addorupdate.type === "add" ? "POST" : "PUT",
-      body: converttoformData(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (addorupdate.type === "add") {
-          setTestimonials([data, ...testimonials]);
-        } else {
-          setTestimonials(
-            testimonials.map((testimonial) =>
-              testimonial.id === data.id ? data : testimonial
-            )
-          );
-        }
-        setAlert({
-          show: true,
-          message: `Testimonial ${addorupdate.type}ed successfully`,
-          type: "success",
+  const handleFormSubmit = async (formData) => {
+    // convert image to formData
+    try {
+      if (addorupdate.type === "add") {
+        await mutate(createTestimonial(formData), {
+          populateCache: true,
         });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error adding testimonial data:", error);
-      })
-      .finally(() => {
-        closeModal();
+      } else {
+        await mutate(updateTestimonial(formData), {
+          populateCache: true,
+        });
+      }
+      setAlert({
+        show: true,
+        message: `Testimonial ${addorupdate.type}ed successfully`,
+        type: "success",
       });
+    } catch (error) {
+      console.log(error.message);
+      setAlert({
+        show: true,
+        message: "an error just occured",
+        type: "danger",
+      });
+    } finally {
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    }
   };
 
   // -------------------------------------------------------------
@@ -85,59 +90,39 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
       type: "add",
       state: false,
     });
-    setTestimonial({
-      id: "",
-      name: "",
-      content: "",
-      role: "",
-      rating: 0,
-      img: null,
-      img_url: "",
-      img_name: "",
-    });
+    setTestimonial(testimonialDefault);
   };
 
   // -------------------------------------------------------------
   // Function to delete a testimonial
   // -------------------------------------------------------------
-  const deleteTestimonial = (id) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/testimonial/delete/${id}/`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then(() => {
-        setTestimonials(
-          testimonials.filter((testimonial) => testimonial.id !== id)
-        );
-        setAlert({
-          show: true,
-          message: "Testimonial deleted successfully",
-          type: "success",
-        });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error deleting testimonial data:", error);
-      })
-      .finally(() => {
-        setTestimonial({
-          id: "",
-          name: "",
-          content: "",
-          role: "",
-          rating: 0,
-          img: null,
-        });
-        setShowDeleteModal(false);
+  /**
+   * @async
+   * @param {number} id
+   */
+  const deletetestimonial = async (id) => {
+    try {
+      await mutate(deleteTestimonial(id), {
+        populateCache: true,
       });
+      setAlert({
+        show: true,
+        message: "Testimonial deleted successfully",
+        type: "success",
+      });
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    } catch (error) {
+      console.error("Error deleting testimonial data:", error);
+    } finally {
+      setTestimonial(testimonialDefault);
+      setShowDeleteModal(false);
+    }
   };
 
   return (
@@ -164,10 +149,10 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
       {/* set of horizontal Cards that are clickable */}
       <div className="mt-4">
         {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-        {testimonials.length === 0 ? (
+        {testimonials?.results.length === 0 ? (
           <p>No testimonials available</p>
         ) : (
-          testimonials.map((testimonial) => (
+          testimonials?.results.map((testimonial) => (
             <div key={testimonial.id} className="card my-3 p-3">
               <div className="card-body">
                 <div>
@@ -219,16 +204,7 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
                           type: "update",
                           state: true,
                         });
-                        setTestimonial({
-                          id: testimonial.id,
-                          name: testimonial.name,
-                          content: testimonial.content,
-                          role: testimonial.role,
-                          rating: testimonial.rating,
-                          img: testimonial.img || null,
-                          img_url: testimonial.img_url,
-                          img_name: testimonial.img_name,
-                        });
+                        setTestimonial(testimonial);
                         setShowModal(true);
                       }}
                     >
@@ -238,10 +214,7 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
                     <button
                       className="btn btn-sm btn-danger rounded px-3"
                       onClick={() => {
-                        setTestimonial({
-                          ...testimonial,
-                          id: testimonial.id,
-                        });
+                        setTestimonial(testimonial);
                         setShowDeleteModal(true);
                       }}
                     >
@@ -261,7 +234,8 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
           {addorupdate.state ? (
             <TestimonialForm
               addorupdate={addorupdate}
-              testimonialData={testimonial}
+              testimonial={testimonial}
+              setTestimonial={setTestimonial}
               onSubmit={handleFormSubmit}
               onClose={closeModal}
             />
@@ -279,7 +253,7 @@ const Testimonials = ({ testimonials, setTestimonials, OrganizationData }) => {
             <button
               className="btn btn-accent-secondary border-0 text-secondary mt-3 rounded"
               onClick={() => {
-                deleteTestimonial(testimonial.id);
+                deletetestimonial(testimonial.id);
               }}
             >
               Delete Testimonial

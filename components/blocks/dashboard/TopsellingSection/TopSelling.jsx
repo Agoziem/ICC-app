@@ -108,7 +108,7 @@ function TopSelling({ itemName }) {
               })
             ) : (
               <tr>
-                <td colSpan="4">
+                <td colSpan={4}>
                   <div className="d-flex justify-content-center align-items-center">
                     <p className="text-center fw-bold mb-1 py-4">
                       No {itemName} Available

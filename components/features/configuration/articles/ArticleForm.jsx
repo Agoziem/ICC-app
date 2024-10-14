@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Alert from "@/components/custom/Alert/Alert";
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
 import { TiTimes } from "react-icons/ti";
+import { ArticleDefault } from "@/constants";
 
 const ArticleForm = ({
   article,
@@ -13,8 +14,8 @@ const ArticleForm = ({
   editMode,
   setEditMode,
   articles,
-  setArticles,
   categories,
+  mutate
 }) => {
   const { OrganizationData } = useContext(OrganizationContext);
   const [alert, setAlert] = useState({
@@ -64,18 +65,7 @@ const ArticleForm = ({
   };
 
   const resetFormState = () => {
-    setArticle({
-      img: null,
-      img_url: null,
-      img_name: null,
-      title: "",
-      subtitle: "",
-      body: "",
-      tags: [],
-      slug: "",
-      category: "",
-      readTime: 0,
-    });
+    setArticle(ArticleDefault);
   };
 
   const closeEditMode = () => {
@@ -99,14 +89,14 @@ const ArticleForm = ({
         if (editMode) {
           // take the updated article to the top of the list
           const newArticles = articles.filter((a) => a.id !== data.id);
-          setArticles([data, ...newArticles]);
+          // setArticles([data, ...newArticles]);
           setAlert({
             show: true,
             message: "Article updated successfully",
             type: "success",
           });
         } else {
-          setArticles([data, ...articles]);
+          // setArticles([data, ...articles]);
           setAlert({
             show: true,
             message: "Article created successfully",

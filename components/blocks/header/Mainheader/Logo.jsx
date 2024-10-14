@@ -9,7 +9,7 @@ const MainHeaderLogo = () => {
       <Link href="/" className="logo d-flex align-items-center mt-0 ">
         <img
           src={
-            OrganizationData.Organizationlogo
+            OrganizationData?.Organizationlogo
               ? OrganizationData.Organizationlogo
               : "/logo placeholder.jpg"
           }

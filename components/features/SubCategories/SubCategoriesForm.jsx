@@ -163,7 +163,7 @@ const SubCategoriesForm = ({
             ) : (
               <>
                 <option value="">Select Category</option>
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <option key={category.id} value={category.category}>
                     {category.category}
                   </option>
@@ -189,7 +189,7 @@ const SubCategoriesForm = ({
 
       {/* list items */}
       <div>
-        {subcategories.map((subcategory, i) => (
+        {subcategories?.map((subcategory, i) => (
           <div
             key={subcategory.id}
             className={`badge bg-secondary-light text-secondary mt-2 p-2 px-3 ${

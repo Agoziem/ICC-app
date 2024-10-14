@@ -8,7 +8,6 @@ import { UserContextProvider } from "@/data/payments/usercontextdata";
 import { ProductProvider } from "@/data/product/Productcontext";
 import { VideoProvider } from "@/data/videos/Videoscontext";
 import { ServiceProvider } from "@/data/services/Servicescontext";
-import { CategoriesProvider } from "@/data/categories/Categoriescontext";
 import { Subcategoriesprovider } from "@/data/categories/Subcategoriescontext";
 import { ChatroomContextProvider } from "@/data/chatroomAPI/ChatroomContext";
 import { ChatroomSocketProvider } from "@/data/chatroomAPI/ChatroomSocket";
@@ -24,19 +23,15 @@ const ContextProviders = ({ children }) => (
             <ProductProvider>
               <VideoProvider>
                 <ServiceProvider>
-                  <CategoriesProvider>
-                    <Subcategoriesprovider>
-                      <ChatroomContextProvider>
-                        <ChatroomSocketProvider>
-                          <NotificationsContextProvider>
-                            <WhatsappAPIProvider>
-                              {children}
-                            </WhatsappAPIProvider>
-                          </NotificationsContextProvider>
-                        </ChatroomSocketProvider>
-                      </ChatroomContextProvider>
-                    </Subcategoriesprovider>
-                  </CategoriesProvider>
+                  <Subcategoriesprovider>
+                    <ChatroomContextProvider>
+                      <ChatroomSocketProvider>
+                        <NotificationsContextProvider>
+                          <WhatsappAPIProvider>{children}</WhatsappAPIProvider>
+                        </NotificationsContextProvider>
+                      </ChatroomSocketProvider>
+                    </ChatroomContextProvider>
+                  </Subcategoriesprovider>
                 </ServiceProvider>
               </VideoProvider>
             </ProductProvider>

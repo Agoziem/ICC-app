@@ -1,6 +1,5 @@
 import PageTitle from '@/components/custom/PageTitle/PageTitle'
 import SettingsForm from '@/components/features/configuration/cbt/SettingsForm'
-import React from 'react'
 
 const CbtConfigPage = () => {
   return (

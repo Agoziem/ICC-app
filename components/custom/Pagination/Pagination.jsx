@@ -1,22 +1,29 @@
 import React from "react";
 import { TiArrowBack, TiArrowForward } from "react-icons/ti";
 
+/**
+ * @param {{ currentPage: string; totalPages: number; handlePageChange: any; }} param0
+ */
 const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
   return (
-    <div className="d-flex justify-content-center mt-3 my-4">
-      {currentPage > 1 && (
-        <TiArrowBack
-          className="text-primary me-2"
-          onClick={() => handlePageChange(currentPage - 1)}
+    <div className="d-flex align-items-center justify-content-center gap-3 mt-3 my-4">
+      {parseInt(currentPage) > 1 && (
+        <div
+          className="d-inline-flex align-items-center justify-content-center py-2"
           style={{ cursor: "pointer", fontSize: "1.5rem" }}
-        />
+        >
+          <TiArrowBack
+            className="text-primary"
+            onClick={() => handlePageChange(parseInt(currentPage) - 1)}
+          />
+        </div>
       )}
       {Array.from({ length: totalPages }, (_, index) => (
         <div
           key={index}
           onClick={() => handlePageChange(index + 1)}
-          className={`me-2 ${
-            currentPage === index + 1
+          className={`${
+            parseInt(currentPage) === index + 1
               ? "text-light badge bg-secondary py-2 px-2"
               : "text-primary"
           }`}
@@ -25,12 +32,16 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
           {index + 1}
         </div>
       ))}
-      {currentPage < totalPages && (
-        <TiArrowForward
-          className="text-primary ms-2"
-          onClick={() => handlePageChange(currentPage + 1)}
+      {parseInt(currentPage) < totalPages && (
+        <div
+          className="d-inline-flex align-items-center justify-content-center py-2"
           style={{ cursor: "pointer", fontSize: "1.5rem" }}
-        />
+        >
+          <TiArrowForward
+            className="text-primary"
+            onClick={() => handlePageChange(parseInt(currentPage) + 1)}
+          />
+        </div>
       )}
     </div>
   );

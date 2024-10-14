@@ -3,6 +3,7 @@ import { OrganizationContext } from "@/data/organization/Organizationalcontextda
 import React, { useContext } from "react";
 
 const TermsPage = () => {
+  /** * @type {{OrganizationData:Organization}}*/
   const { OrganizationData } = useContext(OrganizationContext);
   return (
     <div
@@ -13,11 +14,11 @@ const TermsPage = () => {
     >
       <h4>Terms of Use</h4>
       <hr />
-      {OrganizationData?.termsOfUse ? (
+      {OrganizationData?.terms_of_use ? (
         <div style={{ width: "100%" }}>
           <div
             dangerouslySetInnerHTML={{
-              __html: OrganizationData.termsOfUse,
+              __html: OrganizationData.terms_of_use,
             }}
             style={{
               fontSize: "1.1rem",

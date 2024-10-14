@@ -4,24 +4,19 @@ import Alert from "@/components/custom/Alert/Alert";
 import "./homeconfig.css";
 import { converttoformData } from "@/utils/formutils";
 import StaffForm from "./staffform";
-const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
-  const [staff, setStaff] = useState({
-    id: "",
-    first_name: "",
-    last_name: "",
-    other_names: "",
-    email: "",
-    phone: "",
-    address: "",
-    img: null,
-    img_url: null,
-    img_name: "",
-    role: "",
-    facebooklink: "",
-    instagramlink: "",
-    twitterlink: "",
-    linkedinlink: "",
-  });
+import { staffdefault } from "@/constants";
+import {
+  createStaff,
+  deleteStaff,
+  fetchStaffs,
+  MainAPIendpoint,
+  updateStaff,
+} from "@/data/organization/fetcher";
+import useSWR from "swr";
+
+const Staffs = ({staffs}) => {
+  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const [staff, setStaff] = useState(staffdefault);
   const [addorupdate, setAddorupdate] = useState({
     mode: "add",
     state: false,
@@ -35,93 +30,83 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
   const [showdeleteModal, setShowDeleteModal] = useState(false);
   const [openIndex, setOpenIndex] = useState(0);
 
+ 
+
+  // for mutation
+  const { mutate } = useSWR(`${MainAPIendpoint}/staff/${OrganizationID}/`);
+
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   // add a staff or edit a staff
-  const addStaff = (e, url) => {
+  const addStaff = async (e) => {
     e.preventDefault();
-    const formData = converttoformData(staff);
-    fetch(url, {
-      method: addorupdate.mode === "add" ? "POST" : "PUT",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (addorupdate.mode === "add") {
-          setStaffs([...staffs, data]);
-        } else {
-          setStaffs(
-            staffs.map((staff) =>
-              staff.id === data.id ? { ...staff, ...data } : staff
-            )
-          );
-        }
-        setAlert({
-          show: true,
-          message: `Staff ${addorupdate.mode}ed successfully`,
-          type: "success",
+    // const formData = converttoformData(staff); convert to formData later
+    try {
+      if (addorupdate.mode === "add") {
+        await mutate(createStaff(staff), {
+          populateCache: true,
         });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((err) => console.log(err))
-      .finally(closeModal());
+      } else {
+        await mutate(updateStaff(staff));
+      }
+      setAlert({
+        show: true,
+        message: `Staff ${addorupdate.mode}ed successfully`,
+        type: "success",
+      });
+    } catch (error) {
+    } finally {
+      closeModal();
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
+    }
   };
 
   const closeModal = () => {
     setShowDeleteModal(false);
     setShowModal(false);
-    setStaff({
-      id: "",
-      first_name: "",
-      last_name: "",
-      other_names: "",
-      email: "",
-      phone: "",
-      address: "",
-      img: null,
-      img_url: null,
-      img_name: "",
-      role: "",
-      facebooklink: "",
-      instagramlink: "",
-      twitterlink: "",
-      linkedinlink: "",
-    });
+    setStaff(staffdefault);
   };
 
   // remove a staff
-  const deleteStaff = (id) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/staff/delete/${id}/`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then(() => {
-        setStaffs(staffs.filter((staff) => staff.id !== id));
+  /**
+   * @async
+   * @param {number} id
+   */
+  const deletestaff = async (id) => {
+    try {
+      await mutate(deleteStaff(id), {
+        populateCache: true,
+      });
+      setAlert({
+        show: true,
+        message: `Staff deleted successfully`,
+        type: "success",
+      });
+    } catch (error) {
+      console.log(error.message);
+      setAlert({
+        show: true,
+        message: `An error just occurred`,
+        type: "danger",
+      });
+    } finally {
+      closeModal();
+      setTimeout(() => {
         setAlert({
-          show: true,
-          message: `Staff deleted successfully`,
-          type: "success",
+          show: false,
+          message: "",
+          type: "",
         });
-        setTimeout(() => {
-          setAlert({
-            show: false,
-            message: "",
-            type: "",
-          });
-        }, 3000);
-      })
-      .catch((err) => console.log(err))
-      .finally(closeModal());
+      }, 3000);
+    }
   };
 
   return (
@@ -139,7 +124,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
         </button>
       </div>
 
-      {staffs.length === 0 ? (
+      {staffs.results.length === 0 ? (
         <div className="card">
           <div className="card-body">
             <h5>Staffs & Team</h5>
@@ -152,7 +137,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
 
           <h5 className="my-3">Staffs & Team</h5>
 
-          {staffs.map((staff, index) => (
+          {staffs.results.map((staff, index) => (
             <div key={staff.id}>
               <div className="card my-3 p-3 px-md-4 py-4">
                 <div className="d-flex align-items-center">
@@ -214,23 +199,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
                         className="badge text-secondary bg-secondary-light me-2 rounded p-2 px-3"
                         onClick={() => {
                           setAddorupdate({ mode: "update", state: true });
-                          setStaff({
-                            id: staff.id,
-                            first_name: staff.first_name,
-                            last_name: staff.last_name,
-                            other_names: staff.other_names,
-                            email: staff.email,
-                            phone: staff.phone,
-                            address: staff.address,
-                            img: staff.img,
-                            img_url: staff.img_url,
-                            img_name: staff.img_name,
-                            role: staff.role,
-                            facebooklink: staff.facebooklink,
-                            instagramlink: staff.instagramlink,
-                            twitterlink: staff.twitterlink,
-                            linkedinlink: staff.linkedinlink,
-                          });
+                          setStaff(staff);
                           setShowModal(true);
                         }}
                         style={{ cursor: "pointer" }}
@@ -305,7 +274,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
           <div className="d-flex justify-content-end mt-4">
             <button
               className="btn btn-danger rounded me-3"
-              onClick={() => deleteStaff(staff.id)}
+              onClick={() => deletestaff(staff.id)}
             >
               Yes
             </button>
@@ -329,7 +298,7 @@ const Staffs = ({ staffs, setStaffs, OrganizationData }) => {
             addorupdate={addorupdate}
             staff={staff}
             setStaff={setStaff}
-            OrganizationData={OrganizationData}
+            closeModal={closeModal}
           />
         </div>
       </Modal>

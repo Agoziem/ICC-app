@@ -25,6 +25,17 @@ export const fetchEmails = async () => {
   return validation.data;
 };
 
+
+/**
+ * @async
+ * @param {number} emailid
+ * @returns {Promise<number>}
+ */
+export const deleteEmail = async (emailid) => {
+  await axiosInstance.delete(`${emailAPIendpoint}/subscription/delete/${emailid}/`);
+  return emailid;
+};
+
 /**
  * fetches all Responses to a Message from the database
  * @async

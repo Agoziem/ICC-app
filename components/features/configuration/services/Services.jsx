@@ -8,107 +8,96 @@ import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import CategoriesForm from "@/components/features/Categories/Categories";
-import { useServiceContext } from "@/data/services/Servicescontext";
-import { useCategoriesContext } from "@/data/categories/Categoriescontext";
 import SubCategoriesForm from "@/components/features/SubCategories/SubCategoriesForm";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import { BsPersonFillGear } from "react-icons/bs";
+import useSWR from "swr";
+import { fetchCategories } from "@/data/categories/fetcher";
+import { serviceDefault } from "@/constants";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import {
+  createService,
+  deleteService,
+  fetchServices,
+  servicesAPIendpoint,
+  updateService,
+} from "@/data/services/fetcher";
 
-// {
-//   "id": 3,
-//   "organization": {
-//     "id": 1,
-//     "name": "Innovations Cybercafe"
-//   },
-//   "preview": "/media/services/university_of_benin.png",
-//   "img_url": "http://127.0.0.1:8000/media/services/university_of_benin.png",
-//   "img_name": "university_of_benin.png",
-//   "category": {
-//     "id": 3,
-//     "category": "PostUTME",
-//     "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam excepturi culpa dolore possimus suscipit assumenda ad id officia consequuntur"
-//   },
-//   "name": "Uniben PostUtme Registration",
-//   "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam excepturi culpa dolore possimus suscipit assumenda ad id officia consequuntur",
-//   "service_flow": null,
-//   "price": "5500.00",
-//   "number_of_times_bought": 0,
-//   "created_at": "2024-05-28T15:06:41.369856Z",
-//   "updated_at": "2024-07-10T14:48:22.921755Z",
-//   "userIDs_that_bought_this_service": []
-// },
 const Services = () => {
   const { openModal } = useAdminContext();
-  const {
-    services,
-    createService,
-    updateService,
-    deleteService,
-    fetchServices,
-    fetchServicesByCategory,
-    loading,
-    totalPages,
-  } = useServiceContext();
   const { OrganizationData } = useContext(OrganizationContext);
-  const { servicecategories: categories, setServiceCategories: setCategories } =
-    useCategoriesContext();
   const { fetchServiceSubCategories } = useSubCategoriesContext();
-  const initialServiceState = {
-    id: null,
-    preview: null,
-    img_url: null,
-    img_name: null,
-    category: null,
-    name: "",
-    description: "",
-    service_flow: "",
-    price: "",
-    number_of_times_bought: 0,
-    userIDs_that_bought_this_service: [],
-  };
-  const [service, setService] = useState(initialServiceState);
+  const [service, setService] = useState(serviceDefault);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "", state: false });
-  const [currentCategory, setCurrentCategory] = useState("All");
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category") || "All";
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+  const [allCategories, setAllCategories] = useState([]);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+
+  const {
+    data: categories,
+    isLoading: loadingCategories,
+    error: categoryError,
+    mutate: categoriesmutate,
+  } = useSWR(`${servicesAPIendpoint}/categories/`, fetchCategories);
 
   useEffect(() => {
+    if (!categories) return;
     if (categories.length > 0)
-      setFilteredCategories([
+      setAllCategories([
         { id: 0, category: "All", description: "All Categories" },
         ...categories,
       ]);
   }, [categories]);
 
-  // ----------------------------------------------------
-  // Fetch Services on Page Change
-  // ----------------------------------------------------
-  useEffect(() => {
-    if (OrganizationData.id) {
-      setCurrentPage(1)
-      if (currentCategory === "All") {
-        fetchServices(OrganizationData.id, currentPage);
-      } else {
-        fetchServicesByCategory(currentCategory, currentPage);
-      }
-    }
-  }, [OrganizationData.id, currentCategory]);
+  // ----------------------------------------
+  // Fetch services based on category
+  // ----------------------------------------
+  const {
+    data: services,
+    isLoading: loadingServices,
+    error: error,
+  } = useSWR(
+    `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
+    fetchServices
+  );
 
-  // ----------------------------------------------------
-  // handle page change
-  // ----------------------------------------------------
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    if (currentCategory === "All") {
-      fetchServices(OrganizationData.id, page);
-    } else {
-      fetchServicesByCategory(currentCategory, page);
-    }
+  const { mutate } = useSWR(
+    `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
+  );
+
+  // -----------------------------------------
+  // Handle page change
+  // -----------------------------------------
+  /**  @param {string} newPage */
+  const handlePageChange = (newPage) => {
+    router.push(
+      `?category=${currentCategory}&page=${newPage}&page_size=${pageSize}`,
+      {
+        scroll: false,
+      }
+    );
   };
+
+  // -------------------------------
+  // Handle category change
+  // -------------------------------
+  /**  @param {string} category */
+  const handleCategoryChange = (category) => {
+    router.push(`?category=${category}&page=${page}&page_size=${pageSize}`, {
+      scroll: false,
+    });
+  };
+
   // ----------------------------------------------------
   // Close the modal
   // ----------------------------------------------------
@@ -116,7 +105,7 @@ const Services = () => {
     setShowModal(false);
     setShowModal2(false);
     setAddorupdate({ mode: "", state: false });
-    setService(initialServiceState);
+    setService(serviceDefault);
   };
 
   // ----------------------------------------------------
@@ -130,40 +119,48 @@ const Services = () => {
   //----------------------------------------------------
   // Create a new service or update an existing service
   //----------------------------------------------------
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (addorupdate.mode === "add") {
-      const result = await createService(service);
-      if (result.type && result.type === "success") {
-        handleAlert(result.message, result.type);
-        closeModal();
+    try {
+      if (addorupdate.mode === "add") {
+        await mutate(createService(service), {
+          populateCache: true,
+        });
       } else {
-        handleAlert(result.message, result.type);
-        closeModal();
+        await mutate(updateService(service), {
+          populateCache: true,
+        });
       }
-    } else {
-      const result = await updateService(service.id, service);
-      if (result.type && result.type === "success") {
-        handleAlert(result.message, result.type);
-        closeModal();
-      } else {
-        handleAlert(result.message, result.type);
-        closeModal();
-      }
+      handleAlert(
+        `your Service have been ${
+          addorupdate.mode === "add" ? "added" : "updated"
+        } successfully `,
+        "success"
+      );
+    } catch (error) {
+      handleAlert("An error have occurred, please try again", "danger");
+    } finally {
+      closeModal();
     }
   };
 
   //----------------------------------------------------
   // Delete a service
   //----------------------------------------------------
+  /**
+   * @async
+   * @param {number} id
+   */
   const handleDelete = async (id) => {
-    const result = await deleteService(id);
-    if (result.type && result.type === "success") {
-      handleAlert(result.message, result.type);
-      closeModal();
-    } else {
-      handleAlert(result.message, result.type);
+    try {
+      await mutate(deleteService(id), {
+        populateCache: true,
+      });
+      handleAlert("Service deleted Successfully", "success");
+    } catch (error) {
+      console.log(error.message);
+      handleAlert("Error deleting Service", "danger");
+    } finally {
       closeModal();
     }
   };
@@ -192,38 +189,48 @@ const Services = () => {
         <div className="col-12 col-md-7">
           <CategoriesForm
             items={categories}
-            setItems={setCategories}
-            itemName="category"
-            itemLabel="Category"
-            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/add_category/`}
-            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/update_category`}
-            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/delete_category`}
+            mutate={categoriesmutate}
+            addUrl={`${servicesAPIendpoint}/add_category/`}
+            updateUrl={`${servicesAPIendpoint}/update_category/`}
+            deleteUrl={`${servicesAPIendpoint}/delete_category/`}
           />
         </div>
 
-          {/*  */}
         <div className="col-12 col-md-5">
           <SubCategoriesForm
             categories={categories}
             fetchSubCategories={fetchServiceSubCategories}
-            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/create_subcategory/`}
-            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/update_subcategory`}
-            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/servicesapi/delete_subcategory`}
+            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${servicesAPIendpoint}/create_subcategory/`}
+            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${servicesAPIendpoint}/update_subcategory`}
+            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${servicesAPIendpoint}/delete_subcategory`}
           />
         </div>
       </div>
 
-      <div className="d-flex flex-wrap align-items-center mb-4">
-        {/* other services tabs */}
-        <CategoryTabs
-          categories={filteredCategories}
-          currentCategory={currentCategory}
-          setCurrentCategory={setCurrentCategory}
-          services={services}
-        />
+      {/* categories */}
+      <div className="mb-3 ps-2 ps-md-0">
+        {/* Categories */}
+        <h5 className="mb-3 fw-bold">categories</h5>
+        {loadingCategories && !categoryError ? (
+          <div className="d-flex gap-2 align-items-center">
+            <div
+              className="spinner-border spinner-border-sm text-primary"
+              role="status"
+            >
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            fetching Service Categories
+          </div>
+        ) : (
+          <CategoryTabs
+            categories={allCategories}
+            currentCategory={currentCategory}
+            setCurrentCategory={handleCategoryChange}
+          />
+        )}
       </div>
 
-      <div className="d-flex flex-wrap justify-content-between pe-3 pb-3 mb-3">
+      <div className="d-flex flex-column flex-md-row flex-wrap align-items-start align-items-md-center gap-3 pe-3 pb-3 mb-3">
         <button
           className="btn btn-primary border-0 rounded mb-2 mt-4 mt-md-0 mb-md-0"
           style={{ backgroundColor: "var(--bgDarkerColor)" }}
@@ -233,8 +240,16 @@ const Services = () => {
           }}
         >
           <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add{" "}
+          {currentCategory}{" "}
           {currentCategory !== "application" ? "Service" : "Application"}
         </button>
+
+        <div>
+          <h5 className="mb-1">{currentCategory} Services</h5>
+          <p className="mb-0 text-primary">
+            {services?.count} Service{services?.count > 1 ? "s" : ""}
+          </p>
+        </div>
       </div>
 
       {/* The Services & Application list */}
@@ -242,7 +257,7 @@ const Services = () => {
       <div className="row">
         {
           // loading
-          loading && (
+          loadingServices && !error && (
             <div className="d-flex justify-content-center">
               {/* spinner */}
               <div className="spinner-border text-primary" role="status">
@@ -251,8 +266,8 @@ const Services = () => {
             </div>
           )
         }
-        {!loading && services?.length > 0 ? (
-          services.map((service) => (
+        {!loadingServices && services?.results?.length > 0 ? (
+          services.results.map((service) => (
             <ServiceCard
               openModal={openModal}
               key={service.id}
@@ -275,13 +290,15 @@ const Services = () => {
           </div>
         )}
 
-        {!loading && totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        )}
+        {!loadingServices &&
+          services &&
+          Math.ceil(services.count / parseInt(pageSize)) > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={Math.ceil(services.count / parseInt(pageSize))}
+              handlePageChange={handlePageChange}
+            />
+          )}
       </div>
 
       <Modal

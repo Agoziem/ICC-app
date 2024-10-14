@@ -1,6 +1,10 @@
 import VideosPlaceholder from '@/components/custom/ImagePlaceholders/Videosplaceholder';
 import React from 'react'
 
+
+/**
+ * @param {{ openModal: any; item: Video; onDelete: any; onEdit: any; tab: any; }} param0
+ */
 const VideoCard = ({ openModal, item, onDelete, onEdit, tab }) => {
   return (
     <div className="col-12 col-md-4">
