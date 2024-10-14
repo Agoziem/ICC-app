@@ -1,7 +1,7 @@
 
 .backbutton {
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   color: var(--primary);
   font-size: 1.0rem;
