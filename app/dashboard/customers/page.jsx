@@ -2,53 +2,52 @@
 import Datatable from "@/components/custom/Datatable/Datatable";
 import Modal from "@/components/custom/Modal/modal";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
+import OrganizationCard from "@/components/features/configuration/home/organizationcard";
 import CustomersTable from "@/components/features/orders/CustomersTable";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
+import { getOrderReport, paymentsAPIendpoint } from "@/data/payments/fetcher";
+import { authAPIendpoint, fetchUser } from "@/data/users/fetcher";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 const CustomersPage = () => {
-  const { customers } = useAdminContext();
-  const [items, setItems] = useState([]);
+  /**
+   * @type {[Customers, (value:Customers) => void]}
+   */
+  const [items, setItems] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [customerID, setCustomerID] = useState(null);
-  const [customer, setCustomer] = useState(null);
-  const [loadingCustomer, setLoadingCustomer] = useState(false);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+
+  // fetch Order Report
+  const { data: orderReport } = useSWR(
+    `${paymentsAPIendpoint}/getorderreport/${Organizationid}`,
+    getOrderReport
+  );
 
   useEffect(() => {
-    setItems(customers);
-  }, [customers]);
+    setItems(orderReport?.customers);
+  }, [orderReport]);
 
-  const fetchCustomer = async () => {
-    setLoadingCustomer(true);
-    if (!customerID) {
-      setLoadingCustomer(false);
-      return;
-    }
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/getuser/${customerID}/`
-      );
-      const data = await response.json();
-      setCustomer(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCustomer(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomer();
-  }, [customerID]);
+  // fetch User
+  const { data: customer, isLoading: loadingCustomer, error } = useSWR(
+    customerID ? `${authAPIendpoint}/getuser/${customerID}` : null,
+    fetchUser
+  );
 
   return (
-    <div style={{minHeight:"100vh"}}>
+    <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Customers" />
       <div className="mt-4">
         <h5>ICC Customers</h5>
         {items && items.length > 0 && (
-          <Datatable items={items} setItems={setItems} label={"Customers"} filteritemlabel={"customer__username"}>
+          <Datatable
+            items={items}
+            setItems={setItems}
+            label={"Customers"}
+            filteritemlabel={"customer__username"}
+          >
             <CustomersTable
               setCustomerID={setCustomerID}
               toggleModal={() => setShowModal(true)}
@@ -59,14 +58,16 @@ const CustomersPage = () => {
         {/* Modal for Comment */}
         <Modal showmodal={showModal} toggleModal={() => setShowModal(false)}>
           <div className="modal-body">
-            {loadingCustomer ? (
+            {loadingCustomer && (
               <div className="w-100 d-flex justify-content-center align-items-center">
                 <div className="spinner-border text-primary" role="status">
                   <span className="visually-hidden">Loading...</span>
                 </div>
                 <div>loading Customer</div>
               </div>
-            ) : customer ? (
+            )} 
+
+            { !loadingCustomer && customer ? (
               <div>
                 <div className="profilepicture d-flex flex-column justify-content-center align-items-center my-3">
                   {customer.avatar ? (
@@ -100,7 +101,7 @@ const CustomersPage = () => {
                   {customer.is_staff ? "Admin" : "Customer"}
                 </p>
                 <hr />
-                
+
                 <p className="my-1">
                   <span className="fw-bold">fullname: </span>
                   {customer.first_name} {customer.last_name}
@@ -111,11 +112,11 @@ const CustomersPage = () => {
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">sex: </span>
-                   {customer.Sex || "sex is not available"}
+                  {customer.Sex || "sex is not available"}
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">phone number: </span>
-                   {customer.phone || "Phone number is not available"}
+                  {customer.phone || "Phone number is not available"}
                 </p>
                 <p className="my-1">
                   <span className="fw-bold">address: </span>
@@ -141,24 +142,4 @@ const CustomersPage = () => {
   );
 };
 
-// {
-//   "id": 6,
-//   "avatar": null,
-//   "last_login": null,
-//   "is_superuser": false,
-//   "username": "Ndukwe Chiagoziem",
-//   "first_name": "",
-//   "last_name": "",
-//   "email": "chiagoziendukwe90@gmail.com",
-//   "is_staff": false,
-//   "is_active": true,
-//   "date_joined": "2024-05-23T09:37:34.739652Z",
-//   "isOauth": true,
-//   "Oauthprovider": "github",
-//   "emailIsVerified": true,
-//   "twofactorIsEnabled": false,
-//   "address": null,
-//   "Sex": null,
-//   "phone": null
-// }
 export default CustomersPage;

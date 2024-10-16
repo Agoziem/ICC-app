@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useCart } from "@/data/carts/Cartcontext";
@@ -15,13 +15,11 @@ import { fetchCategories } from "@/data/categories/fetcher";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
+import SearchInput from "@/components/custom/Inputs/SearchInput";
 
 const Products = () => {
   const { openModal } = useAdminContext();
   const { cart, addToCart, removeFromCart } = useCart();
-  const { userOrder } = useUserContext();
-  const [items, setItems] = useState([]);
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category") || "All";
@@ -29,20 +27,13 @@ const Products = () => {
   const pageSize = "10";
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   const {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-    mutate: categoriesmutate,
   } = useSWR(`${productsAPIendpoint}/categories/`, fetchCategories);
-
-  // ---------------------------------------
-  // set items in the order table
-  // ---------------------------------------
-  useEffect(() => {
-    setItems(userOrder);
-  }, [userOrder]);
 
   // ----------------------------------------------------
   // Add a new category to the list of categories
@@ -65,6 +56,18 @@ const Products = () => {
     error: error,
   } = useSWR(
     `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
+    fetchProducts
+  );
+
+  // ----------------------------------------
+  // Fetch Products based on category
+  // ----------------------------------------
+  const {
+    data: trendingproducts,
+    isLoading: loadingTrendingProducts,
+    error: errorTrendingProduct,
+  } = useSWR(
+    `${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`,
     fetchProducts
   );
 
@@ -91,6 +94,16 @@ const Products = () => {
     });
   };
 
+  // Memoized filtered services based on search query
+  const filteredProducts = useMemo(() => {
+    if (!products?.results) return [];
+    if (!searchQuery) return products.results;
+
+    return products.results.filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
+
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center pe-3 mb-3 flex-wrap">
@@ -104,67 +117,76 @@ const Products = () => {
       </div>
 
       {/* categories */}
-      <div className="mb-3 ps-2 ps-md-0">
+      <div className="mb-4  ps-2 ps-md-0">
         {/* Categories */}
         <h5 className="mb-3 fw-bold">categories</h5>
-        {loadingCategories && !categoryError ? (
-          <div className="d-flex gap-2 align-items-center">
-            {/* spinner */}
-            <div
-              className="spinner-border spinner-border-sm text-primary"
-              role="status"
-            >
-              <span className="visually-hidden">Loading...</span>
+        <div className="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between">
+          {loadingCategories && !categoryError ? (
+            <div className="d-flex gap-2 align-items-center">
+              {/* spinner */}
+              <div
+                className="spinner-border spinner-border-sm text-primary"
+                role="status"
+              >
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              fetching Products Categories
             </div>
-            fetching Products Categories
+          ) : (
+            <CategoryTabs
+              categories={allCategories}
+              currentCategory={currentCategory}
+              setCurrentCategory={handleCategoryChange}
+            />
+          )}
+          <div className="mb-4 mb-md-0">
+            <SearchInput
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              itemlabel="product"
+            />
           </div>
-        ) : (
-          <CategoryTabs
-            categories={allCategories}
-            currentCategory={currentCategory}
-            setCurrentCategory={handleCategoryChange}
-          />
-        )}
+        </div>
       </div>
 
-      {/* Services cards */}
+      {/* Products Section */}
+      {searchQuery && <h5>Search Results</h5>}
       <div className="row">
         {
           // loading
-          loadingProducts && !error && (
+          loadingProducts && !error ? (
             <div className="d-flex justify-content-center">
               {/* spinner */}
               <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
+          ) : filteredProducts?.length > 0 ? (
+            filteredProducts?.map((product) => (
+              <div key={product.id} className="col-12 col-md-4">
+                <ProductCard
+                  product={product}
+                  addToCart={addToCart}
+                  removeFromCart={removeFromCart}
+                  cart={cart}
+                  openModal={openModal}
+                />
+              </div>
+            ))
+          ) : (
+            // Show "no services available" message if no services at all
+            <div className="mt-3 mb-3 text-center">
+              <RiShoppingBasketFill
+                className="mt-2"
+                style={{
+                  fontSize: "6rem",
+                  color: "var(--bgDarkerColor)",
+                }}
+              />
+              <p className="mt-3 mb-3">No Product available at the moment</p>
+            </div>
           )
         }
-        {!loadingProducts && products?.results.length > 0 ? (
-          products?.results.map((product) => (
-            <div key={product.id} className="col-12 col-md-4">
-              <ProductCard
-                product={product}
-                addToCart={addToCart}
-                removeFromCart={removeFromCart}
-                cart={cart}
-                openModal={openModal}
-              />
-            </div>
-          ))
-        ) : (
-          // Show "no services available" message if no services at all
-          <div className="mt-3 mb-3 text-center">
-            <RiShoppingBasketFill
-              className="mt-2"
-              style={{
-                fontSize: "6rem",
-                color: "var(--bgDarkerColor)",
-              }}
-            />
-            <p className="mt-3 mb-3">No Product available at the moment</p>
-          </div>
-        )}
 
         {!loadingProducts &&
           products &&
@@ -177,17 +199,29 @@ const Products = () => {
           )}
       </div>
 
-      {/* Order table */}
-      <div className="mt-2">
-        <h5>items Ordered</h5>
-        <Datatable
-          items={items}
-          setItems={setItems}
-          label={"Orders"}
-          filteritemlabel={"reference"}
-        >
-          <OrderTableItems currentItems={items} />
-        </Datatable>
+      {/* Trending Products */}
+      {!loadingTrendingProducts && trendingproducts?.results.length > 0 && (
+        <>
+          <hr />
+          <div className="mb-3">
+            <h5>Top Trending Products</h5>
+          </div>
+        </>
+      )}
+      <div className="row">
+        {!loadingTrendingProducts && trendingproducts?.results.length > 0
+          ? trendingproducts?.results.map((product) => (
+              <div key={product.id} className="col-12 col-md-4">
+                <ProductCard
+                  product={product}
+                  addToCart={addToCart}
+                  removeFromCart={removeFromCart}
+                  cart={cart}
+                  openModal={openModal}
+                />
+              </div>
+            ))
+          : null}
       </div>
     </div>
   );

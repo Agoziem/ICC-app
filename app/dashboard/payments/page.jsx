@@ -3,11 +3,21 @@ import Datatable from "@/components/custom/Datatable/Datatable";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import OrderTableItems from "@/components/features/orders/OrderTableItems";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
+import { fetchPayments, paymentsAPIendpoint } from "@/data/payments/fetcher";
 import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 const PaymentsPage = () => {
-  const { orders } = useAdminContext();
+  /**
+   * @type {[Orders,(value:Orders) => void]}
+   */
   const [items, setItems] = useState([]);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+
+  const { data: orders } = useSWR(
+    `${paymentsAPIendpoint}/payments/${Organizationid}`,
+    fetchPayments
+  );
 
   useEffect(() => {
     setItems(orders);

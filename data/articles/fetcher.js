@@ -43,7 +43,6 @@ export const fetchArticlesCategories = async (url) => {
  */
 export const fetchArticles = async (url) => {
   const response = await axiosInstance.get(url);
-  console.log(response.data)
   const validation = ArticleResponseSchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);

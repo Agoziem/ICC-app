@@ -1,31 +1,30 @@
 "use client";
 import { useCart } from "@/data/carts/Cartcontext";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useUserContext } from "@/data/payments/usercontextdata";
 import { BsFillCartCheckFill } from "react-icons/bs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useJsxToPdf from "@/hooks/useJSXtoPDF";
 import { FaCheck, FaRegClipboard } from "react-icons/fa6";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useVideoContext } from "@/data/videos/Videoscontext";
-import { useProductContext } from "@/data/product/Productcontext";
-import { useServiceContext } from "@/data/services/Servicescontext";
+import { paymentsAPIendpoint, verifyPayment } from "@/data/payments/fetcher";
+import { BeatLoader } from "react-spinners";
 
 const OrderCompleted = () => {
   const router = useRouter();
-  const { reference } = useCart();
-  const { updateUserOrder } = useUserContext();
-  const { updateOrder } = useAdminContext();
-  const { setVideos } = useVideoContext();
-  const { setProducts } = useProductContext();
-  const { setServices } = useServiceContext();
-  const [successful, setSuccessful] = useState(false);
+  const searchParams = useSearchParams();
+  const reference = searchParams.get("ref") || "";
+  const { mutate: userordersmutate } = useUserContext();
+  const { mutate: ordersmutate } = useAdminContext();
+  const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const [order, setOrder] = useState({});
+  /** @type {[Order,(value:Order) => void]} */
+  const [order, setOrder] = useState(null);
   const [copied, setCopied] = useState(false);
-  const [loading, generatePdf] = useJsxToPdf();
+  const [loading, setLoading] = useState(true);
+  const { loading: loadingPdf, generatePdf } = useJsxToPdf();
   const pdfRef = useRef();
   const { data: session } = useSession();
 
@@ -33,67 +32,80 @@ const OrderCompleted = () => {
     await generatePdf(pdfRef.current, "Order-Receipt");
   };
 
-  const updateItems = (prevItems, updatedItems) => {
-    const updatedItemsMap = new Map();
-    updatedItems.forEach((item) => {
-      updatedItemsMap.set(item.id, item);
-    });
-
-    return prevItems.map((item) => {
-      if (updatedItemsMap.has(item.id)) {
-        return updatedItemsMap.get(item.id);
-      }
-      return item;
-    });
-  };
-
+  // -------------------------------
   // Verify payment function
-  const verifyPayment = async () => {
+  // -------------------------------
+  const verifypayment = useCallback(async () => {
+    if (!reference) {
+      setError("Reference does not exist");
+      return;
+    }
+
+    console.log(
+      "Verifying payment with reference:",
+      reference,
+      session?.user?.id
+    ); // Add this for debugging
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/verifypayment/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ref: reference,
-            customer_id: session.user.id,
-          }),
-        }
+      const data = await verifyPayment(
+        `${paymentsAPIendpoint}/verifypayment/`,
+        { reference, customer_id: parseInt(session?.user?.id) }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to verify payment");
-      }
+      ordersmutate(
+        (previousOrders = []) => {
+          const orderExists = previousOrders.find((o) => o.id === data.id);
+          if (orderExists) {
+            return previousOrders.map((o) => (o.id === data.id ? data : o));
+          }
+          return [...previousOrders, data];
+        },
+        { populateCache: true, revalidate: false }
+      );
 
-      const data = await response.json();
-      updateOrder(data);
-      updateUserOrder(data);
-
-      // Assuming data contains updatedProducts, updatedServices, and updatedVideos arrays
-      const updatedProducts = data.products || [];
-      const updatedServices = data.services || [];
-      const updatedVideos = data.videos || [];
-
-      setProducts((prevProducts) => updateItems(prevProducts, updatedProducts));
-      setServices((prevServices) => updateItems(prevServices, updatedServices));
-      setVideos((prevVideos) => updateItems(prevVideos, updatedVideos));
-
+      userordersmutate(
+        (previousOrders = []) => {
+          const orderExists = previousOrders.find((o) => o.id === data.id);
+          if (orderExists) {
+            return previousOrders.map((o) => (o.id === data.id ? data : o));
+          }
+          return [...previousOrders, data];
+        },
+        { populateCache: true, revalidate: false }
+      );
+      
       setOrder(data);
-      setSuccessful(true);
+      setSuccess("Your Payment has been Verified");
     } catch (error) {
-      setError(error.message || "An error occurred while verifying payment");
-    }
-  };
+      console.error("Error verifying payment:", error); // Add this for debugging
 
-  // Call the verify payment function
-  useEffect(() => {
-    if (reference && session) {
-      verifyPayment();
+      ordersmutate(
+        (previousOrders = []) =>
+          previousOrders.map((o) =>
+            o.reference === reference ? { ...o, status: "Failed" } : o
+          ),
+        { populateCache: true, revalidate: false }
+      );
+
+      userordersmutate(
+        (previousOrders = []) =>
+          previousOrders.map((o) =>
+            o.reference === reference ? { ...o, status: "Failed" } : o
+          ),
+        { populateCache: true, revalidate: false }
+      );
+
+      setError(error.message || "An error occurred while verifying payment");
+    } finally {
+      setLoading(false);
     }
   }, [reference, session]);
+
+  useEffect(() => {
+    if (session && reference) {
+      verifypayment();
+    }
+  }, [verifypayment, session, reference]);
 
   // Copy to clipboard function
   const handleCopy = () => {
@@ -109,13 +121,11 @@ const OrderCompleted = () => {
       className="d-flex justify-content-center align-items-center py-5"
       style={{ minHeight: "100vh" }}
     >
-      {!successful && !error ? (
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+      {!success && !error ? (
+        <BeatLoader color="#12000d" loading={loading} />
       ) : null}
 
-      {successful && !error ? (
+      {success && order ? (
         <div className="card text-center px-">
           <div ref={pdfRef} className="px-3 px-md-5 pt-5">
             <div

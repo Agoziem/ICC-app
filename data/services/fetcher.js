@@ -24,28 +24,16 @@ export const fetchServices = async (url) => {
   return validation.data;
 };
 
-/**
- * @async
- * @param {number} id
- * @returns {Promise<Service>}
- */
-export const fetchServicebyID = async (id) => {
-  const response = await axiosInstance.get(`${servicesAPIendpoint}/service/${id}/`);
-  const validation = serviceSchema.safeParse(response.data);
-  if (!validation.success) {
-    console.log(validation.error.issues);
-  }
-  return validation.data;
-};
+
 
 
 /**
  * @async
- * @param {string} token
+ * @param {string} url // example ${servicesAPIendpoint}/service_by_token/${servicetoken}/
  * @returns {Promise<Service>}
  */
-export const fetchServicebyToken = async (token) => {
-  const response = await axiosInstance.get(`${servicesAPIendpoint}/service_by_token/${token}/`);
+export const fetchService = async (url) => {
+  const response = await axiosInstance.get(url);
   const validation = serviceSchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);
@@ -101,6 +89,18 @@ export const deleteService = async (id) => {
     `${servicesAPIendpoint}/delete_service/${id}/`
   );
   return id;
+};
+
+
+/**
+ * Add a user to the users whose Service is in Progress or Completed
+ * @async
+ * @param {string} url
+* @returns {Promise<number>}
+ */
+export const addusertoProgressorCompleted = async (url) => {
+  const response = await axiosInstance.post(url);
+  return response.data
 };
 
 

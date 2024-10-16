@@ -23,13 +23,14 @@ export const fetchProducts = async (url) => {
   return validation.data;
 };
 
+
 /**
  * @async
- * @param {number} id
+ * @param {string} url // example `${productsAPIendpoint}/product/${id}/`
  * @returns {Promise<Product>}
  */
-export const fetchProductbyID = async (id) => {
-  const response = await axiosInstance.get(`${productsAPIendpoint}/product/${id}/`);
+export const fetchProduct = async (url) => {
+  const response = await axiosInstance.get(url);
   const validation = productSchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);

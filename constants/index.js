@@ -67,7 +67,7 @@ export const testimonialDefault = {
   img_url: null,
   img_name: null,
   created_at: new Date(),
-  last_updated_date: new Date()
+  last_updated_date: new Date(),
 };
 
 /**
@@ -173,9 +173,11 @@ export const serviceDefault = {
   service_flow: null,
   price: "",
   number_of_times_bought: 0,
+  userIDs_that_bought_this_service: [],
+  userIDs_whose_services_is_in_progress: [],
+  userIDs_whose_services_have_been_completed: [],
   created_at: new Date(),
   updated_at: new Date(),
-  userIDs_that_bought_this_service: [],
 };
 
 /**
@@ -230,7 +232,6 @@ export const messageDefault = {
   read: false,
 };
 
-
 export const dept_icons = [
   {
     id: 1,
@@ -253,3 +254,67 @@ export const dept_icons = [
     icon: <PiGearBold />,
   },
 ];
+
+/**
+ * Default for Order
+ * @type {Order}
+ */
+export const orderDefault = {
+  id: null,
+  organization: null,
+  customer: null,
+  services: [],
+  products: [],
+  videos: [],
+  amount: null,
+  status: null,
+  reference: null,
+  created_at: new Date(),
+  service_delivered: false,
+  last_updated_date: new Date(),
+};
+
+
+
+/**
+ * Default for Order Report to Admin
+ * @type {OrderReport}
+ */
+
+export const orderReportDefault = {
+  "totalorders": null,
+  "totalcustomers": null,
+  "customers": []
+}
+
+
+
+/**
+ * Default User Data
+ *
+ * @type {User}
+ */
+export const userDefault = {
+  id: null,
+  avatar: null,
+  avatar_url: null,
+  avatar_name: null,
+  last_login: new Date,
+  is_superuser: true,
+  username: null,
+  first_name:null,
+  last_name: null,
+  email: null,
+  is_staff: true,
+  is_active: true,
+  date_joined: new Date,
+  isOauth: false,
+  Oauthprovider: null,
+  emailIsVerified: false,
+  twofactorIsEnabled: false,
+  verificationToken: null,
+  expiryTime: null,
+  address: null,
+  Sex: null,
+  phone: null
+}

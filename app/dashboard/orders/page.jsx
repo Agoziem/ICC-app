@@ -15,7 +15,7 @@ const OrderPage = () => {
   const email = session?.user.email;
   const handleSuccess = () => {
     resertCart();
-    router.push(`/dashboard/orders/completed`);
+    router.push(`/dashboard/orders/completed?ref=${reference}`);
   };
 
   const componentProps = {
@@ -43,7 +43,7 @@ const OrderPage = () => {
             <h4 className="text-center">Order List</h4>
             <ul className="list-group list-group-flush">
               <li className="list-group-item" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
-                <div className="py-2 fw-bold">Services Order</div>
+                <div className="py-2 fw-bold">Order Summary</div>
               </li>
               <li className="list-group-item text-primary" style={{ background:"var(--bgLighterColor)",borderColor:"var(--bgDarkColor)"}}>
                 {cart && cart.length > 0 ? (

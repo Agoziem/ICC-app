@@ -3,6 +3,9 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import { RiShoppingBasketFill } from "react-icons/ri";
 
+/**
+ * @param {{ item: Product; }} param0
+ */
 function TopSellingProduct({ item }) {
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();

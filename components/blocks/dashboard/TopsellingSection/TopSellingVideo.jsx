@@ -3,6 +3,9 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import { FaVideo } from "react-icons/fa6";
 
+/**
+ * @param {{ item: Video; }} param0
+ */
 function TopSellingVideo({ item }) {
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();

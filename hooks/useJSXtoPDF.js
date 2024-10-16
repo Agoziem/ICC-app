@@ -29,7 +29,7 @@ const useJsxToPdf = () => {
     pdf.save(`${pdfname ? pdfname : "Document"}.pdf`);
   };
 
-  return [loading, generatePdf];
+  return {loading, generatePdf};
 };
 
 export default useJsxToPdf;

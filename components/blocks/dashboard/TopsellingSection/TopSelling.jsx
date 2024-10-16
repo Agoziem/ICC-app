@@ -1,44 +1,30 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./topSelling.css";
-import Link from "next/link";
-import { useServiceContext } from "@/data/services/Servicescontext";
-import { useProductContext } from "@/data/product/Productcontext";
-import { useVideoContext } from "@/data/videos/Videoscontext";
-import TopSellingService from "./TopSellingService";
-import TopSellingVideo from "./TopSellingVideo";
-import TopSellingProduct from "./TopSellingProduct";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useEffect, useState } from "react";
+import { FaVideo } from "react-icons/fa";
 import { RiShoppingBasketFill } from "react-icons/ri";
-import { FaVideo } from "react-icons/fa6";
-
-function TopSelling({ itemName }) {
-  const { services, fetchServices, totalServices } = useServiceContext();
-  const { products, fetchProducts, totalProducts } = useProductContext();
-  const { videos, fetchVideos, totalVideos } = useVideoContext();
+import TopSellingService from "./TopSellingService";
+import TopSellingProduct from "./TopSellingProduct";
+import TopSellingVideo from "./TopSellingVideo";
+import Link from "next/link";
+import "./topSelling.css";
+/**
+ * TopSelling Component
+ * @param {Object} props
+ * @param {"Services" | "Products" | "Videos"} props.itemName
+ * @param {Services | Products | Videos} props.data
+ * @param {number} props.itemCount
+ * @returns {JSX.Element}
+ */
+function TopSelling({ itemName, data = [], itemCount }) {
   const [topSelling, setTopSelling] = useState([]);
-  const { OrganizationData } = useContext(OrganizationContext);
 
+  // Update the state whenever the data prop changes
   useEffect(() => {
-    if (OrganizationData.id) {
-      if (itemName === "Services") {
-        fetchServices(OrganizationData.id, 1, 6);
-      } else if (itemName === "Products") {
-        fetchProducts(OrganizationData.id, 1, 6);
-      } else if (itemName === "Videos") {
-        fetchVideos(OrganizationData.id, 1, 6);
-      }
+    if (data?.length > 0) {
+      setTopSelling(data);
+    } else {
+      setTopSelling([]);
     }
-  }, [OrganizationData.id]);
-
-  useEffect(() => {
-    if (itemName === "Services") {
-      setTopSelling(services);
-    } else if (itemName === "Products") {
-      setTopSelling(products);
-    } else if (itemName === "Videos") {
-      setTopSelling(videos);
-    }
-  }, [services, products, videos]);
+  }, [data]);
 
   return (
     <div className="card top-selling overflow-auto p-3">
@@ -60,11 +46,11 @@ function TopSelling({ itemName }) {
             }}
           >
             {itemName === "Services" ? (
-              <i className="bi bi-person-fill-gear  mb-0 text-primary"></i>
+              <i className="bi bi-person-fill-gear mb-0 text-primary"></i>
             ) : itemName === "Products" ? (
-              <RiShoppingBasketFill className={" mb-0 text-secondary"} />
+              <RiShoppingBasketFill className="mb-0 text-secondary" />
             ) : (
-              <FaVideo className={" mb-0 text-success"} />
+              <FaVideo className="mb-0 text-success" />
             )}
           </div>
           <h6 className="ms-3">
@@ -76,9 +62,7 @@ function TopSelling({ itemName }) {
           <thead className="table-light">
             <tr>
               <th scope="col">
-                {itemName === "Services"
-                  ? "Preview"
-                  : itemName === "Products"
+                {itemName === "Services" || itemName === "Products"
                   ? "Preview"
                   : "Thumbnail"}
               </th>
@@ -89,15 +73,14 @@ function TopSelling({ itemName }) {
                   ? "Product"
                   : "Video"}
               </th>
-
               <th scope="col">Category</th>
               <th scope="col">Price</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
-            {topSelling && topSelling.length > 0 ? (
-              topSelling.slice(0, 6).map((item) => {
+            {topSelling?.length > 0 ? (
+              topSelling?.map((item) => {
                 if (itemName === "Services") {
                   return <TopSellingService key={item.id} item={item} />;
                 } else if (itemName === "Products") {
@@ -119,11 +102,7 @@ function TopSelling({ itemName }) {
             )}
           </tbody>
         </table>
-        {(itemName === "Services"
-          ? totalServices
-          : itemName === "Products"
-          ? totalProducts
-          : totalVideos) > 6 ? (
+        {itemCount && itemCount > 6 && (
           <Link
             href={`/dashboard/${
               itemName === "Services"
@@ -132,11 +111,11 @@ function TopSelling({ itemName }) {
                 ? "products"
                 : "videos"
             }`}
-            className="text-secondary  my-3"
+            className="text-secondary my-3"
           >
             See more {itemName}
           </Link>
-        ) : null}
+        )}
       </div>
     </div>
   );

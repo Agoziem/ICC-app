@@ -2,7 +2,7 @@ import React from "react";
 import "./OrderTableItems.css";
 import { useSession } from "next-auth/react";
 
-const OrderTableItems = ({ currentItems }) => {
+const OrderTableItems = ({ currentItems = [] }) => {
   const { data: session } = useSession();
   const handleStatus = (status) => {
     switch (status) {

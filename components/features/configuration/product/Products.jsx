@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
@@ -24,6 +24,7 @@ import {
   productsAPIendpoint,
   updateProduct,
 } from "@/data/product/fetcher";
+import SearchInput from "@/components/custom/Inputs/SearchInput";
 
 // /...
 const Products = () => {
@@ -42,6 +43,7 @@ const Products = () => {
   const pageSize = "10";
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   const {
     data: categories,
@@ -100,6 +102,16 @@ const Products = () => {
       scroll: false,
     });
   };
+
+   // Memoized filtered Products based on search query
+   const filteredProducts = useMemo(() => {
+    if (!products?.results) return [];
+    if (!searchQuery) return products.results;
+
+    return products.results.filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
 
   // ----------------------------------------------------
   // close modal
@@ -249,9 +261,17 @@ const Products = () => {
             {products?.count} Product{products?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
+        <div className="ms-0 ms-auto mb-4 mb-md-0">
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            itemlabel="product"
+          />
+        </div>
       </div>
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
+      {searchQuery && <h5>Search Results</h5>}
       <div className="row">
         {
           // loading
@@ -264,8 +284,8 @@ const Products = () => {
             </div>
           )
         }
-        {!loadingProducts && products?.results?.length > 0 ? (
-          products?.results?.map((product) => (
+        {!loadingProducts && filteredProducts?.length > 0 ? (
+          filteredProducts?.map((product) => (
             <ProductCard
               openModal={openModal}
               key={product.id}

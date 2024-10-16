@@ -149,7 +149,7 @@ const ArticleForm = ({
           <input
             type="text"
             className="form-control"
-            value={article.title}
+            value={article?.title}
             onChange={(e) => {
               setArticle({
                 ...article,
@@ -166,7 +166,7 @@ const ArticleForm = ({
           <input
             type="text"
             className="form-control"
-            value={article.subtitle}
+            value={article?.subtitle}
             onChange={(e) => {
               setArticle({ ...article, subtitle: e.target.value });
               setHasStartedEditing(true); // Mark as started editing
@@ -191,7 +191,7 @@ const ArticleForm = ({
             type="number"
             className="form-control"
             min={0}
-            value={article.readTime}
+            value={article?.readTime}
             onChange={(e) => {
               setArticle({ ...article, readTime: e.target.value });
               setHasStartedEditing(true); // Mark as started editing
@@ -222,7 +222,7 @@ const ArticleForm = ({
             </button>
           </div>
           <div className="mt-3">
-            {article.tags.length > 0 ? (
+            {article?.tags.length > 0 ? (
               article.tags.map((t, i) => (
                 <div
                   key={i}
@@ -235,7 +235,7 @@ const ArticleForm = ({
                     onClick={() => {
                       setArticle({
                         ...article,
-                        tags: article.tags.filter((tag) => tag !== t),
+                        tags: article?.tags.filter((tag) => tag !== t),
                       });
                       setHasStartedEditing(true); // Mark as started editing
                     }}
@@ -252,7 +252,7 @@ const ArticleForm = ({
           <input
             type="text"
             className="form-control"
-            value={article.slug}
+            value={article?.slug}
             readOnly
           />
         </div>
@@ -260,7 +260,7 @@ const ArticleForm = ({
           <label>Category</label>
           <select
             className="form-select"
-            value={article.category}
+            value={article?.category}
             onChange={(e) => {
               setArticle({ ...article, category: e.target.value });
               setHasStartedEditing(true); // Mark as started editing
@@ -268,8 +268,8 @@ const ArticleForm = ({
             required
           >
             <option value="">Select Category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.category}>
+            {categories?.map((category) => (
+              <option key={category.id} value={category?.category}>
                 {category.category}
               </option>
             ))}

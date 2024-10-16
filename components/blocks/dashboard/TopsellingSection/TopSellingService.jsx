@@ -2,6 +2,10 @@ import { useCart } from "@/data/carts/Cartcontext";
 import React from "react";
 import { useSession } from "next-auth/react";
 
+
+/**
+ * @param {{ item: Service; }} param0
+ */
 function TopSellingService({ item }) {
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();

@@ -1,7 +1,12 @@
 import React from 'react'
 import "./OrderTableItems.css";
 import Link from 'next/link';
-const CustomersTable = ({ currentItems,setCustomerID,toggleModal }) => {
+
+
+/**
+ * @param {{ currentItems?: Customers; setCustomerID: any; toggleModal: any; }} param0
+ */
+const CustomersTable = ({ currentItems = [],setCustomerID,toggleModal }) => {
   return (
     <div className="card p-3 overflow-auto">
       <table className="table table-bordered">
@@ -33,17 +38,17 @@ const CustomersTable = ({ currentItems,setCustomerID,toggleModal }) => {
                 </td>
                 <td>
                   {/* total Amount */}
-                  &#8358; {item.amount__sum}
+                  &#8358; {item.amount__sum.toFixed(2)}
                 </td>
                 <td>
                     {/* Average Amount */}
-                    &#8358; {item.amount__avg}
+                    &#8358; {item.amount__avg.toFixed(2)}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center">No Customer found</td>
+              <td colSpan={5} className="text-center">No Customer found</td>
             </tr>
           )}
         </tbody>

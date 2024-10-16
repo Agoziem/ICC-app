@@ -1,98 +1,167 @@
-import { useUserContext } from "@/data/payments/usercontextdata";
-import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { PiEmptyBold } from "react-icons/pi";
 import ServicesPlaceholder from "../../custom/ImagePlaceholders/ServicesPlaceholder";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import useSWR from "swr";
+import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
+import Pagination from "@/components/custom/Pagination/Pagination";
+import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { useMemo, useState } from "react";
 
 const UserServices = () => {
-  const { userOrder } = useUserContext();
   const { data: session } = useSession();
-  const [paidServices, setPaidServices] = useState([]);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category") || "All";
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
-  useEffect(() => {
-    if (userOrder.length > 0 && session?.user?.id) {
-      const userId = parseInt(session.user.id);
-      const allPaidServices = userOrder.flatMap((order) =>
-        order.services.filter((service) =>
-          service.userIDs_that_bought_this_service.includes(userId)
-        )
-      );
-      setPaidServices(allPaidServices);
-    }
-  }, [userOrder, session]);
+  const {
+    data: services,
+    isLoading: loadingServices,
+    error: error,
+  } = useSWR(
+    session?.user.id
+      ? `${servicesAPIendpoint}/userboughtservices/${Organizationid}/${session?.user.id}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
+      : null,
+    fetchServices
+  );
+
+  // -----------------------------------------
+  // Handle page change
+  // -----------------------------------------
+  /**  @param {string} newPage */
+  const handlePageChange = (newPage) => {
+    router.push(
+      `?category=${currentCategory}&page=${newPage}&page_size=${pageSize}`,
+      {
+        scroll: false,
+      }
+    );
+  };
+
+  // -------------------------------
+  // Handle category change
+  // -------------------------------
+  /**  @param {string} category */
+  const handleCategoryChange = (category) => {
+    router.push(`?category=${category}&page=${page}&page_size=${pageSize}`, {
+      scroll: false,
+    });
+  };
+
+  // Memoized filtered products based on search query
+  const filteredService = useMemo(() => {
+    if (!services?.results) return [];
+    if (!searchQuery) return services.results;
+
+    return services.results.filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [services, searchQuery]);
+
 
   return (
-    <div className="row">
-      <h4 className="my-3">Services Purchased</h4>
-      {paidServices.length > 0 ? (
-        paidServices.map((service) => (
-          <div key={service.id} className="col-12 col-md-4">
-            <div className="card p-4">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="me-3">
-                  {service.preview ? (
-                    <img
-                      src={service.img_url}
-                      alt="services"
-                      width={68}
-                      height={68}
-                      className="rounded-circle object-fit-cover"
-                      style={{ objectPosition: "center" }}
-                    />
-                  ) : (
-                    <ServicesPlaceholder />
-                  )}
-                </div>
-                <div className="flex-fill">
-                  <h6 className="text-capitalize">{service.name}</h6>
-                  <p className="text-capitalize mb-1">
-                    {service.description.length > 80 ? (
-                      <span>{service.description.substring(0, 80)}... </span>
+    <div>
+      <div className="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between ">
+        <div>
+          <h4 className="mt-3">Services Purchased</h4>
+          <p>
+            {services?.count} Service{services?.count > 1 ? "s" : ""} purchased
+          </p>
+        </div>
+        <div className="mb-4 mb-md-0">
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            itemlabel="service"
+          />
+        </div>
+      </div>
+
+      {searchQuery && <h5>Search Results</h5>}
+      <div className="row">
+        {filteredService?.length > 0 ? (
+          filteredService?.map((service) => (
+            <div key={service.id} className="col-12 col-md-4">
+              <div className="card p-4">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="me-3">
+                    {service.preview ? (
+                      <img
+                        src={service.img_url}
+                        alt="services"
+                        width={68}
+                        height={68}
+                        className="rounded-circle object-fit-cover"
+                        style={{ objectPosition: "center" }}
+                      />
                     ) : (
-                      service.description
+                      <ServicesPlaceholder />
                     )}
-                  </p>
-                  <div className="d-flex justify-content-between align-items-center mt-3">
-                    <p className="small mb-1">
-                      {service.category.category} Service
+                  </div>
+                  <div className="flex-fill">
+                    <h6 className="text-capitalize">{service.name}</h6>
+                    <p className="text-capitalize mb-1">
+                      {service.description.length > 80 ? (
+                        <span>{service.description.substring(0, 80)}... </span>
+                      ) : (
+                        service.description
+                      )}
                     </p>
-                    <div
-                      className="badge bg-primary-light text-primary py-2 px-2"
-                      style={{ cursor: "pointer" }}
-                    >
-                      {
-                        // check if the service is already completed for the user
-                        service.userIDs_whose_services_have_been_completed.includes(
-                          parseInt(session.user.id)
-                        ) ? (
-                          <span>Service Completed</span>
-                        ) : (
-                          <Link
-                            href={`/dashboard/my-orders/service?servicetoken=${service.service_token}`}
-                            className="text-primary"
-                          >
-                            View Service Flow
-                          </Link>
-                        )
-                      }
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                      <p className="small mb-1">
+                        {service.category.category} Service
+                      </p>
+                      <div
+                        className="badge bg-primary-light text-primary py-2 px-2"
+                        style={{ cursor: "pointer" }}
+                      >
+                        {
+                          // check if the service is already completed for the user
+                          service.userIDs_whose_services_have_been_completed.includes(
+                            parseInt(session.user.id)
+                          ) ? (
+                            <span>Service Completed</span>
+                          ) : (
+                            <Link
+                              href={`/dashboard/my-orders/service?servicetoken=${service.service_token}`}
+                              className="text-primary"
+                            >
+                              View Service Flow
+                            </Link>
+                          )
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="text-center">
+            <PiEmptyBold
+              className="mt-2"
+              style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
+            />
+            <h4>Services</h4>
+            <p>you have not ordered any Service so far</p>
           </div>
-        ))
-      ) : (
-        <div className="text-center">
-          <PiEmptyBold
-            className="mt-2"
-            style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
+        )}
+      </div>
+      {!loadingServices &&
+        services &&
+        Math.ceil(services.count / parseInt(pageSize)) > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(services.count / parseInt(pageSize))}
+            handlePageChange={handlePageChange}
           />
-          <h4>Services</h4>
-          <p>you have not ordered any Service so far</p>
-        </div>
-      )}
+        )}
     </div>
   );
 };

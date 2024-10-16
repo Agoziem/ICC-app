@@ -15,24 +15,25 @@ export const UserSchema = z.object({
   last_name: z.string().max(30).optional(),      // Last name from AbstractUser
   email: z.string().email().optional(),          // Email field from AbstractUser
   avatar: z.string().nullable().optional(),      // ImageField for avatar (URL or null)
+  avatar_url: z.string().url().nullable().optional(),      // ImageField for avatar (URL or null)
+  avatar_name: z.string().nullable().optional(),      // ImageField for avatar (URL or null)
   isOauth: z.boolean().default(false),           // BooleanField for OAuth status
   Oauthprovider: z.string().max(100).default('email').nullable(), // Provider name
   emailIsVerified: z.boolean().default(false),   // BooleanField for email verification
   twofactorIsEnabled: z.boolean().default(false), // BooleanField for two-factor auth
   verificationToken: z.string().max(100).nullable(), // Unique token field
-  expiryTime: z.date().nullable(),               // DateTimeField for token expiry
+  expiryTime: z.coerce.date().nullable(),               // DateTimeField for token expiry
   address: z.string().max(100).nullable(),       // CharField for address
   Sex: z.string().max(10).nullable(),            // CharField for gender/sex
   phone: z.string().max(15).nullable(),          // CharField for phone number
   is_active: z.boolean().default(true),          // BooleanField from AbstractUser
   is_staff: z.boolean().default(false),          // BooleanField from AbstractUser
   is_superuser: z.boolean().default(false),      // BooleanField from AbstractUser
-  date_joined: z.date().optional(),              // Date when the user joined
-  last_login: z.date().nullable(),               // Last login timestamp
-
-  groups: z.array(z.number()).optional(),        // ManyToManyField (Group IDs)
-  user_permissions: z.array(z.number()).optional(), // ManyToManyField (Permission IDs)
+  date_joined: z.coerce.date().optional(),              // Date when the user joined
+  last_login: z.coerce.date().nullable(),               // Last login timestamp
 });
+
+export const UsersSchema = z.array(UserSchema)
 
 export const UsersResponseSchema = z.object({
   count: z.number(),

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
@@ -24,6 +24,7 @@ import {
   servicesAPIendpoint,
   updateService,
 } from "@/data/services/fetcher";
+import SearchInput from "@/components/custom/Inputs/SearchInput";
 
 const Services = () => {
   const { openModal } = useAdminContext();
@@ -42,6 +43,7 @@ const Services = () => {
   const pageSize = "10";
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   const {
     data: categories,
@@ -97,6 +99,16 @@ const Services = () => {
       scroll: false,
     });
   };
+
+  // Memoized filtered services based on search query
+  const filteredServices = useMemo(() => {
+    if (!services?.results) return [];
+    if (!searchQuery) return services.results;
+
+    return services.results.filter((service) =>
+      service.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [services, searchQuery]);
 
   // ----------------------------------------------------
   // Close the modal
@@ -250,6 +262,14 @@ const Services = () => {
             {services?.count} Service{services?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
+
+        <div className="ms-0 ms-md-auto mb-4 mb-md-0">
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            itemlabel="service"
+          />
+        </div>
       </div>
 
       {/* The Services & Application list */}
@@ -266,8 +286,8 @@ const Services = () => {
             </div>
           )
         }
-        {!loadingServices && services?.results?.length > 0 ? (
-          services.results.map((service) => (
+        {!loadingServices && filteredServices?.length > 0 ? (
+          filteredServices?.map((service) => (
             <ServiceCard
               openModal={openModal}
               key={service.id}

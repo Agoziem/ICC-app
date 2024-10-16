@@ -1,122 +1,160 @@
-import { useUserContext } from "@/data/payments/usercontextdata";
-import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { PiEmptyBold } from "react-icons/pi";
 import ProductPlaceholder from "../../custom/ImagePlaceholders/Productplaceholder";
 import Link from "next/link";
+import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
+import useSWR from "swr";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Pagination from "@/components/custom/Pagination/Pagination";
+import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { useMemo, useState } from "react";
 
 const UserProducts = () => {
-  const { userOrder } = useUserContext();
   const { data: session } = useSession();
-  const [product, setProduct] = useState("");
-  const [paidProducts, setPaidProducts] = useState([]);
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category") || "All";
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
-  useEffect(() => {
-    if (userOrder.length > 0 && session?.user?.id) {
-      const userId = parseInt(session.user.id);
-      const allpaidProducts = userOrder.flatMap((order) =>
-        order.products.filter((product) =>
-          product.userIDs_that_bought_this_product.includes(userId)
-        )
-      );
-      setPaidProducts(allpaidProducts);
-    }
-  }, [userOrder, session]);
-  //   {
-  //     "id": 3,
-  //     "organization": {
-  //         "id": 1,
-  //         "name": "Innovations Cybercafe"
-  //     },
-  //     "preview": "/media/products/SUZIEYGDIAMOND_7881979b-2b78-47ea-8fa4-af9d4e73eaf5_1024x_1.webp",
-  //     "img_url": "http://127.0.0.1:8000/media/products/SUZIEYGDIAMOND_7881979b-2b78-47ea-8fa4-af9d4e73eaf5_1024x_1.webp",
-  //     "img_name": "SUZIEYGDIAMOND_7881979b-2b78-47ea-8fa4-af9d4e73eaf5_1024x_1.webp",
-  //     "product": "/media/products/Paystack_Merchant_Service_Agreement_1239837.pdf",
-  //     "product_url": "http://127.0.0.1:8000/media/products/Paystack_Merchant_Service_Agreement_1239837.pdf",
-  //     "product_name": "Paystack_Merchant_Service_Agreement_1239837.pdf",
-  //     "category": {
-  //         "id": 1,
-  //         "category": "Jamb",
-  //         "description": null
-  //     },
-  //     "name": "AI Tutor for Exam Preparations",
-  //     "description": "No description available",
-  //     "price": "2500.00",
-  //     "rating": 0,
-  //     "product_token": "eddc95530ca84141bafb2a3bdd0d695d",
-  //     "number_of_times_bought": 1,
-  //     "digital": true,
-  //     "created_at": "2024-05-29T10:03:26.614597Z",
-  //     "last_updated_date": "2024-07-19T20:56:52.716697Z",
-  //     "free": false,
-  //     "userIDs_that_bought_this_product": [
-  //         1
-  //     ]
-  // }
+  const {
+    data: products,
+    isLoading: loadingProducts,
+    error: error,
+  } = useSWR(
+    session?.user.id
+      ? `${productsAPIendpoint}/userboughtproducts/${Organizationid}/${session?.user.id}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
+      : null,
+    fetchProducts
+  );
+
+  // -----------------------------------------
+  // Handle page change
+  // -----------------------------------------
+  /**  @param {string} newPage */
+  const handlePageChange = (newPage) => {
+    router.push(
+      `?category=${currentCategory}&page=${newPage}&page_size=${pageSize}`,
+      {
+        scroll: false,
+      }
+    );
+  };
+
+  // -------------------------------
+  // Handle category change
+  // -------------------------------
+  /**  @param {string} category */
+  const handleCategoryChange = (category) => {
+    router.push(`?category=${category}&page=${page}&page_size=${pageSize}`, {
+      scroll: false,
+    });
+  };
+
+  // Memoized filtered services based on search query
+  const filteredProducts = useMemo(() => {
+    if (!products?.results) return [];
+    if (!searchQuery) return products.results;
+
+    return products.results.filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
 
   return (
-    <div className="row">
-      <h4 className="my-3">Products Purchased</h4>
-      {paidProducts.length > 0 ? (
-        paidProducts.map((product) => (
-          <div key={product.id} className="col-12 col-md-4">
-            <div className="card p-4">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="me-3">
-                  {product.preview ? (
-                    <img
-                      src={product.img_url}
-                      alt="products"
-                      width={68}
-                      height={68}
-                      className="rounded-circle object-fit-cover"
-                      style={{ objectPosition: "center" }}
-                    />
-                  ) : (
-                    <ProductPlaceholder />
-                  )}
-                </div>
-                <div className="flex-fill">
-                  <h6 className="text-capitalize">{product.name}</h6>
-                  <p className="text-capitalize mb-1">
-                    {product.description.length > 80 ? (
-                      <span>{product.description.substring(0, 80)}... </span>
+    <div>
+      <div className="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between ">
+        <div>
+          <h4 className="mt-3">Products Purchased</h4>
+          <p>
+            {products?.count} Product{products?.count > 1 ? "s" : ""} purchased
+          </p>
+        </div>
+        <div className="mb-4 mb-md-0">
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            itemlabel="product"
+          />
+        </div>
+      </div>
+
+      {searchQuery && <h5>Search Results</h5>}
+      <div className="row">
+        {filteredProducts?.length > 0 ? (
+          filteredProducts?.map((product) => (
+            <div key={product.id} className="col-12 col-md-4">
+              <div className="card p-4">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="me-3">
+                    {product.preview ? (
+                      <img
+                        src={product.img_url}
+                        alt="products"
+                        width={68}
+                        height={68}
+                        className="rounded-circle object-fit-cover"
+                        style={{ objectPosition: "center" }}
+                      />
                     ) : (
-                      product.description
+                      <ProductPlaceholder />
                     )}
-                  </p>
-                  <div className="d-flex justify-content-between align-items-center mt-3">
-                    <p className="small mb-1">
-                      {product.category.category} Product
+                  </div>
+                  <div className="flex-fill">
+                    <h6 className="text-capitalize">{product.name}</h6>
+                    <p className="text-capitalize mb-1">
+                      {product.description.length > 80 ? (
+                        <span>{product.description.substring(0, 80)}... </span>
+                      ) : (
+                        product.description
+                      )}
                     </p>
-                    <div
-                      className="badge bg-primary py-2 px-2"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <Link
-                        href={product.product_url || "#"}
-                        target="_blank"
-                        className="text-light"
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                      <p className="small mb-1">
+                        {product.category.category} Product
+                      </p>
+                      <div
+                        className="badge bg-primary py-2 px-2"
+                        style={{ cursor: "pointer" }}
                       >
-                        view product
-                      </Link>
+                        <Link
+                          href={product.product_url || "#"}
+                          target="_blank"
+                          className="text-light"
+                        >
+                          view product
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="text-center">
+            <PiEmptyBold
+              className="mt-2"
+              style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
+            />
+            <h4>Products</h4>
+            <p>you have not purchased any Products so far</p>
           </div>
-        ))
-      ) : (
-        <div className="text-center">
-          <PiEmptyBold
-            className="mt-2"
-            style={{ fontSize: "6rem", color: "var(--bgDarkerColor)" }}
-          />
-          <h4>Products</h4>
-          <p>you have not purchased any Products so far</p>
-        </div>
-      )}
+        )}
+
+        {!loadingProducts &&
+          products &&
+          Math.ceil(products.count / parseInt(pageSize)) > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={Math.ceil(products.count / parseInt(pageSize))}
+              handlePageChange={handlePageChange}
+            />
+          )}
+      </div>
     </div>
   );
 };

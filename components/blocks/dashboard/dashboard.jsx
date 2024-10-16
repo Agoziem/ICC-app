@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import HorizontalCard from "./Card/horizontalcard";
 // import RecentActivity from "./RecentactionsSections/RecentActivity";
 import RecentSales from "./RecentsalesSection/RecentSales";
@@ -10,12 +10,57 @@ import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useUserContext } from "@/data/payments/usercontextdata";
 import CartButton from "../../custom/Offcanvas/CartButton";
 import { useServiceContext } from "@/data/services/Servicescontext";
+import useSWR from "swr";
+import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
+import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
+import { fetchVideos, vidoesapiAPIendpoint } from "@/data/videos/fetcher";
+import { getOrderReport, paymentsAPIendpoint } from "@/data/payments/fetcher";
 
 const DashboardBody = () => {
-  const { totalOrders, totalCustomers } = useAdminContext();
-  const { userOrder, totalOrder } = useUserContext();
-  const { totalServices } = useServiceContext();
-  const { data: session } = useSession(); 
+  const { orders } = useAdminContext();
+  const { userOrders } = useUserContext();
+  const { data: session } = useSession();
+  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+
+  const page = 1
+  const pageSize = 6
+
+  // fetch Order Report (Customers)
+  const { data: orderReport } = useSWR(
+    `${paymentsAPIendpoint}/getorderreport/${Organizationid}`,
+    getOrderReport
+  );
+
+  // fetchServices
+  const {
+    data: services,
+    isLoading: loadingServices,
+    error: serviceserror,
+  } = useSWR(
+    `${servicesAPIendpoint}/services/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`,
+    fetchServices
+  );
+
+  // fetchProducts
+  const {
+    data: products,
+    isLoading: loadingProducts,
+    error: productserror,
+  } = useSWR(
+    `${productsAPIendpoint}/products/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`,
+    fetchProducts
+  );
+
+   // fetchProducts
+   const {
+    data: videos,
+    isLoading: loadingVideos,
+    error: videoerror,
+  } = useSWR(
+    `${vidoesapiAPIendpoint}/videos/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`,
+    fetchVideos
+  );
+
   return (
     <div className="dashboard">
       <div className="my-4 d-flex justify-content-between align-items-center flex-wrap">
@@ -36,7 +81,7 @@ const DashboardBody = () => {
                     iconcolor="primary"
                     cardtitle="Services"
                     icon="bi bi-person-fill-gear"
-                    cardbody={totalServices}
+                    cardbody={services?.count}
                     cardspan="Services"
                   />
                 </div>
@@ -45,8 +90,8 @@ const DashboardBody = () => {
                     iconcolor="secondary"
                     cardtitle="Orders"
                     icon="bi bi-cart3"
-                    cardbody={totalOrders}
-                    cardspan={`Service${totalOrders > 1 ? "s" : ""} Ordered`}
+                    cardbody={userOrders?.length}
+                    cardspan={`Service${userOrders?.length > 1 ? "s" : ""} Ordered`}
                   />
                 </div>
                 <div className="col-12 col-md-4">
@@ -54,8 +99,8 @@ const DashboardBody = () => {
                     iconcolor="success"
                     cardtitle="Customers"
                     icon="bi bi-people"
-                    cardbody={totalCustomers}
-                    cardspan={`Total Customer${totalCustomers > 1 ? "s" : ""}`}
+                    cardbody={orderReport?.customers?.length}
+                    cardspan={`Total Customer${orderReport?.customers?.length > 1 ? "s" : ""}`}
                   />
                 </div>
               </>
@@ -70,7 +115,7 @@ const DashboardBody = () => {
                       iconcolor="primary"
                       cardtitle="Services"
                       icon="bi bi-person-fill-gear"
-                      cardbody={totalServices}
+                      cardbody={services?.count}
                       cardspan="Services"
                     />
                   </div>
@@ -79,7 +124,7 @@ const DashboardBody = () => {
                       iconcolor="secondary"
                       cardtitle="Orders"
                       icon="bi bi-person-check"
-                      cardbody={totalOrder}
+                      cardbody={userOrders?.length}
                       cardspan="Orders"
                     />
                   </div>
@@ -89,8 +134,8 @@ const DashboardBody = () => {
                       cardtitle="Completed Orders"
                       icon="bi bi-cart-check"
                       cardbody={
-                        userOrder &&
-                        userOrder.filter((item) => item.status === "Completed")
+                        userOrders &&
+                        userOrders.filter((item) => item.status === "Completed")
                           .length
                       }
                       cardspan="Completed Orders"
@@ -112,17 +157,17 @@ const DashboardBody = () => {
 
             {/* Display Services Available */}
             <div className="col-12">
-              <TopSelling itemName={"Services"} />
+              <TopSelling itemName={"Services"} data = {services?.results} itemCount = {services?.count} />
             </div>
 
             {/* Display Products Available */}
             <div className="col-12">
-              <TopSelling itemName={"Products"} />
+              <TopSelling itemName={"Products"} data = {products?.results} itemCount = {products?.count} />
             </div>
 
             {/* Display Videos Available */}
             <div className="col-12">
-              <TopSelling itemName={"Videos"} />
+              <TopSelling itemName={"Videos"} data = {videos?.results} itemCount = {videos?.count} />
             </div>
 
           </div>

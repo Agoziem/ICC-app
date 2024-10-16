@@ -1,72 +1,54 @@
 "use client";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext } from "react";
 import { useSession } from "next-auth/react";
+import {  fetchPayments, paymentsAPIendpoint } from "./fetcher";
+import useSWR from "swr";
 
+/**
+ * @typedef {Object} UserOrderContextValue
+ * @property {boolean} loadingUserOrder - Indicates if the user order is loading.
+ * @property {Function} mutate - SWR mutate function to refresh user order data.
+ * @property {Orders | undefined} userOrders - List of user orders or undefined if not fetched.
+ */
+
+/** @type {React.Context<UserOrderContextValue | null>} */
 const UserContext = createContext(null);
 
+/**
+ * UserContextProvider component that wraps its children with the user context.
+ * 
+ * @param {{ children: React.ReactNode }} props - The children elements to render inside the provider.
+ * @returns {JSX.Element} The UserContext provider component.
+ */
 const UserContextProvider = ({ children }) => {
   const { data: session } = useSession();
-  const [userData, setUserData] = useState({});
-  const [userOrder, setUserOrder] = useState([]);
-  const [totalOrder, setTotalOrder] = useState(0);
 
-  // ----------------------------------------------------
-  // get user data from session on mount
-  // ----------------------------------------------------
-  useEffect(() => {
-    if (session && session.user.id) {
-      setUserData(session.user);
-      fetchUserOrder(session.user.id);
+  // Fetch user order using SWR
+  const {
+    data: userOrders,
+    isLoading: loadingUserOrder,
+    error: error,
+    mutate,
+  } = useSWR(
+    session?.user.id
+      ? `${paymentsAPIendpoint}/paymentsbyuser/${session.user.id}/`
+      : null,
+    fetchPayments,
+    {
+      onSuccess: (data) =>
+        data.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ),
     }
-  }, [session]);
-
-  // ----------------------------------------------------
-  // fetch data from the backend
-  // ----------------------------------------------------
-  const fetchUserOrder = (userId) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/paymentsbyuser/${userId}/`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setUserOrder(data.orders);
-        setTotalOrder(data.total);
-      })
-      .catch((e) => console.log(e.message));
-  };
-
-  // ----------------------------------------------------
-  // update userOrder
-  // ----------------------------------------------------
-  const updateUserOrder = (item) => {
-    const updatedOrder = userOrder.map((order) => {
-      if (order.id === item.id) {
-        return item;
-      }
-      return order;
-    });
-    setUserOrder(updatedOrder);
-  };
-
-  // ----------------------------------------------------
-  // delete userOrder
-  // ----------------------------------------------------
-  const deleteUserOrder = (item) => {
-    const updatedOrder = userOrder.filter((order) => order.id !== item.id);
-    setUserOrder(updatedOrder);
-  };
+  );
 
   return (
     <UserContext.Provider
       value={{
-        userData,
-        setUserData,
-        userOrder,
-        setUserOrder,
-        updateUserOrder,
-        deleteUserOrder,
-        totalOrder,
-        setTotalOrder,
+        loadingUserOrder,
+        mutate,
+        userOrders,
       }}
     >
       {children}
@@ -74,6 +56,11 @@ const UserContextProvider = ({ children }) => {
   );
 };
 
+/**
+ * Hook to access the user context values.
+ *
+ * @returns {UserOrderContextValue | null} The current user context value.
+ */
 const useUserContext = () => React.useContext(UserContext);
 
 export { useUserContext, UserContextProvider };

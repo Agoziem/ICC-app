@@ -11,6 +11,7 @@ import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { useCart } from "@/data/carts/Cartcontext";
+import Cartbutton from "@/components/custom/Cartbutton/cart-button";
 
 const MainHeader = () => {
   const { cart } = useCart();
@@ -58,7 +59,7 @@ const MainHeader = () => {
         backgroundColor: "transparent",
       }}
     >
-      <MainHeaderLogo toggle={toggleMenu} />
+      <MainHeaderLogo />
 
       <div className="d-none d-lg-block">
         <ul className="d-flex list-unstyled align-items-center mb-0">
@@ -81,24 +82,7 @@ const MainHeader = () => {
       {/* large Screen */}
       <div className="mainnav-link d-none d-lg-flex align-items-center">
         <div className="font-bold me-4">
-          <div
-            className="position-relative"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasTop"
-            aria-controls="offcanvasTop"
-            style={{ cursor: "pointer" }}
-          >
-            <MdOutlineShoppingCart
-              className="text-primary"
-              style={{ fontSize: "30px" }}
-            />
-            {cart.length > 0 && (
-              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {cart.length}
-                <span className="visually-hidden">cart items</span>
-              </span>
-            )}
-          </div>
+          <Cartbutton />
         </div>
         <div className="d-flex">
           <Link href={"/dashboard"}>

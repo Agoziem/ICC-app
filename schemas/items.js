@@ -27,6 +27,7 @@ export const serviceSchema = z.object({
   category: categorySchema.nullable(), // ForeignKey to Category model, represented as category ID
   subcategory: subcategorySchema.nullable(), // ForeignKey to SubCategory model, represented as subcategory ID
   userIDs_that_bought_this_service: z.array(z.number()).optional(), // ManyToManyField as array of user IDs
+  userIDs_whose_services_is_in_progress: z.array(z.number()).optional(), // ManyToManyField as array of user IDs
   userIDs_whose_services_have_been_completed: z.array(z.number()).optional(), // ManyToManyField as array of user IDs
   created_at: z.coerce.date().optional(), // auto_now_add, handled by backend
   updated_at: z.coerce.date().optional(), // auto_now, handled by backend

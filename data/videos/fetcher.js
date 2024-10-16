@@ -1,6 +1,5 @@
 import { videoSchema, videosResponseSchema } from "@/schemas/items";
 import axios from "axios";
-import { servicesAPIendpoint } from "../services/fetcher";
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}`,
@@ -27,29 +26,13 @@ export const fetchVideos = async (url) => {
 };
 
 
-
 /**
  * @async
- * @param {number} id
+ * @param {string} url // example ${vidoesapiAPIendpoint}/video_by_token/${videotoken}/
  * @returns {Promise<Video>}
  */
-export const fetchVideobyID = async (id) => {
-  const response = await axiosInstance.get(`${vidoesapiAPIendpoint}/video/${id}/`);
-  const validation = videoSchema.safeParse(response.data);
-  if (!validation.success) {
-    console.log(validation.error.issues);
-  }
-  return validation.data;
-};
-
-
-/**
- * @async
- * @param {string} token
- * @returns {Promise<Video>}
- */
-export const fetchVideobyToken = async (token) => {
-  const response = await axiosInstance.get(`${vidoesapiAPIendpoint}/video_by_token/${token}/`);
+export const fetchVideo = async (url) => {
+  const response = await axiosInstance.get(url);
   const validation = videoSchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);

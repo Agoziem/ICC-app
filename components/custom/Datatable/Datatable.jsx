@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DatatablePagination from "./DatatablePagination";
 import DatatableinputFilter from "./DatatableInputFilter";
 import Datatableselect from "./DatatableSelect";
@@ -12,7 +12,7 @@ const Datatable = ({ items, setItems, children, label, filteritemlabel }) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Filter Items
-  const filteredItems = items.filter((item) => {
+  const filteredItems = items?.filter((item) => {
     const filtertarget = item && item[filteritemlabel];
     return filterInput.toLowerCase() === ""
       ? item
@@ -22,7 +22,7 @@ const Datatable = ({ items, setItems, children, label, filteritemlabel }) => {
   // Get Current Items for the Page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
 
   // Clone the children and pass the currentItems and setItems as props
   const tableItems = React.Children.map(children, (child) => {
@@ -79,7 +79,7 @@ const Datatable = ({ items, setItems, children, label, filteritemlabel }) => {
 
       <DatatablePagination
         itemsPerPage={itemsPerPage}
-        totalItems={filteredItems.length}
+        totalItems={filteredItems?.length}
         setCurrentPage={setCurrentPage}
         footerlabel={label}
       />

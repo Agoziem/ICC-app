@@ -4,21 +4,25 @@ import { OrganizationContext } from "@/data/organization/Organizationalcontextda
 import React, { useContext } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Alert from "../Alert/Alert";
+import { PulseLoader } from "react-spinners";
 
 const OffCanvas = () => {
   const { OrganizationData } = useContext(OrganizationContext);
-  const { cart, removeFromCart, resertCart, checkout } = useCart();
+  const { cart, removeFromCart, resertCart, checkout, isPending, error } =
+    useCart();
   const { data: session } = useSession();
   return (
     <div
       className="offcanvas offcanvas-end"
-      tabIndex="-1"
+      tabIndex={-1}
       id="offcanvasTop"
       aria-labelledby="offcanvasTopLabel"
       style={{
         backgroundColor: "var(--bgLightColor)",
       }}
     >
+      {/* Off-Canvas Header */}
       <div className="offcanvas-header">
         <h5 className="offcanvas-title" id="offcanvasTopLabel">
           Shopping Cart
@@ -30,6 +34,8 @@ const OffCanvas = () => {
           aria-label="Close"
         ></button>
       </div>
+
+      {/* Off-Canvas Body */}
       <div className="offcanvas-body py-2">
         {cart && cart.length > 0 ? (
           <div className="d-flex flex-column justify-content-between h-100">
@@ -54,7 +60,10 @@ const OffCanvas = () => {
                       ) : (
                         <i className="bi bi-google-play me-2 "></i>
                       )}
-                      {item.category.category} <span className="ms-2 badge bg-primary-light text-primary">{item.cartType}</span>
+                      {item.category.category}{" "}
+                      <span className="ms-2 badge bg-primary-light text-primary">
+                        {item.cartType}
+                      </span>
                     </div>
                     <div
                       className="badge bg-secondary-light text-secondary ms-2"
@@ -81,6 +90,10 @@ const OffCanvas = () => {
                   }, 0)}
                 </span>
               </h4>
+
+              {/* Alert */}
+              <div>{error && <Alert type="danger">{error}</Alert>}</div>
+              {/* Cart button */}
               <div className="d-flex flex-md-row flex-column flex-md-fill">
                 <button
                   className="btn btn-outline-danger me-0 me-md-3 mb-3 mb-md-0"
@@ -96,12 +109,16 @@ const OffCanvas = () => {
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      checkout(OrganizationData.id);
+                      checkout();
                     }}
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
+                    disabled={isPending}
                   >
-                    Checkout
+                    {isPending ? (
+                      <div className="d-inline-flex align-items-center justify-content-center gap-2">
+                        <div>Checking out</div>
+                        <PulseLoader size={8} color={"#12000d"} loading={true} />
+                      </div>
+                    ) : "Checkout"}
                   </button>
                 ) : (
                   <Link className="btn btn-primary" href="/accounts/signin">

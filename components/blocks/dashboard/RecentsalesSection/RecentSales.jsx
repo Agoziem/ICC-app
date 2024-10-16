@@ -7,7 +7,7 @@ import { useUserContext } from "@/data/payments/usercontextdata";
 
 function RecentSales({ session }) {
   const { orders } = useAdminContext();
-  const { userOrder } = useUserContext();
+  const { userOrders } = useUserContext();
   const [filter, setFilter] = useState("Today");
   const handleFilterChange = (filter) => {
     setFilter(filter);
@@ -28,7 +28,7 @@ function RecentSales({ session }) {
         ) : null}
 
         {!session?.user?.is_staff ? (
-          <RecentSalesTable items={userOrder} session={session} />
+          <RecentSalesTable items={userOrders} session={session} />
         ) : null}
       </div>
     </div>

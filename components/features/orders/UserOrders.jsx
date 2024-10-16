@@ -1,12 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserServices from "./UserServices";
 import UserProducts from "./UserProducts";
 import UserVideos from "./UserVideos";
+import Datatable from "@/components/custom/Datatable/Datatable";
+import OrderTableItems from "./OrderTableItems";
+import { useUserContext } from "@/data/payments/usercontextdata";
 
 const UserOrders = () => {
   const categories = ["services", "products", "videos"];
   const [activeTab, setActiveTab] = useState(categories[0]);
+  const [items, setItems] = useState([]);
+  const { userOrders } = useUserContext();
+
+  useEffect(() => {
+    setItems(userOrders);
+  }, [userOrders]);
+
   return (
     <div className="mt-4">
       {categories.map((category) => (
@@ -30,11 +40,24 @@ const UserOrders = () => {
         </div>
       ))}
 
-      {/* Calculators */}
+      {/* Items Purchased */}
       <div className="mt-4">
         {activeTab === "services" && <div><UserServices /></div>}
         {activeTab === "products" && <div><UserProducts /></div>}
         {activeTab === "videos" && <div><UserVideos /></div>}
+      </div>
+
+     {/* Order table */}
+     <div className="mt-2">
+        <h5>All Orders</h5>
+        <Datatable
+          items={items}
+          setItems={setItems}
+          label={"Orders"}
+          filteritemlabel={"reference"}
+        >
+          <OrderTableItems />
+        </Datatable>
       </div>
     </div>
   );

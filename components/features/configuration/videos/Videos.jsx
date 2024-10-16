@@ -23,6 +23,7 @@ import {
   updateVideo,
   vidoesapiAPIendpoint,
 } from "@/data/videos/fetcher";
+import SearchInput from "@/components/custom/Inputs/SearchInput";
 
 const Videos = () => {
   const { openModal } = useAdminContext();
@@ -40,6 +41,7 @@ const Videos = () => {
   const pageSize = "10";
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   const {
     data: categories,
@@ -85,6 +87,16 @@ const Videos = () => {
       }
     );
   };
+
+  // ---------------------------------------
+  // Filter videos based on search input
+  // ---------------------------------------
+  let filteredVideos = videos?.results || [];
+  if (searchQuery) {
+    filteredVideos = filteredVideos.filter((video) =>
+      video.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
 
   // -------------------------------
   // Handle category change
@@ -242,9 +254,17 @@ const Videos = () => {
             {videos?.count} Video{videos?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
+        <div className="ms-0 ms-auto mb-4 mb-md-0">
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            itemlabel="video"
+          />
+        </div>
       </div>
 
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
+      {searchQuery && <h5>Search Results</h5>}
       <div className="row">
         {
           // loading
@@ -257,8 +277,8 @@ const Videos = () => {
             </div>
           )
         }
-        {!loadingVideos && videos?.results.length > 0 ? (
-          videos?.results.map((video) => (
+        {!loadingVideos && filteredVideos?.length > 0 ? (
+          filteredVideos?.map((video) => (
             <VideoCard
               openModal={openModal}
               key={video.id}

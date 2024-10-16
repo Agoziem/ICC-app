@@ -1,22 +1,31 @@
 "use client";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { useState, createContext, useContext, useEffect } from "react";
+import React, {
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+  useTransition,
+} from "react";
 import { useSession } from "next-auth/react";
 import { useUserContext } from "../payments/usercontextdata";
 import { useAdminContext } from "../payments/Admincontextdata";
 import { useRouter } from "next/navigation";
+import { addPayment } from "../payments/fetcher";
 
 const CartContext = createContext(null);
 
 const CartProvider = ({ children }) => {
   const router = useRouter();
-  const { setUserOrder } = useUserContext();
-  const { setOrders } = useAdminContext();
+  const { mutate: userordersmutate } = useUserContext();
+  const { mutate: ordersmutate } = useAdminContext();
   const { data: session } = useSession();
   const [cart, setCart] = useState([]);
   const [storedCart, setStoredCart] = useLocalStorage("cart", cart);
   const [total, setTotal] = useState(0);
   const [reference, setReference] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState(null);
 
   // ----------------------------------------------------
   // Set Cart from local storage
@@ -46,17 +55,22 @@ const CartProvider = ({ children }) => {
     setStoredCart([...cart, newItem]);
     setTotal(total + parseFloat(item.price));
   };
-  
+
   // ----------------------------------------------------
   // Remove from Cart
   // ----------------------------------------------------
   const removeFromCart = (itemId, type) => {
-    const itemToRemove = cart.find((item) => item.id === itemId && item.cartType === type);
-    setCart(cart.filter((item) => !(item.id === itemId && item.cartType === type)));
-    setStoredCart(cart.filter((item) => !(item.id === itemId && item.cartType === type)));
+    const itemToRemove = cart.find(
+      (item) => item.id === itemId && item.cartType === type
+    );
+    setCart(
+      cart.filter((item) => !(item.id === itemId && item.cartType === type))
+    );
+    setStoredCart(
+      cart.filter((item) => !(item.id === itemId && item.cartType === type))
+    );
     setTotal(total - parseFloat(itemToRemove.price));
   };
-  
 
   // ----------------------------------------------------
   // Reset Cart
@@ -71,37 +85,47 @@ const CartProvider = ({ children }) => {
   // Checkout
   // ----------------------------------------------------
 
-  const checkout = (organizationid) => {
-    const order = {
-      customerid: session?.user.id,
-      services: cart.filter((item) => item.cartType === "service").map((item) => item.id),
-      products: cart.filter((item) => item.cartType === "product").map((item) => item.id),
-      videos: cart.filter((item) => item.cartType === "video").map((item) => item.id),
-      total,
-    };
-    fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/paymentsapi/addpayment/${organizationid}/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
+  const checkout = () => {
+    startTransition(async () => {
+      const order = {
+        customerid: session?.user.id,
+        services: cart
+          .filter((item) => item.cartType === "service")
+          .map((item) => item.id),
+        products: cart
+          .filter((item) => item.cartType === "product")
+          .map((item) => item.id),
+        videos: cart
+          .filter((item) => item.cartType === "video")
+          .map((item) => item.id),
+        total,
+      };
+
+      try {
+        const data = await addPayment(order);
+
+        // Mutate user and order data, then navigate
+        await userordersmutate(
+          (previousUserOrders) => [data, ...(previousUserOrders || [])],
+          {
+            populateCache: true,
+            revalidate: false,
+          }
+        );
+        await ordersmutate(
+          (previousOrders) => [data, ...(previousOrders || [])],
+          { populateCache: true, revalidate: false }
+        );
+
+        setReference(data.reference);
+        router.push(`/dashboard/orders`);
+      } catch (error) {
+        console.error("Payment Error:", error.message);
+        setError(
+          "An error just occurred , while initiating your CheckOut Process"
+        );
       }
-    )
-      .then((res) => {
-        if (res.ok) {
-          res.json().then((data) => {
-            setUserOrder((prev) => [...prev, data]);
-            setOrders((prev) => [...prev, data]);
-            setReference(data.reference);
-            router.push(`/dashboard/orders`);
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    });
   };
 
   return (
@@ -114,6 +138,8 @@ const CartProvider = ({ children }) => {
         removeFromCart,
         resertCart,
         checkout,
+        isPending,
+        error,
       }}
     >
       {children}
