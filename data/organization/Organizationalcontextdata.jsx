@@ -1,5 +1,4 @@
 "use client";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import React, { createContext, useEffect, useState } from "react";
 import Modal from "@/components/custom/Modal/modal";
 import useSWR from "swr";
@@ -8,15 +7,7 @@ import { fetchOrganization, MainAPIendpoint } from "./fetcher";
 const OrganizationContext = createContext(null);
 
 const OrganizationContextProvider = ({ children }) => {
-  const [organizationID, setorganizationID] = useState(process.env.NEXT_PUBLIC_ORGANIZATION_ID);
-  // const [OrganizationData, setOrganizationData] = useState({});
-  // const [staffs, setStaffs] = useState([]);
-  // const [testimonials, setTestimonials] = useState([]);
-  // const [subscriptions, setSubscriptions] = useState([]);
-  // const [messages, setMessages] = useState([]);
-  // const [depts, setDepts] = useState([]);
-  // const [storedOrganizationalData, setStoredOrganizationalData] =
-  //   useLocalStorage("OrganizationData", OrganizationData);
+  const organizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID
   const [showModal, setShowModal] = useState(false);
   const [modalService, setModalService] = useState(null);
 
@@ -29,47 +20,6 @@ const OrganizationContextProvider = ({ children }) => {
     `${MainAPIendpoint}/organization/${organizationID}/`,
     fetchOrganization
   );
-
-  // useEffect(() => {
-  //   const isEmptyData =
-  //     !storedOrganizationalData ||
-  //     Object.keys(storedOrganizationalData).length === 0;
-  //   if (isEmptyData && organizationID) {
-  //     fetch(
-  //       `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/api/organization/${organizationID}/`
-  //     )
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         setOrganizationData(data);
-  //         setStoredOrganizationalData(data);
-  //         setStaffs(data.staffs);
-  //         setTestimonials(data.testimonials);
-  //         setSubscriptions(data.subscriptions);
-  //         setDepts(data.departments);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching organization data:", error);
-  //       });
-  //   } else {
-  //     setOrganizationData(storedOrganizationalData);
-  //   }
-  // }, [organizationID, storedOrganizationalData]);
-
-  // ---------------------------------------------------------------
-  // get messages
-  // ---------------------------------------------------------------
-  // useEffect(() => {
-  //   fetch(
-  //     `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/emailsapi/emails/${organizationID}/`
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setMessages(data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching messages:", error);
-  //     });
-  // }, [organizationID]);
 
   const openModal = (service) => {
     setModalService(service);
@@ -85,22 +35,10 @@ const OrganizationContextProvider = ({ children }) => {
     <OrganizationContext.Provider
       value={{
         OrganizationData,
-        // setOrganizationData,
         isLoading,
         error,
         mutate,
         organizationID,
-        setorganizationID,
-        // staffs,
-        // setStaffs,
-        // testimonials,
-        // setTestimonials,
-        // subscriptions,
-        // setSubscriptions,
-        // messages,
-        // setMessages,
-        // depts,
-        // setDepts,
         openModal, // Open Description Modal
         closeModal, // Close Description Modal
       }}

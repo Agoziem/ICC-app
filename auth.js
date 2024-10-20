@@ -2,7 +2,13 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
-import { validateUser, fetchOAuthUserData, authorizeCredentials, mapOAuthUserData, mapNonOAuthUserData } from "@/utils/authutils";
+import {
+  validateUser,
+  fetchOAuthUserData,
+  authorizeCredentials,
+  mapOAuthUserData,
+  mapNonOAuthUserData,
+} from "@/utils/authutils";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
@@ -32,7 +38,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         if (account.provider === "google" || account.provider === "github") {
           try {
-            const oauthUserData = await fetchOAuthUserData(account.provider, profile);
+            const oauthUserData = await fetchOAuthUserData(
+              account.provider,
+              profile
+            );
             mapOAuthUserData(oauthUserData, token);
           } catch (error) {
             console.error("error:", error);
@@ -45,13 +54,43 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       const {
-        id, username, first_name, last_name, picture, email, is_staff, date_joined,
-        isOauth, emailIsVerified, twofactorIsEnabled, sex, phone, address, avatar, avatar_name, avatar_url
+        id,
+        username,
+        first_name,
+        last_name,
+        picture,
+        email,
+        is_staff,
+        date_joined,
+        isOauth,
+        emailIsVerified,
+        twofactorIsEnabled,
+        sex,
+        phone,
+        address,
+        avatar,
+        avatar_name,
+        avatar_url,
       } = token;
 
       Object.assign(session.user, {
-        id, username, first_name, last_name, image: picture, email, is_staff, date_joined,
-        isOauth, emailIsVerified, twofactorIsEnabled, sex, phone, address, avatar, avatar_name, avatar_url
+        id,
+        username,
+        first_name,
+        last_name,
+        image: picture,
+        email,
+        is_staff,
+        date_joined,
+        isOauth,
+        emailIsVerified,
+        twofactorIsEnabled,
+        sex,
+        phone,
+        address,
+        avatar,
+        avatar_name,
+        avatar_url,
       });
 
       return session;

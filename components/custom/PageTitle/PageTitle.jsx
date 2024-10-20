@@ -1,5 +1,4 @@
 "use client";
-import React from 'react';
 import './pageTitle.css';
 import NextBreadcrumb from '../Breadcrumb/breadcrumb';
 import BackButton from '../backbutton/BackButton';
