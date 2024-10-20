@@ -1,4 +1,3 @@
-import React from "react";
 import "./photo.css";
 import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
 
