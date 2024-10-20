@@ -8,13 +8,9 @@ import OrganizationCard from "@/components/features/configuration/home/organizat
 import Staffs from "@/components/features/configuration/home/staffs";
 import Subscriptions from "@/components/features/configuration/home/subscriptions";
 import Testimonials from "@/components/features/configuration/home/testimonials";
-import { fetchEmails } from "@/data/Emails/fetcher";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import {
-  fetchDepartments,
   fetchStaffs,
-  fetchSubscriptions,
-  fetchTestimonials,
   MainAPIendpoint,
 } from "@/data/organization/fetcher";
 import React, { useContext, useState } from "react";

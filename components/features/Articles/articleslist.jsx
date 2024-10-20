@@ -168,9 +168,9 @@ const ArticlesList = () => {
                             {item.views}
                           </span>
                           <span className="me-3 small">
-                            <BiSolidLike className="h5" /> {item.likes.length}
+                            <BiSolidLike className="h5" /> {item.likes?.length}
                           </span>
-                          <span className="me-3 small">{item.author.username}</span>
+                          <span className="me-3 small">{item.author?.username}</span>
                         </div>
                       </div>
                     </li>

@@ -2,7 +2,6 @@
 import Datatable from "@/components/custom/Datatable/Datatable";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import OrderTableItems from "@/components/features/orders/OrderTableItems";
-import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { fetchPayments, paymentsAPIendpoint } from "@/data/payments/fetcher";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -16,7 +15,14 @@ const PaymentsPage = () => {
 
   const { data: orders } = useSWR(
     `${paymentsAPIendpoint}/payments/${Organizationid}`,
-    fetchPayments
+    fetchPayments,
+    {
+      onSuccess: (data) =>
+        data.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ),
+    }
   );
 
   useEffect(() => {
