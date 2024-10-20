@@ -106,7 +106,7 @@ const Services = () => {
             />
           )}
 
-          <div className="mb-4 mb-md-0">
+          <div className="ms-0 ms-md-auto mb-4 mb-md-0">
             <SearchInput
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}

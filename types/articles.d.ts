@@ -1,5 +1,5 @@
 // types.d.ts
-import { ArticleSchema, categorySchema, commentSchema, tagSchema } from "@/schemas/articles";
+import { ArticleResponseSchema, ArticleSchema, categorySchema, commentSchema, tagSchema } from "@/schemas/articles";
 import { z } from "zod";
 
 declare global {
@@ -12,6 +12,8 @@ declare global {
   type ArticleCategories = ArticleCategory[];
 
   type Article = z.infer<typeof ArticleSchema>;
+
+  type ArticlesResponse = z.infer<typeof ArticleResponseSchema>;
 
   type Articles = Article[];
 

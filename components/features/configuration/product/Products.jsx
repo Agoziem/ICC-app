@@ -1,5 +1,11 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
@@ -25,6 +31,7 @@ import {
   updateProduct,
 } from "@/data/product/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { PulseLoader } from "react-spinners";
 
 // /...
 const Products = () => {
@@ -44,6 +51,8 @@ const Products = () => {
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [isPending, startTransition] = useTransition();
+  const [isdeleting, startDeletion] = useTransition();
 
   const {
     data: categories,
@@ -71,13 +80,10 @@ const Products = () => {
     data: products,
     isLoading: loadingProducts,
     error: error,
+    mutate,
   } = useSWR(
     `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
     fetchProducts
-  );
-
-  const { mutate } = useSWR(
-    `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
   );
 
   // -----------------------------------------
@@ -103,8 +109,8 @@ const Products = () => {
     });
   };
 
-   // Memoized filtered Products based on search query
-   const filteredProducts = useMemo(() => {
+  // Memoized filtered Products based on search query
+  const filteredProducts = useMemo(() => {
     if (!products?.results) return [];
     if (!searchQuery) return products.results;
 
@@ -133,27 +139,73 @@ const Products = () => {
   //----------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (addorupdate.mode === "add") {
-        await mutate(createProduct(product), {
-          populateCache: true,
-        });
-      } else {
-        await mutate(updateProduct(product), {
-          populateCache: true,
-        });
+    startTransition(async () => {
+      const { organization, category, subcategory, ...restData } = product;
+      const producttosubmit = {
+        ...restData,
+        organization: Organizationid,
+        category: category || "",
+        subcategory: subcategory
+          ? {
+              ...subcategory,
+              category: category.id,
+            }
+          : "",
+      };
+      try {
+        if (addorupdate.mode !== "add") {
+          const updatedProduct = await updateProduct(producttosubmit);
+          await mutate(
+            (Products) => {
+              /** * @type {Products} */
+              const otherProducts = (Products?.results || []).map((o) =>
+                o.id === updatedProduct.id ? updatedProduct : o
+              );
+              return {
+                ...Products,
+                results: otherProducts.sort(
+                  (a, b) =>
+                    new Date(b.last_updated_date).getTime() -
+                    new Date(a.last_updated_date).getTime()
+                ),
+              };
+            },
+            {
+              populateCache: true,
+            }
+          );
+        } else {
+          const newProduct = await createProduct(producttosubmit);
+          await mutate(
+            (Products) => {
+              /** * @type {Products} */
+              const newProducts = [newProduct, ...(Products?.results || [])];
+              return {
+                ...Products,
+                results: newProducts.sort(
+                  (a, b) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
+                ),
+              };
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
+        handleAlert(
+          `your Service have been ${
+            addorupdate.mode === "add" ? "added" : "updated"
+          } successfully `,
+          "success"
+        );
+      } catch (error) {
+        handleAlert("An error have occurred, please try again", "danger");
+      } finally {
+        closeModal();
       }
-      handleAlert(
-        `your Service have been ${
-          addorupdate.mode === "add" ? "added" : "updated"
-        } successfully `,
-        "success"
-      );
-    } catch (error) {
-      handleAlert("An error have occurred, please try again", "danger");
-    } finally {
-      closeModal();
-    }
+    });
   };
 
   //----------------------------------------------------
@@ -164,17 +216,29 @@ const Products = () => {
    * @param {number} id
    */
   const handleDelete = async (id) => {
-    try {
-      await mutate(deleteProduct(id), {
-        populateCache: true,
-      });
-      handleAlert("Service deleted Successfully", "success");
-    } catch (error) {
-      console.log(error.message);
-      handleAlert("Error deleting Service", "danger");
-    } finally {
-      closeModal();
-    }
+    startDeletion(async () => {
+      try {
+        const productid = await deleteProduct(id);
+        await mutate(
+          (Products) => {
+            const otherProducts = Products.results.filter(
+              (product) => product.id !== productid
+            );
+            Products.results = otherProducts;
+            return { ...Products };
+          },
+          {
+            populateCache: true,
+          }
+        );
+        handleAlert("Service deleted Successfully", "success");
+      } catch (error) {
+        console.log(error.message);
+        handleAlert("Error deleting Service", "danger");
+      } finally {
+        closeModal();
+      }
+    });
   };
 
   //   ------------------------------------------------------
@@ -202,19 +266,19 @@ const Products = () => {
           <CategoriesForm
             items={categories}
             mutate={categoriesmutate}
-            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${productsAPIendpoint}/add_category/`}
-            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${productsAPIendpoint}/update_category`}
-            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${productsAPIendpoint}/delete_category`}
+            addUrl={`${productsAPIendpoint}/add_category/`}
+            updateUrl={`${productsAPIendpoint}/update_category`}
+            deleteUrl={`${productsAPIendpoint}/delete_category`}
           />
         </div>
 
         <div className="col-12 col-md-5">
           <SubCategoriesForm
             categories={categories}
-            fetchSubCategories={fetchProductsSubCategories}
-            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/create_subcategory/`}
-            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/update_subcategory`}
-            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/productsapi/delete_subcategory`}
+            apiendpoint={productsAPIendpoint}
+            addUrl={`${productsAPIendpoint}/create_subcategory/`}
+            updateUrl={`${productsAPIendpoint}/update_subcategory`}
+            deleteUrl={`${productsAPIendpoint}/delete_subcategory`}
           />
         </div>
       </div>
@@ -261,7 +325,7 @@ const Products = () => {
             {products?.count} Product{products?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
-        <div className="ms-0 ms-auto mb-4 mb-md-0">
+        <div className="ms-0 ms-md-auto mb-4 mb-md-0">
           <SearchInput
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -330,6 +394,7 @@ const Products = () => {
           handleSubmit={handleSubmit}
           addorupdate={addorupdate}
           categories={categories}
+          isSubmitting={isPending}
         />
       </Modal>
 
@@ -342,8 +407,16 @@ const Products = () => {
             <button
               className="btn btn-danger border-0 rounded me-2"
               onClick={() => handleDelete(product.id)}
+              disabled={isdeleting}
             >
-              Delete
+              {isdeleting ? (
+                <div className="d-inline-flex align-items-center justify-content-center gap-2">
+                  <div>deleting Service</div>
+                  <PulseLoader size={8} color={"#ffffff"} loading={true} />
+                </div>
+              ) : (
+                "Delete"
+              )}
             </button>
             <button
               className="btn btn-accent-secondary border-0 rounded"
@@ -359,4 +432,3 @@ const Products = () => {
 };
 
 export default Products;
-

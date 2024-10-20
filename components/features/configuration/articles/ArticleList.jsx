@@ -2,18 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import Modal from "@/components/custom/Modal/modal";
 import Alert from "@/components/custom/Alert/Alert";
 import ArticlePlaceholder from "./ArticlePlaceholder";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import { ArticleDefault } from "@/constants";
 import { useRouter } from "next/navigation";
-
+import { deleteArticle } from "@/data/articles/fetcher";
 
 /**
- * Description placeholder
- *
- * @param {{ articles: any; article: any; setArticle: any; editMode: any; setEditMode: any; loading: any; currentPage: any; pageSize: any; }} param0
+ * @param {{ mutate:any;articles: ArticlesResponse; article: Article; setArticle: (value:Article) => void; editMode: any; setEditMode: any; loading: any; currentPage: any; pageSize: any; }} param0
  */
 const ArticleList = ({
+  mutate,
   articles,
   article,
   setArticle,
@@ -21,7 +19,7 @@ const ArticleList = ({
   setEditMode,
   loading,
   currentPage,
-  pageSize
+  pageSize,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [alert, setAlert] = useState({
@@ -32,34 +30,42 @@ const ArticleList = ({
   const router = useRouter();
 
   // handle Article Delete
-  const deleteArticle = async (id) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/blogsapi/deleteblog/${id}`,
-      {
-        method: "DELETE",
-      }
-    );
-    if (res.ok) {
-      // setArticles(articles.filter((article) => article.id !== id));
+  const removeArticle = async (id) => {
+    try {
+      const articleid = await deleteArticle(id);
+      await mutate(
+        (Articles) => {
+          const otherArticles = Articles.results.filter(
+            (article) => article.id !== articleid
+          );
+          Articles.results = otherArticles;
+          return { ...Articles };
+        },
+        {
+          populateCache: true,
+          // revalidate: false,
+        }
+      );
       setAlert({
         show: true,
         message: "Article deleted successfully",
         type: "success",
       });
-    } else {
+    } catch (error) {
       setAlert({
         show: true,
         message: "An error occurred",
         type: "danger",
       });
+    } finally {
+      setTimeout(() => {
+        setAlert({
+          show: false,
+          message: "",
+          type: "",
+        });
+      }, 3000);
     }
-    setTimeout(() => {
-      setAlert({
-        show: false,
-        message: "",
-        type: "",
-      });
-    });
     closeModal();
   };
 
@@ -73,21 +79,18 @@ const ArticleList = ({
   // -----------------------------------------
   /**  @param {string} newPage */
   const handlePageChange = (newPage) => {
-    router.push(
-      `?category=All&page=${newPage}&page_size=${pageSize}`,
-      {
-        scroll: false,
-      }
-    );
+    router.push(`?category=All&page=${newPage}&page_size=${pageSize}`, {
+      scroll: false,
+    });
   };
 
   return (
     <div>
       <h4 className="mb-3">
-        {articles} Article{articles?.length > 1 ? "s" : ""}
+        {articles?.count} Article{articles?.results?.length > 1 ? "s" : ""}
       </h4>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-      {articles && articles.length > 0 ? (
+      {articles && articles.results.length > 0 ? (
         <div className="">
           {
             // loading
@@ -101,7 +104,7 @@ const ArticleList = ({
             )
           }
           {!loading &&
-            articles.map((article) => (
+            articles.results.map((article) => (
               <div key={article.id} className="card px-4 py-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="me-3">
@@ -128,19 +131,7 @@ const ArticleList = ({
                   <button
                     className="btn btn-sm btn-accent-primary me-2 rounded"
                     onClick={() => {
-                      setArticle({
-                        id: article.id,
-                        img: article.img,
-                        img_url: article.img_url,
-                        img_name: article.img_name,
-                        title: article.title,
-                        subtitle: article.subtitle,
-                        body: article.body,
-                        tags: article.tags.map((t) => t.tag),
-                        slug: article.slug,
-                        category: article.category.category,
-                        readTime: article.readTime,
-                      });
+                      setArticle(article);
                       setEditMode(true);
                     }}
                   >
@@ -149,19 +140,7 @@ const ArticleList = ({
                   <button
                     className="btn btn-sm btn-danger rounded"
                     onClick={() => {
-                      setArticle({
-                        id: article.id,
-                        img: article.img,
-                        img_url: article.img_url,
-                        img_name: article.img_name,
-                        title: article.title,
-                        subtitle: article.subtitle,
-                        body: article.body,
-                        tags: article.tags.map((t) => t.tag),
-                        slug: article.slug,
-                        category: article.category.category,
-                        readTime: article.readTime,
-                      });
+                      setArticle(article);
                       setShowModal(true);
                     }}
                   >
@@ -191,7 +170,9 @@ const ArticleList = ({
         <div className="">
           <h5 className="mb-3">Delete Article</h5>
           <div className="modal-body">
-            <p>Are you sure you want to delete this article? {article.title}</p>
+            <p>
+              Are you sure you want to delete this article? {article?.title}
+            </p>
           </div>
           <div className="d-flex justify-content-end">
             <button
@@ -204,7 +185,7 @@ const ArticleList = ({
             <button
               type="button"
               className="btn btn-danger rounded"
-              onClick={() => deleteArticle(article.id)}
+              onClick={() => removeArticle(article?.id)}
             >
               Delete
             </button>

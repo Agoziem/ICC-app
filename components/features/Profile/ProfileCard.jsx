@@ -10,7 +10,7 @@ import Modal from "../../custom/Modal/modal";
 const ProfileCard = ({ alert, setEditMode }) => {
   const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
-  const { userOrder } = useUserContext();
+  const { userOrders } = useUserContext();
   const [active, setActive] = useState(1);
 
   const deleteUser = async () => {
@@ -203,11 +203,11 @@ const ProfileCard = ({ alert, setEditMode }) => {
                             <i className="bi bi-cart me-3"></i>Orders
                           </p>
                           <span className="text-secondary h3 fw-bold">
-                            {userOrder?.length}{" "}
+                            {userOrders?.length}{" "}
                           </span>
                           <span className="text-secondary p fw-bold">
                             Order
-                            {userOrder?.length > 1 && "s"}
+                            {userOrders?.length > 1 && "s"}
                           </span>
                         </div>
                       </div>
@@ -220,14 +220,14 @@ const ProfileCard = ({ alert, setEditMode }) => {
                           </p>
                           <span className="fw-bold h3">
                             {
-                              userOrder?.filter(
+                              userOrders?.filter(
                                 (order) => order.status === "Completed"
                               ).length
                             }{" "}
                           </span>
                           <span className="p fw-bold">
                             Order
-                            {userOrder?.filter(
+                            {userOrders?.filter(
                               (order) => order.status === "Completed"
                             ).length > 1 && "s"}
                           </span>
@@ -242,15 +242,15 @@ const ProfileCard = ({ alert, setEditMode }) => {
                           </p>
                           <span className="fw-bold h3">
                             {
-                              userOrder?.filter(
-                                (order) => order.status === "pending"
+                              userOrders?.filter(
+                                (order) => order.status === "Pending"
                               ).length
                             }{" "}
                           </span>
                           <span className="p fw-bold">
                             Order
-                            {userOrder?.filter(
-                              (order) => order.status === "pending"
+                            {userOrders?.filter(
+                              (order) => order.status === "Pending"
                             ).length > 1 && "s"}
                           </span>
                         </div>

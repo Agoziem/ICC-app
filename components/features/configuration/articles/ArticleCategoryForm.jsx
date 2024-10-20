@@ -5,8 +5,6 @@ const ArticleCategoryForm = ({ categories,mutate }) => {
     <CategoriesForm
       items={categories}
       mutate={mutate}
-      itemName="category"
-      itemLabel="Category"
       addUrl={"/blogsapi/addCategory/"}
       updateUrl={"/blogsapi/updateCategory/"}
       deleteUrl={"/blogsapi/deleteCategory/"}

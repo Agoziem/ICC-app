@@ -5,6 +5,7 @@ import DatatableinputFilter from "./DatatableInputFilter";
 import Datatableselect from "./DatatableSelect";
 import useJsonToExcel from "@/hooks/useJsonToExcel";
 import { SiMicrosoftexcel } from "react-icons/si";
+import "./Datatable.css"
 
 const Datatable = ({ items, setItems, children, label, filteritemlabel }) => {
   const [filterInput, setfilterInput] = useState("");
@@ -80,6 +81,7 @@ const Datatable = ({ items, setItems, children, label, filteritemlabel }) => {
       <DatatablePagination
         itemsPerPage={itemsPerPage}
         totalItems={filteredItems?.length}
+        currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         footerlabel={label}
       />

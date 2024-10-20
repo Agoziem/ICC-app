@@ -103,8 +103,15 @@ export const deptDefault = {
   img: null,
   img_url: null,
   img_name: null,
-  staff_in_charge: null,
-  organization: {},
+  staff_in_charge: {
+    id: null,
+    name: "",
+    img_url: "",
+  },
+  organization: {
+    id: null,
+    name: "",
+  },
   services: [],
   name: "",
   description: "",
@@ -123,10 +130,22 @@ export const ArticleDefault = {
   img_name: "",
   title: "",
   subtitle: "",
-  body: "",
+  body: null,
+  // author_id: null,
+  author: {
+    id: null,
+    username: "",
+    img: "",
+  },
+  // tag_ids: [],
   tags: [],
   slug: "",
-  category: {},
+  // category_id: null,
+  category: {
+    id: null,
+    category: "",
+    description: "",
+  },
   readTime: 0,
 };
 
@@ -274,20 +293,16 @@ export const orderDefault = {
   last_updated_date: new Date(),
 };
 
-
-
 /**
  * Default for Order Report to Admin
  * @type {OrderReport}
  */
 
 export const orderReportDefault = {
-  "totalorders": null,
-  "totalcustomers": null,
-  "customers": []
-}
-
-
+  totalorders: null,
+  totalcustomers: null,
+  customers: [],
+};
 
 /**
  * Default User Data
@@ -299,15 +314,13 @@ export const userDefault = {
   avatar: null,
   avatar_url: null,
   avatar_name: null,
-  last_login: new Date,
   is_superuser: true,
   username: null,
-  first_name:null,
+  first_name: null,
   last_name: null,
   email: null,
   is_staff: true,
   is_active: true,
-  date_joined: new Date,
   isOauth: false,
   Oauthprovider: null,
   emailIsVerified: false,
@@ -316,5 +329,20 @@ export const userDefault = {
   expiryTime: null,
   address: null,
   Sex: null,
-  phone: null
+  phone: null,
+  last_login: new Date(),
+  date_joined: new Date(),
+};
+
+
+
+/**
+ * Default for Sub-Category
+ *
+ * @type {SubCategory}
+ */
+export const SubCategorydefault = {
+  id: null,
+  category: null,
+  subcategory: "",
 }

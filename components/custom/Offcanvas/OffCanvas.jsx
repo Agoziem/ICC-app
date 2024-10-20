@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from "@/data/carts/Cartcontext";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Alert from "../Alert/Alert";
@@ -12,15 +12,28 @@ const OffCanvas = () => {
   const { cart, removeFromCart, resertCart, checkout, isPending, error } =
     useCart();
   const { data: session } = useSession();
+  const offCanvasbuttonRef = useRef(null); // Ref for the off-canvas
+
+  // Function to close the off-canvas using native Bootstrap event
+  const closeOffCanvas = () => {
+    const offCanvasButton = offCanvasbuttonRef.current;
+    if (offCanvasButton) {
+      offCanvasButton.click();
+    }
+  };
+
+  const handleCheckout = async () => {
+    await checkout(); // Perform the checkout logic
+    closeOffCanvas(); // Close the off-canvas after successful checkout
+  };
+
   return (
     <div
       className="offcanvas offcanvas-end"
       tabIndex={-1}
       id="offcanvasTop"
       aria-labelledby="offcanvasTopLabel"
-      style={{
-        backgroundColor: "var(--bgLightColor)",
-      }}
+      style={{ backgroundColor: "var(--bgLightColor)" }}
     >
       {/* Off-Canvas Header */}
       <div className="offcanvas-header">
@@ -28,6 +41,7 @@ const OffCanvas = () => {
           Shopping Cart
         </h5>
         <button
+          ref={offCanvasbuttonRef}
           type="button"
           className="btn-close"
           data-bs-dismiss="offcanvas"
@@ -58,7 +72,7 @@ const OffCanvas = () => {
                       {item.category.category !== "application" ? (
                         <i className="bi bi-person-fill-gear me-2 h5"></i>
                       ) : (
-                        <i className="bi bi-google-play me-2 "></i>
+                        <i className="bi bi-google-play me-2"></i>
                       )}
                       {item.category.category}{" "}
                       <span className="ms-2 badge bg-primary-light text-primary">
@@ -67,14 +81,10 @@ const OffCanvas = () => {
                     </div>
                     <div
                       className="badge bg-secondary-light text-secondary ms-2"
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        removeFromCart(item.id, item.cartType);
-                      }}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => removeFromCart(item.id, item.cartType)}
                     >
-                      remove
+                      Remove
                     </div>
                   </div>
                 </li>
@@ -85,21 +95,18 @@ const OffCanvas = () => {
                 Total:{" "}
                 <span className="fw-bold">
                   &#8358;
-                  {cart.reduce((acc, item) => {
-                    return acc + parseFloat(item.price);
-                  }, 0)}
+                  {cart.reduce((acc, item) => acc + parseFloat(item.price), 0)}
                 </span>
               </h4>
 
               {/* Alert */}
               <div>{error && <Alert type="danger">{error}</Alert>}</div>
-              {/* Cart button */}
+
+              {/* Cart Buttons */}
               <div className="d-flex flex-md-row flex-column flex-md-fill">
                 <button
                   className="btn btn-outline-danger me-0 me-md-3 mb-3 mb-md-0"
-                  onClick={() => {
-                    resertCart();
-                  }}
+                  onClick={() => resertCart()}
                   data-bs-dismiss="offcanvas"
                   aria-label="Close"
                 >
@@ -108,17 +115,21 @@ const OffCanvas = () => {
                 {session ? (
                   <button
                     className="btn btn-primary"
-                    onClick={() => {
-                      checkout();
-                    }}
+                    onClick={handleCheckout} // Use the handler to checkout and close
                     disabled={isPending}
                   >
                     {isPending ? (
                       <div className="d-inline-flex align-items-center justify-content-center gap-2">
                         <div>Checking out</div>
-                        <PulseLoader size={8} color={"#12000d"} loading={true} />
+                        <PulseLoader
+                          size={8}
+                          color={"#12000d"}
+                          loading={true}
+                        />
                       </div>
-                    ) : "Checkout"}
+                    ) : (
+                      "Checkout"
+                    )}
                   </button>
                 ) : (
                   <Link className="btn btn-primary" href="/accounts/signin">

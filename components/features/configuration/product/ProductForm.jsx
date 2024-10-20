@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 import FileUploader from "@/components/custom/Fileuploader/FileUploader";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
+import useSWR from "swr";
+import { productsAPIendpoint } from "@/data/product/fetcher";
+import { fetchSubCategories } from "@/data/categories/fetcher";
+import { PulseLoader } from "react-spinners";
 
 /**
- * @param {{ product: Product; setProduct: (value:Product) => void; handleSubmit: any; addorupdate: any; categories: Categories; }} param0
+ * @param {{ product: Product; setProduct: (value:Product) => void; handleSubmit: any; addorupdate: any; categories: Categories;isSubmitting:boolean; }} param0
  */
 const ProductForm = ({
   product,
@@ -12,23 +16,15 @@ const ProductForm = ({
   handleSubmit,
   addorupdate,
   categories: productcategories,
+  isSubmitting
 }) => {
-  const { fetchProductsSubCategories } = useSubCategoriesContext();
-  const [subcategories, setSubCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  // Fetch subcategories when the service's category changes or on initial load if there's already a category
-  useEffect(() => {
-    const fetchInitialSubCategories = async () => {
-      if (product.category) {
-        setLoading(true);
-        const data = await fetchProductsSubCategories(product.category.id);
-        setSubCategories(data);
-        setLoading(false);
-      }
-    };
-    fetchInitialSubCategories();
-  }, [product.category]);
+  const { data: subcategories, isLoading:loadingsubcategories } = useSWR(
+    product?.category?.id
+      ? `${productsAPIendpoint}/subcategories/${product.category.id}/`
+      : null,
+      fetchSubCategories
+  );
 
   // ------------------------------
   // Handle category change
@@ -38,10 +34,6 @@ const ProductForm = ({
       (category) => category.category === e.target.value
     );
     setProduct({ ...product, category: selectedCategory, subcategory: null });
-    setLoading(true);
-    const data = fetchProductsSubCategories(selectedCategory.id);
-    setSubCategories(data);
-    setLoading(false);
   };
 
   // - -------------------------------
@@ -163,7 +155,7 @@ const ProductForm = ({
             onChange={handleSubCategoryChange}
             // required
           >
-            {loading ? (
+            {loadingsubcategories ? (
               <option>Loading...</option>
             ) : (
               <>
@@ -224,7 +216,20 @@ const ProductForm = ({
         )}
 
         <button type="submit" className="btn btn-primary rounded px-5 mt-3">
-          {addorupdate.mode === "add" ? "Add" : "Update"}
+        {isSubmitting
+            ? (
+              <div className="d-inline-flex align-items-center justify-content-center gap-2">
+                <div>Submitting Product</div>
+                <PulseLoader
+                  size={8}
+                  color={"#12000d"}
+                  loading={true}
+                />
+              </div>
+            )
+            : addorupdate.mode === "add"
+            ? "Add Product"
+            : "Update Product"}
         </button>
       </form>
     </div>

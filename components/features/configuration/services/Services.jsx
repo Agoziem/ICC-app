@@ -1,5 +1,11 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
@@ -25,11 +31,11 @@ import {
   updateService,
 } from "@/data/services/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { PulseLoader } from "react-spinners";
 
 const Services = () => {
   const { openModal } = useAdminContext();
   const { OrganizationData } = useContext(OrganizationContext);
-  const { fetchServiceSubCategories } = useSubCategoriesContext();
   const [service, setService] = useState(serviceDefault);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
@@ -44,6 +50,8 @@ const Services = () => {
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [isPending, startTransition] = useTransition();
+  const [isdeleting, startDeletion] = useTransition();
 
   const {
     data: categories,
@@ -68,13 +76,10 @@ const Services = () => {
     data: services,
     isLoading: loadingServices,
     error: error,
+    mutate,
   } = useSWR(
     `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
     fetchServices
-  );
-
-  const { mutate } = useSWR(
-    `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
   );
 
   // -----------------------------------------
@@ -133,27 +138,73 @@ const Services = () => {
   //----------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (addorupdate.mode === "add") {
-        await mutate(createService(service), {
-          populateCache: true,
-        });
-      } else {
-        await mutate(updateService(service), {
-          populateCache: true,
-        });
+    startTransition(async () => {
+      const { organization, category, subcategory, ...restData } = service;
+      const servicetosubmit = {
+        ...restData,
+        organization: Organizationid,
+        category: category || "",
+        subcategory: subcategory
+          ? {
+              ...subcategory,
+              category: category.id,
+            }
+          : "",
+      };
+      try {
+        if (addorupdate.mode === "add") {
+          const newService = await createService(servicetosubmit);
+          await mutate(
+            (Services) => {
+              /** * @type {Services} */
+              const newServices = [newService, ...(Services?.results || [])];
+              return {
+                ...Services,
+                results: newServices.sort(
+                  (a, b) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
+                ),
+              };
+            },
+            {
+              populateCache: true,
+            }
+          );
+        } else {
+          const updatedService = await updateService(servicetosubmit);
+          await mutate(
+            (Services) => {
+              /** * @type {Services} */
+              const otherServices = (Services?.results || []).map((o) =>
+                o.id === updatedService.id ? updatedService : o
+              );
+              return {
+                ...Services,
+                results: otherServices.sort(
+                  (a, b) =>
+                    new Date(b.updated_at).getTime() -
+                    new Date(a.updated_at).getTime()
+                ),
+              };
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
+        handleAlert(
+          `your Service have been ${
+            addorupdate.mode === "add" ? "added" : "updated"
+          } successfully `,
+          "success"
+        );
+      } catch (error) {
+        handleAlert("An error have occurred, please try again", "danger");
+      } finally {
+        closeModal();
       }
-      handleAlert(
-        `your Service have been ${
-          addorupdate.mode === "add" ? "added" : "updated"
-        } successfully `,
-        "success"
-      );
-    } catch (error) {
-      handleAlert("An error have occurred, please try again", "danger");
-    } finally {
-      closeModal();
-    }
+    });
   };
 
   //----------------------------------------------------
@@ -164,17 +215,29 @@ const Services = () => {
    * @param {number} id
    */
   const handleDelete = async (id) => {
-    try {
-      await mutate(deleteService(id), {
-        populateCache: true,
-      });
-      handleAlert("Service deleted Successfully", "success");
-    } catch (error) {
-      console.log(error.message);
-      handleAlert("Error deleting Service", "danger");
-    } finally {
-      closeModal();
-    }
+    startDeletion(async () => {
+      try {
+        const serviceid = await deleteService(id);
+        await mutate(
+          (Services) => {
+            const otherServices = Services.results.filter(
+              (service) => service.id !== serviceid
+            );
+            Services.results = otherServices;
+            return { ...Services };
+          },
+          {
+            populateCache: true,
+          }
+        );
+        handleAlert("Service deleted Successfully", "success");
+      } catch (error) {
+        console.log(error.message);
+        handleAlert("Error deleting Service", "danger");
+      } finally {
+        closeModal();
+      }
+    });
   };
 
   // ----------------------------------------------------
@@ -211,10 +274,10 @@ const Services = () => {
         <div className="col-12 col-md-5">
           <SubCategoriesForm
             categories={categories}
-            fetchSubCategories={fetchServiceSubCategories}
-            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${servicesAPIendpoint}/create_subcategory/`}
-            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${servicesAPIendpoint}/update_subcategory`}
-            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/${servicesAPIendpoint}/delete_subcategory`}
+            apiendpoint={servicesAPIendpoint}
+            addUrl={`${servicesAPIendpoint}/create_subcategory/`}
+            updateUrl={`${servicesAPIendpoint}/update_subcategory`}
+            deleteUrl={`${servicesAPIendpoint}/delete_subcategory`}
           />
         </div>
       </div>
@@ -334,6 +397,7 @@ const Services = () => {
           OrganizationData={OrganizationData}
           tab={currentCategory}
           categories={categories}
+          isSubmitting={isPending}
         />
       </Modal>
 
@@ -349,8 +413,16 @@ const Services = () => {
             <button
               className="btn btn-danger border-0 rounded me-2"
               onClick={() => handleDelete(service.id)}
+              disabled={isdeleting}
             >
-              Delete
+              {isdeleting ? (
+                <div className="d-inline-flex align-items-center justify-content-center gap-2">
+                  <div>deleting Service</div>
+                  <PulseLoader size={8} color={"#ffffff"} loading={true} />
+                </div>
+              ) : (
+                "Delete"
+              )}
             </button>
             <button
               className="btn btn-accent-secondary border-0 rounded"

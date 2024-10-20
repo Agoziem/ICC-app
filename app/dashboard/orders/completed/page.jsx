@@ -73,7 +73,7 @@ const OrderCompleted = () => {
         },
         { populateCache: true, revalidate: false }
       );
-      
+
       setOrder(data);
       setSuccess("Your Payment has been Verified");
     } catch (error) {

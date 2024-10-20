@@ -1,6 +1,6 @@
 "use client";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Modal from "@/components/custom/Modal/modal";
 import Alert from "@/components/custom/Alert/Alert";
 import VideoCard from "./VideoCard";
@@ -24,10 +24,10 @@ import {
   vidoesapiAPIendpoint,
 } from "@/data/videos/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { PulseLoader } from "react-spinners";
 
 const Videos = () => {
   const { openModal } = useAdminContext();
-  const { fetchVideoSubCategories } = useSubCategoriesContext();
   const [video, setVideo] = useState(VideoDefault);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
@@ -42,6 +42,8 @@ const Videos = () => {
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [isPending, startTransition] = useTransition();
+  const [isdeleting, startDeletion] = useTransition();
 
   const {
     data: categories,
@@ -66,13 +68,10 @@ const Videos = () => {
     data: videos,
     isLoading: loadingVideos,
     error: error,
+    mutate,
   } = useSWR(
     `${vidoesapiAPIendpoint}/videos/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
     fetchVideos
-  );
-
-  const { mutate } = useSWR(
-    `${vidoesapiAPIendpoint}/videos/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
   );
 
   // -----------------------------------------
@@ -128,27 +127,73 @@ const Videos = () => {
   //----------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (addorupdate.mode === "add") {
-        await mutate(createVideo(video), {
-          populateCache: true,
-        });
-      } else {
-        await mutate(updateVideo(video), {
-          populateCache: true,
-        });
+    startTransition(async () => {
+      const { organization, category, subcategory, ...restData } = video;
+      const videostosubmit = {
+        ...restData,
+        organization: Organizationid,
+        category: category || "",
+        subcategory: subcategory
+          ? {
+              ...subcategory,
+              category: category.id,
+            }
+          : "",
+      };
+      try {
+        if (addorupdate.mode === "add") {
+          const newVideo = await createVideo(videostosubmit);
+          await mutate(
+            (Videos) => {
+              /** * @type {Videos} */
+              const newVideos = [newVideo, ...(Videos?.results || [])];
+              return {
+                ...Videos,
+                results: newVideos.sort(
+                  (a, b) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
+                ),
+              };
+            },
+            {
+              populateCache: true,
+            }
+          );
+        } else {
+          const updatedVideo = await updateVideo(videostosubmit);
+          await mutate(
+            (Videos) => {
+              /** * @type {Videos} */
+              const otherVideos = (Videos?.results || []).map((o) =>
+                o.id === updatedVideo.id ? updatedVideo : o
+              );
+              return {
+                ...Videos,
+                results: otherVideos.sort(
+                  (a, b) =>
+                    new Date(b.updated_at).getTime() -
+                    new Date(a.updated_at).getTime()
+                ),
+              };
+            },
+            {
+              populateCache: true,
+            }
+          );
+        }
+        handleAlert(
+          `your Video have been ${
+            addorupdate.mode === "add" ? "added" : "updated"
+          } successfully `,
+          "success"
+        );
+      } catch (error) {
+        handleAlert("An error have occurred, please try again", "danger");
+      } finally {
+        closeModal();
       }
-      handleAlert(
-        `your Service have been ${
-          addorupdate.mode === "add" ? "added" : "updated"
-        } successfully `,
-        "success"
-      );
-    } catch (error) {
-      handleAlert("An error have occurred, please try again", "danger");
-    } finally {
-      closeModal();
-    }
+    });
   };
 
   //----------------------------------------------------
@@ -159,17 +204,29 @@ const Videos = () => {
    * @param {number} id
    */
   const handleDelete = async (id) => {
-    try {
-      await mutate(deleteVideo(id), {
-        populateCache: true,
-      });
-      handleAlert("Service deleted Successfully", "success");
-    } catch (error) {
-      console.log(error.message);
-      handleAlert("Error deleting Service", "danger");
-    } finally {
-      closeModal();
-    }
+    startDeletion(async () => {
+      try {
+        const videoid = await deleteVideo(id);
+        await mutate(
+          (Videos) => {
+            const otherVideos = Videos.results.filter(
+              (service) => service.id !== videoid
+            );
+            Videos.results = otherVideos;
+            return { ...Videos };
+          },
+          {
+            populateCache: true,
+          }
+        );
+        handleAlert("Service deleted Successfully", "success");
+      } catch (error) {
+        console.log(error.message);
+        handleAlert("Error deleting Service", "danger");
+      } finally {
+        closeModal();
+      }
+    });
   };
 
   //   ------------------------------------------------------
@@ -205,10 +262,10 @@ const Videos = () => {
         <div className="col-12 col-md-5">
           <SubCategoriesForm
             categories={categories}
-            fetchSubCategories={fetchVideoSubCategories}
-            addUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/create_subcategory/`}
-            updateUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/update_subcategory`}
-            deleteUrl={`${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/vidoesapi/delete_subcategory`}
+            apiendpoint={vidoesapiAPIendpoint}
+            addUrl={`${vidoesapiAPIendpoint}/create_subcategory/`}
+            updateUrl={`${vidoesapiAPIendpoint}/update_subcategory`}
+            deleteUrl={`${vidoesapiAPIendpoint}/delete_subcategory`}
           />
         </div>
       </div>
@@ -254,7 +311,7 @@ const Videos = () => {
             {videos?.count} Video{videos?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
-        <div className="ms-0 ms-auto mb-4 mb-md-0">
+        <div className="ms-0 ms-md-auto mb-4 mb-md-0">
           <SearchInput
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -322,6 +379,7 @@ const Videos = () => {
           handleSubmit={handleSubmit}
           addorupdate={addorupdate}
           categories={categories}
+          isSubmitting={isPending}
         />
       </Modal>
 
@@ -334,8 +392,16 @@ const Videos = () => {
             <button
               className="btn btn-danger border-0 rounded me-2"
               onClick={() => handleDelete(video.id)}
+              disabled={isdeleting}
             >
-              Delete
+              {isdeleting ? (
+                <div className="d-inline-flex align-items-center justify-content-center gap-2">
+                  <div>deleting Video</div>
+                  <PulseLoader size={8} color={"#ffffff"} loading={true} />
+                </div>
+              ) : (
+                "Delete"
+              )}
             </button>
             <button
               className="btn btn-accent-secondary border-0 rounded"

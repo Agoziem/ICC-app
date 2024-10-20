@@ -7,7 +7,10 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import "./Tiptap.css";
 
-const Tiptap = ({ item, setItem, keylabel, setHasStartedEditing = (value) => {}  }) => {
+/**
+ * @param {{ item: string; setItem: (value:string) => void; setHasStartedEditing?: (value: any) => void; }} param0
+ */
+const Tiptap = ({ item, setItem, setHasStartedEditing = (value) => {} }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -33,22 +36,25 @@ const Tiptap = ({ item, setItem, keylabel, setHasStartedEditing = (value) => {} 
     },
     onUpdate: ({ editor }) => {
       setHasStartedEditing && setHasStartedEditing(true);
-      setItem({
-        ...item,
-        [keylabel]: editor.getHTML(),
-      });
+      setItem(editor.getHTML());
     },
   });
 
   useEffect(() => {
-    if (editor && item[keylabel] !== editor.getHTML()) {
-      editor.commands.setContent(item[keylabel]);
+    if (editor) {
+      const currentContent = editor.getHTML();
+      const newContent = item;
+
+      // Set the content only if it's different
+      if (currentContent !== newContent) {
+        editor.commands.setContent(newContent);
+      }
     }
-  }, [item, editor]);
+  }, [item, editor]); // Ensure keylabel is included in dependencies
 
   return (
     <div className="w-100">
-      <Toolbar editor={editor} content={item[keylabel]} />
+      <Toolbar editor={editor} content={item || ""} />
       <EditorContent
         style={{
           whiteSpace: "pre-line",

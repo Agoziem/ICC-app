@@ -1,40 +1,60 @@
 "use client";
-import React from 'react'
+import "./Datatable.css";
 
-const DatatablePagination = ({ itemsPerPage, totalItems, setCurrentPage,footerlabel }) => {
+const DatatablePagination = ({
+  itemsPerPage,
+  totalItems,
+  setCurrentPage,
+  footerlabel,
+  currentPage,
+}) => {
+  const pageNumbers = [];
 
-    const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
 
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-        pageNumbers.push(i);
-    }
+  // function to paginate the items
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-     // function to paginate the items
-    const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  return (
+    <div className="d-flex align-items-center justify-content-between">
+      {totalItems > 0 && (
+        <div className="text-center">
+          Showing <span className="fw-bold text-primary">{itemsPerPage}</span>{" "}
+          of{" "}
+          <span className="fw-bold text-primary">
+            {totalItems} {footerlabel}
+          </span>
+        </div>
+      )}
 
-    return (
-                <div className='d-flex align-items-center justify-content-between'>
-                {totalItems > 0  &&
-                 <div className='text-center'>Showing <span className='fw-bold text-primary'>{itemsPerPage}</span> of <span className='fw-bold text-primary'>{totalItems} {footerlabel}</span></div>
-                }
-                
-                { pageNumbers.length > 1 &&
-                    <nav aria-label="...">
-                        <ul className="pagination pagination-sm me-3">
-                        {pageNumbers.map((number) => (
-                            <li className='page-item active' key={number}>
-                                <div className='page-link' onClick={() => paginate(number)} >{number}</div>
-                            </li>
-                        ))}
-                        </ul>
-                    </nav>
-                }
+      {pageNumbers.length > 1 && (
+        <div className="d-flex align-items-center gap-3">
+          <div className="text-center">
+            Page <span className="fw-bold text-primary">{currentPage}</span> of{" "}
+            <span className="fw-bold text-primary">{Math.ceil(totalItems / itemsPerPage)}</span>
+          </div>
+          <nav aria-label="...">
+            <ul className="pagination pagination-sm me-3">
+              {pageNumbers.map((number) => (
+                <li
+                  className={`page-item ${
+                    currentPage === number ? "active" : ""
+                  }`}
+                  key={number}
+                >
+                  <div className="page-link" onClick={() => paginate(number)}>
+                    {number}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      )}
+    </div>
+  );
+};
 
-                </div>
-        
-                
-        
-    )
-}
-
-export default DatatablePagination
+export default DatatablePagination;

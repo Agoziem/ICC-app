@@ -29,10 +29,26 @@ export const fetchUsers = async (url) => {
  * @param {string} url
  */
 export const fetchUser = async (url) => {
-    const response = await axiosInstance.get(url);
-    const validation = UserSchema.safeParse(response.data);
-    if (!validation.success) {
-      console.log(validation.error.issues);
-    }
-    return validation.data;
-  };
+  const response = await axiosInstance.get(url);
+  const validation = UserSchema.safeParse(response.data);
+  if (!validation.success) {
+    console.log(validation.error.issues);
+  }
+  return validation.data;
+};
+
+/**
+ * submits Responses to database and updates the Ui optimistically
+ * @async
+ * @param {string} url
+ * @param {User} data
+ * @returns {Promise<User>}
+ */
+export const updateUser = async (url, data) => {
+  const response = await axiosInstance.put(url, data);
+  const validation = UserSchema.safeParse(response.data);
+  if (!validation.success) {
+    console.log(validation.error.issues);
+  }
+  return validation.data;
+};

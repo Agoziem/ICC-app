@@ -6,6 +6,7 @@ import {
   commentResponseSchema,
   commentSchema,
 } from "@/schemas/articles";
+import { converttoformData } from "@/utils/formutils";
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}`,
@@ -14,7 +15,6 @@ export const axiosInstance = axios.create({
 const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
 export const articleAPIendpoint = "/blogsapi";
-
 
 // ------------------------------------------------------
 // Article fetcher and mutation functions
@@ -31,7 +31,6 @@ export const fetchArticlesCategories = async (url) => {
   }
   return validation.data;
 };
-
 
 // ------------------------------------------------------
 // Article Category fetcher and mutation functions
@@ -50,7 +49,6 @@ export const fetchArticles = async (url) => {
   return validation.data;
 };
 
-
 /**
  * @async
  * @param {string} url
@@ -66,13 +64,18 @@ export const fetchArticlebySlug = async (url) => {
 
 /**
  * @async
- * @param {Article} data
  * @returns {Promise<Article>}
  */
 export const createArticle = async (data) => {
+  const formData = converttoformData(data,["tags"])
   const response = await axiosInstance.post(
-    `/${articleAPIendpoint}/addblog/${Organizationid}/${data.author.id}/`,
-    data
+    `${articleAPIendpoint}/addblog/${Organizationid}/${data.author}/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = ArticleSchema.safeParse(response.data);
   if (!validation.success) {
@@ -83,13 +86,19 @@ export const createArticle = async (data) => {
 
 /**
  * @async
- * @param {Article} data
  * @returns {Promise<Article>}
  */
 export const updateArticle = async (data) => {
+  console.log(data)
+  const formData = converttoformData(data,["tags"])
   const response = await axiosInstance.put(
-    `/${articleAPIendpoint}/updateblog/${data.id}/`,
-    data
+    `${articleAPIendpoint}/updateblog/${data.id}/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = ArticleSchema.safeParse(response.data);
   if (!validation.success) {
@@ -131,7 +140,7 @@ export const fetchComments = async (url) => {
  */
 export const createComment = async (data) => {
   const response = await axiosInstance.post(
-    `/${articleAPIendpoint}/addcomment/${data.blog}/${data.user.id}/`,
+    `${articleAPIendpoint}/addcomment/${data.blog}/${data.user.id}/`,
     data
   );
   const validation = commentSchema.safeParse(response.data);
@@ -148,7 +157,7 @@ export const createComment = async (data) => {
  */
 export const updateComment = async (data) => {
   const response = await axiosInstance.put(
-    `/${articleAPIendpoint}/updatecomment/${data.id}/`,
+    `${articleAPIendpoint}/updatecomment/${data.id}/`,
     data
   );
   const validation = commentSchema.safeParse(response.data);
@@ -178,12 +187,9 @@ export const deleteComment = async (commentid) => {
  * @async
  * @param {Article} Article
  */
-export const incrementView = async (Article
-) => {
+export const incrementView = async (Article) => {
   try {
-   await axiosInstance.get(
-      `${articleAPIendpoint}/addviews/${Article.id}/`
-    );
+    await axiosInstance.get(`${articleAPIendpoint}/addviews/${Article.id}/`);
     const updatedArticle = { ...Article, readtime: Article.readTime + 1 };
     return updatedArticle;
   } catch (error) {
@@ -237,6 +243,3 @@ export const deleteLike = async (Article, userid) => {
     throw error;
   }
 };
-
-
-

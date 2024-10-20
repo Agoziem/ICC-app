@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
+import useSWR from "swr";
+import { servicesAPIendpoint } from "@/data/services/fetcher";
+import { fetchSubCategories } from "@/data/categories/fetcher";
+import { PulseLoader } from "react-spinners";
 
 /**
- * @param {{ service: Service; setService: (value:Service) => void; handleSubmit: any; addorupdate: any; OrganizationData: any; tab: any; categories: any; }} param0
+ * @param {{ service: Service; setService: (value:Service) => void; handleSubmit: any; addorupdate: any; OrganizationData: any; tab: any; categories: any;isSubmitting: boolean; }} param0
  */
 const ServiceForm = ({
   service,
@@ -13,37 +17,28 @@ const ServiceForm = ({
   addorupdate,
   tab,
   categories: servicecategories,
+  isSubmitting,
 }) => {
-  const { fetchServiceSubCategories } = useSubCategoriesContext();
-  const [subcategories, setSubCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { data: subcategories, isLoading: loadingsubcategories } = useSWR(
+    service?.category?.id
+      ? `${servicesAPIendpoint}/subcategories/${service.category.id}/`
+      : null,
+    fetchSubCategories
+  );
 
-  // Fetch subcategories when the service's category changes or on initial load if there's already a category
-  useEffect(() => {
-    const fetchInitialSubCategories = async () => {
-      if (service.category) {
-        setLoading(true);
-        const data = await fetchServiceSubCategories(service.category.id);
-        setSubCategories(data);
-        setLoading(false);
-      }
-    };
-    fetchInitialSubCategories();
-  }, [service.category]);
-
+  // ------------------------------
   // Handle category change
-  const handleCategoryChange = async (e) => {
+  // -------------------------------
+  const handleCategoryChange = (e) => {
     const selectedCategory = servicecategories?.find(
       (category) => category.category === e.target.value
     );
     setService({ ...service, category: selectedCategory, subcategory: null });
-    setLoading(true);
-    const data = await fetchServiceSubCategories(selectedCategory.id);
-    setSubCategories(data);
-    setLoading(false);
   };
 
+  // - -------------------------------
   // Handle subcategory change
+  //  -------------------------------
   const handleSubCategoryChange = (e) => {
     const selectedSubCategory = subcategories?.find(
       (subcategory) => subcategory.subcategory === e.target.value
@@ -160,7 +155,7 @@ const ServiceForm = ({
             onChange={handleSubCategoryChange}
             // required
           >
-            {loading ? (
+            {loadingsubcategories ? (
               <option>Loading...</option>
             ) : (
               <>
@@ -181,14 +176,31 @@ const ServiceForm = ({
             Service flow
           </label>
           <Tiptap
-            item={service}
-            setItem={setService}
-            keylabel={"service_flow"}
+            item={service.service_flow}
+            setItem={(value) => {
+              setService({
+                ...service,
+                service_flow: value,
+              });
+            }}
           />
         </div>
 
-        <button type="submit" className="btn btn-primary rounded px-5 mt-3">
-          {addorupdate.mode === "add" ? "Add" : "Update"}
+        <button
+          type="submit"
+          className="btn btn-primary rounded px-5 mt-3"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <div className="d-inline-flex align-items-center justify-content-center gap-2">
+              <div>Submitting Service</div>
+              <PulseLoader size={8} color={"#12000d"} loading={true} />
+            </div>
+          ) : addorupdate.mode === "add" ? (
+            "Add Service"
+          ) : (
+            "Update Service"
+          )}
         </button>
       </form>
     </div>

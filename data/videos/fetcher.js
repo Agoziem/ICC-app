@@ -1,4 +1,5 @@
 import { videoSchema, videosResponseSchema } from "@/schemas/items";
+import { converttoformData } from "@/utils/formutils";
 import axios from "axios";
 
 export const axiosInstance = axios.create({
@@ -44,13 +45,22 @@ export const fetchVideo = async (url) => {
 /**
  * submits Responses to database and updates the Ui optimistically
  * @async
- * @param {Video} data
  * @returns {Promise<Video>}
  */
 export const createVideo = async (data) => {
+  const formData = converttoformData(data, [
+    "category",
+    "subcategory",
+    "userIDs_that_bought_this_video",
+  ]);
   const response = await axiosInstance.post(
     `${vidoesapiAPIendpoint}/add_video/${Organizationid}/`,
-    data
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = videoSchema.safeParse(response.data);
   if (!validation.success) {
@@ -62,13 +72,22 @@ export const createVideo = async (data) => {
 /**
  * submits Responses to database and updates the Ui optimistically
  * @async
- * @param {Video} data
  * @returns {Promise<Video>}
  */
 export const updateVideo = async (data) => {
+  const formData = converttoformData(data, [
+    "category",
+    "subcategory",
+    "userIDs_that_bought_this_video",
+  ]);
   const response = await axiosInstance.put(
     `${vidoesapiAPIendpoint}/update_video/${data.id}/`,
-    data
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = videoSchema.safeParse(response.data);
   if (!validation.success) {

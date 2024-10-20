@@ -2,82 +2,53 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import ImageUploader from "../../custom/Imageuploader/ImageUploader";
 import { converttoformData } from "@/utils/formutils";
+import { userDefault } from "@/constants";
+import { authAPIendpoint, updateUser } from "@/data/users/fetcher";
 
 const ProfileForm = ({ setAlert, setEditMode }) => {
   const { data: session } = useSession();
-  const [formData, setFormData] = useState({
-    avatar: null,
-    avatar_url: null,
-    avatar_name: null,
-    first_name: "",
-    last_name: "",
-    Sex: "",
-    email: "",
-    phone: "",
-    address: "",
-  });
-
+  const [formData, setFormData] = useState(userDefault);
 
   useEffect(() => {
     if (session) {
       setFormData({
-        avatar: session.user.avatar,
-        avatar_url: session.user.avatar_url,
-        avatar_name: session.user.avatar_name,
-        first_name: session.user.first_name,
-        last_name: session.user.last_name,
+        ...userDefault,
+        ...session.user,
         Sex: session.user.sex,
-        email: session.user.email,
-        phone: session.user.phone,
-        address: session.user.address,
+        avatar_url: session.user.image
       });
     }
   }, [session]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const modifiedformData = converttoformData(formData);
+    // const modifiedformData = converttoformData(formData);
     if (session) {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/update/${session?.user?.id}/`,
-          {
-            method: "PUT",
-            body: modifiedformData,
-          }
+        await updateUser(
+          `${authAPIendpoint}/update/${session?.user?.id}/`,
+          formData
         );
-        const data = await response.json();
-        if (response.ok) {
-          setAlert(
-            {
-              show: true,
-              message: `Profile updated successfully, you may need to login again to see the changes, your Data will be preserved.`,
-              type: "success",
-            },
-            setTimeout(() => {
-              setAlert({ show: false, message: "", type: "" });
-            }, 10000)
-          );
-          setEditMode(false);
-        } else {
-          setAlert(
-            {
-              show: true,
-              message: "an error occurred while updating your profile",
-              type: "danger",
-            },
-            setTimeout(() => {
-              setAlert({ show: false, message: "", type: "" });
-            }, 3000)
-          );
-          setEditMode(false);
-        }
+        setAlert({
+          show: true,
+          message: `Profile updated successfully, you may need to login again to see the changes, your Data will be preserved.`,
+          type: "success",
+        });
       } catch (error) {
+        setAlert({
+          show: true,
+          message: "an error occurred while updating your profile",
+          type: "danger",
+        });
         console.log(error);
+      } finally {
+        setTimeout(() => {
+          setAlert({ show: false, message: "", type: "" });
+        }, 3000);
+        setEditMode(false);
       }
     }
   };
-
 
   return (
     <div>

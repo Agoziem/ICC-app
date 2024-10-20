@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { TiTimes } from "react-icons/ti";
 import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
+import {
+  createSubCategory,
+  deleteSubCategory,
+  fetchSubCategories,
+  updateSubCategory,
+} from "@/data/categories/fetcher";
+import useSWR from "swr";
+import { SubCategorydefault } from "@/constants";
 
 //     "category": {
 //       "id": 2,
@@ -20,18 +28,14 @@ import Modal from "@/components/custom/Modal/modal";
 
 const SubCategoriesForm = ({
   categories, // array of categories
-  fetchSubCategories, // function to fetch subcategories based on item type
+  apiendpoint,
   addUrl,
   updateUrl,
   deleteUrl,
 }) => {
-  const [subcategories, setSubcategories] = useState([]);
+  /** @type {[Category,(value:Category) => void]} */
   const [currentCategory, setCurrentCategory] = useState(null);
-  const [item, setItem] = useState({
-    id: null,
-    subcategory: "",
-    category: null,
-  });
+  const [item, setItem] = useState(SubCategorydefault);
   const [edit, setEdit] = useState(false);
   const [alert, setAlert] = useState({
     show: false,
@@ -40,6 +44,17 @@ const SubCategoriesForm = ({
   });
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const {
+    data: subcategories,
+    isLoading: loadingsubcategories,
+    mutate,
+  } = useSWR(
+    currentCategory?.id
+      ? `${apiendpoint}/subcategories/${currentCategory.id}/`
+      : null,
+    fetchSubCategories
+  );
 
   //   -----------------------------------------
   // close modal
@@ -56,31 +71,38 @@ const SubCategoriesForm = ({
     e.preventDefault();
     console.log(item);
     try {
-      const res = await fetch(url, {
-        method: edit ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(item),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (edit) {
-          setSubcategories(
-            subcategories.map((i) =>
-                i.id === data.id ? data : i
+      if (edit) {
+        const ammendedSubcategory = await updateSubCategory(url, item);
+        await mutate(
+          (subcategories) => {
+            const updatedsubcategories = (subcategories || []).map((i) =>
+              i.id === ammendedSubcategory.id ? ammendedSubcategory : i
             )
-          );
-        } else {
-          setSubcategories([data, ...subcategories]);
-        }
-        setItem({ id: null, subcategory: "", category: null });
-        setAlert({
-          show: true,
-          message: edit ? `Subcategory Updated` : `Subcategory Created`,
-          type: "success",
-        });
+            return [...updatedsubcategories];
+          },
+          {
+            populateCache: true,
+            revalidate: false
+          }
+        );
+      } else {
+        const newSubcategory = await createSubCategory(url, item);
+        await mutate(
+          (subcategories) => {
+            return [newSubcategory, ...(subcategories || [])];
+          },
+          {
+            populateCache: true,
+            revalidate: false
+          }
+        );
       }
+      setItem({ id: null, subcategory: "", category: null });
+      setAlert({
+        show: true,
+        message: edit ? `Subcategory Updated` : `Subcategory Created`,
+        type: "success",
+      });
     } catch (error) {
       console.log(error);
       setAlert({
@@ -102,12 +124,15 @@ const SubCategoriesForm = ({
   //   -----------------------------------------
   const deleteItem = async (id) => {
     try {
-      const res = await fetch(`${deleteUrl}/${id}/`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        setSubcategories(subcategories.filter((i) => i.id !== id));
-      }
+      const delete_id = await deleteSubCategory(deleteUrl,id)
+      await mutate((subcategories)=> {
+        const otherSubCategories = subcategories.filter((i) => i.id !== delete_id)
+        return [...otherSubCategories]
+      }, {
+        populateCache:true,
+        revalidate: false
+      })
+      
     } catch (error) {
       console.log(error);
     }
@@ -120,10 +145,6 @@ const SubCategoriesForm = ({
     if (e.target.value === "") return;
     const category = categories.find((c) => c.category === e.target.value);
     setCurrentCategory(category);
-    setLoading(true);
-    const data = await fetchSubCategories(category.id);
-    setSubcategories(data);
-    setLoading(false);
   };
 
   //   --------------------------------------------------------

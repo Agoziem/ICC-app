@@ -1,10 +1,14 @@
 import VideoUploader from "@/components/custom/Fileuploader/VideoUploader";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
+import { fetchSubCategories } from "@/data/categories/fetcher";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
+import { vidoesapiAPIendpoint } from "@/data/videos/fetcher";
 import React, { useEffect, useState } from "react";
+import { PulseLoader } from "react-spinners";
+import useSWR from "swr";
 
 /**
- * @param {{ video: Video; setVideo: (value:Video) => void; handleSubmit: any; addorupdate: any; categories: Categories; }} param0
+ * @param {{ video: Video; setVideo: (value:Video) => void; handleSubmit: any; addorupdate: any; categories: Categories;isSubmitting:boolean }} param0
  */
 const VideoForm = ({
   video,
@@ -12,43 +16,35 @@ const VideoForm = ({
   handleSubmit,
   addorupdate,
   categories: videoCategories,
+  isSubmitting,
 }) => {
-  const { fetchVideoSubCategories } = useSubCategoriesContext();
-  const [subcategories, setSubCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { data: subcategories, isLoading: loadingsubcategories } = useSWR(
+    video?.category?.id
+      ? `${vidoesapiAPIendpoint}/subcategories/${video.category.id}/`
+      : null,
+    fetchSubCategories
+  );
 
-  // Fetch subcategories when the service's category changes or on initial load if there's already a category
-  useEffect(() => {
-    const fetchInitialSubCategories = async () => {
-      if (video.category) {
-        setLoading(true);
-        const data = await fetchVideoSubCategories(video.category.id);
-        setSubCategories(data);
-        setLoading(false);
-      }
-    };
-    fetchInitialSubCategories();
-  }, [video.category]);
-
+  // ------------------------------
   // Handle category change
-  const handleCategoryChange = async (e) => {
+  // -------------------------------
+  const handleCategoryChange = (e) => {
     const selectedCategory = videoCategories?.find(
       (category) => category.category === e.target.value
     );
-    setVideo({ ...video, category: selectedCategory });
-    setLoading(true);
-    const data = await fetchVideoSubCategories(selectedCategory.id);
-    setSubCategories(data);
-    setLoading(false);
+    setVideo({ ...video, category: selectedCategory, subcategory: null });
   };
 
+  // - -------------------------------
   // Handle subcategory change
+  //  -------------------------------
   const handleSubCategoryChange = (e) => {
     const selectedSubCategory = subcategories?.find(
       (subcategory) => subcategory.subcategory === e.target.value
     );
     setVideo({ ...video, subcategory: selectedSubCategory });
   };
+
   return (
     <div className="p-3">
       <h5 className="text-center mb-4">
@@ -156,7 +152,7 @@ const VideoForm = ({
             required
           >
             <option value="">Select subcategory</option>
-            {loading ? (
+            {loadingsubcategories ? (
               <option>Loading...</option>
             ) : (
               subcategories?.map((subcategory) => (
@@ -194,8 +190,25 @@ const VideoForm = ({
           />
         </div>
 
-        <button type="submit" className="btn btn-primary rounded px-5 mt-3">
-          {addorupdate.mode === "add" ? "Add" : "Update"}
+        <button
+          type="submit"
+          className="btn btn-primary rounded px-5 mt-3"
+          disabled={isSubmitting}
+        >
+          {isSubmitting
+            ? (
+              <div className="d-inline-flex align-items-center justify-content-center gap-2">
+                <div>Submitting Video</div>
+                <PulseLoader
+                  size={8}
+                  color={"#12000d"}
+                  loading={true}
+                />
+              </div>
+            )
+            : addorupdate.mode === "add"
+            ? "Add Video"
+            : "Update Video"}
         </button>
       </form>
     </div>
