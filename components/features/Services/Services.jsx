@@ -6,7 +6,6 @@ import { useCart } from "@/data/carts/Cartcontext";
 import useSWR from "swr";
 import { fetchCategories } from "@/data/categories/fetcher";
 import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
-import Datatable from "@/components/custom/Datatable/Datatable";
 import ServiceCard from "@/components/features/Services/ServiceCard";
 import CartButton from "@/components/custom/Offcanvas/CartButton";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";

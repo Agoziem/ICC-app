@@ -6,6 +6,8 @@ import { messageDefault } from "@/constants";
 import { deleteEmail, fetchEmails } from "@/data/Emails/fetcher";
 import useSWR from "swr";
 import { MainAPIendpoint } from "@/data/organization/fetcher";
+import { useSearchParams, useRouter } from "next/navigation";
+import Pagination from "@/components/custom/Pagination/Pagination";
 
 const Messages = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -24,13 +26,31 @@ const Messages = () => {
     message: "",
     type: "",
   });
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
 
-
-  const { data: messages } = useSWR(
-    `${MainAPIendpoint}/emails/${OrganizationID}/`,
-    fetchEmails
+  const {
+    data: messages,
+    mutate,
+    isLoading: loadingMessages,
+  } = useSWR(
+    `${MainAPIendpoint}/emails/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
+    fetchEmails,
+    {
+      onSuccess: (data) =>
+        data.results.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ),
+    }
   );
-  const { mutate } = useSWR(`${MainAPIendpoint}/emails/${OrganizationID}/`);
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    router.push(`?page=${newPage}&page_size=${pageSize}`);
+  };
 
   /**
    * @async
@@ -38,9 +58,19 @@ const Messages = () => {
    */
   const removeMessage = async (id) => {
     try {
-      await mutate(deleteEmail(id), {
-        populateCache: true,
-      });
+      const deletedid = await deleteEmail(id);
+      await mutate(
+        (Messages) => {
+          const otherMessages = Messages?.results?.filter(
+            (message) => message.id !== deletedid
+          );
+          Messages.results = otherMessages;
+          return { ...Messages };
+        },
+        {
+          populateCache: true,
+        }
+      );
       setAlert({
         show: true,
         message: "Message Deleted Successfully",
@@ -124,10 +154,15 @@ const Messages = () => {
 
   return (
     <div className="px-1 px-md-4">
-      <h4>Messages</h4>
+      <div>
+        <h4 className="mb-1">
+          {messages?.count} Message{messages?.count > 1 ? "s" : ""}
+        </h4>
+        <p>in total</p>
+      </div>
       {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-      {messages?.length > 0 ? (
-        messages?.map((message) => (
+      {messages?.results?.length > 0 ? (
+        messages?.results?.map((message) => (
           <div key={message.id} className="card my-3 p-3">
             <div className="card-body">
               <div className="mb-3">
@@ -200,6 +235,16 @@ const Messages = () => {
           <h6 className="">No Messages Yet</h6>
         </div>
       )}
+
+      {!loadingMessages &&
+        messages &&
+        Math.ceil(messages.count / parseInt(pageSize)) > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(messages.count / parseInt(pageSize))}
+            handlePageChange={handlePageChange}
+          />
+        )}
 
       <Modal
         showmodal={showModal}

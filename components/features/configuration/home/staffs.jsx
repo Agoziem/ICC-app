@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Modal from "@/components/custom/Modal/modal";
 import Alert from "@/components/custom/Alert/Alert";
 import "./homeconfig.css";
-import { converttoformData } from "@/utils/formutils";
 import StaffForm from "./staffform";
 import { staffdefault } from "@/constants";
 import {
@@ -13,8 +12,10 @@ import {
   updateStaff,
 } from "@/data/organization/fetcher";
 import useSWR from "swr";
+import { useSearchParams, useRouter } from "next/navigation";
+import Pagination from "@/components/custom/Pagination/Pagination";
 
-const Staffs = ({staffs}) => {
+const Staffs = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [staff, setStaff] = useState(staffdefault);
   const [addorupdate, setAddorupdate] = useState({
@@ -30,10 +31,33 @@ const Staffs = ({staffs}) => {
   const [showdeleteModal, setShowDeleteModal] = useState(false);
   const [openIndex, setOpenIndex] = useState(0);
 
- 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
 
-  // for mutation
-  const { mutate } = useSWR(`${MainAPIendpoint}/staff/${OrganizationID}/`);
+  // for data fetching
+  const {
+    data: staffs,
+    mutate,
+    isLoading: loadingstaffs,
+  } = useSWR(
+    `${MainAPIendpoint}/staff/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
+    fetchStaffs,
+    {
+      onSuccess: (data) =>
+        data.results.sort(
+          (a, b) =>
+            new Date(b.last_updated_date).getTime() -
+            new Date(a.last_updated_date).getTime()
+        ),
+    }
+  );
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    router.push(`?page=${newPage}&page_size=${pageSize}`);
+  };
 
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -42,14 +66,50 @@ const Staffs = ({staffs}) => {
   // add a staff or edit a staff
   const addStaff = async (e) => {
     e.preventDefault();
-    // const formData = converttoformData(staff); convert to formData later
+    const { organization, ...restData } = staff;
+    const stafftosubmit = {
+      ...restData,
+      organization: parseInt(OrganizationID),
+    };
     try {
       if (addorupdate.mode === "add") {
-        await mutate(createStaff(staff), {
-          populateCache: true,
-        });
+        const newStaff = await createStaff(stafftosubmit);
+        await mutate(
+          (Staffs) => {
+            const newStaffs = [newStaff, ...(Staffs?.results || [])];
+            return {
+              ...Staffs,
+              results: newStaffs.sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       } else {
-        await mutate(updateStaff(staff));
+        const updatedStaff = await updateStaff(stafftosubmit);
+        await mutate(
+          (Staffs) => {
+            const otherStaffs = (Staffs?.results || []).map((o) =>
+              o.id === updatedStaff.id ? updatedStaff : o
+            );
+            return {
+              ...Staffs,
+              results: otherStaffs.sort(
+                (a, b) =>
+                  new Date(b.last_updated_date).getTime() -
+                  new Date(a.last_updated_date).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       }
       setAlert({
         show: true,
@@ -57,6 +117,11 @@ const Staffs = ({staffs}) => {
         type: "success",
       });
     } catch (error) {
+      setAlert({
+        show: true,
+        message: `An error just occurred, try again later`,
+        type: "danger",
+      });
     } finally {
       closeModal();
       setTimeout(() => {
@@ -82,9 +147,19 @@ const Staffs = ({staffs}) => {
    */
   const deletestaff = async (id) => {
     try {
-      await mutate(deleteStaff(id), {
-        populateCache: true,
-      });
+      const staffid = await deleteStaff(id);
+      await mutate(
+        (Staffs) => {
+          const otherStaffs = Staffs.results.filter(
+            (staff) => staff.id !== staffid
+          );
+          Staffs.results = otherStaffs;
+          return { ...Staffs };
+        },
+        {
+          populateCache: true,
+        }
+      );
       setAlert({
         show: true,
         message: `Staff deleted successfully`,
@@ -124,7 +199,7 @@ const Staffs = ({staffs}) => {
         </button>
       </div>
 
-      {staffs.results.length === 0 ? (
+      {staffs && staffs.results?.length === 0 ? (
         <div className="card">
           <div className="card-body">
             <h5>Staffs & Team</h5>
@@ -135,9 +210,14 @@ const Staffs = ({staffs}) => {
         <div>
           {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
 
-          <h5 className="my-3">Staffs & Team</h5>
+          <div className="my-4">
+            <h4 className="mb-1">
+              {staffs?.count} Staff{staffs?.count > 1 ? "s" : ""}
+            </h4>
+            <p>in total</p>
+          </div>
 
-          {staffs.results.map((staff, index) => (
+          {staffs?.results?.map((staff, index) => (
             <div key={staff.id}>
               <div className="card my-3 p-3 px-md-4 py-4">
                 <div className="d-flex align-items-center">
@@ -259,6 +339,17 @@ const Staffs = ({staffs}) => {
           ))}
         </div>
       )}
+
+      {!loadingstaffs &&
+        staffs &&
+        Math.ceil(staffs.count / parseInt(pageSize)) > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(staffs.count / parseInt(pageSize))}
+            handlePageChange={handlePageChange}
+          />
+        )}
+
       <Modal
         showmodal={showdeleteModal}
         toggleModal={() => setShowDeleteModal(false)}

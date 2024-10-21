@@ -10,7 +10,6 @@ const TestimonialForm = ({
   onSubmit,
   onClose,
 }) => {
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTestimonial({

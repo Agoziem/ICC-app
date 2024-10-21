@@ -14,14 +14,15 @@ const ArticleLikes = ({ article, setToastMessage, mutate }) => {
   const [likes, setLikes] = useState([]);
 
   useEffect(() => {
-    if (article) {
+    if (article && article.likes) {
       setLikes(article.likes);
+      console.log(article.likes)
     }
   }, [article]);
 
   const handleLikeToggle = async () => {
     const userId = parseInt(session?.user?.id);
-    const isLiked = likes.includes(userId);
+    const isLiked = likes?.includes(userId);
     setToastMessage({
       title: isLiked ? "Unlike" : "Like",
       message: isLiked ? "You unliked the post" : "You liked the post",
@@ -54,7 +55,7 @@ const ArticleLikes = ({ article, setToastMessage, mutate }) => {
     <>
       {session ? (
         <button className="btn btn-primary" onClick={handleLikeToggle}>
-          {likes.includes(parseInt(session?.user?.id)) ? "Unlike" : "Like"}
+          {likes?.includes(parseInt(session?.user?.id)) ? "Unlike" : "Like"}
         </button>
       ) : (
         <Link

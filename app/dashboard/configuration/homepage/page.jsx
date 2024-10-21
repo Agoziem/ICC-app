@@ -22,12 +22,6 @@ const HomePageConfigPage = () => {
   const { OrganizationData, mutate: organizationmutate } =
     useContext(OrganizationContext);
 
-  // for data fetching
-  const { data: staffs } = useSWR(
-    `${MainAPIendpoint}/staff/${OrganizationID}/`,
-    fetchStaffs
-  );
-
   return (
     <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Homepage Settings" />
@@ -178,8 +172,8 @@ const HomePageConfigPage = () => {
           )}
           {currentSection === 2 && <Testimonials />}
 
-          {currentSection === 3 && <Staffs staffs={staffs} />}
-          {currentSection === 4 && <Depts staffs={staffs} />}
+          {currentSection === 3 && <Staffs />}
+          {currentSection === 4 && <Depts />}
           {currentSection === 5 && <Subscriptions />}
           {currentSection === 6 && <Messages />}
           {currentSection === 7 && (

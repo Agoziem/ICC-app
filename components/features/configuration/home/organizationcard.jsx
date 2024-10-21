@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Alert from "@/components/custom/Alert/Alert";
 import { converttoformData } from "@/utils/formutils";
 import OrganizationalForm from "./organizationalform";
 import { updateOrganization } from "@/data/organization/fetcher";
+import { OrganizationDefault } from "@/constants";
 
 /**
  * @param {{ OrganizationData: Organization; mutate: any; }} param0
  */
 const OrganizationCard = ({ OrganizationData, mutate }) => {
-  const [Organization, setOrganizationData] = useState(OrganizationData);
+  const [Organization, setOrganizationData] = useState(OrganizationDefault);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -16,39 +17,18 @@ const OrganizationCard = ({ OrganizationData, mutate }) => {
   });
   const [editMode, setEditMode] = useState(false);
 
-  const keystofilter = [
-    "staffs",
-    "testimonials",
-    "subscriptions",
-    "messages",
-    "created_at",
-    "last_updated_date",
-  ];
-
-  /**
-   * Description placeholder
-   *
-   * @param {Organization} OrganizationDataObj
-   * @param {typeof keystofilter} keystoremove
-   * @returns {*}
-   */
-  const filterData = (OrganizationDataObj, keystoremove) => {
-    return Object.keys(OrganizationDataObj)
-      .filter((key) => !keystoremove.includes(key))
-      .reduce((obj, key) => {
-        obj[key] = OrganizationDataObj[key];
-        return obj;
-      }, {});
-  };
+  useEffect(() => {
+    if (OrganizationData?.id){
+      setOrganizationData(OrganizationData)
+    }
+  }, [OrganizationData]);
 
   const handleSubmit = async (e) => {
-    const filteredData = filterData(OrganizationData, keystofilter);
     e.preventDefault();
-    // converttoformData(filteredData) convert Form Data later
-    mutate(updateOrganization(filteredData), {
-      populateCache: true,
-    });
     try {
+      await mutate(updateOrganization(Organization), {
+        populateCache: true,
+      });
       setAlert({
         show: true,
         message: "Organization details updated successfully",

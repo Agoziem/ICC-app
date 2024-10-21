@@ -10,12 +10,19 @@ import {
 } from "@/data/organization/fetcher";
 import React, { useState } from "react";
 import useSWR from "swr";
+import { useSearchParams, useRouter } from "next/navigation";
+import Pagination from "@/components/custom/Pagination/Pagination";
 
 const Subscriptions = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [subscription, setSubscription] = useState(subscriptionDefault);
   const [showModal, setShowModal] = useState(false);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "20";
 
   const [alert, setAlert] = useState({
     show: false,
@@ -28,15 +35,26 @@ const Subscriptions = () => {
   });
 
   // for data fetching
-  const { data: subscriptions } = useSWR(
-    `${MainAPIendpoint}/subscription/${OrganizationID}/`,
-    fetchSubscriptions
+  const {
+    data: subscriptions,
+    mutate,
+    isLoading: loadingSubscriptions,
+  } = useSWR(
+    `${MainAPIendpoint}/subscription/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
+    fetchSubscriptions,
+    {
+      onSuccess: (data) =>
+        data.results.sort(
+          (a, b) =>
+            new Date(b.date_added).getTime() - new Date(a.date_added).getTime()
+        ),
+    }
   );
 
-  // for mutation
-  const { mutate } = useSWR(
-    `${MainAPIendpoint}/subscription/${OrganizationID}/`
-  );
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    router.push(`?page=${newPage}&page_size=${pageSize}`);
+  };
 
   // function close Modal
   const closeModal = () => {
@@ -50,13 +68,46 @@ const Subscriptions = () => {
     e.preventDefault();
     try {
       if (addorupdate.mode === "add") {
-        await mutate(createSubscription(subscription), {
-          populateCache: true,
-        });
+        const newSubscription = await createSubscription(subscription);
+        await mutate(
+          (Subscriptions) => {
+            const newSubscriptions = [
+              newSubscription,
+              ...(Subscriptions?.results || []),
+            ];
+            return {
+              ...Subscriptions,
+              results: newSubscriptions.sort(
+                (a, b) =>
+                  new Date(b.date_added).getTime() -
+                  new Date(a.date_added).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       } else {
-        await mutate(updateSubscription(subscription), {
-          populateCache: true,
-        });
+        const updatedSubscription = await updateSubscription(subscription);
+        await mutate(
+          (Subscriptions) => {
+            const otherSubscriptions = (Subscriptions?.results || []).map((o) =>
+              o.id === updatedSubscription.id ? updatedSubscription : o
+            );
+            return {
+              ...Subscriptions,
+              results: otherSubscriptions.sort(
+                (a, b) =>
+                  new Date(b.date_added).getTime() -
+                  new Date(a.date_added).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       }
       setAlert({
         show: true,
@@ -88,9 +139,19 @@ const Subscriptions = () => {
    */
   const removeSubscription = async (id) => {
     try {
-      await mutate(deleteSubscription(id), {
-        populateCache: true,
-      });
+      const deletedid = await deleteSubscription(id);
+      await mutate(
+        (Subscriptions) => {
+          const otherSubscriptions = Subscriptions.results.filter(
+            (Subscription) => Subscription.id !== deletedid
+          );
+          Subscriptions.results = otherSubscriptions;
+          return { ...Subscriptions };
+        },
+        {
+          populateCache: true,
+        }
+      );
       setAlert({
         show: true,
         message: "email deleted successfully",
@@ -133,7 +194,13 @@ const Subscriptions = () => {
       </div>
       {subscriptions?.results.length > 0 ? (
         <div>
-          <h5 className="mb-3">Subscriptions</h5>
+          <div className="mb-3">
+            <h4 className="mb-1" >
+              {subscriptions?.count} Subscription
+              {subscriptions?.count > 1 ? "s" : ""}
+            </h4>
+            <p>in total</p>
+          </div>
 
           {/* subscriptions emails list */}
           <ul className="list-group list-group-flush rounded">
@@ -182,6 +249,16 @@ const Subscriptions = () => {
           <h5>No Subscriptions yet</h5>
         </div>
       )}
+
+      {!loadingSubscriptions &&
+        subscriptions &&
+        Math.ceil(subscriptions.count / parseInt(pageSize)) > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(subscriptions.count / parseInt(pageSize))}
+            handlePageChange={handlePageChange}
+          />
+        )}
 
       {/* update email modal */}
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>

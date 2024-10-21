@@ -1,5 +1,4 @@
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
-import React from "react";
 
 /**
  * @param {{ addStaff: any; addorupdate: any; staff: Staff; setStaff: (value:Staff) => void; closeModal: any; }} param0

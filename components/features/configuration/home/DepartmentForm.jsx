@@ -46,6 +46,7 @@ const DepartmentForm = ({
           />
         </div>
 
+        {/* Description */}
         <div className="form-group mb-3">
           <label className="form-label">Description</label>
           <textarea
@@ -62,17 +63,18 @@ const DepartmentForm = ({
           ></textarea>
         </div>
 
+        {/* Staff in Charge */}
         <div className="form-group mb-3">
           <label className="form-label">Staff in Charge</label>
           <select
             className="form-select"
-            value={department.staff_in_charge.name || ""}
+            value={department.staff_in_charge?.id || ""}
             onChange={(e) =>
               setDepartment({
                 ...department,
                 staff_in_charge: {
                   ...department.staff_in_charge,
-                  name:e.target.value
+                  id: Number(e.target.value), // Ensure correct type
                 },
               })
             }
@@ -87,6 +89,7 @@ const DepartmentForm = ({
           </select>
         </div>
 
+        {/* Services */}
         <div className="form-group mb-3">
           <label className="form-label">Add Service</label>
           <div className="d-flex align-items-center">

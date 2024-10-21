@@ -4,7 +4,7 @@ import Modal from "@/components/custom/Modal/modal";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
 import Alert from "@/components/custom/Alert/Alert";
 import TestimonialForm from "./TestimonialForm";
-import { converttoformData } from "@/utils/formutils";
+
 import {
   createTestimonial,
   deleteTestimonial,
@@ -14,6 +14,8 @@ import {
 } from "@/data/organization/fetcher";
 import { testimonialDefault } from "@/constants";
 import useSWR from "swr";
+import { useSearchParams, useRouter } from "next/navigation";
+import Pagination from "@/components/custom/Pagination/Pagination";
 
 const Testimonials = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -26,36 +28,85 @@ const Testimonials = () => {
     type: "",
   });
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+
   const [addorupdate, setAddOrUpdate] = useState({
     type: "add",
     state: false,
   });
 
   // for fetching
-  const { data: testimonials } = useSWR(
-    `${MainAPIendpoint}/testimonial/${OrganizationID}/`,
-    fetchTestimonials
+  const {
+    data: testimonials,
+    mutate,
+    isLoading: loadingtestimonials,
+  } = useSWR(
+    `${MainAPIendpoint}/testimonial/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
+    fetchTestimonials,
+    {
+      onSuccess: (data) =>
+        data.results.sort(
+          (a, b) =>
+            new Date(b.last_updated_date).getTime() -
+            new Date(a.last_updated_date).getTime()
+        ),
+    }
   );
 
-  // for mutation
-  const { mutate } = useSWR(
-    `${MainAPIendpoint}/testimonial/${OrganizationID}/`
-  );
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    router.push(`?page=${newPage}&page_size=${pageSize}`);
+  };
+
   // -------------------------------------------------------------
   // Function to handle form submission
   // -------------------------------------------------------------
-
   const handleFormSubmit = async (formData) => {
-    // convert image to formData
     try {
       if (addorupdate.type === "add") {
-        await mutate(createTestimonial(formData), {
-          populateCache: true,
-        });
+        const newTestimonial = await createTestimonial(formData);
+        await mutate(
+          (Testimonies) => {
+            const newTestimonies = [
+              newTestimonial,
+              ...(Testimonies?.results || []),
+            ];
+            return {
+              ...Testimonies,
+              results: newTestimonies.sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       } else {
-        await mutate(updateTestimonial(formData), {
-          populateCache: true,
-        });
+        const updatedTestimonial = await updateTestimonial(formData);
+        await mutate(
+          (Testimonies) => {
+            const otherTestimonies = (Testimonies?.results || []).map((o) =>
+              o.id === updatedTestimonial.id ? updatedTestimonial : o
+            );
+            return {
+              ...Testimonies,
+              results: otherTestimonies.sort(
+                (a, b) =>
+                  new Date(b.last_updated_date).getTime() -
+                  new Date(a.last_updated_date).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       }
       setAlert({
         show: true,
@@ -70,6 +121,7 @@ const Testimonials = () => {
         type: "danger",
       });
     } finally {
+      closeModal();
       setTimeout(() => {
         setAlert({
           show: false,
@@ -102,9 +154,19 @@ const Testimonials = () => {
    */
   const deletetestimonial = async (id) => {
     try {
-      await mutate(deleteTestimonial(id), {
-        populateCache: true,
-      });
+      const testimonialid = await deleteTestimonial(id);
+      await mutate(
+        (Testimonies) => {
+          const otherTestimonies = Testimonies.results.filter(
+            (Testimonial) => Testimonial.id !== testimonialid
+          );
+          Testimonies.results = otherTestimonies;
+          return { ...Testimonies };
+        },
+        {
+          populateCache: true,
+        }
+      );
       setAlert({
         show: true,
         message: "Testimonial deleted successfully",
@@ -143,16 +205,22 @@ const Testimonials = () => {
             <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add Testimonial
           </button>
         </div>
-        <h4>Testimonials</h4>
+        <div>
+          <h4 className="mb-1">
+            {testimonials?.count} Testimonial
+            {testimonials?.count > 1 ? "s" : ""}
+          </h4>
+          <p>in total</p>
+        </div>
       </div>
 
       {/* set of horizontal Cards that are clickable */}
       <div className="mt-4">
         {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-        {testimonials?.results.length === 0 ? (
+        {testimonials && testimonials?.results?.length === 0 ? (
           <p>No testimonials available</p>
         ) : (
-          testimonials?.results.map((testimonial) => (
+          testimonials?.results?.map((testimonial) => (
             <div key={testimonial.id} className="card my-3 p-3">
               <div className="card-body">
                 <div>
@@ -227,6 +295,16 @@ const Testimonials = () => {
           ))
         )}
       </div>
+
+      {!loadingtestimonials &&
+        testimonials &&
+        Math.ceil(testimonials.count / parseInt(pageSize)) > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(testimonials.count / parseInt(pageSize))}
+            handlePageChange={handlePageChange}
+          />
+        )}
 
       {/* Modal for adding a new testimonial */}
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>

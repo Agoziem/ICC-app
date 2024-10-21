@@ -95,7 +95,7 @@ export const addPayment = async (data) => {
  * @param {Order} data
  * @returns {Promise<Order>}
  */
-export const updateDepartment = async (data) => {
+export const updatePayment = async (data) => {
   const response = await axiosInstance.put(
     `${paymentsAPIendpoint}/updatepayment/${data.id}/`,
     data
@@ -112,7 +112,7 @@ export const updateDepartment = async (data) => {
  * @param {number} paymentid
  * @returns {Promise<number>}
  */
-export const deleteDepartment = async (paymentid) => {
+export const deletePayment = async (paymentid) => {
   await axiosInstance.delete(`${paymentsAPIendpoint}/deletepayment/${paymentid}/`);
   return paymentid;
 };

@@ -1,10 +1,10 @@
 import axios from "axios";
 import {
-  emailArraySchema,
   emailMessagesArraySchema,
   emailMessageSchema,
   emailResponseArraySchema,
   emailResponseSchema,
+  emailsResponseSchema,
 } from "@/schemas/emails";
 
 export const axiosInstance = axios.create({
@@ -18,7 +18,7 @@ export const fetchEmails = async () => {
   const response = await axiosInstance.get(
     `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/`
   );
-  const validation = emailArraySchema.safeParse(response.data);
+  const validation = emailsResponseSchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);
   }

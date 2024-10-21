@@ -1,24 +1,31 @@
 import React, { useState } from "react";
 import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
-import { converttoformData } from "@/utils/formutils";
 import DepartmentForm from "./DepartmentForm";
 import { deptDefault } from "@/constants";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   createDepartment,
-  deleteTestimonial,
+  deleteDepartment,
   fetchDepartments,
+  fetchStaffs,
   MainAPIendpoint,
   updateDepartment,
 } from "@/data/organization/fetcher";
 import useSWR from "swr";
+import Pagination from "@/components/custom/Pagination/Pagination";
 
-const Depts = ({staffs}) => {
+const Depts = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [showModal, setShowModal] = useState(false);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
   const [service, setService] = useState("");
   const [department, setDepartment] = useState(deptDefault);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
 
   const [alert, setAlert] = useState({
     show: false,
@@ -32,32 +39,98 @@ const Depts = ({staffs}) => {
   });
 
   // for data fetching
-  const { data: depts } = useSWR(
-    `${MainAPIendpoint}/department/${OrganizationID}/`,
-    fetchDepartments
+  const { data: staffs } = useSWR(
+    `${MainAPIendpoint}/staff/${OrganizationID}/`,
+    fetchStaffs,
+    {
+      onSuccess: (data) =>
+        data.results.sort(
+          (a, b) =>
+            new Date(b.last_updated_date).getTime() -
+            new Date(a.last_updated_date).getTime()
+        ),
+    }
   );
 
   // for data fetching
-  const { mutate } = useSWR(
-    `${MainAPIendpoint}/department/${OrganizationID}/`,
-  );
+  const {
+    data: depts,
+    mutate,
+    isLoading: loadingdepts,
+  } = useSWR(
+    `${MainAPIendpoint}/department/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
+    fetchDepartments,
+    {
+      onSuccess: (data) =>
+        data.results.sort(
+          (a, b) =>
+            new Date(b.last_updated_date).getTime() -
+            new Date(a.last_updated_date).getTime()
+        ),
+      }
+    );
+    
+    // Handle page change
+    const handlePageChange = (newPage) => {
+      router.push(`?page=${newPage}&page_size=${pageSize}`);
+    };
 
-  // -------------------------------------------------------------
+
+    // -------------------------------------------------------------
   // Function to handle form submission
   // -------------------------------------------------------------
 
   const handleSubmit = async (e) => {
+    const { organization, staff_in_charge, services, ...restData } = department;
+    const departmenttosubmit = {
+      ...restData,
+      organization: parseInt(OrganizationID),
+      staff_in_charge: staff_in_charge.id || "",
+      services: services?.map((Service) => Service.name) || [],
+    };
     e.preventDefault();
-    // const formData = converttoformData(department, ["services"]);  convert to FormData Later
     try {
       if (addorupdate.type === "add") {
-        await mutate(createDepartment(department), {
-          populateCache: true,
-        });
+        const newDepartment = await createDepartment(departmenttosubmit);
+        await mutate(
+          (Departments) => {
+            const newDepartments = [
+              newDepartment,
+              ...(Departments?.results || []),
+            ];
+            return {
+              ...Departments,
+              results: newDepartments.sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       } else {
-        mutate(updateDepartment(department), {
-          populateCache: true,
-        });
+        const updatedDepartment = await updateDepartment(departmenttosubmit);
+        mutate(
+          (Departments) => {
+            const otherDepartments = (Departments?.results || []).map((o) =>
+              o.id === updatedDepartment.id ? updatedDepartment : o
+            );
+            return {
+              ...Departments,
+              results: otherDepartments.sort(
+                (a, b) =>
+                  new Date(b.last_updated_date).getTime() -
+                  new Date(a.last_updated_date).getTime()
+              ),
+            };
+          },
+          {
+            populateCache: true,
+          }
+        );
       }
       setAlert({
         show: true,
@@ -104,11 +177,21 @@ const Depts = ({staffs}) => {
   /**
    * @param {number} id
    */
-  const removeTestimonial = (id) => {
+  const removeDepartment = async (id) => {
     try {
-      mutate(deleteTestimonial(id), {
-        populateCache: true,
-      });
+      const deptid = await deleteDepartment(id);
+      mutate(
+        (Departments) => {
+          const otherDepartments = Departments.results.filter(
+            (department) => department.id !== deptid
+          );
+          Departments.results = otherDepartments;
+          return { ...Departments };
+        },
+        {
+          populateCache: true,
+        }
+      );
       setAlert({
         show: true,
         message: "Department deleted successfully",
@@ -151,13 +234,18 @@ const Depts = ({staffs}) => {
             <i className="bi bi-plus-circle me-2 h5 mb-0"></i> Add Department
           </button>
         </div>
-        <h4>Departments</h4>
+        <div>
+        <h4 className="mb-1">
+          {depts?.count} Department{depts?.count > 1 ? "s" : ""}
+        </h4>
+        <p>in total</p>
+        </div>
       </div>
 
       {/* set of horizontal Cards that are clickable */}
       <div className="mt-4">
         {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-        {depts?.results.length === 0 ? (
+        {depts?.results?.length === 0 ? (
           <p>No testimonials available</p>
         ) : (
           depts?.results.map((department) => (
@@ -231,13 +319,23 @@ const Depts = ({staffs}) => {
             </div>
           ))
         )}
+
+        {!loadingdepts &&
+          depts &&
+          Math.ceil(depts.count / parseInt(pageSize)) > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={Math.ceil(depts.count / parseInt(pageSize))}
+              handlePageChange={handlePageChange}
+            />
+          )}
       </div>
 
       {/* Modal for adding a new testimonial */}
       <Modal showmodal={showModal} toggleModal={() => closeModal()}>
         <div className="modal-body">
           {addorupdate.state ? (
-            <DepartmentForm 
+            <DepartmentForm
               addorupdate={addorupdate}
               department={department}
               setDepartment={setDepartment}
@@ -259,7 +357,7 @@ const Depts = ({staffs}) => {
             <button
               className="btn btn-accent-secondary border-0 text-secondary mt-3 rounded"
               onClick={() => {
-                removeTestimonial(department.id);
+                removeDepartment(department.id);
               }}
             >
               Delete Testimonial

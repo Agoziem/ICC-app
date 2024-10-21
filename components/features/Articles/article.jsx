@@ -123,10 +123,10 @@ const Article = ({ params }) => {
             <h1 className="text-wrap text-break">{article.title}</h1>
             <div className="d-flex my-4">
               <div>
-                {article.author.img ? (
+                {article.author?.img ? (
                   <img
-                    src={article.author.img}
-                    alt={article.author.username}
+                    src={article.author?.img}
+                    alt={article.author?.username}
                     width={50}
                     height={50}
                     className="rounded-circle object-fit-cover"
@@ -142,22 +142,22 @@ const Article = ({ params }) => {
                       backgroundColor: "var(--bgDarkerColor)",
                     }}
                   >
-                    {article.author.username[0].toUpperCase()}
+                    {article.author?.username[0].toUpperCase()}
                   </div>
                 )}
               </div>
               <div className="ms-3">
-                <p className="mb-0 fw-bold">{article.author.username}</p>
+                <p className="mb-0 fw-bold">{article.author?.username}</p>
                 <div>
                   <span>
-                    <small>{article.category.category}</small>
+                    <small>{article.category?.category}</small>
                   </span>
                   {" . "}
                   <span className="me-3">
                     <small>{new Date(article.date).toDateString()}</small>
                   </span>
-                  {article.tags.length > 0 &&
-                    article.tags.map((tag, index) => (
+                  {article.tags?.length > 0 &&
+                    article.tags?.map((tag, index) => (
                       <span
                         key={index}
                         className="badge bg-secondary-light text-secondary rounded-5 px-3 py-2 me-1 mb-2 mb-md-0"
@@ -211,12 +211,12 @@ const Article = ({ params }) => {
                 <span className="me-3">
                   <i
                     className={`bi ${
-                      article.likes.includes(parseInt(session?.user?.id))
+                      article.likes?.includes(parseInt(session?.user?.id))
                         ? "bi-heart-fill text-danger"
                         : "bi-heart-fill text-primary"
                     } me-1`}
                   ></i>
-                  {article.likes.length} like{article.likes.length > 1 && "s"}
+                  {article.likes?.length} like{article.likes?.length > 1 && "s"}
                 </span>
                 <span className="me-3">
                   <i className="bi bi-chat-fill me-1"></i>

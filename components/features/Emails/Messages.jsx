@@ -8,6 +8,8 @@ import { emailAPIendpoint, fetchEmails } from "@/data/Emails/fetcher";
 import useWebSocket from "@/hooks/useWebSocket";
 import { MessageWebsocketSchema } from "@/schemas/emails";
 import { MdOutlineContacts } from "react-icons/md";
+import Pagination from "@/components/custom/Pagination/Pagination";
+import { useSearchParams, useRouter } from "next/navigation";
 
 /**
  * Holds all the Messages that was sent well paginated with load more button
@@ -23,23 +25,33 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
     `${process.env.NEXT_PUBLIC_DJANGO_WEBSOCKET_URL}/ws/emailapiSocket/`
   );
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const pageSize = "10";
+
   // fetch all the messages and populate cache
   const {
     data: messages,
-    isLoading,
+    isLoading: loadingMessages,
     error,
     mutate,
   } = useSWR(
-    `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/`,
+    `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/?page=${page}&page_size=${pageSize}`,
     fetchEmails,
     {
       onSuccess: (data) =>
-        data.sort(
+        data?.results?.sort(
           (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         ),
     }
   );
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    router.push(`?page=${newPage}&page_size=${pageSize}`);
+  };
 
   const [showUnread, setShowUnread] = useState(false); // State to filter unread messages
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
@@ -55,14 +67,20 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
         if (!validateddata.success) {
           throw new Error(
             `Validation failed: ${JSON.stringify(validateddata.error.issues)}`
-          ); 
+          );
         }
         if (newMessage.operation === "create") {
           mutate(
-            (existingMessages) => [
-              validateddata.data.message,
-              ...(existingMessages || []),
-            ],
+            (existingMessages) => {
+              const newMessages = [
+                validateddata.data.message,
+                ...(existingMessages.results || []),
+              ];
+              return {
+                ...existingMessages,
+                results: newMessages,
+              };
+            },
             {
               populateCache: true,
             }
@@ -72,12 +90,16 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
         if (validateddata.data.operation === "update") {
           mutate(
             (existingMessages) => {
-              const updatedMessages = existingMessages.map((message) =>
-                message.id === validateddata.data.message.id
-                  ? validateddata.data.message
-                  : message
+              const otherMessages = (existingMessages?.results || []).map(
+                (message) =>
+                  message.id === validateddata.data.message.id
+                    ? validateddata.data.message
+                    : message
               );
-              return updatedMessages;
+              return {
+                ...existingMessages,
+                results: otherMessages,
+              };
             },
             {
               populateCache: true,
@@ -88,7 +110,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
     }
   }, [isConnected, ws, mutate]);
 
-  if (isLoading) {
+  if (loadingMessages) {
     return <p>Loading....</p>;
   }
 
@@ -98,13 +120,16 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
 
   // Filter messages based on the `read` state
   let filteredMessages = showUnread
-    ? messages?.filter((message) => !message.read) // Show only unread messages
-    : messages;
+    ? messages?.results?.filter((message) => !message.read) // Show only unread messages
+    : messages.results;
 
   // Filter messages further based on search input
   if (searchQuery) {
-    filteredMessages = filteredMessages?.filter((message) =>
-      message.subject.toLowerCase().includes(searchQuery.toLowerCase())
+    const query = searchQuery.toLowerCase();
+    filteredMessages = filteredMessages?.filter(
+      (message) =>
+        message.subject.toLowerCase().includes(query) ||
+        message.name.toLowerCase().includes(query) // Assuming 'user' is a string field
     );
   }
 
@@ -169,6 +194,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
         <SearchInput
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          itemlabel={"subject or user"}
         />
       </div>
       <div className="messageslist d-flex flex-column g-1 pe-2">
@@ -196,6 +222,16 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
           </div>
         )}
       </div>
+
+      {!loadingMessages &&
+        messages &&
+        Math.ceil(messages.count / parseInt(pageSize)) > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(messages.count / parseInt(pageSize))}
+            handlePageChange={handlePageChange}
+          />
+        )}
     </div>
   );
 };

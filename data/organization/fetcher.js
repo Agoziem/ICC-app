@@ -1,5 +1,16 @@
 import axios from "axios";
-import { departmentResponseSchema, departmentSchema, organizationSchema, staffResponseSchema, staffSchema, subscriptionSchema, subscriptionsResponseSchema, testimonialSchema, testimonialsResponseSchema } from "@/schemas/organizations";
+import {
+  departmentResponseSchema,
+  departmentSchema,
+  organizationSchema,
+  staffResponseSchema,
+  staffSchema,
+  subscriptionSchema,
+  subscriptionsResponseSchema,
+  testimonialSchema,
+  testimonialsResponseSchema,
+} from "@/schemas/organizations";
+import { converttoformData } from "@/utils/formutils";
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}`,
@@ -8,7 +19,6 @@ export const axiosInstance = axios.create({
 const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
 export const MainAPIendpoint = "/api";
-
 
 // ------------------------------------------------------
 // Organization fetcher and mutation functions
@@ -32,9 +42,15 @@ export const fetchOrganization = async (url) => {
  * @returns {Promise<Organization>}
  */
 export const createOrganization = async (data) => {
+  const formData = converttoformData(data);
   const response = await axiosInstance.post(
-    `/${MainAPIendpoint}/organization/add/`,
-    data
+    `${MainAPIendpoint}/organization/add/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = organizationSchema.safeParse(response.data);
   if (!validation.success) {
@@ -49,15 +65,25 @@ export const createOrganization = async (data) => {
  * @returns {Promise<Organization>}
  */
 export const updateOrganization = async (data) => {
-  const response = await axiosInstance.put(
-    `/${MainAPIendpoint}/update/${data.id}/`,
-    data
-  );
-  const validation = organizationSchema.safeParse(response.data);
-  if (!validation.success) {
-    console.log(validation.error.issues);
+  try {
+    const formData = converttoformData(data);
+    const response = await axiosInstance.put(
+      `${MainAPIendpoint}/organization/update/${data.id}/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    const validation = organizationSchema.safeParse(response.data);
+    if (!validation.success) {
+      console.log(validation.error.issues);
+    }
+    return validation.data;
+  } catch (error) {
+    throw new Error(`${error.message}`);
   }
-  return validation.data;
 };
 
 /**
@@ -66,10 +92,11 @@ export const updateOrganization = async (data) => {
  * @returns {Promise<number>}
  */
 export const deleteOrganization = async (organizationid) => {
-  await axiosInstance.delete(`${MainAPIendpoint}/deleteblog/${organizationid}/`);
+  await axiosInstance.delete(
+    `${MainAPIendpoint}/organization/delete/${organizationid}/`
+  );
   return organizationid;
 };
-
 
 // ------------------------------------------------------
 // Staff fetcher and mutation functions
@@ -93,9 +120,15 @@ export const fetchStaffs = async (url) => {
  * @returns {Promise<Staff>}
  */
 export const createStaff = async (data) => {
+  const formData = converttoformData(data);
   const response = await axiosInstance.post(
-    `/${MainAPIendpoint}/staff/add/${Organizationid}/`,
-    data
+    `${MainAPIendpoint}/staff/add/${Organizationid}/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = staffSchema.safeParse(response.data);
   if (!validation.success) {
@@ -110,9 +143,15 @@ export const createStaff = async (data) => {
  * @returns {Promise<Staff>}
  */
 export const updateStaff = async (data) => {
+  const formData = converttoformData(data);
   const response = await axiosInstance.put(
-    `/${MainAPIendpoint}/staff/update/${data.id}/`,
-    data
+    `${MainAPIendpoint}/staff/update/${data.id}/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = staffSchema.safeParse(response.data);
   if (!validation.success) {
@@ -153,15 +192,26 @@ export const fetchTestimonials = async (url) => {
  * @returns {Promise<Staff>}
  */
 export const createTestimonial = async (data) => {
-  const response = await axiosInstance.post(
-    `/${MainAPIendpoint}/testimonial/add/${Organizationid}/`,
-    data
-  );
-  const validation = testimonialSchema.safeParse(response.data);
-  if (!validation.success) {
-    console.log(validation.error.issues);
+  try {
+    const formData = converttoformData(data);
+    const response = await axiosInstance.post(
+      `${MainAPIendpoint}/testimonial/add/${Organizationid}/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    const validation = testimonialSchema.safeParse(response.data);
+    if (!validation.success) {
+      console.log(validation.error.issues);
+    }
+    return validation.data;
+  } catch (error) {
+    console.log(error.message);
+    throw new Error(`${error.message}`);
   }
-  return validation.data;
 };
 
 /**
@@ -170,15 +220,26 @@ export const createTestimonial = async (data) => {
  * @returns {Promise<Testimony>}
  */
 export const updateTestimonial = async (data) => {
-  const response = await axiosInstance.put(
-    `/${MainAPIendpoint}/testimonial/update/${Organizationid}/`,
-    data
-  );
-  const validation = testimonialSchema.safeParse(response.data);
-  if (!validation.success) {
-    console.log(validation.error.issues);
+  try {
+    const formData = converttoformData(data);
+    const response = await axiosInstance.put(
+      `${MainAPIendpoint}/testimonial/update/${data.id}/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    const validation = testimonialSchema.safeParse(response.data);
+    if (!validation.success) {
+      console.log(validation.error.issues);
+    }
+    return validation.data;
+  } catch (error) {
+    console.log(error.message);
+    throw new Error(`${error.message}`);
   }
-  return validation.data;
 };
 
 /**
@@ -187,11 +248,11 @@ export const updateTestimonial = async (data) => {
  * @returns {Promise<number>}
  */
 export const deleteTestimonial = async (testimonialid) => {
-  await axiosInstance.delete(`${MainAPIendpoint}/testimonial/delete/${testimonialid}/`);
+  await axiosInstance.delete(
+    `${MainAPIendpoint}/testimonial/delete/${testimonialid}/`
+  );
   return testimonialid;
 };
-
-
 
 // ------------------------------------------------------
 // Department fetcher and mutation functions
@@ -224,13 +285,18 @@ export const fetchDepartment = async (url) => {
 
 /**
  * @async
- * @param {Department} data
  * @returns {Promise<Department>}
  */
 export const createDepartment = async (data) => {
+  const deptformData = converttoformData(data,["organization","services","staff_in_charge"]);
   const response = await axiosInstance.post(
-    `/${MainAPIendpoint}/department/add/${Organizationid}/`,
-    data
+    `${MainAPIendpoint}/department/add/${Organizationid}/`,
+    deptformData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = departmentSchema.safeParse(response.data);
   if (!validation.success) {
@@ -241,13 +307,18 @@ export const createDepartment = async (data) => {
 
 /**
  * @async
- * @param {Department} data
  * @returns {Promise<Department>}
  */
 export const updateDepartment = async (data) => {
+  const deptformData = converttoformData(data,["organization","services","staff_in_charge"]);
   const response = await axiosInstance.put(
-    `/${MainAPIendpoint}/department/update/${data.id}/`,
-    data
+    `${MainAPIendpoint}/department/update/${data.id}/`,
+    deptformData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   const validation = departmentSchema.safeParse(response.data);
   if (!validation.success) {
@@ -262,11 +333,11 @@ export const updateDepartment = async (data) => {
  * @returns {Promise<number>}
  */
 export const deleteDepartment = async (departmentid) => {
-  await axiosInstance.delete(`${MainAPIendpoint}/department/delete/${departmentid}/`);
+  await axiosInstance.delete(
+    `${MainAPIendpoint}/department/delete/${departmentid}/`
+  );
   return departmentid;
 };
-
-
 
 // ------------------------------------------------------
 // Subscription fetcher and mutation functions
@@ -291,7 +362,7 @@ export const fetchSubscriptions = async (url) => {
  */
 export const createSubscription = async (data) => {
   const response = await axiosInstance.post(
-    `/${MainAPIendpoint}/subscription/add/${Organizationid}/`,
+    `${MainAPIendpoint}/subscription/add/${Organizationid}/`,
     data
   );
   const validation = subscriptionSchema.safeParse(response.data);
@@ -308,7 +379,7 @@ export const createSubscription = async (data) => {
  */
 export const updateSubscription = async (data) => {
   const response = await axiosInstance.put(
-    `/${MainAPIendpoint}/subscription/update/${data.id}/`,
+    `${MainAPIendpoint}/subscription/update/${data.id}/`,
     data
   );
   const validation = subscriptionSchema.safeParse(response.data);
@@ -324,8 +395,8 @@ export const updateSubscription = async (data) => {
  * @returns {Promise<number>}
  */
 export const deleteSubscription = async (subscriptionid) => {
-  await axiosInstance.delete(`${MainAPIendpoint}/subscription/delete/${subscriptionid}/`);
+  await axiosInstance.delete(
+    `${MainAPIendpoint}/subscription/delete/${subscriptionid}/`
+  );
   return subscriptionid;
 };
-
-

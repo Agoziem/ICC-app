@@ -42,7 +42,7 @@ export const staffSchema = z.object({
   img_name: z.string().optional().nullable(), // Image field
   role: z.string().max(100).optional().nullable(),
   facebooklink: z.string().max(100).optional().nullable(),
-  instagramlink: z.string().max(20).optional().nullable(),
+  instagramlink: z.string().max(100).optional().nullable(),
   twitterlink: z.string().max(100).optional().nullable(),
   linkedinlink: z.string().max(100).optional().nullable(),
   created_at:z.coerce.date(),
