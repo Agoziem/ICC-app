@@ -150,6 +150,19 @@ export const ArticleDefault = {
 };
 
 /**
+ * Artcle Comment Default
+ * @type {ArticleComment}
+ */
+export const ArticleCommentDefault = {
+  id: null,
+  user: {},
+  blog: null,
+  comment: "",
+  date: new Date(),
+  updated_at: new Date()
+};
+
+/**
  * Description placeholder
  *
  * @type {Video}
@@ -334,8 +347,6 @@ export const userDefault = {
   date_joined: new Date(),
 };
 
-
-
 /**
  * Default for Sub-Category
  *
@@ -345,4 +356,4 @@ export const SubCategorydefault = {
   id: null,
   category: null,
   subcategory: "",
-}
+};

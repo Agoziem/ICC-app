@@ -23,10 +23,11 @@ const ImageUploader = ({
     message: "",
   });
 
+  // update the state from the External data on Page load , and when the data changes
   useEffect(() => {
-    formData?.[imagekey] && setFileName(formData[imagename]);
-    formData?.[imageurlkey] && setImage(formData[imageurlkey]);
-  }, []);
+    if (formData?.[imagekey]) setFileName(formData[imagename]);
+    if (formData?.[imageurlkey]) setImage(formData[imageurlkey]);
+  }, [formData,imagekey,imagename,imageurlkey]);
 
   const handleFileChange = ({ target: { files } }) => {
     const file = files[0];
@@ -44,11 +45,11 @@ const ImageUploader = ({
         }, 3000);
         return;
       }
-      setFileName(file.name);
-      setImage(URL.createObjectURL(file));
       setFormData({
         ...formData,
         [imagekey]: file,
+        [imagename]: file.name,
+        [imageurlkey]: URL.createObjectURL(file)
       });
     }
   };
@@ -59,6 +60,8 @@ const ImageUploader = ({
     setFormData({
       ...formData,
       [imagekey]: null,
+      [imagename]: null,
+      [imageurlkey]: null
     });
     if (fileInput.current) {
       fileInput.current.value = null; // Reset file input value

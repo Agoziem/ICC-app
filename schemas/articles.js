@@ -86,7 +86,7 @@ export const commentSchema = z.object({
   blog: z.number(), // ForeignKey to blog, assuming a blog ID
   comment: z.string(),
   date: z.coerce.date(), // auto_now_add so it won't be manually added
-  updated_at: z.date().optional(), // auto_now so optional
+  updated_at: z.coerce.date().optional(), // auto_now so optional
 });
 
 export const commentArraySchema = z.array(commentSchema);

@@ -15,10 +15,13 @@ const ProfileForm = ({ setAlert, setEditMode }) => {
         ...userDefault,
         ...session.user,
         Sex: session.user.sex,
-        avatar_url: session.user.image
       });
     }
   }, [session]);
+
+  console.log(formData)
+
+  // /
 
   const handleSubmit = async (e) => {
     e.preventDefault();

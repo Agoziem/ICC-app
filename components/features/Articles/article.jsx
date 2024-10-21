@@ -41,10 +41,8 @@ const Article = ({ params }) => {
   // ------------------------------------------------------------
   // fetch article by slug
   // ------------------------------------------------------------
-  const { data: article, mutate:articlemutate } = useSWR(
-    slug
-      ? `${articleAPIendpoint}/blogbyslug/${slug}`
-      : null,
+  const { data: article, mutate: articlemutate } = useSWR(
+    slug ? `${articleAPIendpoint}/blogbyslug/${slug}` : null,
     fetchArticlebySlug
   );
 
@@ -55,14 +53,14 @@ const Article = ({ params }) => {
     article?.category.id
       ? `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${article?.category.category}&page=${page}&page_size=${pageSize}`
       : null,
-      fetchArticles
+    fetchArticles
   );
 
   // ------------------------------------------------------------
   // Filter the main article from the other articles
   // ------------------------------------------------------------
   useEffect(() => {
-    if (!articles) return
+    if (!articles) return;
     if (articles.results.length > 0) {
       setOtherArticles(
         articles.results.filter((blog) => blog.id !== article?.id)
@@ -73,7 +71,11 @@ const Article = ({ params }) => {
   // ------------------------------------------------------------
   // Fetch comments and paginate them
   // ------------------------------------------------------------
-  const { data: comments, mutate: commentmutate } = useSWR(
+  const {
+    data: comments,
+    mutate: commentmutate,
+    isLoading: loadingComments,
+  } = useSWR(
     article?.id
       ? `${articleAPIendpoint}/getcomments/${article?.id}?page=${commentpage}&page_size=${pageSize}`
       : null,
@@ -106,7 +108,6 @@ const Article = ({ params }) => {
       incrementViews();
     }
   }, []);
-  
 
   return (
     <>
@@ -216,12 +217,13 @@ const Article = ({ params }) => {
                         : "bi-heart-fill text-primary"
                     } me-1`}
                   ></i>
-                  {article.likes?.length} like{article.likes?.length > 1 && "s"}
+                  {article?.likes ? article.likes.length : "0"} like
+                  {article.likes?.length > 1 && "s"}
                 </span>
                 <span className="me-3">
                   <i className="bi bi-chat-fill me-1"></i>
-                  {comments ? comments.results.length : "0"} comment
-                  {comments?.results.length > 1 && "s"}
+                  {comments ? comments.count : "0"} comment
+                  {comments?.count > 1 && "s"}
                 </span>
               </div>
 
@@ -229,8 +231,8 @@ const Article = ({ params }) => {
                 <ArticleCommentsForm
                   article={article}
                   comments={comments}
-                  mutate={articlemutate}
-                  />
+                  mutate={commentmutate}
+                />
                 <ArticleLikes
                   article={article}
                   setToastMessage={setToastMessage}
@@ -250,7 +252,9 @@ const Article = ({ params }) => {
             {comments && (
               <div className="comments mt-5">
                 <hr />
-                <h5 className="my-4">Comments</h5>
+                <h5 className="my-4">
+                  {comments?.count} Comment{comments?.count > 1 ? "s" : ""}
+                </h5>
                 <div>
                   {comments.count > 0 ? (
                     <ArticleComments
@@ -271,6 +275,16 @@ const Article = ({ params }) => {
                 handlePageChange={handleCommentPageChange}
               />
             )}
+
+            {!loadingComments &&
+              comments &&
+              Math.ceil(comments.count / parseInt(pageSize)) > 1 && (
+                <Pagination
+                  currentPage={commentpage}
+                  totalPages={Math.ceil(comments.count / parseInt(pageSize))}
+                  handlePageChange={handleCommentPageChange}
+                />
+              )}
           </div>
         </section>
       )}

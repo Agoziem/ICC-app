@@ -16,13 +16,12 @@ const ArticleLikes = ({ article, setToastMessage, mutate }) => {
   useEffect(() => {
     if (article && article.likes) {
       setLikes(article.likes);
-      console.log(article.likes)
     }
   }, [article]);
 
   const handleLikeToggle = async () => {
     const userId = parseInt(session?.user?.id);
-    const isLiked = likes?.includes(userId);
+    const isLiked = likes.includes(userId);
     setToastMessage({
       title: isLiked ? "Unlike" : "Like",
       message: isLiked ? "You unliked the post" : "You liked the post",

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import Modal from "../../custom/Modal/modal";
 import useSWR from "swr";
-import { deleteArticle, updateArticle } from "@/data/articles/fetcher";
+import { deleteArticle, deleteComment, updateArticle, updateComment } from "@/data/articles/fetcher";
+import { ArticleCommentDefault } from "@/constants";
 
 /**
  * Article Comments
@@ -16,12 +17,14 @@ const ArticleComments = ({
   const [showModal, setShowModal] = useState(false);
   const [deletemode, setDeleteMode] = useState(false);
   /**  @type {[ArticleComment,(value: ArticleComment) => void]} */
-  const [commenttoedit, setCommenttoEdit] = useState(null);
+  const [commenttoedit, setCommenttoEdit] = useState(ArticleCommentDefault);
   const { data: session } = useSession();
+
+
   const closeModal = () => {
     setShowModal(false);
     setDeleteMode(false);
-    setCommenttoEdit(null);
+    setCommenttoEdit(ArticleCommentDefault);
   };
 
   /**  @param {ArticleComment} comment */
@@ -31,7 +34,7 @@ const ArticleComments = ({
   };
 
   /**  @param {ArticleComment} comment */
-  const deleteComment = (comment) => {
+  const deletecomment = (comment) => {
     setCommenttoEdit(comment);
     setDeleteMode(true);
     setShowModal(true);
@@ -43,7 +46,14 @@ const ArticleComments = ({
 
   const handledelete = async () => {
     try {
-      await mutate(deleteArticle(commenttoedit.id), {
+      const deletedid = await deleteComment(commenttoedit.id)
+      await mutate((Comments) => {
+        const otherComments = Comments?.results.filter(
+          (comment) => comment.id !== deletedid
+        );
+        Comments.results = otherComments;
+        return { ...Comments };
+      }, {
         populateCache: true,
       });
     } catch (error) {
@@ -56,7 +66,20 @@ const ArticleComments = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await mutate(updateArticle(commenttoedit), {
+      const updatedComment = await updateComment(commenttoedit)
+      await mutate((Comments) => {
+        const otherComments = (Comments?.results || []).map((o) =>
+          o.id === updatedComment.id ? updatedComment : o
+        );
+        return {
+          ...Comments,
+          results: otherComments.sort(
+            (a, b) =>
+              new Date(b.updated_at).getTime() -
+              new Date(a.updated_at).getTime()
+          ),
+        };
+      }, {
         populateCache: true,
       });
     } catch (error) {
@@ -68,8 +91,7 @@ const ArticleComments = ({
 
   return (
     <div>
-      {comments &&
-        comments.slice(0, 5).map((comment, index) => (
+      {comments && comments.map((comment, index) => (
           <div key={comment.id} className="mb-4">
             <div className="d-flex">
               <div>
@@ -118,11 +140,11 @@ const ArticleComments = ({
                       <small>edit</small>
                     </span>
                   )}
-                  {parseInt(session?.user?.id) === comment.user && (
+                  {parseInt(session?.user?.id) === comment.user.id && (
                     <span
                       className="fw-bold text-danger"
                       style={{ cursor: "pointer" }}
-                      onClick={() => deleteComment(comment)}
+                      onClick={() => deletecomment(comment)}
                     >
                       <small>delete</small>
                     </span>

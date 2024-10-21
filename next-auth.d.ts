@@ -9,7 +9,7 @@ export type ExtendedUser = {
   email: string;
   image: string | null; // If avatar image URL or path
   is_staff: boolean;
-  date_joined: string; // Can be Date or string format
+  date_joined: Date; // Can be Date or string format
   isOauth: boolean;
   emailIsVerified: boolean;
   twofactorIsEnabled: boolean;
