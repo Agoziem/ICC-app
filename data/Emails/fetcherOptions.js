@@ -26,13 +26,18 @@ export const addMessageResponseOptions = (newResponse) => {
 };
 
 /**
- * add Email Message Configuration
- * @param {EmailMessage} newSentEmail
+ * Add Email Message Configuration
+ * @param {EmailMessage | null} newSentEmail - New email to add or null if no subscription exists.
  */
 export const createEmailOptions = (newSentEmail) => {
   return {
-    /** @param {EmailMessageArray} sentemails */
+    /** 
+     * Handle optimistic updates to reflect changes immediately in the UI.
+     * @param {EmailMessageArray} sentemails 
+     */
     optimisticData: (sentemails) => {
+      if (!newSentEmail) return sentemails || []; // No changes if newSentEmail is null
+
       const updatedSentEmails = sentemails ? [...sentemails] : [];
       return [newSentEmail, ...updatedSentEmails];
     },
@@ -40,21 +45,28 @@ export const createEmailOptions = (newSentEmail) => {
     rollbackOnError: true,
 
     /**
-     * @param {EmailMessageArray} responses
-     * @param {EmailMessage} addedResponse
+     * Update the cache with the latest data or handle scenarios where no email was created.
+     * @param {EmailMessage | null} addedResponse - New response or null.
+     * @param {EmailMessageArray} responses - Existing cached emails.
+     * @returns {EmailMessageArray} Updated email list.
      */
     populateCache: (addedResponse, responses) => {
+      if (!addedResponse) return responses; // No change if the response is null
+
       const emailExists = responses.some(
         (email) => email.id === addedResponse.id
       );
+
       if (emailExists) {
         return responses.map((email) =>
           email.id === addedResponse.id ? addedResponse : email
         );
       }
-      return [addedResponse, ...responses];
+
+      return [{ ...addedResponse, status: "sent" }, ...responses];
     },
 
     revalidate: false,
   };
 };
+

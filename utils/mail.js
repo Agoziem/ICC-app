@@ -84,7 +84,7 @@ export const sendReplyEmail = async (response) => {
 };
 
 // send emails to multiple recipients
-export const sendMultipleEmails = async (email, message, subject, group) => {
+export const sendMultipleEmails = async (email, message, subject, group = "Admin") => {
   try {
     await resend.emails.send({
       from: `ICCapp <${group}@innovationscybercafe.com>`,

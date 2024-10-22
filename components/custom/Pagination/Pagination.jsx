@@ -7,6 +7,16 @@ import { TiArrowBack, TiArrowForward } from "react-icons/ti";
 const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
   return (
     <div className="d-flex align-items-center justify-content-center gap-3 mt-3 my-4">
+      <div className="text-primary">
+        Page
+        <span className="fw-bold mx-2">
+        {currentPage}
+        </span>
+        of
+        <span className="fw-bold mx-2">
+          {totalPages}
+        </span>
+      </div>
       {parseInt(currentPage) > 1 && (
         <div
           className="d-inline-flex align-items-center justify-content-center py-2"

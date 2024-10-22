@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import Alert from "../../custom/Alert/Alert";
-import { createTemplateMessage, WATemplatescachekey } from "@/data/whatsappAPI/fetcher";
+import {
+  createTemplateMessage,
+  WATemplatescachekey,
+} from "@/data/whatsappAPI/fetcher";
 import { createTemplateMessageOptions } from "@/data/whatsappAPI/fetcherOptions";
 
 const WATemplateForm = () => {
@@ -57,7 +60,7 @@ const WATemplateForm = () => {
         status: "pending",
         created_at: new Date().toISOString(),
       };
-      mutate(
+      await mutate(
         createTemplateMessage(data),
         createTemplateMessageOptions(templateData)
       );
@@ -106,7 +109,7 @@ const WATemplateForm = () => {
           <input
             id="title"
             type="text"
-            placeholder="Enter the email subject"
+            placeholder="Enter the Template title"
             className="form-control w-full"
             {...register("title")}
           />
@@ -126,6 +129,7 @@ const WATemplateForm = () => {
             {...register("template")}
           >
             <option value="">Select a Template type</option>
+            <option value="hello_world">Hello World</option>
             <option value="textonly">Text Only</option>
             <option value="textwithimage">Text with Image</option>
             <option value="textwithvideo">Text with Video</option>

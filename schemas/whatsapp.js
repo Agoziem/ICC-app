@@ -97,9 +97,10 @@ export const WAMessageWebsocketSchema = z.object({
 /**
  * Message types tuple
  *
- * @type {["textonly","textwithimage","textwithvideo","textwithaudio","textwithdocument","textwithCTA"]}
+ * @type {["hello_world","textonly","textwithimage","textwithvideo","textwithaudio","textwithdocument","textwithCTA"]}
  */
 export const TEMPLATE_NAMES = [
+  "hello_world",
   "textonly",
   "textwithimage",
   "textwithvideo",

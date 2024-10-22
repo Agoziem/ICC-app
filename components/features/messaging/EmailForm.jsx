@@ -57,7 +57,7 @@ const EmailForm = () => {
         created_at: new Date().toISOString(),
         status: "pending"
       };
-      mutate(createEmail(data), createEmailOptions(emailData));
+      await mutate(createEmail(data), createEmailOptions(emailData));
       // Send the Email to the subscribed emails later
       setSuccess("Email sent successfully!");
       reset();
@@ -71,6 +71,9 @@ const EmailForm = () => {
       }, 3000);
     }
   };
+
+
+
 
   return (
     <div
@@ -97,7 +100,7 @@ const EmailForm = () => {
             {...register("subject")}
           />
           {errors.subject && (
-            <p className="text-red-500 text-sm">{errors.subject.message}</p>
+            <p className="text-danger text-sm">{errors.subject.message}</p>
           )}
         </div>
 

@@ -83,6 +83,8 @@ export const subscriptionSchema = z.object({
   date_added: z.coerce.date(),
 });
 
+export const subscriptionArraySchema = z.array(subscriptionSchema)
+
 export const subscriptionsResponseSchema = z.object({
   count: z.number(),
   next: z.string().nullable(), // next can be null

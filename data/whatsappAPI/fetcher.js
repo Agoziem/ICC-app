@@ -10,7 +10,7 @@ import axios from "axios";
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}`,
 });
-
+const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 export const WhatsappAPIendpoint = "/whatsappAPI";
 export const WATemplatescachekey = "whatsapp_templates_data";
 
@@ -94,8 +94,22 @@ export const getSentTemplates = async () => {
  * @param {WATemplate} Template
  */
 export const createTemplateMessage = async (Template) => {
-  // Simulate delay (e.g., 2 seconds)
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  const contacts = await fetchWAContacts();
+
+  if (!contacts?.length) return;
+
+  await Promise.all(
+    contacts.map((contact) =>
+      sendTemplateMessage(
+        contact.wa_id,
+        Template.template,
+        "en_US",
+        Template.text,
+        Template.link
+      )
+    )
+  );
+
   const response = await axiosInstance.post(
     `${WhatsappAPIendpoint}/templates/`,
     Template
@@ -107,4 +121,28 @@ export const createTemplateMessage = async (Template) => {
     return null;
   }
   return validation.data;
+};
+
+// -----------------------------------------
+// get all the WA contacts
+// -----------------------------------------
+const sendTemplateMessage = async (
+  to_phone_number,
+  template_name,
+  language_code = "en_US",
+  text = "",
+  medialink = ""
+) => {
+  const data = {
+    to_phone_number,
+    template_name,
+    language_code,
+    text,
+    medialink,
+  };
+  const response = await axiosInstance.post(
+    `${WhatsappAPIendpoint}/send-template-message/`,
+    data
+  );
+  return response.status;
 };

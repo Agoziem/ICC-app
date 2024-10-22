@@ -6,6 +6,8 @@ import {
   emailResponseSchema,
   emailsResponseSchema,
 } from "@/schemas/emails";
+import { subscriptionArraySchema, subscriptionSchema } from "@/schemas/organizations";
+import { sendMultipleEmails } from "@/utils/mail";
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}`,
@@ -13,10 +15,12 @@ export const axiosInstance = axios.create({
 
 export const emailAPIendpoint = "/emailsapi";
 
+const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID
+
 // fetch all the emails
 export const fetchEmails = async () => {
   const response = await axiosInstance.get(
-    `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/`
+    `${emailAPIendpoint}/emails/${OrganizationID}/`
   );
   const validation = emailsResponseSchema.safeParse(response.data);
   if (!validation.success) {
@@ -91,18 +95,41 @@ export const getSentEmail = async (data) => {
 /**
  * create and send emails to the customers
  * @async
+ * @param {EmailMessage} data
  * @returns {Promise<EmailMessage>}
  */
 export const createEmail = async (data) => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  const allsubscriptions = await getallemails();
+  if (!allsubscriptions?.length) return;
+  
+  await Promise.all(
+    allsubscriptions.map((subscription) =>
+      sendMultipleEmails(subscription.email, data.body, data.subject)
+    )
+  );
+
   const response = await axiosInstance.post(
     `${emailAPIendpoint}/emails/createsendemails/`,
     data
   );
-  console.log(response.data);
   const validation = emailMessageSchema.safeParse(response.data);
+  if (!validation.success) {
+    console.error(validation.error.issues);
+    throw new Error("Email validation failed.");
+  }
+
+  return validation.data;
+};
+
+
+
+const getallemails = async () => {
+  const response = await axiosInstance.get(
+    `${emailAPIendpoint}/subscriptions/${OrganizationID}/`
+  );
+  const validation = subscriptionArraySchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);
   }
   return validation.data;
-};
+}

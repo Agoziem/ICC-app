@@ -3,10 +3,7 @@ import { useSearchParams } from "next/navigation";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import ServicesPlaceholder from "@/components/custom/ImagePlaceholders/ServicesPlaceholder";
 import useSWR from "swr";
-import {
-  fetchService,
-  servicesAPIendpoint,
-} from "@/data/services/fetcher";
+import { fetchService, servicesAPIendpoint } from "@/data/services/fetcher";
 import { PulseLoader } from "react-spinners";
 
 const ServicePage = () => {
@@ -21,20 +18,20 @@ const ServicePage = () => {
     servicetoken
       ? `${servicesAPIendpoint}/service_by_token/${servicetoken}/`
       : null,
-      fetchService
+    fetchService
   );
 
   return (
     <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Service" />
-      
+
       {loadingService && !error && (
         <div className="d-flex justify-content-center">
           <PulseLoader size={9} color={"#12000d"} loading={true} />
         </div>
       )}
 
-      {!loadingService && service &&  (
+      {!loadingService && service && (
         <div>
           <h3 className="text-center">Service Flow</h3>
           <div
@@ -43,7 +40,7 @@ const ServicePage = () => {
               maxWidth: "650px",
             }}
           >
-            <div className="d-flex flex-column justify-content-center">
+            <div className="d-flex flex-column justify-content-center gap-3">
               <div className="mx-auto">
                 {service?.preview ? (
                   <img
@@ -62,16 +59,18 @@ const ServicePage = () => {
                   />
                 )}
               </div>
-              <h4>{service?.name}</h4>
-              <p
-                className="mb-1"
-                style={{
-                  color: "var(--bgDarkerColor)",
-                }}
-              >
-                {service?.category.category} Service
-              </p>
-              <hr />
+              <div>
+                <h5>{service?.name}</h5>
+                <p
+                  className="mb-1"
+                  style={{
+                    color: "var(--bgDarkerColor)",
+                  }}
+                >
+                  {service?.category.category} Service
+                </p>
+                <hr />
+              </div>
               <div style={{ width: "100%" }}>
                 <div
                   dangerouslySetInnerHTML={{

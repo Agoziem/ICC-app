@@ -33,7 +33,7 @@ export const sendWAMessageOptions = (WAmessage) => {
 export const createTemplateMessageOptions = (WATemplateMessage) => {
   return {
     /** @param {WATemplateArray} responses */
-    optimisticData: (responses) => [WATemplateMessage,...(responses || [])],
+    optimisticData: (responses) => [WATemplateMessage, ...(responses || [])],
     rollbackOnError: true,
     /**
      * @param {WATemplateArray} responses
@@ -48,7 +48,7 @@ export const createTemplateMessageOptions = (WATemplateMessage) => {
           message.id === addedResponse.id ? addedResponse : message
         );
       }
-      return [addedResponse, ...responses];
+      return [{ ...addedResponse, status: "sent" }, ...responses];
     },
     revalidate: false,
   };

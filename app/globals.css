@@ -408,7 +408,7 @@
 
 .body .btn-accent-secondary:hover {
   background: var(--secondary);
-  color: var(--secondary-300);
+  color: var(--white);
 }
 
 .body .btn-accent-danger {
