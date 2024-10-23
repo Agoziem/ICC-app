@@ -45,7 +45,7 @@ const TestimonialForm = ({
             id="name"
             placeholder="Name"
             name="name"
-            value={testimonial.name}
+            value={testimonial?.name}
             onChange={handleChange}
             required
           />
@@ -58,7 +58,7 @@ const TestimonialForm = ({
             id="role"
             placeholder="student or Aspirant etc"
             name="role"
-            value={testimonial.role}
+            value={testimonial?.role}
             onChange={handleChange}
             required
           />
@@ -70,7 +70,7 @@ const TestimonialForm = ({
             id="content"
             placeholder="Content"
             name="content"
-            value={testimonial.content}
+            value={testimonial?.content}
             onChange={handleChange}
             required
           ></textarea>
@@ -85,7 +85,7 @@ const TestimonialForm = ({
             name="rating"
             max={5}
             min={1}
-            value={testimonial.rating}
+            value={testimonial?.rating}
             onChange={handleChange}
             required
           />

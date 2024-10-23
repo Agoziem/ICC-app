@@ -137,7 +137,7 @@ const ImageUploader = ({
         <p className="font-medium text-sm mt-2 mx-3 mb-2 text-break">
           {fileName}
         </p>
-        {formData[imagekey] && (
+        {formData?.[imagekey] && (
           <FaTimes
             className="h-5 w-6 text-danger ms-2"
             onClick={handleRemoveFile}

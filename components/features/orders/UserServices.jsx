@@ -64,6 +64,33 @@ const UserServices = () => {
   }, [services, searchQuery]);
 
 
+  // Setting the Correct Service Status for the user on the card
+  /** * @param {Service} service */
+  const ServiceStatus = (service) => {
+    if (
+      service.userIDs_whose_services_is_in_progress.includes(session?.user.id)
+    ) {
+      return (
+        <div className="badge bg-secondary-light text-secondary py-2">
+          Progress
+        </div>
+      );
+    }
+
+    if (
+      service.userIDs_whose_services_have_been_completed.includes(
+        session?.user.id
+      )
+    ) {
+      return (
+        <div className="badge bg-success-light text-success py-2">
+          Completed
+        </div>
+      );
+    }
+    return;
+  };
+
   return (
     <div>
       <div className="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between ">
@@ -88,6 +115,7 @@ const UserServices = () => {
           filteredService?.map((service) => (
             <div key={service.id} className="col-12 col-md-4">
               <div className="card p-4">
+                {/* the Body Section */}
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="me-3">
                     {service.preview ? (
@@ -104,7 +132,13 @@ const UserServices = () => {
                     )}
                   </div>
                   <div className="flex-fill">
-                    <h6 className="text-capitalize">{service.name}</h6>
+                    <h6 className="text-capitalize mb-1">{service.name}</h6>
+                    <p
+                      className="small mb-1"
+                      style={{ color: "var(--bgDarkerColor)" }}
+                    >
+                      {service.category.category} Service
+                    </p>
                     <p className="text-capitalize mb-1">
                       {service.description.length > 80 ? (
                         <span>{service.description.substring(0, 80)}... </span>
@@ -112,26 +146,30 @@ const UserServices = () => {
                         service.description
                       )}
                     </p>
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                      <p className="small mb-1">
-                        {service.category.category} Service
-                      </p>
+
+                    {/* button Section and badge */}
+                    <div className="d-flex justify-content-end align-items-center mt-3 gap-2">
+                      <div>
+                        {(service && ServiceStatus(service)) || (
+                          <div className="badge bg-primary-light text-primary py-2">
+                            Purchased
+                          </div>
+                        )}
+                      </div>
                       <div
-                        className="badge bg-primary-light text-primary py-2 px-2"
+                        className="badge bg-primary text-primary py-2 px-2"
                         style={{ cursor: "pointer" }}
                       >
                         {
                           // check if the service is already completed for the user
                           service.userIDs_whose_services_have_been_completed.includes(
                             parseInt(session.user.id)
-                          ) ? (
-                            <span>Service Completed</span>
-                          ) : (
+                          ) ? null : (
                             <Link
                               href={`/dashboard/my-orders/service?servicetoken=${service.service_token}`}
-                              className="text-primary"
+                              className="text-white"
                             >
-                              View Service Flow
+                              View Service
                             </Link>
                           )
                         }

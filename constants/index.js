@@ -208,6 +208,7 @@ export const serviceDefault = {
   userIDs_that_bought_this_service: [],
   userIDs_whose_services_is_in_progress: [],
   userIDs_whose_services_have_been_completed: [],
+  details_form_link: null,
   created_at: new Date(),
   updated_at: new Date(),
 };

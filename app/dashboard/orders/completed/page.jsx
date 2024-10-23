@@ -121,10 +121,12 @@ const OrderCompleted = () => {
       className="d-flex justify-content-center align-items-center py-5"
       style={{ minHeight: "100vh" }}
     >
+      {/* Loading Spinner */}
       {!success && !error ? (
         <BeatLoader color="#12000d" loading={loading} />
       ) : null}
 
+      {/* Order Completed Card */}
       {success && order ? (
         <div
           className="card text-center"
@@ -268,6 +270,16 @@ const OrderCompleted = () => {
                 </div>
               )}
             </div>
+
+            {/* Date Ordered */}
+            <div className="mt-2">
+              <p>
+                <span className="fw-bold">Date of Payment:</span>{" "}
+                {order.last_updated_date
+                  ? new Date(order.last_updated_date).toLocaleDateString()
+                  : "N/A"}
+              </p>
+            </div>
           </div>
 
           {/* Download buttons */}
@@ -286,7 +298,7 @@ const OrderCompleted = () => {
                 fontSize: "15px",
                 borderRadius: "25px",
               }}
-              disabled = {loadingPdf}
+              disabled={loadingPdf}
               onClick={savePdf}
             >
               {loadingPdf ? (
@@ -301,6 +313,7 @@ const OrderCompleted = () => {
         </div>
       ) : null}
 
+      {/* Error Card */}
       {error && (
         <div className="card p-4">
           <div className="alert alert-danger mt-4">{error}</div>
