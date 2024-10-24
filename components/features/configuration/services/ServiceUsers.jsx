@@ -34,9 +34,9 @@ const ServiceUsersTable = ({
   // -----------------------------------------
   const getUserStatus = (user) => {
     const { id } = user;
-    if (service.userIDs_whose_services_is_in_progress.includes(id))
+    if (service?.userIDs_whose_services_is_in_progress.includes(id))
       return <Badge text="in Progress ..." className="secondary" />;
-    if (service.userIDs_whose_services_have_been_completed.includes(id))
+    if (service?.userIDs_whose_services_have_been_completed.includes(id))
       return <Badge text="Completed" className="success" />;
     return <Badge text="Purchased" className="primary" />;
   };
@@ -123,7 +123,7 @@ const ServiceUsersTable = ({
   const handleUserServiceUpdate = (user) => {
     const userId = user.id;
     const isInProgress =
-      service.userIDs_whose_services_is_in_progress.includes(userId);
+      service?.userIDs_whose_services_is_in_progress.includes(userId);
     const endpoint = `${servicesAPIendpoint}/services/${
       service?.id
     }/${userId}/${isInProgress ? "completed" : "in-progress"}/`;
@@ -191,12 +191,12 @@ const UserRow = ({
   currentCategory,
 }) => (
   <tr>
-    <td>{user.id}</td>
+    <td>{user?.id}</td>
     <td>
-      <UserProfile avatar={user.avatar_url} username={user.username} />
+      <UserProfile avatar={user?.avatar_url} username={user?.username} />
     </td>
-    <td>{user.user_count}</td>
-    <td>{new Date(user.date_joined).toLocaleDateString()}</td>
+    <td>{user?.user_count}</td>
+    <td>{new Date(user?.date_joined).toLocaleDateString()}</td>
     <td>{getUserStatus(user)}</td>
     <td>
       {isPending ? (
@@ -261,9 +261,9 @@ const UserAction = ({ user, service, currentCategory, handleUpdate }) => (
       type="checkbox"
       id={`user-checkbox-${user.id}`}
       disabled={
-        (service.userIDs_whose_services_is_in_progress.includes(user.id) &&
+        (service?.userIDs_whose_services_is_in_progress.includes(user.id) &&
           currentCategory === "userIDs_that_bought_this_service") ||
-        service.userIDs_whose_services_have_been_completed.includes(user.id)
+        service?.userIDs_whose_services_have_been_completed.includes(user.id)
       }
       onClick={handleUpdate}
       style={{ cursor: "pointer" }}
