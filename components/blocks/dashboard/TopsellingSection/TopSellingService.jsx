@@ -2,7 +2,6 @@ import { useCart } from "@/data/carts/Cartcontext";
 import React from "react";
 import { useSession } from "next-auth/react";
 
-
 /**
  * @param {{ item: Service; }} param0
  */
@@ -33,6 +32,9 @@ function TopSellingService({ item }) {
       <td>&#8358;{parseFloat(item.price)}</td>
       <td>
         {item.userIDs_that_bought_this_service.includes(
+          parseInt(session?.user?.id)
+        ) &&
+        !item.userIDs_whose_services_have_been_completed.includes(
           parseInt(session?.user?.id)
         ) ? (
           <span className="badge bg-primary-light text-primary p-2">

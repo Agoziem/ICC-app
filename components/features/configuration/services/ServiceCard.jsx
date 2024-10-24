@@ -1,6 +1,7 @@
 import React from "react";
 import ServicesPlaceholder from "@/components/custom/ImagePlaceholders/ServicesPlaceholder";
 import ApplicationPlaceholder from "@/components/custom/ImagePlaceholders/ApplicationPlaceholder";
+import Link from "next/link";
 
 /**
  * @param {{ item: Service; tab: any; onEdit: any; onDelete: any; openModal: any; }} param0
@@ -40,18 +41,25 @@ const ServiceCard = ({ item, tab, onEdit, onDelete, openModal }) => (
             {item.description.length > 80 ? (
               <span className="text-primary">
                 {item.description.substring(0, 80)}...{" "}
-                <span
+                {/* <span
                   className="text-secondary fw-bold"
                   style={{ cursor: "pointer" }}
                   onClick={() => openModal(item)}
                 >
                   view more
-                </span>
+                </span> */}
               </span>
             ) : (
               item.description
             )}
           </p>
+
+          {/* Manage Service */}
+          <div>
+            <Link href={`services/${item.id}`} className="text-secondary fw-bold">
+              manage service
+            </Link>
+          </div>
 
           <div className="d-flex align-items-center justify-content-between mt-3">
             <span className="fw-bold text-primary">

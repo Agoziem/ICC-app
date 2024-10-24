@@ -160,3 +160,20 @@ export const videosResponseSchema = z.object({
   previous: z.string().nullable(),
   results: z.array(videoSchema),
 });
+
+
+// Define the schema
+export const UserPurchaseSchema = z.object({
+  id: z.number().int().nonnegative(),
+  username: z.string().min(1, "Username is required"),
+  avatar_url: z.string().url().optional(),
+  user_count: z.number().int().min(1, "Purchase count must be at least 1"),
+  date_joined: z.coerce.date(),
+});
+
+export const UserPurchasedResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
+  results: z.array(UserPurchaseSchema),
+});

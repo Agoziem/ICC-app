@@ -193,6 +193,9 @@ const ServicesSection = () => {
                           </div>
                           {service.userIDs_that_bought_this_service.includes(
                             parseInt(session?.user?.id)
+                          ) &&
+                          !service.userIDs_whose_services_have_been_completed.includes(
+                            parseInt(session?.user?.id)
                           ) ? (
                             <div className="badge bg-primary-light text-primary p-2">
                               Purchased

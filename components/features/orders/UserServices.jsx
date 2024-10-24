@@ -72,7 +72,7 @@ const UserServices = () => {
     ) {
       return (
         <div className="badge bg-secondary-light text-secondary py-2">
-          Progress
+          in Progress
         </div>
       );
     }

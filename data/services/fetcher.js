@@ -1,4 +1,4 @@
-import { serviceSchema, servicesResponseSchema } from "@/schemas/items";
+import { serviceSchema, servicesResponseSchema, UserPurchasedResponseSchema } from "@/schemas/items";
 import { converttoformData } from "@/utils/formutils";
 import axios from "axios";
 
@@ -11,7 +11,7 @@ const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 export const servicesAPIendpoint = "/servicesapi";
 
 /**
- * fetch all the Notifications
+ * fetch all the Services
  * @async
  * @param {string} url
  */
@@ -106,6 +106,21 @@ export const deleteService = async (id) => {
   await axiosInstance.delete(`${servicesAPIendpoint}/delete_service/${id}/`);
   return id;
 };
+
+// fetch all users who have bougth the Product
+export const fetchServiceUsers = async (url) => {
+  try {
+    const response = await axiosInstance.get(url)
+    const validation = UserPurchasedResponseSchema.safeParse(response.data);
+    if (!validation.success) {
+      console.log(validation.error.issues);
+    }
+    return validation.data
+  } catch (error) {
+    console.log(error);
+    throw new Error(`${error.message}`)
+  }
+}
 
 /**
  * Add a user to the users whose Service is in Progress or Completed

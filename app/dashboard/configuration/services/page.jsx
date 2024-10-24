@@ -1,6 +1,5 @@
 import PageTitle from '@/components/custom/PageTitle/PageTitle'
 import Services from '@/components/features/configuration/services/Services'
-import React from 'react'
 
 const ServicesConfigPage = () => {
   return (

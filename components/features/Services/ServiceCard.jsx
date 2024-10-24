@@ -1,31 +1,10 @@
-import React from "react";
 import ServicesPlaceholder from "@/components/custom/ImagePlaceholders/ServicesPlaceholder";
 import { useSession } from "next-auth/react";
-// {
-//   "id": 14,
-//   "organization": {
-//     "id": 1,
-//     "name": "Innovations Cybercafe"
-//   },
-//   "preview": null,
-//   "img_url": null,
-//   "img_name": null,
-//   "category": {
-//     "id": 1,
-//     "category": "Olevel",
-//     "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam excepturi culpa dolore possimus suscipit assumenda ad id officia consequuntur"
-//   },
-//   "subcategory": null,
-//   "name": "Testing2",
-//   "description": "Testing and one and two",
-//   "service_flow": "None",
-//   "price": "3000.00",
-//   "number_of_times_bought": 0,
-//   "created_at": "2024-07-02T07:56:30.761707Z",
-//   "updated_at": "2024-07-16T17:14:16.796299Z",
-//   "userIDs_that_bought_this_service": []
-// },
 
+/**
+ * @param {{ service: Service; openModal: any; cart: any; addToCart: any; removeFromCart: any; }} param0
+
+ */
 const ServiceCard = ({
   service,
   openModal,
@@ -80,6 +59,9 @@ const ServiceCard = ({
 
             <div className="me-2 me-md-3">
               {service.userIDs_that_bought_this_service.includes(
+                parseInt(session?.user?.id)
+              ) &&
+              !service.userIDs_whose_services_have_been_completed.includes(
                 parseInt(session?.user?.id)
               ) ? (
                 <span className="badge bg-primary-light text-primary p-2">
