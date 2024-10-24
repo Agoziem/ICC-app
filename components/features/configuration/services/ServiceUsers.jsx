@@ -229,7 +229,7 @@ const UserProfile = ({ avatar, username }) => (
       />
     ) : (
       <div
-        className="rounded-circle text-white d-flex justify-content-center align-items-center"
+        className="rounded-circle text-white d-flex justify-content-center align-items-center flex-shrink-0"
         style={{
           width: 30,
           height: 30,
