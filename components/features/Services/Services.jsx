@@ -90,7 +90,7 @@ const Services = () => {
       {/* Categories and Search Input */}
       <div className="mb-4 ps-2 ps-md-0">
         <h5 className="mb-3 fw-bold">Categories</h5>
-        <div className="d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between">
+        <div className="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
           {loadingCategories ? (
             <div className="d-flex gap-2 align-items-center">
               <div className="spinner-border spinner-border-sm text-primary" role="status">

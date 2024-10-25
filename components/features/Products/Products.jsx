@@ -108,19 +108,21 @@ const Products = () => {
     <div>
       <div className="d-flex justify-content-between align-items-center pe-3 mb-3 flex-wrap">
         <div>
-          <h4 className="me-2">{currentCategory} Products</h4>
+          <h3 className="me-2">{currentCategory} Products</h3>
           <p className="mb-0 text-primary">
             {products?.count} Product{products?.count > 1 ? "s" : ""}
           </p>
         </div>
         <CartButton />
       </div>
+      <hr />
+
 
       {/* categories */}
       <div className="mb-4  ps-2 ps-md-0">
         {/* Categories */}
         <h5 className="mb-3 fw-bold">categories</h5>
-        <div className="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between">
+        <div className="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
           {loadingCategories && !categoryError ? (
             <div className="d-flex gap-2 align-items-center">
               {/* spinner */}
@@ -148,6 +150,7 @@ const Products = () => {
           </div>
         </div>
       </div>
+     
 
       {/* Products Section */}
       {searchQuery && <h5>Search Results</h5>}

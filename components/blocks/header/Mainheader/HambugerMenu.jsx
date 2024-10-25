@@ -25,7 +25,7 @@ const Menu = ({ isOpen, toggle }) => {
       <ul className="pt-4 px-3">
         {navlist.map((item) => {
           return (
-            <li className="mx-3 py-2" key={item.id}>
+            <li className="mx-3" key={item.id} style={{padding:"10px 0px"}}>
               <Link
                 href={item.link}
                 className={activeLink === item.link ? "active" : ""}

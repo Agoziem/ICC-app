@@ -87,17 +87,19 @@ const Videos = () => {
     <div>
       <div className="d-flex justify-content-between align-items-center pe-3 mb-3 flex-wrap">
         <div>
-          <h4 className="mb-1 me-2">{currentCategory} Videos</h4>
+          <h3 className="mb-1 me-2">{currentCategory} Videos</h3>
           <p className="mb-0 text-primary">
             {videos?.count} Video{videos?.count > 1 ? "s" : ""}
           </p>
         </div>
         <CartButton />
       </div>
+      <hr />
+
 
       <div className="mb-4 ps-2 ps-md-0">
         <h5 className="mb-3 fw-bold">Categories</h5>
-        <div className="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between">
+        <div className="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
           {loadingCategories && !categoryError ? (
             <div className="d-flex gap-2 align-items-center">
               <div

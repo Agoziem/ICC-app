@@ -1,4 +1,4 @@
-import { PuffLoader } from "react-spinners";
+import { PuffLoader, PulseLoader } from "react-spinners";
 
 const Loading = () => {
   return (
@@ -6,7 +6,7 @@ const Loading = () => {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      <PuffLoader color="#27011d" />
+      <PulseLoader color={"#27011d"} loading={true} />
     </div>
   );
 };
