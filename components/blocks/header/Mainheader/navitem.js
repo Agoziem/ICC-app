@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const navlist = [
   {
@@ -14,7 +14,17 @@ const navlist = [
   {
     id: uuidv4(),
     title: "Services",
-    link: "/#services",
+    link: "/services",
+  },
+  {
+    id: uuidv4(),
+    title: "Products",
+    link: "/products",
+  },
+  {
+    id: uuidv4(),
+    title: "Videos",
+    link: "/videos",
   },
   {
     id: uuidv4(),
@@ -23,18 +33,13 @@ const navlist = [
   },
   {
     id: uuidv4(),
-    title: "Testimonials",
-    link: "/#testimonials",
+    title: "Articles",
+    link: "/articles",
   },
   {
     id: uuidv4(),
     title: "Contact us",
     link: "/#contact",
-  },
-  {
-    id: uuidv4(),
-    title: "Articles",
-    link: "/articles",
   },
 ];
 

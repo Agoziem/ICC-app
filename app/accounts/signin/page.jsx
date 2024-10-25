@@ -1,6 +1,6 @@
 "use client";
 import FormWrapper from "@/components/features/auth/FormWrapper";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
@@ -16,14 +16,13 @@ const SigninPage = () => {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || DEFAULT_LOGIN_REDIRECT;
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [formErrors, setFormErrors] = useState({});
-  const [loggingIn, setLoggingIn] = useState(false);
+  const [formErrors, setFormErrors] = useState(null);
+  const [loggingIn, startLoggingIn] = useTransition();
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     type: "success",
   });
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,50 +64,50 @@ const SigninPage = () => {
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
       const { email, password } = formData;
-      setLoggingIn(true);
-      setFormData({ email: "", password: "" });
+      startLoggingIn(async () => {
 
-      const user = await validateUser(email);
-      if (user?.emailIsVerified === true) {
-        try {
-          const result = await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
-          });
-          if (result?.error) {
-            throw new Error(result.error);
-          } else {
-            router.push(next);
-          }
-        } catch (error) {
-          setFormData({ email: "", password: "" });
-          setAlert(
-            {
+        // check whether the user email is verified
+        const user = await validateUser(email);
+        if (user?.emailIsVerified === true) {
+          try {
+            const result = await signIn("credentials", {
+              redirect: false,
+              email,
+              password,
+            });
+            if (result?.error) {
+              throw new Error(result.error);
+            } else {
+              router.push(next);
+            }
+          } catch (error) {
+            setAlert({
               show: true,
               message: "Invalid credentials, try again",
               type: "danger",
-            },
+            });
+          } finally {
+            setFormData({ email: "", password: "" });
             setTimeout(() => {
               setAlert({ show: false, message: "", type: "" });
-            }, 5000)
+            }, 5000);
+          }
+        } else {
+          // send Verification email
+          const res = await sendVerificationEmail(
+            email,
+            user.verificationToken
           );
-        }
-      } else {
-        const res = await sendVerificationEmail(email, user.verificationToken);
-        setAlert(
-          {
+          setAlert({
             show: true,
             message: res.message,
             type: res.success ? "success" : "danger",
-          },
+          });
           setTimeout(() => {
             setAlert({ show: false, message: "", type: "" });
-          }, 5000)
-        );
-      }
-
-      setLoggingIn(false);
+          }, 5000);
+        }
+      });
     }
   };
 
@@ -165,7 +164,7 @@ const SigninPage = () => {
                   <input
                     type="email"
                     className={`form-control ${
-                      formErrors.email ? "is-invalid" : ""
+                      formErrors?.email ? "is-invalid" : ""
                     }`}
                     value={formData.email}
                     onChange={handleChange}
@@ -173,9 +172,9 @@ const SigninPage = () => {
                     placeholder="Enter your email"
                     required
                   />
-                  {formErrors.email && (
+                  {formErrors?.email && (
                     <div className="text-danger invalid-feedback">
-                      {formErrors.email}
+                      {formErrors?.email}
                     </div>
                   )}
                 </div>
@@ -204,7 +203,10 @@ const SigninPage = () => {
                 <Link href="/" className="text-primary small me-2">
                   Home
                 </Link>
-              <Link href={"/accounts/reset-password"} className="text-secondary small">
+                <Link
+                  href={"/accounts/reset-password"}
+                  className="text-secondary small"
+                >
                   Forgot your password?
                 </Link>
               </div>

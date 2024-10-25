@@ -13,7 +13,7 @@ const PasswordInput = ({ name, value, onChange, placeholder, formErrors }) => {
         <input
           name={name}
           type={showPassword ? "text" : "password"}
-          className={`form-control ${formErrors[name] ? "is-invalid" : ""}`}
+          className={`form-control ${formErrors?.[name] ? "is-invalid" : ""}`}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
@@ -37,7 +37,7 @@ const PasswordInput = ({ name, value, onChange, placeholder, formErrors }) => {
         </div>
       </div>
 
-      {formErrors[name] && (
+      {formErrors?.[name] && (
         <div className="text-danger invalid-feedback">
           {formErrors[name]}
         </div>

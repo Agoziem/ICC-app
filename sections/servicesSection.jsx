@@ -131,61 +131,72 @@ const ServicesSection = () => {
       )}
 
       {categoryServices && categoryServices.length > 0 && (
-        <>
+        <div>
           {categoryServices.map((category, index) => (
             <React.Fragment key={index}>
-              <div className="p-3 py-5 p-md-5">
+              <div className="p-3 py-3 py-md-4 px-md-5">
                 <h4 className="mb-4">{category.category} Services</h4>
                 <ReusableSwiper noItemsMessage="No Service yet">
                   {category.services.map((service) => (
-                    <div key={service.id} className="card p-4" style={{}}>
-                      <div className="d-flex justify-content-center align-items-center">
-                        {service.preview ? (
-                          <img
-                            src={service.img_url}
-                            alt="services"
-                            width={80}
-                            height={80}
-                            className="me-3 rounded-circle object-fit-cover"
-                            style={{ objectPosition: "center" }}
-                          />
-                        ) : (
-                          <div
-                            className="me-3 d-flex justify-content-center align-items-center"
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              borderRadius: "50%",
-                              backgroundColor: "var(--bgDarkColor)",
-                              color: "var(--bgDarkerColor)",
-                            }}
-                          >
-                            <i className="bi bi-person-fill-gear h2 mb-0"></i>
-                          </div>
-                        )}
-                      </div>
-                      <div className="my-2 mt-3 text-center">
-                        <h6>
-                          {service.name.length > 30
-                            ? service.name.slice(0, 30) + "..."
-                            : service.name}
-                        </h6>
-                        <p className="text-primary mb-1">
-                          {service.description.length > 100 ? (
-                            <span>
-                              {service.description.substring(0, 100)}...{" "}
-                              <span
-                                className="text-secondary fw-bold"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => openModal(service)}
-                              >
-                                view more
-                              </span>
-                            </span>
+                    <div
+                      key={service.id}
+                      className="card p-4 d-flex flex-column justify-content-between"
+                      style={{ minHeight: "330px" }}
+                    >
+                      {/* Body Section */}
+                      <div>
+                        <div className="d-flex justify-content-center align-items-center">
+                          {service.preview ? (
+                            <img
+                              src={service.img_url}
+                              alt="services"
+                              width={80}
+                              height={80}
+                              className="me-3 rounded-circle object-fit-cover"
+                              style={{ objectPosition: "center" }}
+                            />
                           ) : (
-                            service.description
+                            <div
+                              className="me-3 d-flex justify-content-center align-items-center flex-shrink-0"
+                              style={{
+                                width: "80px",
+                                height: "80px",
+                                borderRadius: "50%",
+                                backgroundColor: "var(--bgDarkColor)",
+                                color: "var(--bgDarkerColor)",
+                              }}
+                            >
+                              <i className="bi bi-person-fill-gear h2 mb-0"></i>
+                            </div>
                           )}
-                        </p>
+                        </div>
+                        <div className="text-center mt-3">
+                          <h5>
+                            {service.name.length > 30
+                              ? service.name.slice(0, 30) + "..."
+                              : service.name}
+                          </h5>
+                          <p className="text-primary mb-1">
+                            {service.description.length > 100 ? (
+                              <span>
+                                {service.description.substring(0, 100)}...{" "}
+                                <span
+                                  className="text-secondary fw-bold"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => openModal(service)}
+                                >
+                                  view more
+                                </span>
+                              </span>
+                            ) : (
+                              service.description
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* footer Section */}
+                      <div className="my-2 mt-3 text-center">
                         <hr />
                         <div className="d-flex justify-content-between mt-4">
                           <div className="fw-bold text-primary me-2">
@@ -232,10 +243,16 @@ const ServicesSection = () => {
                   ))}
                 </ReusableSwiper>
               </div>
-              <hr className="text-primary" />
             </React.Fragment>
           ))}
-        </>
+          {/* Services button */}
+          <div className="d-flex justify-content-center mt-0 mb-5">
+            <Link href="/services" className="btn btn-primary px-5">
+              View Services
+            </Link>
+          </div>
+          <hr className="text-primary" />
+        </div>
       )}
     </section>
   );

@@ -78,13 +78,14 @@ const Services = () => {
     <div>
       <div className="d-flex align-items-center justify-content-between pe-3 mb-3 flex-wrap">
         <div>
-          <h4 className="me-2">{currentCategory} Services</h4>
+          <h3 className="me-2">{currentCategory} Services</h3>
           <p className="mb-0 text-primary">
             {services?.count} Service{services?.count > 1 ? "s" : ""} in Total
           </p>
         </div>
         <CartButton />
       </div>
+      <hr />
 
       {/* Categories and Search Input */}
       <div className="mb-4 ps-2 ps-md-0">

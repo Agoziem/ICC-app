@@ -1,4 +1,6 @@
 "use client";
+import BackButton from "@/components/custom/backbutton/BackButton";
+import NextBreadcrumb from "@/components/custom/Breadcrumb/breadcrumb";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext } from "react";
 
@@ -7,11 +9,16 @@ const PrivacyPage = () => {
   const { OrganizationData } = useContext(OrganizationContext);
   return (
     <div
-      className="mx-auto my-5 px-4 px-md-0 py-2"
+      className="mx-auto mt-4 mb-5 px-4 px-md-0 py-2"
       style={{
-        maxWidth: "800px",
+        maxWidth: "980px",
       }}
     >
+      <div className="mb-3">
+        <NextBreadcrumb capitalizeLinks />
+        <BackButton />
+      </div>
+
       {OrganizationData?.privacy_policy ? (
         <div style={{ width: "100%" }}>
           <div

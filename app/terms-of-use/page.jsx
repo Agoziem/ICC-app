@@ -1,4 +1,6 @@
 "use client";
+import BackButton from "@/components/custom/backbutton/BackButton";
+import NextBreadcrumb from "@/components/custom/Breadcrumb/breadcrumb";
 import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext } from "react";
 
@@ -7,13 +9,15 @@ const TermsPage = () => {
   const { OrganizationData } = useContext(OrganizationContext);
   return (
     <div
-      className="mx-auto mt-3 px-4 px-md-0"
+      className="mx-auto mt-4 mb-5 px-4 px-md-0 py-2"
       style={{
-        maxWidth: "900px",
+        maxWidth: "980px",
       }}
     >
-      <h4>Terms of Use</h4>
-      <hr />
+      <div className="mb-3">
+        <NextBreadcrumb capitalizeLinks />
+        <BackButton />
+      </div>
       {OrganizationData?.terms_of_use ? (
         <div style={{ width: "100%" }}>
           <div

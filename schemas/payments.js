@@ -20,6 +20,7 @@ export const orderSchema = z.object({
     .object({
       id: z.number().optional().nullable(),
       name: z.string().optional().nullable(),
+      email: z.string().email().optional().nullable(),
     })
     .optional()
     .nullable(),

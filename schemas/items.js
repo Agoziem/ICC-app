@@ -166,6 +166,7 @@ export const videosResponseSchema = z.object({
 export const UserPurchaseSchema = z.object({
   id: z.number().int().nonnegative(),
   username: z.string().min(1, "Username is required"),
+  email: z.string().email().optional().nullable(),
   avatar_url: z.string().url().optional().nullable(),
   user_count: z.number().int().min(1, "Purchase count must be at least 1"),
   date_joined: z.coerce.date(),

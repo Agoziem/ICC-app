@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { paymentsAPIendpoint, verifyPayment } from "@/data/payments/fetcher";
 import { BeatLoader } from "react-spinners";
+import { sendPaymentSuccessfulEmail } from "@/utils/mail";
 
 const OrderCompleted = () => {
   const router = useRouter();
@@ -71,6 +72,7 @@ const OrderCompleted = () => {
 
       setOrder(data);
       setSuccess("Your Payment has been Verified");
+      sendPaymentSuccessfulEmail(data)
     } catch (error) {
       console.error("Error verifying payment:", error); // Add this for debugging
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import FormWrapper from "@/components/features/auth/FormWrapper";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,8 +21,8 @@ const SignupPage = () => {
     password: "",
     confirmPassword: "",
   });
-  const [formErrors, setFormErrors] = useState({});
-  const [submitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState(null);
+  const [submitting, startSubmitting] = useTransition();
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -83,61 +83,61 @@ const SignupPage = () => {
     const errors = validate();
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
-      setIsSubmitting(true);
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/register/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
-        if (response.ok) {
-          setFormData({
-            firstname: "",
-            lastname: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          });
-          const data = await response.json();
-          const verificationres = await sendVerificationEmail(
-            data.user.email,
-            data.user.verificationToken
-          );
-          setAlert(
+      startSubmitting(async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/authapi/register/`,
             {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+          if (response.ok) {
+            setFormData({
+              organization_id: null,
+              firstname: "",
+              lastname: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            });
+            const data = await response.json();
+            const verificationres = await sendVerificationEmail(
+              data.user.email,
+              data.user.verificationToken
+            );
+            setAlert({
               show: true,
               message: verificationres.message,
               type: verificationres.success ? "success" : "danger",
-            },
-            setTimeout(() => {
-              setAlert({ show: false, message: "", type: "" });
-            }, 5000)
-          );
-        } else {
-          const message =
-            response.status === 400
-              ? "a user with that email already exists"
-              : "An error occurred, please try again";
-          setAlert(
-            {
+            });
+          } else {
+            const message =
+              response.status === 400
+                ? "a user with that email already exists"
+                : "An error occurred, please try again";
+            setAlert({
               show: true,
               message: message,
               type: "danger",
-            },
-            setTimeout(() => {
-              setAlert((prev) => ({ ...prev, show: false }));
-            }, 3000)
-          );
+            });
+          }
+        } catch (error) {
+          console.error("error:", error);
+          setAlert({
+            show: true,
+            message: "An unexcepted error just occurred, please try again",
+            type: "danger",
+          });
+        } finally {
+          setTimeout(() => {
+            setAlert((prev) => ({ ...prev, show: false }));
+          }, 3000);
         }
-      } catch (error) {
-        console.error("error:", error);
-      }
-      setIsSubmitting(false);
+      });
     }
   };
 
@@ -197,16 +197,16 @@ const SignupPage = () => {
                       type="text"
                       name="firstname"
                       className={`form-control  ${
-                        formErrors.firstname ? "is-invalid" : ""
+                        formErrors?.firstname ? "is-invalid" : ""
                       }`}
                       placeholder="firstname"
                       value={formData.firstname}
                       onChange={handleChange}
                       required
                     />
-                    {formErrors.firstname && (
+                    {formErrors?.firstname && (
                       <div className="text-danger invalid-feedback">
-                        {formErrors.firstname}
+                        {formErrors?.firstname}
                       </div>
                     )}
                   </div>
@@ -217,16 +217,16 @@ const SignupPage = () => {
                       type="text"
                       name="lastname"
                       className={`form-control ${
-                        formErrors.lastname ? "is-invalid" : ""
+                        formErrors?.lastname ? "is-invalid" : ""
                       }`}
                       placeholder="lastname"
                       value={formData.lastname}
                       onChange={handleChange}
                       required
                     />
-                    {formErrors.lastname && (
+                    {formErrors?.lastname && (
                       <div className="text-danger invalid-feedback">
-                        {formErrors.lastname}
+                        {formErrors?.lastname}
                       </div>
                     )}
                   </div>
@@ -238,16 +238,16 @@ const SignupPage = () => {
                     name="email"
                     type="email"
                     className={`form-control ${
-                      formErrors.email ? "is-invalid" : ""
+                      formErrors?.email ? "is-invalid" : ""
                     }`}
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
                     required
                   />
-                  {formErrors.email && (
+                  {formErrors?.email && (
                     <div className="text-danger invalid-feedback">
-                      {formErrors.email}
+                      {formErrors?.email}
                     </div>
                   )}
                 </div>
