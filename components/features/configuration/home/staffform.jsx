@@ -26,6 +26,7 @@ const StaffForm = ({ addStaff, addorupdate, staff, setStaff, closeModal }) => {
             id="first_name"
             value={staff.first_name}
             onChange={(e) => setStaff({ ...staff, first_name: e.target.value })}
+            required
           />
         </div>
         <div className="col-md">
@@ -38,6 +39,7 @@ const StaffForm = ({ addStaff, addorupdate, staff, setStaff, closeModal }) => {
             id="last_name"
             value={staff.last_name}
             onChange={(e) => setStaff({ ...staff, last_name: e.target.value })}
+            required
           />
         </div>
       </div>
@@ -109,6 +111,7 @@ const StaffForm = ({ addStaff, addorupdate, staff, setStaff, closeModal }) => {
             id="role"
             value={staff.role}
             onChange={(e) => setStaff({ ...staff, role: e.target.value })}
+            required
           />
         </div>
         <div className="col-md">
