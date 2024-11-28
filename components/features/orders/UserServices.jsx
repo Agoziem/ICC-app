@@ -63,7 +63,6 @@ const UserServices = () => {
     );
   }, [services, searchQuery]);
 
-
   // Setting the Correct Service Status for the user on the card
   /** * @param {Service} service */
   const ServiceStatus = (service) => {
@@ -79,7 +78,7 @@ const UserServices = () => {
 
     if (
       service.userIDs_whose_services_have_been_completed.includes(
-        session?.user.id
+        parseInt(session?.user.id)
       )
     ) {
       return (
@@ -88,7 +87,9 @@ const UserServices = () => {
         </div>
       );
     }
-    return;
+    return (
+      <div className="badge bg-primary-light text-primary py-2">Purchased</div>
+    );
   };
 
   return (
@@ -149,13 +150,7 @@ const UserServices = () => {
 
                     {/* button Section and badge */}
                     <div className="d-flex justify-content-end align-items-center mt-3 gap-2">
-                      <div>
-                        {(service && ServiceStatus(service)) || (
-                          <div className="badge bg-primary-light text-primary py-2">
-                            Purchased
-                          </div>
-                        )}
-                      </div>
+                      <div>{service && ServiceStatus(service)}</div>
                       <div
                         className="badge bg-primary text-primary py-2 px-2"
                         style={{ cursor: "pointer" }}

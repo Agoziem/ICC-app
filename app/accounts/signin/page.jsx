@@ -54,6 +54,8 @@ const SigninPage = () => {
         body: JSON.stringify({ email }),
       }
     );
+    
+    /** @type {User} */
     const data = await res.json();
     return data;
   };
@@ -75,6 +77,9 @@ const SigninPage = () => {
               email,
               password,
             });
+            if (user.date_joined === user.last_login) {
+                // 
+            }
             if (result?.error) {
               throw new Error(result.error);
             } else {

@@ -57,7 +57,7 @@ export const serviceSchema = z.object({
   userIDs_whose_services_have_been_completed: z.array(z.number()).optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  details_form_link: z.string().url().optional().nullable()
+  details_form_link: z.string().optional().nullable()
 });
 
 export const servicesResponseSchema = z.object({

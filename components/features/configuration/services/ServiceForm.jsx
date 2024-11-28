@@ -186,6 +186,22 @@ const ServiceForm = ({
           />
         </div>
 
+        {/* Service details Form */}
+        <div className="mb-3">
+          <label htmlFor="form_link" className="form-label">
+            Service details link
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="form_link"
+            name="details_form_link"
+            value={service.details_form_link}
+            onChange={(e) => setService({ ...service, details_form_link: e.target.value })}
+            required
+          />
+        </div>
+
         <button
           type="submit"
           className="btn btn-primary rounded px-5 mt-3"

@@ -55,7 +55,7 @@ const ServiceUsersTable = ({
       try {
         await addusertoProgressorCompleted(endpoint);
 
-        // update Service
+        // mutate the Service Cache
         await servicemutate(
           (prev) => {
             return {
@@ -77,7 +77,7 @@ const ServiceUsersTable = ({
           { populateCache: true }
         );
 
-        // Mutate user lists by removing the id
+        // mutate the Users Completed list Cache
         if (isInProgress) {
           await mutateCompleted(
             (prev) => ({
@@ -89,6 +89,7 @@ const ServiceUsersTable = ({
             { populateCache: true }
           );
 
+          // mutate the Users in Progress Cache list 
           await mutateProgress(
             (prev) => ({
               ...prev,
@@ -99,6 +100,7 @@ const ServiceUsersTable = ({
             { populateCache: true }
           );
         } else {
+          // mutate the Users in Progress Cache list 
           await mutateProgress(
             (prev) => ({
               ...prev,
