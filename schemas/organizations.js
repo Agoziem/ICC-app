@@ -34,9 +34,9 @@ export const staffSchema = z.object({
   first_name: z.string().max(100),
   last_name: z.string().max(100),
   other_names: z.string().max(100).optional().nullable(),
-  email: z.string().email(),
-  phone: z.string().max(20),
-  address: z.string(),
+  email: z.string().email().optional().nullable(),
+  phone: z.string().max(20).optional().nullable(),
+  address: z.string().optional().nullable(),
   img: z.string().optional().nullable(), // Image field
   img_url: z.string().url().optional().nullable(), // Image field
   img_name: z.string().optional().nullable(), // Image field
