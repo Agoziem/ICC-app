@@ -6,6 +6,7 @@ import BootstrapJs from "@/components/BootstrapJs";
 import { SessionProvider } from "next-auth/react";
 import OffCanvas from "@/components/custom/Offcanvas/OffCanvas";
 import ContextProviders from "@/data/ContextProviders";
+import Providers from "@/providers";
 
 export const metadata = {
   title: "ICC Online Center",
@@ -18,10 +19,12 @@ export default function RootLayout({ children, session }) {
     <html lang="en">
       <body className="body">
         <SessionProvider session={session}>
-          <ContextProviders>
-            {children}
-            <OffCanvas />
-          </ContextProviders>
+          <Providers>
+            <ContextProviders>
+              {children}
+              <OffCanvas />
+            </ContextProviders>
+          </Providers>
         </SessionProvider>
         <BootstrapJs />
       </body>
