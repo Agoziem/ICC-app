@@ -9,12 +9,13 @@ import { useSession } from "next-auth/react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useUserContext } from "@/data/payments/usercontextdata";
 import CartButton from "../../custom/Offcanvas/CartButton";
-import { useServiceContext } from "@/data/services/Servicescontext";
-import useSWR from "swr";
-import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
-import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
-import { fetchVideos, vidoesapiAPIendpoint } from "@/data/videos/fetcher";
 import { getOrderReport, paymentsAPIendpoint } from "@/data/payments/fetcher";
+import { useFetchServices } from "@/data/services/service.hook";
+import { servicesAPIendpoint } from "@/data/services/fetcher";
+import { productsAPIendpoint } from "@/data/product/fetcher";
+import { useFetchProducts } from "@/data/product/product.hook";
+import { useFetchVideos } from "@/data/videos/video.hook";
+import { useOrderReport } from "@/data/payments/orders.hook";
 
 const DashboardBody = () => {
   const { orders } = useAdminContext();
@@ -26,40 +27,28 @@ const DashboardBody = () => {
   const pageSize = 6
 
   // fetch Order Report (Customers)
-  const { data: orderReport } = useSWR(
-    `${paymentsAPIendpoint}/getorderreport/${Organizationid}`,
-    getOrderReport
-  );
+  const { data: orderReport } = useOrderReport();
 
   // fetchServices
   const {
     data: services,
     isLoading: loadingServices,
     error: serviceserror,
-  } = useSWR(
-    `${servicesAPIendpoint}/services/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`,
-    fetchServices
-  );
+  } = useFetchServices(`${servicesAPIendpoint}/services/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`);
 
   // fetchProducts
   const {
     data: products,
     isLoading: loadingProducts,
-    error: productserror,
-  } = useSWR(
-    `${productsAPIendpoint}/products/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`,
-    fetchProducts
-  );
+    error: producterror,
+  } = useFetchProducts(`${productsAPIendpoint}/products/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`);
 
    // fetchProducts
-   const {
-    data: videos,
-    isLoading: loadingVideos,
-    error: videoerror,
-  } = useSWR(
-    `${vidoesapiAPIendpoint}/videos/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`,
-    fetchVideos
-  );
+    const {
+      data: videos,
+      isLoading: loadingVideos,
+      error: videoserror,
+    } = useFetchVideos(`${productsAPIendpoint}/videos/${Organizationid}/?category=All&page=${page}&page_size=${pageSize}`);
 
   return (
     <div className="dashboard">

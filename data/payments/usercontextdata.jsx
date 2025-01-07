@@ -2,7 +2,7 @@
 
 import React, { createContext } from "react";
 import { useSession } from "next-auth/react";
-import { fetchPayments, paymentsAPIendpoint } from "./fetcher";
+import { fetchPayments, fetchPaymentsbyUser, paymentsAPIendpoint } from "./fetcher";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 
 /**
@@ -34,7 +34,7 @@ const UserContextProvider = ({ children }) => {
   } = useQuery(
     ["userOrders", session?.user?.id],
     () =>
-      fetchPayments(`${paymentsAPIendpoint}/paymentsbyuser/${session.user.id}/`),
+      fetchPaymentsbyUser(`${paymentsAPIendpoint}/paymentsbyuser/${session.user.id}/`),
     {
       enabled: !!session?.user?.id, // Only fetch when the user is logged in
       onSuccess: (data) =>

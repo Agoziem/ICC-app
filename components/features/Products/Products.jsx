@@ -16,6 +16,8 @@ import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useFetchProduct, useFetchProducts } from "@/data/product/product.hook";
 
 const Products = () => {
   const { openModal } = useAdminContext();
@@ -33,7 +35,7 @@ const Products = () => {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-  } = useSWR(`${productsAPIendpoint}/categories/`, fetchCategories);
+  } = useFetchCategories(`${productsAPIendpoint}/categories/`);
 
   // ----------------------------------------------------
   // Add a new category to the list of categories
@@ -53,11 +55,8 @@ const Products = () => {
   const {
     data: products,
     isLoading: loadingProducts,
-    error: error,
-  } = useSWR(
-    `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchProducts
-  );
+    error,
+  } = useFetchProducts(`${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`);
 
   // ----------------------------------------
   // Fetch Products based on category
@@ -65,11 +64,8 @@ const Products = () => {
   const {
     data: trendingproducts,
     isLoading: loadingTrendingProducts,
-    error: errorTrendingProduct,
-  } = useSWR(
-    `${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`,
-    fetchProducts
-  );
+    error: trendingError,
+  } = useFetchProducts(`${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`);
 
   // -----------------------------------------
   // Handle page change
@@ -117,7 +113,6 @@ const Products = () => {
       </div>
       <hr />
 
-
       {/* categories */}
       <div className="mb-4  ps-2 ps-md-0">
         {/* Categories */}
@@ -150,7 +145,6 @@ const Products = () => {
           </div>
         </div>
       </div>
-     
 
       {/* Products Section */}
       {searchQuery && <h5>Search Results</h5>}

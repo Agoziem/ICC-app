@@ -16,16 +16,16 @@ const HeaderSection = () => {
           <div className="row align-items-center ">
             <div className="col-md-6">
               <div className="header-content text-center text-md-start px-2 px-md-4 pt-md-5">
-                <AnimationContainer>
+                <AnimationContainer slideDirection="down" delay={0}>
                   <h1>Your Online Solution to admission related Issues </h1>
                 </AnimationContainer>
-                <AnimationContainer delay={0.2}>
+                <AnimationContainer slideDirection="down" delay={0.2}>
                   <p>
                     Get access to the best admission resources, connect with
                     students and get your admission process done in no time.
                   </p>
                 </AnimationContainer>
-                <AnimationContainer className="header-btn" delay={0.4}>
+                <AnimationContainer slideDirection="down" className="header-btn" delay={0.4}>
                   <Link
                     className="btn btn-primary my-2 my-md-0"
                     style={{
@@ -42,7 +42,7 @@ const HeaderSection = () => {
             </div>
 
             <div className="col-md-6">
-              <div className="header-image my-4 my-md-0">
+              <AnimationContainer slideDirection="right" zoom="in" className="header-image my-4 my-md-0">
                 <img
                   className="img-fluid"
                   src={"/hero image.png"}
@@ -50,7 +50,7 @@ const HeaderSection = () => {
                   height={444}
                   alt="hero image"
                 />
-              </div>
+              </AnimationContainer>
             </div>
           </div>
         </div>

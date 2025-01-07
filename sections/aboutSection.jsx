@@ -4,17 +4,16 @@ import { TbTargetArrow } from "react-icons/tb";
 import { FaEye, FaUserGroup } from "react-icons/fa6";
 import "./section.css";
 import { useFetchOrganization } from "@/data/organization/organization.hook";
+import ParagraphPlaceholders from "@/components/custom/Placeholders/ParagraphPlaceholders";
 
 const AboutSection = () => {
-  const { data: OrganizationData } = useFetchOrganization();
+  const { data: OrganizationData, isLoading } = useFetchOrganization();
 
   return (
     <section id="about" className="text-center p-3 py-5 p-md-5">
       <div className="d-flex flex-column align-items-center">
         <h2 className="text-primary">About Us</h2>
-        <p className="">
-         {OrganizationData?.description}
-        </p>
+        <p className="">{OrganizationData?.description}</p>
       </div>
 
       <div className="row justify-content-between mt-4 px-3 px-md-5">
@@ -24,9 +23,11 @@ const AboutSection = () => {
               <FaEye />
             </div>
             <h6 className="text-primary">Our Vision</h6>
-            <p className="">
-              {OrganizationData?.vision}
-            </p>
+            {isLoading ? (
+              <ParagraphPlaceholders />
+            ) : (
+              <p className="">{OrganizationData?.vision}</p>
+            )}
           </div>
         </div>
 
@@ -36,9 +37,11 @@ const AboutSection = () => {
               <TbTargetArrow />
             </div>
             <h6 className="text-primary">Our Mission</h6>
-            <p className="">
-              {OrganizationData?.mission}
-            </p>
+            {isLoading ? (
+              <ParagraphPlaceholders />
+            ) : (
+              <p className="">{OrganizationData?.mission}</p>
+            )}
           </div>
         </div>
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const NormalAnimationContainer = ({ children, className, reverse, delay }) => {
+const NormalAnimationContainer = ({ children, className = "", reverse = false, delay = 0 }) => {
   return (
     <motion.div
       className={className}

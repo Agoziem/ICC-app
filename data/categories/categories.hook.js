@@ -38,13 +38,13 @@ const useCategoriesQueryContext = () => {
 
 /** Fetch all categories */
 export const useFetchCategories = (url) =>
-  useQuery(["categories"], () => fetchCategories(url), {
+  useQuery(["categories",url], () => fetchCategories(url), {
     enabled: !!url,
   });
 
 /** Fetch all subcategories */
 export const useFetchSubCategories = (url) =>
-  useQuery(["subcategories"], () => fetchSubCategories(url), {
+  useQuery(["subcategories",url], () => fetchSubCategories(url), {
     enabled: !!url,
   });
 
