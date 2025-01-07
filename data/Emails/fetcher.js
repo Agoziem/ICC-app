@@ -75,13 +75,7 @@ export const submitResponse = async (data) => {
   return validation.data;
 };
 
-/**
- * fetches all Responses to a Message from the database
- * @async
- * @param {EmailMessage} data
- * @returns {Promise<EmailMessageArray>}
- */
-export const getSentEmail = async (data) => {
+export const getSentEmail = async () => {
   const response = await axiosInstance.get(
     `${emailAPIendpoint}/emails/getsentemails/`
   );
@@ -123,7 +117,7 @@ export const createEmail = async (data) => {
 
 
 
-const getallemails = async () => {
+export const getallemails = async () => {
   const response = await axiosInstance.get(
     `${emailAPIendpoint}/subscriptions/${OrganizationID}/`
   );
@@ -132,4 +126,16 @@ const getallemails = async () => {
     console.log(validation.error.issues);
   }
   return validation.data;
+}
+
+/**
+ * @async
+ * @param {Message} data
+ */
+export const sendMessage = async (data) => {
+  const response = await axiosInstance.post(
+    `${emailAPIendpoint}/add_email/${OrganizationID}/`,
+    data
+  );
+  return response.data;
 }

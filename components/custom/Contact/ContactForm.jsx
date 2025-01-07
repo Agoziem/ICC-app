@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import Alert from "@/components/custom/Alert/Alert";
+import { useCreateEmail, useSendMessage } from "@/data/Emails/emails.hook";
 
-const ContactForm = ({ setMessages, messages, OrganizationData }) => {
+const ContactForm = ({ OrganizationData }) => {
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
     name: "",
@@ -11,13 +12,19 @@ const ContactForm = ({ setMessages, messages, OrganizationData }) => {
     subject: "",
     message: "",
   });
-  const [formErrors, setFormErrors] = useState({});
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
   const [submitting, setIsSubmitting] = useState(false);
   const [alert, setAlert] = useState({
     type: "",
     message: "",
     show: false,
   });
+  const { mutate } = useSendMessage();
 
   const validate = () => {
     const errors = {};
@@ -60,52 +67,37 @@ const ContactForm = ({ setMessages, messages, OrganizationData }) => {
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
       setIsSubmitting(true);
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL}/emailsapi/add_email/${OrganizationData.id}/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          setIsSubmitting(false);
-          setMessages([data, ...messages]);
-          setFormData({
-            name: "",
-            email: "",
-            message: "",
-            subject: "",
-          });
-          setAlert({
-            type: "success",
-            message: "Message sent successfully",
-            show: true,
-          });
-        } else {
-          throw new Error("Something went wrong");
+      mutate(
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        {
+          onSuccess: () => {
+            setFormData({
+              name: "",
+              email: "",
+              message: "",
+              subject: "",
+            });
+            setAlert({
+              type: "success",
+              message: "Message sent successfully",
+              show: true,
+            });
+          },
+          onError: (error) => {
+            setAlert({
+              type: "danger",
+              message: "An error occurred. Please try again.",
+              show: true,
+            });
+          },
         }
-      } catch (error) {
-        setIsSubmitting(false);
-        setAlert({
-          type: "danger",
-          message: "Something went wrong",
-          show: true,
-        });
-      } finally {
-        setTimeout(() => {
-          setAlert({
-            type: "",
-            message: "",
-            show: false,
-          });
-        }, 3000);
-      }
+      );
+      setIsSubmitting(false);
     }
   };
 

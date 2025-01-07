@@ -10,11 +10,11 @@ import {
 } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import Alert from "@/components/custom/Alert/Alert";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import "./section.css";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const FooterSection = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();   
   const [formData, setFormData] = useState({
     email: "",
   });

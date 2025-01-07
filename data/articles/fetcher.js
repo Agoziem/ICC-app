@@ -201,14 +201,7 @@ export const incrementView = async (Article) => {
 // ------------------------------------------------------
 // Article Likes fetcher and mutation functions
 // ------------------------------------------------------
-
-/**
- * add like
- * @async
- * @param {number} userid
- * @param {Article} Article
- */
-export const addLike = async (Article, userid) => {
+export const addLike = async ({Article, userid}) => {
   try {
     await axiosInstance.get(
       `${articleAPIendpoint}/addlike/${Article.id}/${userid}/`
@@ -224,13 +217,8 @@ export const addLike = async (Article, userid) => {
   }
 };
 
-/**
- * delete like
- * @async
- * @param {number} userid
- * @param {Article} Article
- */
-export const deleteLike = async (Article, userid) => {
+
+export const deleteLike = async ({Article, userid}) => {
   try {
     await axiosInstance.delete(
       `${articleAPIendpoint}/deletelike/${Article.id}/${userid}/`

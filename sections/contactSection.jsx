@@ -4,10 +4,10 @@ import { IoLocationSharp } from "react-icons/io5";
 import { IoIosMailOpen } from "react-icons/io";
 import { FaPhoneVolume } from "react-icons/fa6";
 import ContactForm from "@/components/custom/Contact/ContactForm";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const ContactSection = () => {
-  const { OrganizationData, setMessages, messages } = useContext(OrganizationContext);
+ const { data: OrganizationData } = useFetchOrganization();
 
   return (
     <>
@@ -59,7 +59,7 @@ const ContactSection = () => {
           <div className="col-12 col-md-4">
             <div className="contact-form">
               <h6>Send us a message</h6>
-              <ContactForm setMessages={setMessages} messages={messages} OrganizationData={OrganizationData} />
+              <ContactForm OrganizationData={OrganizationData} />
             </div>
           </div>
         </div>

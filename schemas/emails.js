@@ -6,6 +6,13 @@ import { z } from "zod";
  */
 export const MESSAGE_STATUS = ["pending", "sent", "failed"];
 
+export const messageSchema = z.object({
+  name: z.string(), // Required field
+  email: z.string().email(), // Required field with email validation
+  subject: z.string(), // Required field
+  message: z.string(), // Required field
+});
+
 // ---------------------------------------------------------------------
 // Validations for emails sent by user
 // ---------------------------------------------------------------------

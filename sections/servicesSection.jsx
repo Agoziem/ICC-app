@@ -3,17 +3,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { LuCheckCircle } from "react-icons/lu";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Link from "next/link";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useOrganization } from "@/data/organization/Organizationalcontextdata";
 import ReusableSwiper from "@/components/custom/Swiper/ReusableSwiper";
 import { useCart } from "@/data/carts/Cartcontext";
-import { useServiceContext } from "@/data/services/Servicescontext";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { fetchCategories } from "@/data/categories/fetcher";
 import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
 
 const ServicesSection = () => {
-  const { openModal } = useContext(OrganizationContext);
+  const { openModal } = useOrganization();
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();
   const [categoryServices, setCategoryServices] = useState([]);

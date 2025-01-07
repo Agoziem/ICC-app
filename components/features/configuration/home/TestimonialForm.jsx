@@ -1,7 +1,7 @@
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 
 /**
- * @param {{ addorupdate: any; testimonial: Testimony;setTestimonial:(value:Testimony) => void; onSubmit: any; onClose: any; }} param0
+ * @param {{ addorupdate: any; testimonial: Testimony;setTestimonial:React.Dispatch<React.SetStateAction<Testimony>>; onSubmit: any; onClose: any; }} param0
  */
 const TestimonialForm = ({
   addorupdate,

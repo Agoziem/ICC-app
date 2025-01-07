@@ -1,13 +1,14 @@
 "use client";
+
 import React, { createContext } from "react";
 import { useSession } from "next-auth/react";
-import {  fetchPayments, paymentsAPIendpoint } from "./fetcher";
-import useSWR from "swr";
+import { fetchPayments, paymentsAPIendpoint } from "./fetcher";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 
 /**
  * @typedef {Object} UserOrderContextValue
  * @property {boolean} loadingUserOrder - Indicates if the user order is loading.
- * @property {Function} mutate - SWR mutate function to refresh user order data.
+ * @property {Function} refetch - Function to refresh user order data.
  * @property {Orders | undefined} userOrders - List of user orders or undefined if not fetched.
  */
 
@@ -16,25 +17,26 @@ const UserContext = createContext(null);
 
 /**
  * UserContextProvider component that wraps its children with the user context.
- * 
+ *
  * @param {{ children: React.ReactNode }} props - The children elements to render inside the provider.
  * @returns {JSX.Element} The UserContext provider component.
  */
 const UserContextProvider = ({ children }) => {
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
 
-  // Fetch user order using SWR
+  // React Query: Fetch User Orders
   const {
     data: userOrders,
     isLoading: loadingUserOrder,
-    error: error,
-    mutate,
-  } = useSWR(
-    session?.user.id
-      ? `${paymentsAPIendpoint}/paymentsbyuser/${session.user.id}/`
-      : null,
-    fetchPayments,
+    error,
+    refetch,
+  } = useQuery(
+    ["userOrders", session?.user?.id],
+    () =>
+      fetchPayments(`${paymentsAPIendpoint}/paymentsbyuser/${session.user.id}/`),
     {
+      enabled: !!session?.user?.id, // Only fetch when the user is logged in
       onSuccess: (data) =>
         data.sort(
           (a, b) =>
@@ -47,7 +49,7 @@ const UserContextProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         loadingUserOrder,
-        mutate,
+        refetch,
         userOrders,
       }}
     >

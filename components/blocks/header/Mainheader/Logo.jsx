@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 import Link from "next/link";
 
 const MainHeaderLogo = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
   return (
     <div>
       <Link href="/" className="logo d-flex align-items-center mt-0 ">

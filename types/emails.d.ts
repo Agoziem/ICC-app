@@ -3,6 +3,7 @@ import {
   emailMessageSchema,
   emailResponseSchema,
   emailSchema,
+  messageSchema,
   MessageWebsocketSchema,
 } from "@/schemas/emails";
 import { z } from "zod";
@@ -21,6 +22,8 @@ declare global {
   type EmailMessage = z.infer<typeof emailMessageSchema>;
 
   type EmailMessageArray = EmailMessage[];
+
+  type Message = z.infer<typeof messageSchema>;
 }
 
 export {};

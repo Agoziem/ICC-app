@@ -23,12 +23,10 @@ export const MainAPIendpoint = "/api";
 // ------------------------------------------------------
 // Organization fetcher and mutation functions
 // ------------------------------------------------------
-/**
- * @async
- * @param {string} url
- */
-export const fetchOrganization = async (url) => {
-  const response = await axiosInstance.get(url);
+export const fetchOrganization = async () => {
+  const response = await axiosInstance.get(
+    `${MainAPIendpoint}/organization/${Organizationid}/`
+  );
   const validation = organizationSchema.safeParse(response.data);
   if (!validation.success) {
     console.log(validation.error.issues);
@@ -189,7 +187,7 @@ export const fetchTestimonials = async (url) => {
 /**
  * @async
  * @param {Testimony} data
- * @returns {Promise<Staff>}
+ * @returns {Promise<Testimony>}
  */
 export const createTestimonial = async (data) => {
   try {

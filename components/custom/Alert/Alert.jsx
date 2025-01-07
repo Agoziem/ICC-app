@@ -2,9 +2,9 @@ import React from "react";
 
 
 /**
- * @param {{ type: string; children: React.ReactNode; }} param0
+ * @param {{ type: string; children: React.ReactNode; className?: string }} param0
  */
-const Alert = ({ type, children }) => {
+const Alert = ({ type, children, className="" }) => {
   let icon = "";
   let alertType = "";
 
@@ -25,7 +25,7 @@ const Alert = ({ type, children }) => {
   return (
     <>
       <div
-        className={`alert ${alertType} d-flex align-items-center`}
+        className={`alert ${alertType} d-flex align-items-center ${className}`}
         role="alert"
       >
         <i className={`bi bi-${icon} me-3`} style={{ fontSize: "24px" }}></i>

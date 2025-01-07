@@ -3,10 +3,11 @@ import React, { useContext } from "react";
 import { TbTargetArrow } from "react-icons/tb";
 import { FaEye, FaUserGroup } from "react-icons/fa6";
 import "./section.css";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const AboutSection = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
+
   return (
     <section id="about" className="text-center p-3 py-5 p-md-5">
       <div className="d-flex flex-column align-items-center">
