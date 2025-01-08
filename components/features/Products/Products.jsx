@@ -3,21 +3,16 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useCart } from "@/data/carts/Cartcontext";
-import { useUserContext } from "@/data/payments/usercontextdata";
-import Datatable from "@/components/custom/Datatable/Datatable";
-import OrderTableItems from "@/components/features/orders/OrderTableItems";
 import CartButton from "@/components/custom/Offcanvas/CartButton";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import ProductCard from "@/components/features/Products/ProductCard";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import Pagination from "@/components/custom/Pagination/Pagination";
-import { fetchCategories } from "@/data/categories/fetcher";
-import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
+import { productsAPIendpoint } from "@/data/product/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { useFetchCategories } from "@/data/categories/categories.hook";
-import { useFetchProduct, useFetchProducts } from "@/data/product/product.hook";
+import { useFetchProducts } from "@/data/product/product.hook";
 
 const Products = () => {
   const { openModal } = useAdminContext();

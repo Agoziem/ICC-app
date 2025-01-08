@@ -20,12 +20,12 @@ export const useFetchProducts = (url) => {
 };
 
 // Hook to fetch a single product
-export const useFetchProduct = (url) => {
+export const useFetchProduct = (url,product_id) => {
   return useQuery(
-    ["product", url], // Unique key for fetching specific product
+    ["product",product_id, url], // Unique key for fetching specific product
     () => fetchProduct(url),
     {
-      enabled: !!url, // Ensure query only runs if URL is provided
+      enabled: !!product_id, // Ensure query only runs if URL is provided
     }
   );
 };

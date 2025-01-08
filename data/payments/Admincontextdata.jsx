@@ -3,24 +3,11 @@
 import React, { createContext, useContext, useState } from "react";
 import { useSession } from "next-auth/react";
 import Modal from "@/components/custom/Modal/modal";
-import {
-  fetchPayments,
-  addPayment,
-  updatePayment,
-  deletePayment,
-} from "./fetcher";
-import { useQuery, useMutation, useQueryClient } from "react-query";
 
 /**
  * @typedef {Object} OrdersContextValue
- * @property {boolean} loadingOrders - Indicates if the user orders are loading.
- * @property {Function} refetchOrders - Function to refetch user orders data.
- * @property {Orders | undefined} orders - List of user orders or undefined if not fetched.
  * @property {(service: any) => void} openModal - Function to open a modal.
  * @property {() => void} closeModal - Function to close a modal.
- * @property {Function} addPayment - Function to add a payment.
- * @property {Function} updatePayment - Function to update a payment.
- * @property {Function} deletePayment - Function to delete a payment.
  */
 
 /** @type {React.Context<OrdersContextValue | null>} */
@@ -37,48 +24,6 @@ const AdminContextProvider = ({ children }) => {
   const [modalService, setModalService] = useState(null);
   const { data: session } = useSession();
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  // React Query: Query Client for cache management
-  const queryClient = useQueryClient();
-
-  // React Query: Fetch Orders
-  const {
-    data: orders,
-    isLoading: loadingOrders,
-    refetch: refetchOrders,
-  } = useQuery(
-    ["payments", Organizationid],
-    () => fetchPayments(`${Organizationid}/`),
-    {
-      enabled: !!session?.user?.id, // Fetch only if user is logged in
-      onSuccess: (data) =>
-        data.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        ),
-    }
-  );
-
-  // React Query: Add Payment Mutation
-  const addPaymentMutation = useMutation(addPayment, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["payments"]); // Refresh payments
-    },
-  });
-
-  // React Query: Update Payment Mutation
-  const updatePaymentMutation = useMutation(updatePayment, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["payments"]); // Refresh payments
-    },
-  });
-
-  // React Query: Delete Payment Mutation
-  const deletePaymentMutation = useMutation(deletePayment, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["payments"]); // Refresh payments
-    },
-  });
 
   // ----------------------------------------------------
   // Open Description Modal
@@ -99,14 +44,8 @@ const AdminContextProvider = ({ children }) => {
   return (
     <AdminContext.Provider
       value={{
-        orders,
-        loadingOrders,
-        refetchOrders,
         openModal,
         closeModal,
-        addPayment: addPaymentMutation.mutate,
-        updatePayment: updatePaymentMutation.mutate,
-        deletePayment: deletePaymentMutation.mutate,
       }}
     >
       {children}

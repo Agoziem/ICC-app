@@ -10,13 +10,11 @@ import ArticlePlaceholder from "../configuration/articles/ArticlePlaceholder";
 import BackButton from "../../custom/backbutton/BackButton";
 import Pagination from "../../custom/Pagination/Pagination";
 import CategoryTabs from "../Categories/Categoriestab";
-import useSWR from "swr";
 import {
   articleAPIendpoint,
-  fetchArticles,
-  fetchArticlesCategories,
 } from "@/data/articles/fetcher";
 import { useRouter } from "next/navigation";
+import { useFetchArticleCategories, useFetchArticles } from "@/data/articles/articles.hook";
 
 const ArticlesList = () => {
   const router = useRouter();
@@ -32,7 +30,7 @@ const ArticlesList = () => {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-  } = useSWR(`${articleAPIendpoint}/getCategories/`, fetchArticlesCategories);
+  } = useFetchArticleCategories(`${articleAPIendpoint}/getCategories/`)
 
   // --------------------------------------
   // Add All categories once fetched
@@ -50,9 +48,8 @@ const ArticlesList = () => {
     data: articles,
     isLoading: loadingArticles,
     error: articleError,
-  } = useSWR(
-    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchArticles
+  } = useFetchArticles(
+    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
   );
 
   // -----------------------------------------

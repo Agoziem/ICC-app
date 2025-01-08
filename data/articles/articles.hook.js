@@ -1,35 +1,6 @@
 "use client";
-
-import React, { createContext, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import * as articleAPI from "@/data/articles/fetcher"; // Assuming your API file is located here
-
-// Create the ArticlesContext
-const ArticlesContext = createContext(null);
-
-// Provider Component
-export const ArticlesQueryProvider = ({ children }) => {
-  const queryClient = useQueryClient();
-
-  const contextValue = {
-    queryClient,
-  };
-
-  return (
-    <ArticlesContext.Provider value={contextValue}>
-      {children}
-    </ArticlesContext.Provider>
-  );
-};
-
-// Hook to access the ArticlesContext
-const useArticlesContext = () => {
-  const context = useContext(ArticlesContext);
-  if (!context) {
-    throw new Error("useArticlesContext must be used within an ArticlesQueryProvider");
-  }
-  return context;
-};
 
 // Custom Hooks
 
@@ -40,24 +11,20 @@ export const useFetchArticles = (url) =>
   });
 
 /** Fetch Article by Slug */
-export const useFetchArticleBySlug = (url) =>
-  useQuery(["article", url], () => articleAPI.fetchArticlebySlug(url), {
-    enabled: !!url,
+export const useFetchArticleBySlug = (url, slug) =>
+  useQuery(["article", slug], () => articleAPI.fetchArticlebySlug(url), {
+    enabled: !!slug,
   });
 
 /** Fetch Article Categories */
 export const useFetchArticleCategories = (url) =>
-  useQuery(
-    ["categories", url],
-    () => articleAPI.fetchArticlesCategories(url),
-    {
-      enabled: !!url,
-    }
-  );
+  useQuery(["categories", url], () => articleAPI.fetchArticlesCategories(url), {
+    enabled: !!url,
+  });
 
 /** Create Article */
 export const useCreateArticle = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.createArticle, {
     onSuccess: () => {
       queryClient.invalidateQueries("articles"); // Refetch articles
@@ -67,7 +34,7 @@ export const useCreateArticle = () => {
 
 /** Update Article */
 export const useUpdateArticle = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.updateArticle, {
     onSuccess: () => {
       queryClient.invalidateQueries("articles"); // Refetch articles
@@ -77,7 +44,7 @@ export const useUpdateArticle = () => {
 
 /** Delete Article */
 export const useDeleteArticle = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.deleteArticle, {
     onSuccess: () => {
       queryClient.invalidateQueries("articles"); // Refetch articles
@@ -86,14 +53,14 @@ export const useDeleteArticle = () => {
 };
 
 /** Fetch Comments */
-export const useFetchComments = (url) =>
-  useQuery(["comments", url], () => articleAPI.fetchComments(url), {
-    enabled: !!url,
+export const useFetchComments = (url, article_id) =>
+  useQuery(["comments", article_id, url], () => articleAPI.fetchComments(url), {
+    enabled: !!article_id,
   });
 
 /** Create Comment */
 export const useCreateComment = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.createComment, {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries(["comments", variables.blog]); // Refetch comments
@@ -103,7 +70,7 @@ export const useCreateComment = () => {
 
 /** Update Comment */
 export const useUpdateComment = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.updateComment, {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries(["comments", variables.blog]); // Refetch comments
@@ -113,7 +80,7 @@ export const useUpdateComment = () => {
 
 /** Delete Comment */
 export const useDeleteComment = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.deleteComment, {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries("comments"); // Refetch comments
@@ -123,30 +90,30 @@ export const useDeleteComment = () => {
 
 /** Increment Views of an Article */
 export const useIncrementView = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.incrementView, {
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(["article", variables.id]); // Refetch the article
+      queryClient.invalidateQueries(["article", variables.slug]); // Refetch the article
     },
   });
 };
 
 /** Add Like */
 export const useAddLike = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.addLike, {
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(["article", variables.Article.id]); // Refetch the article
+      queryClient.invalidateQueries(["article", variables.Article.slug]); // Refetch the article
     },
   });
 };
 
 /** Delete Like */
 export const useDeleteLike = () => {
-  const { queryClient } = useArticlesContext();
+  const queryClient = useQueryClient();
   return useMutation(articleAPI.deleteLike, {
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(["article", variables.Article.id]); // Refetch the article
+      queryClient.invalidateQueries(["article", variables.Article.slug]); // Refetch the article
     },
   });
 };

@@ -8,17 +8,14 @@ import React, {
   useTransition,
 } from "react";
 import { useSession } from "next-auth/react";
-import { useUserContext } from "../payments/usercontextdata";
-import { useAdminContext } from "../payments/Admincontextdata";
 import { useRouter } from "next/navigation";
 import { addPayment } from "../payments/fetcher";
+import { useQueryClient } from "react-query";
 
 const CartContext = createContext(null);
 
 const CartProvider = ({ children }) => {
   const router = useRouter();
-  const { mutate: userordersmutate } = useUserContext();
-  const { mutate: ordersmutate } = useAdminContext();
   const { data: session } = useSession();
   const [cart, setCart] = useState([]);
   const [storedCart, setStoredCart] = useLocalStorage("cart", cart);
@@ -84,7 +81,7 @@ const CartProvider = ({ children }) => {
   // ----------------------------------------------------
   // Checkout
   // ----------------------------------------------------
-
+  const queryClient = useQueryClient();
   const checkout = () => {
     startTransition(async () => {
       const order = {
@@ -103,20 +100,7 @@ const CartProvider = ({ children }) => {
 
       try {
         const data = await addPayment(order);
-
-        // Mutate user and order data, then navigate
-        await userordersmutate(
-          (previousUserOrders) => [data, ...(previousUserOrders || [])],
-          {
-            populateCache: true,
-            revalidate: false,
-          }
-        );
-        await ordersmutate(
-          (previousOrders) => [data, ...(previousOrders || [])],
-          { populateCache: true, revalidate: false }
-        );
-
+        queryClient.invalidateQueries("payments");
         setReference(data.reference);
         router.push(`/dashboard/orders`);
       } catch (error) {

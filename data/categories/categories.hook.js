@@ -29,7 +29,9 @@ export const CategoriesQueryProvider = ({ children }) => {
 const useCategoriesQueryContext = () => {
   const context = useContext(CategoriesQueryContext);
   if (!context) {
-    throw new Error("useCategoriesQueryContext must be used within a CategoriesQueryProvider");
+    throw new Error(
+      "useCategoriesQueryContext must be used within a CategoriesQueryProvider"
+    );
   }
   return context;
 };
@@ -38,13 +40,13 @@ const useCategoriesQueryContext = () => {
 
 /** Fetch all categories */
 export const useFetchCategories = (url) =>
-  useQuery(["categories",url], () => fetchCategories(url), {
+  useQuery(["categories", url], () => fetchCategories(url), {
     enabled: !!url,
   });
 
 /** Fetch all subcategories */
-export const useFetchSubCategories = (url) =>
-  useQuery(["subcategories",url], () => fetchSubCategories(url), {
+export const useFetchSubCategories = (url, category_id) =>
+  useQuery(["subcategories", category_id, url], () => fetchSubCategories(url), {
     enabled: !!url,
   });
 
@@ -69,8 +71,8 @@ export const useCreateSubCategory = () => {
     /** @param {SubCategory} data */
     (data) => createSubCategory(`/subcategories/create/`, data),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["subcategories"]); // Refresh the subcategory list
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["subcategories", data.category.id]); // Refresh the subcategory list
       },
     }
   );
@@ -97,8 +99,8 @@ export const useUpdateSubCategory = () => {
     /** @param {SubCategory} data */
     (data) => updateSubCategory(`/subcategories/${data.id}/update/`, data),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["subcategories"]); // Refresh the subcategory list
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["subcategories",data.category.id]); // Refresh the subcategory list
       },
     }
   );
@@ -121,12 +123,15 @@ export const useDeleteCategory = () => {
 /** Delete a subcategory */
 export const useDeleteSubCategory = () => {
   const { queryClient } = useCategoriesQueryContext();
+
   return useMutation(
-    /** @param {number} id */
-    (id) => deleteSubCategory(`/subcategories/${id}/delete/`, id),
+    /**
+     * @param {{ id: number, category_id: number }} params 
+     */
+    ({ id, category_id }) => deleteSubCategory(`/subcategories/${id}/delete/`, id),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["subcategories"]); // Refresh the subcategory list
+      onSuccess: (_, { category_id }) => {
+        queryClient.invalidateQueries(["subcategories", category_id]);
       },
     }
   );

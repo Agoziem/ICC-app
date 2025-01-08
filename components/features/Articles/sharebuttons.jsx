@@ -8,20 +8,14 @@ import {
   LinkedinIcon,
   WhatsappIcon,
 } from "react-share";
+import { toast } from "react-hot-toast";
 
-const ShareButtons = ({ url, title,setToastMessage }) => {
+const ShareButtons = ({ url, title }) => {
   const copyLink = () => {
     navigator.clipboard.writeText(url);
-    document.getElementById("liveToast").classList.replace("hide", "show");
-    setTimeout(() => {
-      document.getElementById("liveToast").classList.replace("show", "hide");
-      setToastMessage({
-        title: "",
-        message: "",
-        time: "",
-      });
-    }, 3000);
+    toast.success("Link copied to clipboard successfully");
   };
+
   return (
     <>
       <div className="d-flex">
@@ -34,18 +28,13 @@ const ShareButtons = ({ url, title,setToastMessage }) => {
             backgroundColor: "var(--bgDarkerColor)",
             color: "var(--light)",
           }}
-          onClick={()=> {
-            setToastMessage({
-              title: "Link copied",
-              message: "your Article Link is copied to your clipboard",
-              time: new Date().toLocaleTimeString(),
-            });
+          onClick={() => {
             copyLink();
           }}
         >
           <i className="bi bi-link-45deg h5 mb-0"></i>
         </div>
-        <FacebookShareButton url={url} quote={title} className="me-2">
+        <FacebookShareButton url={url} title={title} className="me-2">
           <FacebookIcon size={32} round={true} style={{ cursor: "pointer" }} />
         </FacebookShareButton>
         <TwitterShareButton url={url} title={title} className="me-2">

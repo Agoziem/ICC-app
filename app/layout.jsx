@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import OffCanvas from "@/components/custom/Offcanvas/OffCanvas";
 import ContextProviders from "@/data/ContextProviders";
 import Providers from "@/providers";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "ICC Online Center",
@@ -23,6 +24,7 @@ export default function RootLayout({ children, session }) {
             <ContextProviders>
               {children}
               <OffCanvas />
+              <Toaster />
             </ContextProviders>
           </Providers>
         </SessionProvider>
