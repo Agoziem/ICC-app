@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./card.css";
 import CardFilter from "./CardFilter";
-const HorizontalCard = ({ cardspan, iconcolor, cardtitle, icon, cardbody }) => {
+const HorizontalCard = ({ cardspan, iconcolor, cardtitle, icon, cardbody, loading }) => {
   // const [filter, setFilter] = useState("Today");
   // const handleFilterChange = (filter) => {
   //   setFilter(filter);
@@ -26,7 +26,7 @@ const HorizontalCard = ({ cardspan, iconcolor, cardtitle, icon, cardbody }) => {
             <i className={icon}></i>
           </div>
           <div className="ps-3">
-            <h4>{cardbody}</h4>
+            <h4>{cardbody || 0}</h4>
             <span className="card-small text-muted small pt-2 ps-1">
               {cardspan}
             </span>

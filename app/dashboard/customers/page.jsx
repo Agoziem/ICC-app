@@ -4,12 +4,11 @@ import Modal from "@/components/custom/Modal/modal";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import OrganizationCard from "@/components/features/configuration/home/organizationcard";
 import CustomersTable from "@/components/features/orders/CustomersTable";
-import { useAdminContext } from "@/data/payments/Admincontextdata";
-import { getOrderReport, paymentsAPIendpoint } from "@/data/payments/fetcher";
+import { useGetOrderReport } from "@/data/payments/orders.hook";
 import { authAPIendpoint, fetchUser } from "@/data/users/fetcher";
+import { useFetchUser } from "@/data/users/user.hook";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import useSWR from "swr";
 
 const CustomersPage = () => {
   /**
@@ -18,22 +17,22 @@ const CustomersPage = () => {
   const [items, setItems] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [customerID, setCustomerID] = useState(null);
-  const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
   // fetch Order Report
-  const { data: orderReport } = useSWR(
-    `${paymentsAPIendpoint}/getorderreport/${Organizationid}`,
-    getOrderReport
-  );
+  const { data: orderReport } = useGetOrderReport();
 
   useEffect(() => {
     setItems(orderReport?.customers);
   }, [orderReport]);
 
   // fetch User
-  const { data: customer, isLoading: loadingCustomer, error } = useSWR(
-    customerID ? `${authAPIendpoint}/getuser/${customerID}` : null,
-    fetchUser
+  const {
+    data: customer,
+    isLoading: loadingCustomer,
+    error,
+  } = useFetchUser(
+    `${authAPIendpoint}/getuser/${customerID}`,
+    customerID
   );
 
   return (
@@ -65,9 +64,9 @@ const CustomersPage = () => {
                 </div>
                 <div>loading Customer</div>
               </div>
-            )} 
+            )}
 
-            { !loadingCustomer && customer ? (
+            {!loadingCustomer && customer ? (
               <div>
                 <div className="profilepicture d-flex flex-column justify-content-center align-items-center my-3">
                   {customer.avatar ? (

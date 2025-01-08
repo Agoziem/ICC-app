@@ -14,6 +14,7 @@ import { useFetchCategories } from "@/data/categories/categories.hook";
 import {
   useFetchServices,
 } from "@/data/services/service.hook";
+import AnimationContainer from "@/components/animation/animation-container";
 
 const Services = () => {
   const { openModal } = useAdminContext();
@@ -139,8 +140,8 @@ const Services = () => {
             </div>
           </div>
         ) : filteredServices?.length > 0 ? (
-          filteredServices?.map((service) => (
-            <div key={service.id} className="col-12 col-md-4">
+          filteredServices?.map((service,index) => (
+            <AnimationContainer delay={index * 0.1} key={service.id} className="col-12 col-md-4">
               <ServiceCard
                 service={service}
                 addToCart={addToCart}
@@ -148,7 +149,7 @@ const Services = () => {
                 cart={cart}
                 openModal={openModal}
               />
-            </div>
+            </AnimationContainer>
           ))
         ) : (
           <div className="mt-3 mb-3 text-center">

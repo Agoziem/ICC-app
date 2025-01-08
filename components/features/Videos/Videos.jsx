@@ -13,6 +13,7 @@ import { fetchVideos, vidoesapiAPIendpoint } from "@/data/videos/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { useFetchCategories } from "@/data/categories/categories.hook";
 import { useFetchVideo, useFetchVideos } from "@/data/videos/video.hook";
+import AnimationContainer from "@/components/animation/animation-container";
 
 const Videos = () => {
   const { openModal } = useAdminContext();
@@ -134,8 +135,8 @@ const Videos = () => {
             </div>
           </div>
         ) : filteredVideos.length > 0 ? (
-          filteredVideos.map((video) => (
-            <div key={video.id} className="col-12 col-md-4 mb-3">
+          filteredVideos.map((video,index) => (
+            <AnimationContainer delay={index * 0.1} key={video.id} className="col-12 col-md-4 mb-3">
               <VideoCard
                 video={video}
                 addToCart={addToCart}
@@ -143,7 +144,7 @@ const Videos = () => {
                 cart={cart}
                 openModal={openModal}
               />
-            </div>
+            </AnimationContainer>
           ))
         ) : (
           <div className="mt-3 mb-3 text-center">

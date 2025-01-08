@@ -87,6 +87,9 @@ const ContactForm = ({ OrganizationData }) => {
               message: "Message sent successfully",
               show: true,
             });
+            setTimeout(() => {
+              setAlert({ type: "", message: "", show: false });
+            }, 3000);
           },
           onError: (error) => {
             setAlert({
@@ -94,6 +97,9 @@ const ContactForm = ({ OrganizationData }) => {
               message: "An error occurred. Please try again.",
               show: true,
             });
+            setTimeout(() => {
+              setAlert({ type: "", message: "", show: false });
+            }, 3000);
           },
         }
       );

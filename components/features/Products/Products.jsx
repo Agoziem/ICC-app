@@ -13,6 +13,7 @@ import { productsAPIendpoint } from "@/data/product/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { useFetchCategories } from "@/data/categories/categories.hook";
 import { useFetchProducts } from "@/data/product/product.hook";
+import AnimationContainer from "@/components/animation/animation-container";
 
 const Products = () => {
   const { openModal } = useAdminContext();
@@ -51,7 +52,9 @@ const Products = () => {
     data: products,
     isLoading: loadingProducts,
     error,
-  } = useFetchProducts(`${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`);
+  } = useFetchProducts(
+    `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
+  );
 
   // ----------------------------------------
   // Fetch Products based on category
@@ -60,7 +63,9 @@ const Products = () => {
     data: trendingproducts,
     isLoading: loadingTrendingProducts,
     error: trendingError,
-  } = useFetchProducts(`${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`);
+  } = useFetchProducts(
+    `${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`
+  );
 
   // -----------------------------------------
   // Handle page change
@@ -154,8 +159,12 @@ const Products = () => {
               </div>
             </div>
           ) : filteredProducts?.length > 0 ? (
-            filteredProducts?.map((product) => (
-              <div key={product.id} className="col-12 col-md-4">
+            filteredProducts?.map((product, index) => (
+              <AnimationContainer
+                delay={0.1 * index}
+                key={product.id}
+                className="col-12 col-md-4"
+              >
                 <ProductCard
                   product={product}
                   addToCart={addToCart}
@@ -163,7 +172,7 @@ const Products = () => {
                   cart={cart}
                   openModal={openModal}
                 />
-              </div>
+              </AnimationContainer>
             ))
           ) : (
             // Show "no services available" message if no services at all

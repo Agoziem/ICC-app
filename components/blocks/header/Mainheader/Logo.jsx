@@ -10,7 +10,7 @@ const MainHeaderLogo = () => {
           src={
             OrganizationData?.Organizationlogo
               ? OrganizationData.Organizationlogo
-              : "/logo placeholder.jpg"
+              : "/ICC Logo.png"
           }
           alt="logo"
           width={50}

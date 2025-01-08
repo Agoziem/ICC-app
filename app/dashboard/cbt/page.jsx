@@ -2,11 +2,11 @@
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import React, { useContext, useEffect, useState } from "react";
 import CbtForm from "@/components/features/cbt/CbtForm";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import CbtQuiz from "@/components/features/cbt/CbtQuiz";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const CbtPage = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
   const [examdetails, setExamDetails] = useState({
     user_id: "",
     test_id: "",

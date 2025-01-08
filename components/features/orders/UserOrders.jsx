@@ -5,13 +5,16 @@ import UserProducts from "./UserProducts";
 import UserVideos from "./UserVideos";
 import Datatable from "@/components/custom/Datatable/Datatable";
 import OrderTableItems from "./OrderTableItems";
-import { useUserContext } from "@/data/payments/usercontextdata";
+import { useFetchPaymentsByUser } from "@/data/payments/orders.hook";
+import { useSession } from "next-auth/react";
 
 const UserOrders = () => {
+  const { data: session } = useSession();
   const categories = ["services", "products", "videos"];
   const [activeTab, setActiveTab] = useState(categories[0]);
   const [items, setItems] = useState([]);
-  const { userOrders } = useUserContext();
+  const { data: userOrders, isLoading: loadingUserOrders } =
+    useFetchPaymentsByUser(session?.user?.id);
 
   useEffect(() => {
     setItems(userOrders);
@@ -42,13 +45,25 @@ const UserOrders = () => {
 
       {/* Items Purchased */}
       <div className="mt-4">
-        {activeTab === "services" && <div><UserServices /></div>}
-        {activeTab === "products" && <div><UserProducts /></div>}
-        {activeTab === "videos" && <div><UserVideos /></div>}
+        {activeTab === "services" && (
+          <div>
+            <UserServices />
+          </div>
+        )}
+        {activeTab === "products" && (
+          <div>
+            <UserProducts />
+          </div>
+        )}
+        {activeTab === "videos" && (
+          <div>
+            <UserVideos />
+          </div>
+        )}
       </div>
 
-     {/* Order table */}
-     <div className="mt-2">
+      {/* Order table */}
+      <div className="mt-2">
         <h5>All Orders</h5>
         <Datatable
           items={items}

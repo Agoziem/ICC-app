@@ -31,6 +31,8 @@ export const useFetchPayments = (organizationId) => {
   );
 };
 
+
+
 /**
  * Hook to fetch a single payment
  * @param {number} paymentId
