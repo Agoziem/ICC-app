@@ -1,13 +1,15 @@
 import Image from "next/image";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { PulseLoader } from "react-spinners";
 import "./ServiceUsersTable.css";
 import { useUpdateServiceUser } from "@/data/services/service.hook";
 import toast from "react-hot-toast";
+import { useQueryClient } from "react-query";
 
 /**
  * @param {{ users: ServiceUser[], service: Service, category: string }} props
  */
+
 const ServiceUsers = ({ users, service, category }) => {
   const [isPending, startTransition] = useTransition();
   const { mutateAsync: updateStatus } = useUpdateServiceUser();
@@ -16,8 +18,10 @@ const ServiceUsers = ({ users, service, category }) => {
   // Update User Service Status
   // -----------------------------------------
 
+  const queryClient = useQueryClient();
   const updateUserServiceStatus = async (userId, serviceId, action) => {
     try {
+      // Perform the API call
       await updateStatus({ userId, serviceId, action, category });
       toast.success("User status updated successfully");
     } catch (error) {
@@ -25,9 +29,11 @@ const ServiceUsers = ({ users, service, category }) => {
     }
   };
 
+  
   // -----------------------------------------
   // Determine Action Buttons
   // -----------------------------------------
+
   const renderActionButtons = (user) => {
     if (category === "all") {
       return (
@@ -38,10 +44,26 @@ const ServiceUsers = ({ users, service, category }) => {
               updateUserServiceStatus(user.id, service.id, "add-to-progress");
             })
           }
-          disabled={isPending}
+          disabled={
+            isPending ||
+            service?.userIDs_whose_services_is_in_progress.includes(
+              parseInt(user.id)
+            ) ||
+            service?.userIDs_whose_services_have_been_completed.includes(
+              parseInt(user.id)
+            )
+          }
         >
           {isPending ? (
             <PulseLoader color="#fff" size={8} margin={2} />
+          ) : service?.userIDs_whose_services_is_in_progress.includes(
+              parseInt(user.id)
+            ) ? (
+            "Service in Progress"
+          ) : service?.userIDs_whose_services_have_been_completed.includes(
+              parseInt(user.id)
+            ) ? (
+            "Service Completed"
           ) : (
             "Add to Progress"
           )}

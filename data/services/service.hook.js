@@ -118,6 +118,7 @@ export const useUpdateServiceUser = () => {
           ].includes(action)
         ) {
           queryClient.invalidateQueries(["serviceUsers", serviceId, category]);
+          queryClient.invalidateQueries(["service", serviceId]);
         }
       },
       onError: (error) => {
