@@ -1,16 +1,10 @@
-import useSWR from "swr";
 import { TbMessageCancel } from "react-icons/tb";
-import {
-  deleteNotification,
-  fetchNotifications,
-  notificationAPIendpoint,
-} from "@/data/notificationsAPI/fetcher";
 import NotificationForm from "./NotificationForm";
 import { useRef, useState } from "react";
-import { deleteNotificationOption } from "@/data/notificationsAPI/fetcherOption";
 import Modal from "../../custom/Modal/modal";
 import Alert from "../../custom/Alert/Alert";
 import { shortenMessage } from "@/utils/utilities";
+import { useDeleteNotification, useFetchNotifications } from "@/data/notificationsAPI/notifications.hook";
 
 const NotificationMessages = () => {
   const [errormessage, setErrorMessage] = useState("");
@@ -24,28 +18,19 @@ const NotificationMessages = () => {
     data: notifications,
     isLoading,
     error,
-  } = useSWR(`${notificationAPIendpoint}/notifications/`, fetchNotifications, {
-    onSuccess: (data) =>
-      data.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      ),
-  });
+  } = useFetchNotifications();
 
-  const { mutate } = useSWR(`${notificationAPIendpoint}/notifications/`);
+ const { mutateAsync: deleteNotification } = useDeleteNotification();
 
   const scrolltoform = () => {
     formRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  const deleteMessage = () => {
+  const deleteMessage = async () => {
     try {
       setErrorMessage("");
       setSuccess("");
-      mutate(
-        deleteNotification(notificationId),
-        deleteNotificationOption(notificationId)
-      );
+      await deleteNotification(notificationId);
 
       setSuccess(`Notification deleted successfully!`);
     } catch (error) {
@@ -82,7 +67,7 @@ const NotificationMessages = () => {
 
         {/* All Sent Messages */}
         <div className="flex-fill d-flex flex-column gap-1 px-3">
-          <h5 className="text-center mb-3">Notifications</h5>
+          <h5 className="text-center mb-3">{notifications.length} Notification{notifications.length > 1 ? "s": ""}</h5>
           {isLoading && (
             <div className=" d-flex align-items-center justify-content-center">
               <div className="spinner-border text-primary" role="status">

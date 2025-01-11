@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import Modal from "../../custom/Modal/modal";
-import useSWR from "swr";
-import { deleteArticle, deleteComment, updateArticle, updateComment } from "@/data/articles/fetcher";
 import { ArticleCommentDefault } from "@/constants";
+import { useDeleteComment, useUpdateComment } from "@/data/articles/articles.hook";
 
 /**
  * Article Comments
- * @param {{ article: Article; comments: ArticleComments;mutate:any }} param0
+ * @param {{ comments: ArticleComments; }} param0
  */
 const ArticleComments = ({
-  article,
   comments,
-  mutate,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [deletemode, setDeleteMode] = useState(false);
@@ -43,19 +40,10 @@ const ArticleComments = ({
   // -----------------------------------------------
   // delete Comment
   // -----------------------------------------------
-
+  const { mutate:deleteComment } = useDeleteComment();
   const handledelete = async () => {
     try {
-      const deletedid = await deleteComment(commenttoedit.id)
-      await mutate((Comments) => {
-        const otherComments = Comments?.results.filter(
-          (comment) => comment.id !== deletedid
-        );
-        Comments.results = otherComments;
-        return { ...Comments };
-      }, {
-        populateCache: true,
-      });
+      deleteComment(commenttoedit.id);
     } catch (error) {
       console.log(error.message);
     } finally {
@@ -63,25 +51,15 @@ const ArticleComments = ({
     }
   };
 
+
+  // -----------------------------------------------
+  // Update Comment
+  // -----------------------------------------------
+  const {mutate: updateComment} = useUpdateComment();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedComment = await updateComment(commenttoedit)
-      await mutate((Comments) => {
-        const otherComments = (Comments?.results || []).map((o) =>
-          o.id === updatedComment.id ? updatedComment : o
-        );
-        return {
-          ...Comments,
-          results: otherComments.sort(
-            (a, b) =>
-              new Date(b.updated_at).getTime() -
-              new Date(a.updated_at).getTime()
-          ),
-        };
-      }, {
-        populateCache: true,
-      });
+      updateComment(commenttoedit);
     } catch (error) {
       console.log(error.message);
     } finally {

@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import Modal from "@/components/custom/Modal/modal";
-import Alert from "@/components/custom/Alert/Alert";
 import "./homeconfig.css";
 import StaffForm from "./staffform";
 import { staffdefault } from "@/constants";
 import {
-  createStaff,
-  deleteStaff,
-  fetchStaffs,
   MainAPIendpoint,
-  updateStaff,
 } from "@/data/organization/fetcher";
-import useSWR from "swr";
 import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/custom/Pagination/Pagination";
+import { useCreateStaff, useDeleteStaff, useFetchStaffs, useUpdateStaff } from "@/data/organization/organization.hook";
+import toast from "react-hot-toast";
 
 const Staffs = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -21,11 +17,6 @@ const Staffs = () => {
   const [addorupdate, setAddorupdate] = useState({
     mode: "add",
     state: false,
-  });
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
   });
   const [showModal, setShowModal] = useState(false);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
@@ -39,20 +30,9 @@ const Staffs = () => {
   // for data fetching
   const {
     data: staffs,
-    mutate,
     isLoading: loadingstaffs,
-  } = useSWR(
-    `${MainAPIendpoint}/staff/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
-    fetchStaffs,
-    {
-      onSuccess: (data) =>
-        data.results.sort(
-          (a, b) =>
-            new Date(b.last_updated_date).getTime() -
-            new Date(a.last_updated_date).getTime()
-        ),
-    }
-  );
+  } = useFetchStaffs(`${MainAPIendpoint}/staff/${OrganizationID}/?page=${page}&page_size=${pageSize}`)
+ 
 
   // Handle page change
   const handlePageChange = (newPage) => {
@@ -64,6 +44,8 @@ const Staffs = () => {
   };
 
   // add a staff or edit a staff
+  const { mutateAsync: createStaff, isLoading:isCreating } = useCreateStaff();
+  const { mutateAsync: updateStaff, isLoading:isUpdating } = useUpdateStaff();
   const addStaff = async (e) => {
     e.preventDefault();
     const { organization, ...restData } = staff;
@@ -73,64 +55,16 @@ const Staffs = () => {
     };
     try {
       if (addorupdate.mode === "add") {
-        const newStaff = await createStaff(stafftosubmit);
-        await mutate(
-          (Staffs) => {
-            const newStaffs = [newStaff, ...(Staffs?.results || [])];
-            return {
-              ...Staffs,
-              results: newStaffs.sort(
-                (a, b) =>
-                  new Date(b.created_at).getTime() -
-                  new Date(a.created_at).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await createStaff(stafftosubmit);
       } else {
-        const updatedStaff = await updateStaff(stafftosubmit);
-        await mutate(
-          (Staffs) => {
-            const otherStaffs = (Staffs?.results || []).map((o) =>
-              o.id === updatedStaff.id ? updatedStaff : o
-            );
-            return {
-              ...Staffs,
-              results: otherStaffs.sort(
-                (a, b) =>
-                  new Date(b.last_updated_date).getTime() -
-                  new Date(a.last_updated_date).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await updateStaff(stafftosubmit);
       }
-      setAlert({
-        show: true,
-        message: `Staff ${addorupdate.mode}ed successfully`,
-        type: "success",
-      });
+      toast.success(`Staff ${addorupdate.mode === "add" ? "added" : "updated"} successfully`);
     } catch (error) {
-      setAlert({
-        show: true,
-        message: `An error just occurred, try again later`,
-        type: "danger",
-      });
+      console.log(error.message);
+      toast.error(`An error just occurred`);
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
@@ -141,46 +75,20 @@ const Staffs = () => {
   };
 
   // remove a staff
+  const { mutateAsync: deleteStaff, isLoading:isDeleting } = useDeleteStaff();
   /**
    * @async
    * @param {number} id
    */
   const deletestaff = async (id) => {
     try {
-      const staffid = await deleteStaff(id);
-      await mutate(
-        (Staffs) => {
-          const otherStaffs = Staffs.results.filter(
-            (staff) => staff.id !== staffid
-          );
-          Staffs.results = otherStaffs;
-          return { ...Staffs };
-        },
-        {
-          populateCache: true,
-        }
-      );
-      setAlert({
-        show: true,
-        message: `Staff deleted successfully`,
-        type: "success",
-      });
+      await deleteStaff(id);
+      toast.success("Staff Deleted Successfully");
     } catch (error) {
       console.log(error.message);
-      setAlert({
-        show: true,
-        message: `An error just occurred`,
-        type: "danger",
-      });
+      toast.error("Error Deleting Staff");
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
@@ -208,8 +116,6 @@ const Staffs = () => {
         </div>
       ) : (
         <div>
-          {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
-
           <div className="my-4">
             <h4 className="mb-1">
               {staffs?.count} Staff{staffs?.count > 1 ? "s" : ""}
@@ -366,8 +272,9 @@ const Staffs = () => {
             <button
               className="btn btn-danger rounded me-3"
               onClick={() => deletestaff(staff.id)}
+              disabled={isDeleting}
             >
-              Yes
+              {isDeleting ? "Deleting..." : "Yes"}
             </button>
             <button
               className="btn btn-accent-secondary rounded"
@@ -390,6 +297,7 @@ const Staffs = () => {
             staff={staff}
             setStaff={setStaff}
             closeModal={closeModal}
+            loading={isCreating || isUpdating}
           />
         </div>
       </Modal>

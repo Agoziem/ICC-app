@@ -4,11 +4,11 @@ import './logo.css';
 import Link from 'next/link';
 
 import { RefContext } from '../sidebar/sideBarTogglerContext';
-import { OrganizationContext } from '@/data/organization/Organizationalcontextdata';
 import Image from 'next/image';
+import { useFetchOrganization } from '@/data/organization/organization.hook';
 
 function Logo({portalname,portallink}) {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
   const sidebartoggleref = useContext(RefContext);
 
   const handleToggleSideBar = () => {

@@ -1,15 +1,15 @@
 "use client";
 import { useCart } from "@/data/carts/Cartcontext";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import React, { useContext, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Alert from "../Alert/Alert";
 import { PulseLoader } from "react-spinners";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const OffCanvas = () => {
-  const { OrganizationData } = useContext(OrganizationContext);
-  const { cart, removeFromCart, resertCart, checkout, isPending, error } =
+  const organizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID
+  const { data: OrganizationData } = useFetchOrganization(organizationID ? `/organizations/${organizationID}` : null);  const { cart, removeFromCart, resertCart, checkout, isPending, error } =
     useCart();
   const { data: session } = useSession();
   const offCanvasbuttonRef = useRef(null); // Ref for the off-canvas

@@ -4,8 +4,8 @@ import React, {useEffect, useState } from "react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import BackButton from "@/components/custom/backbutton/BackButton";
 import { dept_icons } from "@/constants";
-import useSWR from "swr";
 import { fetchDepartments, MainAPIendpoint } from "@/data/organization/fetcher";
+import { useFetchDepartments } from "@/data/organization/organization.hook";
 
 const Department = ({ params }) => {
   const { id } = params;
@@ -14,10 +14,7 @@ const Department = ({ params }) => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
    // for data fetching
-   const { data: depts } = useSWR(
-    `${MainAPIendpoint}/department/${OrganizationID}/`,
-    fetchDepartments
-  );
+   const { data: depts } = useFetchDepartments(`${MainAPIendpoint}/department/${OrganizationID}/`);
 
  const fetchdepartment = () => {
     if (!depts) return;

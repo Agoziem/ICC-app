@@ -12,19 +12,10 @@ import "./topSelling.css";
  * @param {"Services" | "Products" | "Videos"} props.itemName
  * @param {Services | Products | Videos} props.data
  * @param {number} props.itemCount
+ * @param {boolean} props.loading
  * @returns {JSX.Element}
  */
-function TopSelling({ itemName, data = [], itemCount }) {
-  const [topSelling, setTopSelling] = useState([]);
-
-  // Update the state whenever the data prop changes
-  useEffect(() => {
-    if (data?.length > 0) {
-      setTopSelling(data);
-    } else {
-      setTopSelling([]);
-    }
-  }, [data]);
+function TopSelling({ itemName, data = [], itemCount, loading }) {
 
   return (
     <div className="card top-selling overflow-auto p-3">
@@ -79,8 +70,17 @@ function TopSelling({ itemName, data = [], itemCount }) {
             </tr>
           </thead>
           <tbody>
-            {topSelling?.length > 0 ? (
-              topSelling?.map((item) => {
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <p className="ml-2">Loading {itemName} ...</p>
+                </td>
+              </tr>
+            ) : data?.length > 0 ? (
+              data?.map((item) => {
                 if (itemName === "Services") {
                   return <TopSellingService key={item.id} item={item} />;
                 } else if (itemName === "Products") {

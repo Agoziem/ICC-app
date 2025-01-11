@@ -3,17 +3,15 @@ import { BiSolidQuoteAltRight } from "react-icons/bi";
 import StarRating from "@/components/custom/StarRating/StarRating";
 import ReusableSwiper from "@/components/custom/Swiper/ReusableSwiper";
 import "./section.css";
-import { fetchTestimonials, MainAPIendpoint } from "@/data/organization/fetcher";
-import useSWR from "swr";
+import { MainAPIendpoint } from "@/data/organization/fetcher";
+import { useFetchTestimonials } from "@/data/organization/organization.hook";
 
 const CustomSwiper = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
-   // for fetching
-   const { data: testimonials } = useSWR(
-    `${MainAPIendpoint}/testimonial/${OrganizationID}/`,
-    fetchTestimonials
-  );
-
+   // for fetching testimonials
+  const { data: testimonials } = useFetchTestimonials(
+    `${MainAPIendpoint}/testimonial/${OrganizationID}/`
+  )
   return (
     <>
       <hr className="text-primary pt-3 mx-5" />

@@ -3,11 +3,10 @@ import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
 import { MdAlternateEmail } from "react-icons/md";
 import { messageDefault } from "@/constants";
-import { deleteEmail, fetchEmails } from "@/data/Emails/fetcher";
-import useSWR from "swr";
-import { MainAPIendpoint } from "@/data/organization/fetcher";
 import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/custom/Pagination/Pagination";
+import { useDeleteEmail, useFetchEmails } from "@/data/Emails/emails.hook";
+import toast from "react-hot-toast";
 
 const Messages = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -21,75 +20,31 @@ const Messages = () => {
     subject: "",
     message: "",
   });
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || "1";
   const pageSize = "10";
 
-  const {
-    data: messages,
-    mutate,
-    isLoading: loadingMessages,
-  } = useSWR(
-    `${MainAPIendpoint}/emails/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
-    fetchEmails,
-    {
-      onSuccess: (data) =>
-        data.results.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        ),
-    }
-  );
+  const { data: messages, isLoading: loadingMessages } = useFetchEmails();
 
   // Handle page change
   const handlePageChange = (newPage) => {
     router.push(`?page=${newPage}&page_size=${pageSize}`);
   };
 
+  const { mutateAsync: deleteEmail, isLoading: isDeleting } = useDeleteEmail();
   /**
    * @async
    * @param {number} id
    */
   const removeMessage = async (id) => {
     try {
-      const deletedid = await deleteEmail(id);
-      await mutate(
-        (Messages) => {
-          const otherMessages = Messages?.results?.filter(
-            (message) => message.id !== deletedid
-          );
-          Messages.results = otherMessages;
-          return { ...Messages };
-        },
-        {
-          populateCache: true,
-        }
-      );
-      setAlert({
-        show: true,
-        message: "Message Deleted Successfully",
-        type: "success",
-      });
+      await deleteEmail(id);
+      toast.success("Message Deleted Successfully");
     } catch (error) {
-      setAlert({
-        show: true,
-        message: "Error Deleting Message",
-        type: "danger",
-      });
+      console.log(error);
+      toast.error("Error Deleting Message");
     } finally {
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
       closeModal();
     }
   };
@@ -112,11 +67,7 @@ const Messages = () => {
     e.preventDefault();
     try {
       console.log(reply);
-      setAlert({
-        show: true,
-        message: "Message Sent Successfully",
-        type: "success",
-      });
+      toast.success("Message Sent Successfully");
       // const res = await fetch("/api/messages", {
       //   method: "POST",
       //   body: JSON.stringify(reply),
@@ -135,19 +86,8 @@ const Messages = () => {
       // }
     } catch (error) {
       console.log(error);
-      setAlert({
-        show: true,
-        message: "Error Sending Message",
-        type: "danger",
-      });
+      toast.error("Error Sending Message");
     } finally {
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
       closeModal();
     }
   };
@@ -160,7 +100,6 @@ const Messages = () => {
         </h4>
         <p>in total</p>
       </div>
-      {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {messages?.results?.length > 0 ? (
         messages?.results?.map((message) => (
           <div key={message.id} className="card my-3 p-3">
@@ -222,8 +161,9 @@ const Messages = () => {
                       setDeleteMode(true);
                       setShowModal(true);
                     }}
+                    
                   >
-                    delete message
+                    Delete Message
                   </button>
                 </div>
               </div>
@@ -323,8 +263,9 @@ const Messages = () => {
                 onClick={() => {
                   removeMessage(message.id);
                 }}
+                disabled={isDeleting}
               >
-                Delete
+                {isDeleting ? "Deleting..." : "Delete"}
               </button>
               <button
                 className="btn btn-sm btn-accent-secondary rounded px-3"

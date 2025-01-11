@@ -27,11 +27,11 @@ export const fetchWAContacts = async () => {
 /**
  * function to fetchWAMessages for a specific contact
  * @async
- * @param {WAContact} contact
+ * @param {number} contact_id
  */
-export const fetchWAMessages = async (contact) => {
+export const fetchWAMessages = async (contact_id) => {
   const response = await axiosInstance.get(
-    `${WhatsappAPIendpoint}/messages/${contact.id}/`
+    `${WhatsappAPIendpoint}/messages/${contact_id}/`
   );
   const validation = WAMessageArraySchema.safeParse(response.data);
   if (!validation.success) {

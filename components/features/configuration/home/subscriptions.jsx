@@ -1,17 +1,18 @@
-import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
 import { subscriptionDefault } from "@/constants";
 import {
-  createSubscription,
-  deleteSubscription,
-  fetchSubscriptions,
   MainAPIendpoint,
-  updateSubscription,
 } from "@/data/organization/fetcher";
 import React, { useState } from "react";
-import useSWR from "swr";
 import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/custom/Pagination/Pagination";
+import {
+  useCreateSubscription,
+  useDeleteSubscription,
+  useFetchSubscriptions,
+  useUpdateSubscription,
+} from "@/data/organization/organization.hook";
+import toast from "react-hot-toast";
 
 const Subscriptions = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -24,33 +25,16 @@ const Subscriptions = () => {
   const page = searchParams.get("page") || "1";
   const pageSize = "20";
 
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
   const [addorupdate, setAddorupdate] = useState({
     mode: "",
     state: false,
   });
 
   // for data fetching
-  const {
-    data: subscriptions,
-    mutate,
-    isLoading: loadingSubscriptions,
-  } = useSWR(
-    `${MainAPIendpoint}/subscription/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
-    fetchSubscriptions,
-    {
-      onSuccess: (data) =>
-        data.results.sort(
-          (a, b) =>
-            new Date(b.date_added).getTime() - new Date(a.date_added).getTime()
-        ),
-    }
-  );
-
+  const { data: subscriptions, isLoading: loadingSubscriptions } =
+    useFetchSubscriptions(
+      `${MainAPIendpoint}/subscription/${OrganizationID}/?page=${page}&page_size=${pageSize}`
+    );
   // Handle page change
   const handlePageChange = (newPage) => {
     router.push(`?page=${newPage}&page_size=${pageSize}`);
@@ -64,121 +48,47 @@ const Subscriptions = () => {
   };
 
   // function to add or update Subscription
+  const { mutateAsync: createSubscription, isLoading: isCreating } =
+    useCreateSubscription();
+  const { mutateAsync: updateSubscription, isLoading: isUpdating } =
+    useUpdateSubscription();
   const addorupdateSubscription = async (e) => {
     e.preventDefault();
     try {
       if (addorupdate.mode === "add") {
-        const newSubscription = await createSubscription(subscription);
-        await mutate(
-          (Subscriptions) => {
-            const newSubscriptions = [
-              newSubscription,
-              ...(Subscriptions?.results || []),
-            ];
-            return {
-              ...Subscriptions,
-              results: newSubscriptions.sort(
-                (a, b) =>
-                  new Date(b.date_added).getTime() -
-                  new Date(a.date_added).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await createSubscription(subscription);
       } else {
-        const updatedSubscription = await updateSubscription(subscription);
-        await mutate(
-          (Subscriptions) => {
-            const otherSubscriptions = (Subscriptions?.results || []).map((o) =>
-              o.id === updatedSubscription.id ? updatedSubscription : o
-            );
-            return {
-              ...Subscriptions,
-              results: otherSubscriptions.sort(
-                (a, b) =>
-                  new Date(b.date_added).getTime() -
-                  new Date(a.date_added).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await updateSubscription(subscription);
       }
-      setAlert({
-        show: true,
-        message: `email ${addorupdate.mode}ed successfully`,
-        type: "success",
-      });
+      toast.success("Subscription added successfully");
     } catch (error) {
       console.log(error.message);
-      setAlert({
-        show: true,
-        message: `An error occured while submitting`,
-        type: "danger",
-      });
+      toast.error("An error occured");
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
   // function to delete Subscription
+  const { mutateAsync: deleteSubscription, isLoading: isDeleting } =
+    useDeleteSubscription();
   /**
    * @param {number} id
    */
   const removeSubscription = async (id) => {
     try {
-      const deletedid = await deleteSubscription(id);
-      await mutate(
-        (Subscriptions) => {
-          const otherSubscriptions = Subscriptions.results.filter(
-            (Subscription) => Subscription.id !== deletedid
-          );
-          Subscriptions.results = otherSubscriptions;
-          return { ...Subscriptions };
-        },
-        {
-          populateCache: true,
-        }
-      );
-      setAlert({
-        show: true,
-        message: "email deleted successfully",
-        type: "success",
-      });
+      await deleteSubscription(id);
+      toast.success("Subscription deleted successfully");
     } catch (error) {
       console.error("Error deleting email :", error);
-      setAlert({
-        show: true,
-        message: "An error just occured",
-        type: "danger",
-      });
+      toast.error("An error occured while deleting Subscription");
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
   return (
     <div className="px-3 mb-4">
-      {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="d-flex justify-content-end mb-3">
         {/* button to add new subscription email */}
         <button
@@ -195,7 +105,7 @@ const Subscriptions = () => {
       {subscriptions?.results.length > 0 ? (
         <div>
           <div className="mb-3">
-            <h4 className="mb-1" >
+            <h4 className="mb-1">
               {subscriptions?.count} Subscription
               {subscriptions?.count > 1 ? "s" : ""}
             </h4>
@@ -297,8 +207,17 @@ const Subscriptions = () => {
                 cancel
               </button>
 
-              <button type="submit" className="btn btn-primary rounded">
-                {addorupdate.mode === "add" ? "Add" : "Update"} email
+              <button
+                type="submit"
+                className="btn btn-primary rounded"
+                disabled={isCreating || isUpdating}
+              >
+                {isCreating || isUpdating
+                  ? "submitting..."
+                  : addorupdate.mode === "add"
+                  ? "Add"
+                  : "Update"}{" "}
+                email
               </button>
             </div>
           </form>
@@ -322,8 +241,9 @@ const Subscriptions = () => {
               onClick={() => {
                 removeSubscription(subscription.id);
               }}
+              disabled={isDeleting}
             >
-              Yes
+              {isDeleting ? "deleting Subcription ..." : "Yes"}
             </button>
           </div>
         </div>

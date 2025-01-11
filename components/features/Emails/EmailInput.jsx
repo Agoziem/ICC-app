@@ -5,8 +5,7 @@ import { emailResponseSchema } from "@/schemas/emails";
 import { useState } from "react";
 import Alert from "../../custom/Alert/Alert";
 import { emailAPIendpoint, submitResponse } from "@/data/Emails/fetcher";
-import useSWR from "swr";
-import { addMessageResponseOptions } from "@/data/Emails/fetcherOptions";
+import { useQueryClient } from "react-query";
 
 /**
  * @param {{message: Email}} props
@@ -15,9 +14,7 @@ import { addMessageResponseOptions } from "@/data/Emails/fetcherOptions";
 const EmailInput = ({ message }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { mutate } = useSWR(
-    `${emailAPIendpoint}/emails/${message.id}/responses/`
-  );
+  const queryClient = useQueryClient();
 
   // Initialize React Hook Form and connect it to Zod via zodResolver
   const {
@@ -43,11 +40,11 @@ const EmailInput = ({ message }) => {
    */
   const onSubmit = async (data) => {
     try {
-      await mutate(submitResponse(data), addMessageResponseOptions(data));
       reset();
       const result = await sendReplyEmail(data);
       if (!result.error) {
         setSuccess(result.message);
+        queryClient.invalidateQueries(["responses", message.id]);
       } else {
         setError(result.message);
       }

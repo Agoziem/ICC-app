@@ -3,11 +3,11 @@ import { PiEmptyBold } from "react-icons/pi";
 import VideosPlaceholder from "../../custom/ImagePlaceholders/Videosplaceholder";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import useSWR from "swr";
-import { fetchVideos, vidoesapiAPIendpoint } from "@/data/videos/fetcher";
+import { vidoesapiAPIendpoint } from "@/data/videos/fetcher";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import { useMemo, useState } from "react";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { useFetchVideos } from "@/data/videos/video.hook";
 
 const UserVideos = () => {
   const { data: session } = useSession();
@@ -23,11 +23,10 @@ const UserVideos = () => {
     data: videos,
     isLoading: loadingVideos,
     error: error,
-  } = useSWR(
+  } = useFetchVideos(
     session?.user.id
       ? `${vidoesapiAPIendpoint}/userboughtvideos/${Organizationid}/${session?.user.id}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
-      : null,
-    fetchVideos
+      : null
   );
 
   // -----------------------------------------
@@ -53,7 +52,6 @@ const UserVideos = () => {
     });
   };
 
-
   // Memoized filtered Videos based on search query
   const filteredVideos = useMemo(() => {
     if (!videos?.results) return [];
@@ -63,7 +61,6 @@ const UserVideos = () => {
       video.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [videos, searchQuery]);
-
 
   return (
     <div>

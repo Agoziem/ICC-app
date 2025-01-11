@@ -8,19 +8,13 @@ import OrganizationCard from "@/components/features/configuration/home/organizat
 import Staffs from "@/components/features/configuration/home/staffs";
 import Subscriptions from "@/components/features/configuration/home/subscriptions";
 import Testimonials from "@/components/features/configuration/home/testimonials";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import {
-  fetchStaffs,
-  MainAPIendpoint,
-} from "@/data/organization/fetcher";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 import React, { useContext, useState } from "react";
-import useSWR from "swr";
 
 const HomePageConfigPage = () => {
   const [currentSection, setCurrentSection] = useState(1);
-  const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const { OrganizationData, mutate: organizationmutate } =
-    useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization()
+
 
   return (
     <div style={{ minHeight: "100vh" }}>
@@ -167,7 +161,6 @@ const HomePageConfigPage = () => {
           {currentSection === 1 && (
             <OrganizationCard
               OrganizationData={OrganizationData}
-              mutate={organizationmutate}
             />
           )}
           {currentSection === 2 && <Testimonials />}
@@ -179,13 +172,11 @@ const HomePageConfigPage = () => {
           {currentSection === 7 && (
             <TermsOfUse
               OrganizationData={OrganizationData}
-              mutate={organizationmutate}
             />
           )}
           {currentSection === 8 && (
             <PrivacyPolicy
               OrganizationData={OrganizationData}
-              mutate={organizationmutate}
             />
           )}
         </div>

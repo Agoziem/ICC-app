@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { TiTimes } from "react-icons/ti";
 import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
-import {
-  createSubCategory,
-  deleteSubCategory,
-  fetchSubCategories,
-  updateSubCategory,
-} from "@/data/categories/fetcher";
-import useSWR from "swr";
 import { SubCategorydefault } from "@/constants";
+import {
+  useCreateSubCategory,
+  useDeleteSubCategory,
+  useFetchSubCategories,
+  useUpdateSubCategory,
+} from "@/data/categories/categories.hook";
 
 //     "category": {
 //       "id": 2,
@@ -45,17 +44,11 @@ const SubCategoriesForm = ({
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const {
-    data: subcategories,
-    isLoading: loadingsubcategories,
-    mutate,
-  } = useSWR(
-    currentCategory?.id
-      ? `${apiendpoint}/subcategories/${currentCategory.id}/`
-      : null,
-    fetchSubCategories
-  );
-
+  const { data: subcategories, isLoading: loadingsubcategories } =
+    useFetchSubCategories(
+      `${apiendpoint}/subcategories/${currentCategory?.id}/`,
+      currentCategory?.id
+    );
   //   -----------------------------------------
   // close modal
   //   -----------------------------------------
@@ -67,42 +60,22 @@ const SubCategoriesForm = ({
   //   -----------------------------------------
   // handle create and edit item
   //   -----------------------------------------
+  const { mutateAsync: createSubCategory } = useCreateSubCategory();
+  const { mutateAsync: updateSubCategory } = useUpdateSubCategory();
   const handleItem = async (e, url) => {
     e.preventDefault();
-    console.log(item);
     try {
       if (edit) {
-        const ammendedSubcategory = await updateSubCategory(url, item);
-        await mutate(
-          (subcategories) => {
-            const updatedsubcategories = (subcategories || []).map((i) =>
-              i.id === ammendedSubcategory.id ? ammendedSubcategory : i
-            )
-            return [...updatedsubcategories];
-          },
-          {
-            populateCache: true,
-            revalidate: false
-          }
-        );
+        await updateSubCategory(item);
       } else {
-        const newSubcategory = await createSubCategory(url, item);
-        await mutate(
-          (subcategories) => {
-            return [newSubcategory, ...(subcategories || [])];
-          },
-          {
-            populateCache: true,
-            revalidate: false
-          }
-        );
+        await createSubCategory(item);
+        setItem({ id: null, subcategory: "", category: null });
+        setAlert({
+          show: true,
+          message: edit ? `Subcategory Updated` : `Subcategory Created`,
+          type: "success",
+        });
       }
-      setItem({ id: null, subcategory: "", category: null });
-      setAlert({
-        show: true,
-        message: edit ? `Subcategory Updated` : `Subcategory Created`,
-        type: "success",
-      });
     } catch (error) {
       console.log(error);
       setAlert({
@@ -122,19 +95,26 @@ const SubCategoriesForm = ({
   //   -----------------------------------------
   // delete item
   //   -----------------------------------------
+  const { mutateAsync: deleteSubCategory } = useDeleteSubCategory();
   const deleteItem = async (id) => {
     try {
-      const delete_id = await deleteSubCategory(deleteUrl,id)
-      await mutate((subcategories)=> {
-        const otherSubCategories = subcategories.filter((i) => i.id !== delete_id)
-        return [...otherSubCategories]
-      }, {
-        populateCache:true,
-        revalidate: false
-      })
-      
+      await deleteSubCategory({ id, category_id: currentCategory.id });
+      setAlert({
+        show: true,
+        message: `Subcategory deleted`,
+        type: "success",
+      });
     } catch (error) {
       console.log(error);
+      setAlert({
+        show: true,
+        message: "Something went wrong",
+        type: "danger",
+      });
+    } finally {
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "" });
+      }, 3000);
     }
   };
 

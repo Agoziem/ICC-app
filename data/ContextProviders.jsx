@@ -1,45 +1,27 @@
 // ContextProviders.js
 
-import { OrganizationContextProvider } from "@/data/organization/Organizationalcontextdata";
-import { ArticleProvider } from "@/data/articles/Articlescontextdata";
+import { OrganizationProvider } from "@/data/organization/Organizationalcontextdata";
 import { CartProvider } from "@/data/carts/Cartcontext";
 import { AdminContextProvider } from "@/data/payments/Admincontextdata";
-import { UserContextProvider } from "@/data/payments/usercontextdata";
-import { ProductProvider } from "@/data/product/Productcontext";
-import { VideoProvider } from "@/data/videos/Videoscontext";
-import { ServiceProvider } from "@/data/services/Servicescontext";
 import { Subcategoriesprovider } from "@/data/categories/Subcategoriescontext";
 import { ChatroomContextProvider } from "@/data/chatroomAPI/ChatroomContext";
 import { ChatroomSocketProvider } from "@/data/chatroomAPI/ChatroomSocket";
-import { NotificationsContextProvider } from "@/data/notificationsAPI/NotificationContext";
 import { WhatsappAPIProvider } from "@/data/whatsappAPI/WhatsappContext";
 
 const ContextProviders = ({ children }) => (
-  <OrganizationContextProvider>
-    <ArticleProvider>
-      <AdminContextProvider>
-        <UserContextProvider>
-          <CartProvider>
-            <ProductProvider>
-              <VideoProvider>
-                <ServiceProvider>
-                  <Subcategoriesprovider>
-                    <ChatroomContextProvider>
-                      <ChatroomSocketProvider>
-                        <NotificationsContextProvider>
-                          <WhatsappAPIProvider>{children}</WhatsappAPIProvider>
-                        </NotificationsContextProvider>
-                      </ChatroomSocketProvider>
-                    </ChatroomContextProvider>
-                  </Subcategoriesprovider>
-                </ServiceProvider>
-              </VideoProvider>
-            </ProductProvider>
-          </CartProvider>
-        </UserContextProvider>
-      </AdminContextProvider>
-    </ArticleProvider>
-  </OrganizationContextProvider>
+  <OrganizationProvider>
+    <AdminContextProvider>
+        <CartProvider>
+          <Subcategoriesprovider>
+            <ChatroomContextProvider>
+              <ChatroomSocketProvider>
+                <WhatsappAPIProvider>{children}</WhatsappAPIProvider>
+              </ChatroomSocketProvider>
+            </ChatroomContextProvider>
+          </Subcategoriesprovider>
+        </CartProvider>
+    </AdminContextProvider>
+  </OrganizationProvider>
 );
 
 export default ContextProviders;

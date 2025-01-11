@@ -1,14 +1,14 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import { FaQuestionCircle } from "react-icons/fa";
 import SubjectDetails from "./SubjectDetails";
 import QuestionForm from "./QuestionForm";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const Test = ({ testID }) => {
-  const { OrganizationData } = useContext(OrganizationContext);
-  const [test, setTest] = useState({});
-  const [currentSubject, setCurrentSubject] = useState({});
+  const { data: OrganizationData } = useFetchOrganization();
+  const [test, setTest] = useState(null);
+  const [currentSubject, setCurrentSubject] = useState(null);
 
   const fetchTest = async () => {
     try {
@@ -49,8 +49,8 @@ const Test = ({ testID }) => {
                   <FaQuestionCircle className="mb-0" />
                 </div>
                 <div className="flex-fill">
-                  <p className="mb-1 text-secondary">{test.testYear?.year}</p>
-                  <h6>{test.texttype?.testtype}</h6>
+                  <p className="mb-1 text-secondary">{test?.testYear?.year}</p>
+                  <h6>{test?.texttype?.testtype}</h6>
                 </div>
               </div>
             </div>

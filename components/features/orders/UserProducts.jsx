@@ -2,13 +2,13 @@ import { useSession } from "next-auth/react";
 import { PiEmptyBold } from "react-icons/pi";
 import ProductPlaceholder from "../../custom/ImagePlaceholders/Productplaceholder";
 import Link from "next/link";
-import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
-import useSWR from "swr";
+import { productsAPIendpoint } from "@/data/product/fetcher";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { useMemo, useState } from "react";
+import { useFetchProducts } from "@/data/product/product.hook";
 
 const UserProducts = () => {
   const { data: session } = useSession();
@@ -24,11 +24,10 @@ const UserProducts = () => {
     data: products,
     isLoading: loadingProducts,
     error: error,
-  } = useSWR(
+  } = useFetchProducts(
     session?.user.id
       ? `${productsAPIendpoint}/userboughtproducts/${Organizationid}/${session?.user.id}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
-      : null,
-    fetchProducts
+      : null
   );
 
   // -----------------------------------------

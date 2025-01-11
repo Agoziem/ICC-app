@@ -1,6 +1,6 @@
 import React from "react";
 
-function RecentSalesTable({ items, session }) {
+function RecentSalesTable({ loading, items, session }) {
   const handleStatus = (status) => {
     switch (status) {
       case "Completed":
@@ -29,16 +29,26 @@ function RecentSalesTable({ items, session }) {
         </tr>
       </thead>
       <tbody>
-        {items && items.length > 0 ? (
+        {loading ? (
+          <tr>
+            <td
+              colSpan={session?.user?.is_staff ? 5 : 4}
+              className="text-center"
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="ml-2">Loading Orders ...</p>
+            </td>
+          </tr>
+        ) : items && items.length > 0 ? (
           items.slice(0, 10).map((item) => (
             <tr key={item.id}>
               <th scope="row">
                 <a href="#">{item.id}</a>
               </th>
               {session?.user?.is_staff ? <td>{item.customer.name}</td> : null}
-              <td>
-                {item.reference}
-              </td>
+              <td>{item.reference}</td>
               <td className="fw-bold">
                 &#8358;
                 {parseFloat(item.amount).toLocaleString()}
@@ -56,7 +66,7 @@ function RecentSalesTable({ items, session }) {
           ))
         ) : (
           <tr>
-            <td colSpan="6" className="text-center fw-bold  py-4">
+            <td colSpan={6} className="text-center fw-bold  py-4">
               No Order Yet
             </td>
           </tr>

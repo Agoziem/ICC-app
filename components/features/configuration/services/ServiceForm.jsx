@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
-import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
-import useSWR from "swr";
 import { servicesAPIendpoint } from "@/data/services/fetcher";
-import { fetchSubCategories } from "@/data/categories/fetcher";
 import { PulseLoader } from "react-spinners";
+import { useFetchSubCategories } from "@/data/categories/categories.hook";
 
 /**
  * @param {{ service: Service; setService: (value:Service) => void; handleSubmit: any; addorupdate: any; OrganizationData: any; tab: any; categories: any;isSubmitting: boolean; }} param0
@@ -19,12 +16,10 @@ const ServiceForm = ({
   categories: servicecategories,
   isSubmitting,
 }) => {
-  const { data: subcategories, isLoading: loadingsubcategories } = useSWR(
-    service?.category?.id
-      ? `${servicesAPIendpoint}/subcategories/${service.category.id}/`
-      : null,
-    fetchSubCategories
-  );
+  const { data: subcategories, isLoading: loadingsubcategories } =
+    useFetchSubCategories(
+      `${servicesAPIendpoint}/subcategories/${service.category.id}/`
+    );
 
   // ------------------------------
   // Handle category change
@@ -197,7 +192,9 @@ const ServiceForm = ({
             id="form_link"
             name="details_form_link"
             value={service.details_form_link}
-            onChange={(e) => setService({ ...service, details_form_link: e.target.value })}
+            onChange={(e) =>
+              setService({ ...service, details_form_link: e.target.value })
+            }
             required
           />
         </div>

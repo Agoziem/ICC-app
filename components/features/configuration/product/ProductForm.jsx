@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 import FileUploader from "@/components/custom/Fileuploader/FileUploader";
-import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
-import useSWR from "swr";
 import { productsAPIendpoint } from "@/data/product/fetcher";
-import { fetchSubCategories } from "@/data/categories/fetcher";
 import { PulseLoader } from "react-spinners";
+import { useFetchSubCategories } from "@/data/categories/categories.hook";
 
 /**
  * @param {{ product: Product; setProduct: (value:Product) => void; handleSubmit: any; addorupdate: any; categories: Categories;isSubmitting:boolean; }} param0
@@ -16,16 +13,13 @@ const ProductForm = ({
   handleSubmit,
   addorupdate,
   categories: productcategories,
-  isSubmitting
+  isSubmitting,
 }) => {
-
-  const { data: subcategories, isLoading:loadingsubcategories } = useSWR(
-    product?.category?.id
-      ? `${productsAPIendpoint}/subcategories/${product.category.id}/`
-      : null,
-      fetchSubCategories
-  );
-
+  const { data: subcategories, isLoading: loadingsubcategories } =
+    useFetchSubCategories(
+      `${productsAPIendpoint}/subcategories/${product.category.id}/`,
+      product.category?.id
+    );
   // ------------------------------
   // Handle category change
   // -------------------------------
@@ -216,20 +210,16 @@ const ProductForm = ({
         )}
 
         <button type="submit" className="btn btn-primary rounded px-5 mt-3">
-        {isSubmitting
-            ? (
-              <div className="d-inline-flex align-items-center justify-content-center gap-2">
-                <div>Submitting Product</div>
-                <PulseLoader
-                  size={8}
-                  color={"#12000d"}
-                  loading={true}
-                />
-              </div>
-            )
-            : addorupdate.mode === "add"
-            ? "Add Product"
-            : "Update Product"}
+          {isSubmitting ? (
+            <div className="d-inline-flex align-items-center justify-content-center gap-2">
+              <div>Submitting Product</div>
+              <PulseLoader size={8} color={"#12000d"} loading={true} />
+            </div>
+          ) : addorupdate.mode === "add" ? (
+            "Add Product"
+          ) : (
+            "Update Product"
+          )}
         </button>
       </form>
     </div>

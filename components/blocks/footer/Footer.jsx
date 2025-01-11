@@ -1,10 +1,10 @@
 "use client";
-import React, { useContext } from "react";
 import "./footer.css";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 function Footer() {
-  const { OrganizationData } = useContext(OrganizationContext);
+  const organizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID
+  const { data: OrganizationData } = useFetchOrganization(organizationID ? `/organizations/${organizationID}` : null);
   return (
     <footer id="footer" className="dashboardfooter px-2">
       <div className="copyright">

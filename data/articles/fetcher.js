@@ -89,7 +89,6 @@ export const createArticle = async (data) => {
  * @returns {Promise<Article>}
  */
 export const updateArticle = async (data) => {
-  console.log(data)
   const formData = converttoformData(data,["tags"])
   const response = await axiosInstance.put(
     `${articleAPIendpoint}/updateblog/${data.id}/`,
@@ -201,45 +200,25 @@ export const incrementView = async (Article) => {
 // ------------------------------------------------------
 // Article Likes fetcher and mutation functions
 // ------------------------------------------------------
-
-/**
- * add like
- * @async
- * @param {number} userid
- * @param {Article} Article
- */
-export const addLike = async (Article, userid) => {
+export const addLike = async ({Article, userid}) => {
   try {
     await axiosInstance.get(
       `${articleAPIendpoint}/addlike/${Article.id}/${userid}/`
     );
-    const updatedArticle = { ...Article };
-    if (!updatedArticle.likes.includes(userid)) {
-      updatedArticle.likes.push(userid);
-    }
-    return updatedArticle;
   } catch (error) {
     console.error("Failed to add like:", error);
-    throw error;
+    throw Error("Failed to add like");
   }
 };
 
-/**
- * delete like
- * @async
- * @param {number} userid
- * @param {Article} Article
- */
-export const deleteLike = async (Article, userid) => {
+
+export const deleteLike = async ({Article, userid}) => {
   try {
     await axiosInstance.delete(
       `${articleAPIendpoint}/deletelike/${Article.id}/${userid}/`
     );
-    const updatedArticle = { ...Article };
-    updatedArticle.likes = updatedArticle.likes.filter((id) => id !== userid);
-    return updatedArticle;
   } catch (error) {
     console.error("Failed to remove like:", error);
-    throw error;
+    throw Error("Failed to remove like");
   }
 };

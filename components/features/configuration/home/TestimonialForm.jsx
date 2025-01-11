@@ -1,7 +1,7 @@
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 
 /**
- * @param {{ addorupdate: any; testimonial: Testimony;setTestimonial:(value:Testimony) => void; onSubmit: any; onClose: any; }} param0
+ * @param {{ addorupdate: any; testimonial: Testimony;setTestimonial:React.Dispatch<React.SetStateAction<Testimony>>; onSubmit: any; onClose: any;loading:boolean; }} param0
  */
 const TestimonialForm = ({
   addorupdate,
@@ -9,6 +9,7 @@ const TestimonialForm = ({
   setTestimonial,
   onSubmit,
   onClose,
+  loading
 }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,10 +95,9 @@ const TestimonialForm = ({
         <button
           type="submit"
           className="btn btn-accent-secondary border-0 text-secondary mt-3 rounded"
+          disabled={loading}
         >
-          {addorupdate.type === "add"
-            ? "Add Testimonial"
-            : "Update Testimonial"}
+          {loading ? "Submitting..." : "Submit Testimonial"}
         </button>
       </form>
     </div>

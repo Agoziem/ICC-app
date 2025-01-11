@@ -7,12 +7,9 @@ import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import { MdOutlineContacts } from "react-icons/md";
 import BackButton from "../../custom/backbutton/BackButton";
 import useWebSocket from "@/hooks/useWebSocket";
-import useSWR from "swr";
-import {
-  fetchWAContacts,
-  WhatsappAPIendpoint,
-} from "@/data/whatsappAPI/fetcher";
 import { WAContactWebsocketSchema } from "@/schemas/whatsapp";
+import { useFetchWAContacts } from "@/data/whatsappAPI/whatsapp.hook";
+import { useQueryClient } from "react-query";
 
 /**
  * Holds all the
@@ -34,84 +31,71 @@ const Contacts = ({ showlist, setShowlist }) => {
     data: contacts,
     isLoading,
     error,
-    mutate,
-  } = useSWR(`${WhatsappAPIendpoint}/contacts/`, fetchWAContacts, {
-    onSuccess: (data) =>
-      data.sort(
-        (a, b) =>
-          new Date(b.last_message.timestamp).getTime() -
-          new Date(a.last_message.timestamp).getTime()
-      ),
-  });
+  } = useFetchWAContacts();
 
   // ------------------------------------------
   // Handling WebSocket onmessage event
   // ------------------------------------------
+  const queryClient = useQueryClient();
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {
         const responseContact = JSON.parse(event.data);
         const validatedcontact =
           WAContactWebsocketSchema.safeParse(responseContact);
-
-        // validate the websocket data
+  
+        // Validate the WebSocket data
         if (!validatedcontact.success) {
           console.log(validatedcontact.error.issues);
+          return;
         }
+  
         const newContact = validatedcontact.data;
-
-        // check and confirm the operation and carry out a cache mutation
-        if (newContact.operation === "create") {
-          mutate(
-            (existingContacts) => {
-              const contactExists = existingContacts?.some(
-                (contact) => contact.id === newContact.contact.id
-              );
-
-              if (contactExists) {
-                return [
-                  newContact.contact,
-                  ...existingContacts.filter(
-                    (contact) => contact.id !== newContact.contact.id
-                  ),
-                ].sort(
-                  (a, b) =>
-                    new Date(b.last_message.timestamp).getTime() -
-                    new Date(a.last_message.timestamp).getTime()
-                );
-              } else {
-                // If the contact doesn't exist, just add it to the top
-                return [newContact.contact, ...(existingContacts || [])].sort(
-                  (a, b) =>
-                    new Date(b.last_message.timestamp).getTime() -
-                    new Date(a.last_message.timestamp).getTime()
-                );
-              }
-            },
-            {
-              populateCache: true,
-            }
+  
+        // Define cache key for contacts
+        const cacheKey = ["waContacts"];
+  
+        // Function to sort contacts by `last_message.timestamp`
+        const sortContacts = (contacts) =>
+          contacts.sort(
+            (a, b) =>
+              new Date(b.last_message.timestamp).getTime() -
+              new Date(a.last_message.timestamp).getTime()
           );
-        }
-
-        if (newContact.operation === "update_seen_status") {
-          mutate(
-            (existingContacts) => {
-              const updatedMessages = existingContacts.map((contact) =>
-                contact.id === newContact.contact.id
-                  ? newContact.contact
-                  : contact
-              );
-              return updatedMessages;
-            },
-            {
-              populateCache: true,
+  
+        // Handle different operations
+        if (newContact.operation === "create") {
+          queryClient.setQueryData(cacheKey, (existingContacts = []) => {
+            const contactExists = existingContacts.some(
+              (contact) => contact.id === newContact.contact.id
+            );
+  
+            if (contactExists) {
+              return sortContacts([
+                newContact.contact,
+                ...existingContacts.filter(
+                  (contact) => contact.id !== newContact.contact.id
+                ),
+              ]);
+            } else {
+              // If the contact doesn't exist, just add it to the top
+              return sortContacts([newContact.contact, ...existingContacts]);
             }
+          });
+        }
+  
+        if (newContact.operation === "update_seen_status") {
+          queryClient.setQueryData(cacheKey, (existingContacts = []) =>
+            existingContacts.map((contact) =>
+              contact.id === newContact.contact.id
+                ? newContact.contact
+                : contact
+            )
           );
         }
       };
     }
-  }, [isConnected, ws, mutate]);
+  }, [isConnected, ws]);
 
 
 

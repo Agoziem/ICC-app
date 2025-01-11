@@ -6,7 +6,7 @@ const ServiceConfPage = ({ params }) => {
   return (
     <div style={{ minHeight: "100vh" }}>
       <PageTitle pathname="Service Setting" />
-      <ServiceConfig serviceid = {id} />
+      <ServiceConfig serviceid={id} />
     </div>
   );
 };

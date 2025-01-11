@@ -9,9 +9,13 @@ import { ArticleSchema } from "@/schemas/articles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createArticle, updateArticle } from "@/data/articles/fetcher";
 import { useSession } from "next-auth/react";
+import {
+  useCreateArticle,
+  useUpdateArticle,
+} from "@/data/articles/articles.hook";
 
 /**
- * @param {{ article: Article;setArticle: (value:Article) => void; editMode: any; setEditMode: any; articles: ArticlesResponse; categories: any; mutate: any; }} param0
+ * @param {{ article: Article;setArticle: (value:Article) => void; editMode: any; setEditMode: any; articles: ArticlesResponse; categories: any;  }} param0
  */
 const ArticleForm = ({
   article,
@@ -19,7 +23,6 @@ const ArticleForm = ({
   editMode,
   setEditMode,
   categories,
-  mutate: articlesmutate,
 }) => {
   const [alert, setAlert] = useState({
     show: false,
@@ -32,6 +35,10 @@ const ArticleForm = ({
   const [progressRestoredMessage, setProgressRestoredMessage] = useState("");
   const { data: session } = useSession();
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const { mutateAsync: createArticle } = useCreateArticle();
+  const { mutateAsync: updateArticle } = useUpdateArticle();
+
+  
   const {
     register,
     control,
@@ -101,15 +108,11 @@ const ArticleForm = ({
     localStorage.removeItem("draftArticle");
   };
 
+
   /** @param {Article} data */
   const addArticle = async (data) => {
     try {
-      const {
-        category,
-        tags,
-        organization,
-        ...restData 
-      } = data;
+      const { category, tags, organization, ...restData } = data;
 
       // sublime relational fields to their Ids to avoid issues at the backend
       const data_to_submit = {
@@ -117,51 +120,14 @@ const ArticleForm = ({
         category: category?.id || null,
         tags: tags?.map((tag) => tag.tag) || [],
         author: editMode ? article.author.id : session?.user?.id,
-        organization: Organizationid
+        organization: Organizationid,
       };
 
       if (editMode) {
-        const updatedArticle = await updateArticle(data_to_submit);
-        articlesmutate(
-          (Articles) => {
-            const otherArticles = (Articles?.results || []).map((o) =>
-              o.id === updatedArticle.id ? updatedArticle : o
-            );
-            return {
-              ...Articles,
-              results: otherArticles.sort(
-                (a, b) =>
-                  new Date(b.updated_at).getTime() -
-                  new Date(a.updated_at).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-            // revalidate: false,
-          }
-        );
+        await updateArticle(data_to_submit);
       } else {
-        const newArticle = await createArticle(data_to_submit);
-        articlesmutate(
-          (Articles) => {
-            const newArticles = [newArticle, ...(Articles?.results || [])];
-            return {
-              ...Articles,
-              results: newArticles.sort(
-                (a, b) =>
-                  new Date(b.updated_at).getTime() -
-                  new Date(a.updated_at).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-            // revalidate: false,
-          }
-        );
+        await createArticle(data_to_submit);
       }
-
       setAlert({
         show: true,
         message: `Article ${editMode ? "edited" : "created"} Successfully`,

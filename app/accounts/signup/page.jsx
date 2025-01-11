@@ -5,14 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "../accounts.module.css";
 import { useRouter } from "next/navigation";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Alert from "@/components/custom/Alert/Alert";
 import { sendVerificationEmail } from "@/utils/mail";
 import PasswordInput from "@/components/custom/Inputs/PasswordInput";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const SignupPage = () => {
   const router = useRouter();
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
   const [formData, setFormData] = useState({
     organization_id: "",
     firstname: "",
@@ -30,10 +30,12 @@ const SignupPage = () => {
   });
 
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      organization_id: OrganizationData.id,
-    }));
+    if (OrganizationData && OrganizationData.id) {
+      setFormData((prev) => ({
+        ...prev,
+        id: OrganizationData.id,
+      }));
+    }
   }, [OrganizationData]);
 
   // ----------------------------------------

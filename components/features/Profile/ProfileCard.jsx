@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import "./Profile.css";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { useUserContext } from "@/data/payments/usercontextdata";
 import Link from "next/link";
 import Alert from "../../custom/Alert/Alert";
 import Modal from "../../custom/Modal/modal";
+import { useFetchPaymentsByUser } from "@/data/payments/orders.hook";
 
 const ProfileCard = ({ alert, setEditMode }) => {
   const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
-  const { userOrders } = useUserContext();
   const [active, setActive] = useState(1);
+
+  const { data: userOrders } = useFetchPaymentsByUser(session?.user?.id);
 
   const deleteUser = async () => {
     const response = await fetch(

@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import Modal from "../../custom/Modal/modal";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { createComment } from "@/data/articles/fetcher";
 import Alert from "@/components/custom/Alert/Alert";
 import { ArticleCommentDefault } from "@/constants";
+import { useCreateComment } from "@/data/articles/articles.hook";
 
 /**
- * @param {{ article: Article; comments: any; mutate: any; }} param0
+ * @param {{ article: Article; comments: any; }} param0
  */
-const ArticleCommentsForm = ({ article, comments, mutate }) => {
+const ArticleCommentsForm = ({ article, comments }) => {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [commenttoedit, setCommenttoEdit] = useState(ArticleCommentDefault);
-
+  const { mutateAsync:createComment } = useCreateComment();
+  
   const addComment = async (e) => {
     e.preventDefault();
     const { blog, user, ...restdata } = commenttoedit;
@@ -29,21 +30,7 @@ const ArticleCommentsForm = ({ article, comments, mutate }) => {
       },
     };
     try {
-      const newComment = await createComment(datatosubmit);
-      await mutate(
-        (Comments) => {
-          const newComments = [newComment, ...(Comments?.results || [])];
-          return {
-            ...Comments,
-            results: newComments.sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            ),
-          };
-        },
-        {
-          populateCache: true,
-        }
-      );
+      await createComment(datatosubmit);
       setSuccess("submitted successfully!");
     } catch (error) {
       console.log(error.message);

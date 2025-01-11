@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import {
-  addLike,
-  deleteLike,
-} from "@/data/articles/fetcher";
+import { useAddLike, useDeleteLike } from "@/data/articles/articles.hook";
+import toast from "react-hot-toast";
 
 /**
- * @param {{ article: Article; setToastMessage: any; mutate:any }} param0
+ * @param {{ article: Article;}} param0
  */
-const ArticleLikes = ({ article, setToastMessage, mutate }) => {
+const ArticleLikes = ({ article }) => {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
+  const { mutateAsync: addLike } = useAddLike();
+  const { mutateAsync: removeLike } = useDeleteLike();
 
   useEffect(() => {
     if (article && article.likes) {
@@ -22,31 +22,14 @@ const ArticleLikes = ({ article, setToastMessage, mutate }) => {
   const handleLikeToggle = async () => {
     const userId = parseInt(session?.user?.id);
     const isLiked = likes.includes(userId);
-    setToastMessage({
-      title: isLiked ? "Unlike" : "Like",
-      message: isLiked ? "You unliked the post" : "You liked the post",
-      time: new Date().toLocaleTimeString(),
-    });
     try {
       isLiked
-        ? await mutate(deleteLike(article, userId), {
-            populateCache: true,
-          })
-        : await mutate(addLike(article, userId), {
-            populateCache: true,
-          });
-      document.getElementById("liveToast").classList.replace("show", "hide");
+        ? await removeLike({ Article: article, userid: userId })
+        : await addLike({ Article: article, userid: userId });
+      toast.success(isLiked ? "You unliked the post" : "You liked the post");
     } catch (error) {
       console.error(error);
-    } finally {
-      setTimeout(() => {
-        document.getElementById("liveToast").classList.replace("show", "hide");
-        setToastMessage({
-          title: "",
-          message: "",
-          time: "",
-        });
-      }, 3000);
+      toast.error(error.message);
     }
   };
 

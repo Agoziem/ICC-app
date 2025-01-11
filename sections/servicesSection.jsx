@@ -3,35 +3,44 @@ import React, { useContext, useEffect, useState } from "react";
 import { LuCheckCircle } from "react-icons/lu";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Link from "next/link";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useOrganization } from "@/data/organization/Organizationalcontextdata";
 import ReusableSwiper from "@/components/custom/Swiper/ReusableSwiper";
 import { useCart } from "@/data/carts/Cartcontext";
-import { useServiceContext } from "@/data/services/Servicescontext";
 import { useSession } from "next-auth/react";
-import useSWR from "swr";
-import { fetchCategories } from "@/data/categories/fetcher";
-import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
+import { servicesAPIendpoint } from "@/data/services/fetcher";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useFetchServices } from "@/data/services/service.hook";
+import AnimationContainer from "@/components/animation/animation-container";
+import NormalAnimationContainer from "@/components/animation/animation-normal";
 
 const ServicesSection = () => {
-  const { openModal } = useContext(OrganizationContext);
+  const { openModal } = useOrganization();
   const { cart, addToCart, removeFromCart } = useCart();
   const { data: session } = useSession();
   const [categoryServices, setCategoryServices] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
-  const { data: categories } = useSWR(
-    `${servicesAPIendpoint}/categories/`,
-    fetchCategories
+  const { data: categories } = useFetchCategories(
+    `${servicesAPIendpoint}/categories/`
   );
 
   const {
     data: services,
     isLoading: loadingServices,
     error: error,
-  } = useSWR(
-    `${servicesAPIendpoint}/services/${Organizationid}/?category=All&page=1&page_size=100`,
-    fetchServices
+  } = useFetchServices(
+    `${servicesAPIendpoint}/services/${Organizationid}/?category=All&page=1&page_size=100`
   );
+
+  const featuredservices = [
+    "Sales of JAMB/Post UTME forms",
+    "Sales of Checker cards",
+    "Printing of WAEC Certificate, Neco Certificate and E-Verification",
+    "Academic Consultation",
+    "Processing of Affidavits and All Documents for School Clearance",
+    "Tutorials and Skill Acquisition for Students Productivity.",
+    "Hostel bookings Campus & Off-campus",
+  ];
 
   useEffect(() => {
     if (categories && services) {
@@ -56,63 +65,52 @@ const ServicesSection = () => {
       <div className="container px-5 px-md-4 pb-2 mb-5">
         <div className="row align-items-center">
           <div className="col-12 col-md-6">
-            <img
-              className="img-fluid mb-4 mb-md-0 mx-auto d-block"
-              src="/features image.png"
-              alt="feature"
-              width={500}
-              height={500}
-              style={{ minWidth: "288px" }}
-            />
+            <AnimationContainer slideDirection="up" zoom="in" delay={0.1}>
+              <img
+                className="img-fluid mb-4 mb-md-0 mx-auto d-block"
+                src="/features image.png"
+                alt="feature"
+                width={500}
+                height={500}
+                style={{ minWidth: "288px" }}
+              />
+            </AnimationContainer>
           </div>
           <div className="col-12 col-md-6 px-0 px-md-5">
             <h6>
               <span className="text-primary">What we do</span>
             </h6>
-            <h3
-              style={{
-                lineHeight: "1.4",
-              }}
-            >
-              <span className="text-primary">
-                We offer a wide range of services
-              </span>{" "}
-              to help you with your Admission process.
-            </h3>
-            <ul className="list-unstyled text-primary mt-3">
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary me-2" />
-                Sales of JAMB/Post UTME forms
-              </li>
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary  me-2" />
-                Sales of Checker cards
-              </li>
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary  me-2" />
-                Printing of WAEC Certificate, Neco Certificate and E
-                Verification
-              </li>
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary  me-2" />
-                Academic Consultation
-              </li>
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary  me-2" />
-                Processing of Affidavits and All Documents for School Clearance
-              </li>
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary  me-2" />
-                Tutorials and Skill Acquisition for Students Productivity.
-              </li>
-              <li className="py-1">
-                <LuCheckCircle className="text-secondary  me-2" />
-                Hostel bookings Campus & Off-campus
-              </li>
-            </ul>
-            <Link href={"/dashboard/services"} className="btn btn-primary mt-2">
-              Get started now <FaLongArrowAltRight className="ms-2" />
-            </Link>
+            <AnimationContainer slideDirection="down" delay={0.1}>
+              <h3
+                style={{
+                  lineHeight: "1.4",
+                }}
+              >
+                <span className="text-primary">
+                  We offer a wide range of services
+                </span>{" "}
+                to help you with your Admission process.
+              </h3>
+            </AnimationContainer>
+            <AnimationContainer slideDirection="down" delay={0.2}>
+              <ul className="list-unstyled text-primary mt-3">
+                {featuredservices.map((service, index) => (
+                  <li className="py-1" key={index}>
+                    <LuCheckCircle className="text-secondary me-2" />
+                    {service}
+                  </li>
+                ))}
+              </ul>
+            </AnimationContainer>
+
+            <AnimationContainer slideDirection="down" delay={0.4}>
+              <Link
+                href={"/dashboard/services"}
+                className="btn btn-primary mt-2"
+              >
+                Get started now <FaLongArrowAltRight className="ms-2" />
+              </Link>
+            </AnimationContainer>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TiTimes } from "react-icons/ti";
 
 /**
- * @param {{ addorupdate: {type: string;state: boolean;}; department: Department; setDepartment: (value:Department) => void; handleSubmit: any; closeModal: any;staffs:Staffs }} param0
+ * @param {{ addorupdate: {type: string;state: boolean;}; department: Department; setDepartment: (value:Department) => void; handleSubmit: any; closeModal: any;staffs:Staffs;loading:boolean }} param0
  */
 const DepartmentForm = ({
   addorupdate,
@@ -12,6 +12,7 @@ const DepartmentForm = ({
   handleSubmit,
   staffs,
   closeModal,
+  loading,
 }) => {
   const [service, setService] = useState("");
 
@@ -146,8 +147,8 @@ const DepartmentForm = ({
         </div>
 
         <hr />
-        <button type="submit" className="btn btn-primary border-0 mt-3 rounded">
-          {addorupdate.type === "add" ? "Add Department" : "Update Department"}
+        <button type="submit" className="btn btn-primary border-0 mt-3 rounded" >
+          {loading ? "submitting department..." : addorupdate.type === "add" ? "Add Department" : "Update Department"}
         </button>
       </form>
     </div>

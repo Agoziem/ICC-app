@@ -4,18 +4,18 @@ import React, { useContext, useEffect, useState } from "react";
 import "./section.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { MdOutlineArticle } from "react-icons/md";
-import useSWR from "swr";
 import { articleAPIendpoint, fetchArticles } from "@/data/articles/fetcher";
+import { useFetchArticles } from "@/data/articles/articles.hook";
+import AnimationContainer from "@/components/animation/animation-container";
 
 const BlogSection = () => {
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   // ----------------------------------------------------------
   // fetch articles by Categories
   // ----------------------------------------------------------
-  const { data: articles } = useSWR(
-    `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=3`,
-    fetchArticles
-  );
+const { data: articles } = useFetchArticles(
+  `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=All&page=1&page_size=3`
+)
 
   return (
     <>
@@ -31,8 +31,10 @@ const BlogSection = () => {
 
         <div className="row px-3 px-md-5">
           {articles && articles.results.length > 0 ? (
-            articles.results.map((blog) => (
-              <div
+            articles.results.map((blog,index) => (
+              <AnimationContainer
+                slideDirection="down"
+                delay={0.1 * index}
                 key={blog.id}
                 className="col-12 col-md d-flex justify-content-center"
               >
@@ -96,7 +98,7 @@ const BlogSection = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </AnimationContainer>
             ))
           ) : (
             <div className="col-12 d-flex justify-content-center">

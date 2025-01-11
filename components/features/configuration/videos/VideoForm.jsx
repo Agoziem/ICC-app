@@ -1,11 +1,9 @@
 import VideoUploader from "@/components/custom/Fileuploader/VideoUploader";
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
+import { useFetchSubCategories } from "@/data/categories/categories.hook";
 import { fetchSubCategories } from "@/data/categories/fetcher";
-import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import { vidoesapiAPIendpoint } from "@/data/videos/fetcher";
-import React, { useEffect, useState } from "react";
 import { PulseLoader } from "react-spinners";
-import useSWR from "swr";
 
 /**
  * @param {{ video: Video; setVideo: (value:Video) => void; handleSubmit: any; addorupdate: any; categories: Categories;isSubmitting:boolean }} param0
@@ -18,12 +16,11 @@ const VideoForm = ({
   categories: videoCategories,
   isSubmitting,
 }) => {
-  const { data: subcategories, isLoading: loadingsubcategories } = useSWR(
-    video?.category?.id
-      ? `${vidoesapiAPIendpoint}/subcategories/${video.category.id}/`
-      : null,
-    fetchSubCategories
-  );
+  const { data: subcategories, isLoading: loadingsubcategories } =
+    useFetchSubCategories(
+      `${vidoesapiAPIendpoint}/subcategories/${video.category.id}/`,
+      video.category?.id
+    );
 
   // ------------------------------
   // Handle category change
@@ -195,20 +192,16 @@ const VideoForm = ({
           className="btn btn-primary rounded px-5 mt-3"
           disabled={isSubmitting}
         >
-          {isSubmitting
-            ? (
-              <div className="d-inline-flex align-items-center justify-content-center gap-2">
-                <div>Submitting Video</div>
-                <PulseLoader
-                  size={8}
-                  color={"#12000d"}
-                  loading={true}
-                />
-              </div>
-            )
-            : addorupdate.mode === "add"
-            ? "Add Video"
-            : "Update Video"}
+          {isSubmitting ? (
+            <div className="d-inline-flex align-items-center justify-content-center gap-2">
+              <div>Submitting Video</div>
+              <PulseLoader size={8} color={"#12000d"} loading={true} />
+            </div>
+          ) : addorupdate.mode === "add" ? (
+            "Add Video"
+          ) : (
+            "Update Video"
+          )}
         </button>
       </form>
     </div>

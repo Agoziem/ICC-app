@@ -2,28 +2,22 @@
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
-import { useUserContext } from "@/data/payments/usercontextdata";
 
 const useCurrentUser = () => {
   const [currentUser, setCurrentUser] = useState({});
   const [currentRoot, setCurrentRoot] = useState("");
-  const { adminData } = useAdminContext();
-  const { userData } = useUserContext();
   const paths = usePathname();
   const currentPortal = paths;
 
   useEffect(() => {
     if (currentPortal.includes("/admin")) {
       setCurrentRoot("admin");
-      setCurrentUser(adminData);
     } else if (currentPortal.includes("/dashboard")) {
       setCurrentRoot("dashboard");
-      setCurrentUser(userData);
     } else {
       setCurrentRoot("");
-      setCurrentUser({});
     }
-  }, [currentPortal, userData, adminData]);
+  }, [currentPortal]);
 
   return { currentUser, currentRoot };
 };

@@ -7,6 +7,8 @@ import {
   deleteCategory,
   updateCategory,
 } from "@/data/categories/fetcher";
+import { useCreateCategory, useDeleteCategory, useUpdateCategory } from "@/data/categories/categories.hook";
+import { useUpdateComment } from "@/data/articles/articles.hook";
 
 /**
  * @type {Category}
@@ -14,11 +16,10 @@ import {
 const categoryDefault = { id: null, category: "", description: "" };
 
 /**
- * @param {{ items: Categories; mutate: any; addUrl: string; updateUrl: string; deleteUrl: string; renderListItem?: (value: any) => JSX.Element; }} param0
+ * @param {{ items: Categories; addUrl: string; updateUrl: string; deleteUrl: string; renderListItem?: (value: any) => JSX.Element; }} param0
  */
 const CategoriesForm = ({
   items,
-  mutate,
   addUrl,
   updateUrl,
   deleteUrl,
@@ -43,17 +44,16 @@ const CategoriesForm = ({
   // -----------------------------------------
   // handle create and edit item
   // -----------------------------------------
+  const { mutateAsync:createCategory } = useCreateCategory();
+  const { mutateAsync: updateCategory } = useUpdateCategory();
+
   const handleItem = async (e) => {
     e.preventDefault();
     try {
       if (edit) {
-        mutate(updateCategory(updateUrl, item), {
-          populateCache: true,
-        });
+        await updateCategory({updateUrl, data: item});
       } else {
-        mutate(createCategory(addUrl, item), {
-          populateCache: true,
-        });
+        await createCategory({createUrl: addUrl, data: item});
       }
       setItem(categoryDefault);
       setAlert({
@@ -79,13 +79,14 @@ const CategoriesForm = ({
   // -----------------------------------------
   // delete item
   // -----------------------------------------
+  const { mutateAsync: deleteCategory } = useDeleteCategory();
   /**
    * @async
    * @param {number} id
    */
   const deleteItem = async (id) => {
     try {
-      mutate(deleteCategory(deleteUrl, id));
+      await deleteCategory({deleteUrl, id});
     } catch (error) {
       console.log(error);
     }

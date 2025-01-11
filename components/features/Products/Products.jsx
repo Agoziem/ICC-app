@@ -3,19 +3,17 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useCart } from "@/data/carts/Cartcontext";
-import { useUserContext } from "@/data/payments/usercontextdata";
-import Datatable from "@/components/custom/Datatable/Datatable";
-import OrderTableItems from "@/components/features/orders/OrderTableItems";
 import CartButton from "@/components/custom/Offcanvas/CartButton";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import ProductCard from "@/components/features/Products/ProductCard";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import Pagination from "@/components/custom/Pagination/Pagination";
-import { fetchCategories } from "@/data/categories/fetcher";
-import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { fetchProducts, productsAPIendpoint } from "@/data/product/fetcher";
+import { productsAPIendpoint } from "@/data/product/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useFetchProducts } from "@/data/product/product.hook";
+import AnimationContainer from "@/components/animation/animation-container";
 
 const Products = () => {
   const { openModal } = useAdminContext();
@@ -33,7 +31,7 @@ const Products = () => {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-  } = useSWR(`${productsAPIendpoint}/categories/`, fetchCategories);
+  } = useFetchCategories(`${productsAPIendpoint}/categories/`);
 
   // ----------------------------------------------------
   // Add a new category to the list of categories
@@ -53,10 +51,9 @@ const Products = () => {
   const {
     data: products,
     isLoading: loadingProducts,
-    error: error,
-  } = useSWR(
-    `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchProducts
+    error,
+  } = useFetchProducts(
+    `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
   );
 
   // ----------------------------------------
@@ -65,10 +62,9 @@ const Products = () => {
   const {
     data: trendingproducts,
     isLoading: loadingTrendingProducts,
-    error: errorTrendingProduct,
-  } = useSWR(
-    `${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`,
-    fetchProducts
+    error: trendingError,
+  } = useFetchProducts(
+    `${productsAPIendpoint}/trendingproducts/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`
   );
 
   // -----------------------------------------
@@ -117,7 +113,6 @@ const Products = () => {
       </div>
       <hr />
 
-
       {/* categories */}
       <div className="mb-4  ps-2 ps-md-0">
         {/* Categories */}
@@ -150,7 +145,6 @@ const Products = () => {
           </div>
         </div>
       </div>
-     
 
       {/* Products Section */}
       {searchQuery && <h5>Search Results</h5>}
@@ -165,8 +159,12 @@ const Products = () => {
               </div>
             </div>
           ) : filteredProducts?.length > 0 ? (
-            filteredProducts?.map((product) => (
-              <div key={product.id} className="col-12 col-md-4">
+            filteredProducts?.map((product, index) => (
+              <AnimationContainer
+                delay={0.1 * index}
+                key={product.id}
+                className="col-12 col-md-4"
+              >
                 <ProductCard
                   product={product}
                   addToCart={addToCart}
@@ -174,7 +172,7 @@ const Products = () => {
                   cart={cart}
                   openModal={openModal}
                 />
-              </div>
+              </AnimationContainer>
             ))
           ) : (
             // Show "no services available" message if no services at all

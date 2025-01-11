@@ -3,15 +3,18 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
 import { useCart } from "@/data/carts/Cartcontext";
-import useSWR from "swr";
-import { fetchCategories } from "@/data/categories/fetcher";
-import { fetchServices, servicesAPIendpoint } from "@/data/services/fetcher";
+import { servicesAPIendpoint } from "@/data/services/fetcher";
 import ServiceCard from "@/components/features/Services/ServiceCard";
 import CartButton from "@/components/custom/Offcanvas/CartButton";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { BsPersonFillGear } from "react-icons/bs";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import {
+  useFetchServices,
+} from "@/data/services/service.hook";
+import AnimationContainer from "@/components/animation/animation-container";
 
 const Services = () => {
   const { openModal } = useAdminContext();
@@ -25,9 +28,11 @@ const Services = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
-  // Fetch categories
-  const { data: categories, isLoading: loadingCategories, error: categoryError } = 
-    useSWR(`${servicesAPIendpoint}/categories/`, fetchCategories);
+  const {
+    data: categories,
+    isLoading: loadingCategories,
+    error: categoryError,
+  } = useFetchCategories(`${servicesAPIendpoint}/categories/`);
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -39,18 +44,22 @@ const Services = () => {
   }, [categories]);
 
   // Fetch services
-  const { data: services, isLoading: loadingServices, error } = 
-    useSWR(
-      `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-      fetchServices
-    );
+  const {
+    data: services,
+    isLoading: loadingServices,
+    error,
+  } = useFetchServices(
+    `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
+  );
 
   // Fetch trending services
-  const { data: trendingservices, isLoading: loadingTrendingServices, error: trendingError } = 
-    useSWR(
-      `${servicesAPIendpoint}/trendingservices/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`,
-      fetchServices
-    );
+  const {
+    data: trendingservices,
+    isLoading: loadingTrendingServices,
+    error: trendingError,
+  } = useFetchServices(
+    `${servicesAPIendpoint}/trendingservices/${Organizationid}/?category=${currentCategory}&page=1&page_size=6`
+  );
 
   // Handle category change
   const handleCategoryChange = (category) => {
@@ -61,7 +70,9 @@ const Services = () => {
 
   // Handle page change
   const handlePageChange = (newPage) => {
-    router.push(`?category=${currentCategory}&page=${newPage}&page_size=${pageSize}`);
+    router.push(
+      `?category=${currentCategory}&page=${newPage}&page_size=${pageSize}`
+    );
   };
 
   // Memoized filtered services based on search query
@@ -93,7 +104,10 @@ const Services = () => {
         <div className="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
           {loadingCategories ? (
             <div className="d-flex gap-2 align-items-center">
-              <div className="spinner-border spinner-border-sm text-primary" role="status">
+              <div
+                className="spinner-border spinner-border-sm text-primary"
+                role="status"
+              >
                 <span className="visually-hidden">Loading...</span>
               </div>
               Fetching Service Categories
@@ -126,8 +140,8 @@ const Services = () => {
             </div>
           </div>
         ) : filteredServices?.length > 0 ? (
-          filteredServices?.map((service) => (
-            <div key={service.id} className="col-12 col-md-4">
+          filteredServices?.map((service,index) => (
+            <AnimationContainer delay={index * 0.1} key={service.id} className="col-12 col-md-4">
               <ServiceCard
                 service={service}
                 addToCart={addToCart}
@@ -135,7 +149,7 @@ const Services = () => {
                 cart={cart}
                 openModal={openModal}
               />
-            </div>
+            </AnimationContainer>
           ))
         ) : (
           <div className="mt-3 mb-3 text-center">
@@ -147,13 +161,15 @@ const Services = () => {
           </div>
         )}
 
-        {!loadingServices && services && Math.ceil(services.count / parseInt(pageSize)) > 1 && (
-          <Pagination
-            currentPage={page}
-            totalPages={Math.ceil(services.count / parseInt(pageSize))}
-            handlePageChange={handlePageChange}
-          />
-        )}
+        {!loadingServices &&
+          services &&
+          Math.ceil(services.count / parseInt(pageSize)) > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={Math.ceil(services.count / parseInt(pageSize))}
+              handlePageChange={handlePageChange}
+            />
+          )}
       </div>
 
       {/* Trending Services */}

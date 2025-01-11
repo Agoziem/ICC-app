@@ -1,5 +1,4 @@
 "use client";
-import { useArticleContext } from "@/data/articles/Articlescontextdata";
 import React, { useEffect, useState } from "react";
 import ArticleComments from "./articlecomments";
 import ShareButtons from "./sharebuttons";
@@ -7,21 +6,19 @@ import Link from "next/link";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import ArticleLikes from "./ArticleLikes";
 import ArticleCommentsForm from "./ArticleCommentsForm";
-import Toast from "../../custom/Toast/toast";
 import { useSession } from "next-auth/react";
 import { MdOutlineArticle } from "react-icons/md";
 import NextBreadcrumb from "../../custom/Breadcrumb/breadcrumb";
 import BackButton from "../../custom/backbutton/BackButton";
 import Pagination from "../../custom/Pagination/Pagination";
-import useSWR from "swr";
 import { useSearchParams } from "next/navigation";
+import { articleAPIendpoint } from "@/data/articles/fetcher";
 import {
-  articleAPIendpoint,
-  fetchArticlebySlug,
-  fetchArticles,
-  fetchComments,
-  incrementView,
-} from "@/data/articles/fetcher";
+  useFetchArticleBySlug,
+  useFetchArticles,
+  useFetchComments,
+  useIncrementView,
+} from "@/data/articles/articles.hook";
 
 const Article = ({ params }) => {
   const { slug } = params;
@@ -32,28 +29,22 @@ const Article = ({ params }) => {
   const [commentpage, setCommentPage] = useState("1");
   const [otherArticles, setOtherArticles] = useState([]);
   const { data: session } = useSession();
-  const [toastmessage, setToastMessage] = useState({
-    title: "",
-    message: "",
-    time: "",
-  });
 
   // ------------------------------------------------------------
   // fetch article by slug
   // ------------------------------------------------------------
-  const { data: article, mutate: articlemutate } = useSWR(
-    slug ? `${articleAPIendpoint}/blogbyslug/${slug}` : null,
-    fetchArticlebySlug
+  const { data: article } = useFetchArticleBySlug(
+    `${articleAPIendpoint}/blogbyslug/${slug}`,
+    slug
   );
 
   // ----------------------------------------------------------
   // fetch articles by Categories
   // ----------------------------------------------------------
-  const { data: articles } = useSWR(
+  const { data: articles } = useFetchArticles(
     article?.category.id
       ? `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${article?.category.category}&page=${page}&page_size=${pageSize}`
-      : null,
-    fetchArticles
+      : null
   );
 
   // ------------------------------------------------------------
@@ -71,15 +62,9 @@ const Article = ({ params }) => {
   // ------------------------------------------------------------
   // Fetch comments and paginate them
   // ------------------------------------------------------------
-  const {
-    data: comments,
-    mutate: commentmutate,
-    isLoading: loadingComments,
-  } = useSWR(
+  const { data: comments, isLoading: loadingComments } = useFetchComments(
+    `${articleAPIendpoint}/getcomments/${article?.id}?page=${commentpage}&page_size=${pageSize}`,
     article?.id
-      ? `${articleAPIendpoint}/getcomments/${article?.id}?page=${commentpage}&page_size=${pageSize}`
-      : null,
-    fetchComments
   );
 
   // ------------------------------------------------------------
@@ -94,10 +79,11 @@ const Article = ({ params }) => {
   // ------------------------------------------------------------
   // Increment views
   // ------------------------------------------------------------
-  const incrementViews = async () => {
-    await articlemutate(incrementView(article), {
-      populateCache: true,
-    });
+  const { mutate } = useIncrementView();
+  const incrementViews = () => {
+    if (article && article.id) {
+      mutate(article);
+    }
   };
 
   // ------------------------------------------------------------
@@ -228,16 +214,8 @@ const Article = ({ params }) => {
               </div>
 
               <div className="my-3 my-md-0">
-                <ArticleCommentsForm
-                  article={article}
-                  comments={comments}
-                  mutate={commentmutate}
-                />
-                <ArticleLikes
-                  article={article}
-                  setToastMessage={setToastMessage}
-                  mutate={articlemutate}
-                />
+                <ArticleCommentsForm article={article} comments={comments} />
+                <ArticleLikes article={article} />
               </div>
             </div>
             <hr />
@@ -246,7 +224,6 @@ const Article = ({ params }) => {
               <ShareButtons
                 url={`${process.env.NEXT_PUBLIC_URL}/articles/${article.slug}`}
                 title={article.title}
-                setToastMessage={setToastMessage}
               />
             </div>
             {comments && (
@@ -257,11 +234,7 @@ const Article = ({ params }) => {
                 </h5>
                 <div>
                   {comments.count > 0 ? (
-                    <ArticleComments
-                      article={article}
-                      comments={comments.results}
-                      mutate={commentmutate}
-                    />
+                    <ArticleComments comments={comments.results} />
                   ) : (
                     <p>No comments yet</p>
                   )}
@@ -387,12 +360,6 @@ const Article = ({ params }) => {
           </div>
         </div>
       </section>
-
-      <Toast
-        title={toastmessage.title}
-        message={toastmessage.message}
-        time={toastmessage.time}
-      />
     </>
   );
 };

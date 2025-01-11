@@ -2,13 +2,13 @@
 import { useSearchParams } from "next/navigation";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import ServicesPlaceholder from "@/components/custom/ImagePlaceholders/ServicesPlaceholder";
-import useSWR from "swr";
-import { fetchService, servicesAPIendpoint } from "@/data/services/fetcher";
+import { servicesAPIendpoint } from "@/data/services/fetcher";
 import { PulseLoader } from "react-spinners";
 import GoogleForm from "@/components/custom/Iframe/googleform";
 import { TbNotesOff } from "react-icons/tb";
 import { FaBell } from "react-icons/fa";
 import { useSession } from "next-auth/react";
+import { useFetchServiceByToken } from "@/data/services/service.hook";
 
 const ServicePage = () => {
   const searchParams = useSearchParams();
@@ -18,15 +18,11 @@ const ServicePage = () => {
     data: service,
     isLoading: loadingService,
     error: error,
-  } = useSWR(
+  } = useFetchServiceByToken(
+    `${servicesAPIendpoint}/service_by_token/${servicetoken}/`,
     servicetoken
-      ? `${servicesAPIendpoint}/service_by_token/${servicetoken}/`
-      : null,
-    fetchService
   );
 
-
-  
   /** * @param {Service} service */
   const ServiceStatus = (service) => {
     if (

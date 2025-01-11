@@ -1,33 +1,26 @@
 import StarRating from "@/components/custom/StarRating/StarRating";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@/components/custom/Modal/modal";
 import { BiSolidQuoteAltRight } from "react-icons/bi";
-import Alert from "@/components/custom/Alert/Alert";
 import TestimonialForm from "./TestimonialForm";
 
-import {
-  createTestimonial,
-  deleteTestimonial,
-  fetchTestimonials,
-  MainAPIendpoint,
-  updateTestimonial,
-} from "@/data/organization/fetcher";
+import { MainAPIendpoint } from "@/data/organization/fetcher";
 import { testimonialDefault } from "@/constants";
-import useSWR from "swr";
 import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/custom/Pagination/Pagination";
+import {
+  useCreateTestimonial,
+  useDeleteTestimonial,
+  useFetchTestimonials,
+  useUpdateTestimonial,
+} from "@/data/organization/organization.hook";
+import toast from "react-hot-toast";
 
 const Testimonials = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [testimonial, setTestimonial] = useState(testimonialDefault);
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || "1";
@@ -39,22 +32,10 @@ const Testimonials = () => {
   });
 
   // for fetching
-  const {
-    data: testimonials,
-    mutate,
-    isLoading: loadingtestimonials,
-  } = useSWR(
-    `${MainAPIendpoint}/testimonial/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
-    fetchTestimonials,
-    {
-      onSuccess: (data) =>
-        data.results.sort(
-          (a, b) =>
-            new Date(b.last_updated_date).getTime() -
-            new Date(a.last_updated_date).getTime()
-        ),
-    }
-  );
+  const { data: testimonials, isLoading: loadingtestimonials } =
+    useFetchTestimonials(
+      `${MainAPIendpoint}/testimonial/${OrganizationID}/?page=${page}&page_size=${pageSize}`
+    );
 
   // Handle page change
   const handlePageChange = (newPage) => {
@@ -64,71 +45,23 @@ const Testimonials = () => {
   // -------------------------------------------------------------
   // Function to handle form submission
   // -------------------------------------------------------------
+
+  const { mutateAsync: createTestimonial , isLoading: isCreating } = useCreateTestimonial();
+  const { mutateAsync: updateTestimonial, isLoading: isUpdating } = useUpdateTestimonial();
+
   const handleFormSubmit = async (formData) => {
     try {
       if (addorupdate.type === "add") {
-        const newTestimonial = await createTestimonial(formData);
-        await mutate(
-          (Testimonies) => {
-            const newTestimonies = [
-              newTestimonial,
-              ...(Testimonies?.results || []),
-            ];
-            return {
-              ...Testimonies,
-              results: newTestimonies.sort(
-                (a, b) =>
-                  new Date(b.created_at).getTime() -
-                  new Date(a.created_at).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await createTestimonial(formData);
       } else {
-        const updatedTestimonial = await updateTestimonial(formData);
-        await mutate(
-          (Testimonies) => {
-            const otherTestimonies = (Testimonies?.results || []).map((o) =>
-              o.id === updatedTestimonial.id ? updatedTestimonial : o
-            );
-            return {
-              ...Testimonies,
-              results: otherTestimonies.sort(
-                (a, b) =>
-                  new Date(b.last_updated_date).getTime() -
-                  new Date(a.last_updated_date).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await updateTestimonial(formData);
       }
-      setAlert({
-        show: true,
-        message: `Testimonial ${addorupdate.type}ed successfully`,
-        type: "success",
-      });
+      toast.success("Testimonial added successfully");
     } catch (error) {
       console.log(error.message);
-      setAlert({
-        show: true,
-        message: "an error just occured",
-        type: "danger",
-      });
+      toast.error("Error adding testimonial");
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
@@ -152,35 +85,14 @@ const Testimonials = () => {
    * @async
    * @param {number} id
    */
+  const { mutateAsync: deleteTestimonial,isLoading: isDeleting } = useDeleteTestimonial();
   const deletetestimonial = async (id) => {
     try {
-      const testimonialid = await deleteTestimonial(id);
-      await mutate(
-        (Testimonies) => {
-          const otherTestimonies = Testimonies.results.filter(
-            (Testimonial) => Testimonial.id !== testimonialid
-          );
-          Testimonies.results = otherTestimonies;
-          return { ...Testimonies };
-        },
-        {
-          populateCache: true,
-        }
-      );
-      setAlert({
-        show: true,
-        message: "Testimonial deleted successfully",
-        type: "success",
-      });
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
+      await deleteTestimonial(id);
+      toast.success("Testimonial deleted successfully");
     } catch (error) {
       console.error("Error deleting testimonial data:", error);
+      toast.error("An error occured while deleting testimonial");
     } finally {
       setTestimonial(testimonialDefault);
       setShowDeleteModal(false);
@@ -216,7 +128,6 @@ const Testimonials = () => {
 
       {/* set of horizontal Cards that are clickable */}
       <div className="mt-4">
-        {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
         {testimonials && testimonials?.results?.length === 0 ? (
           <p>No testimonials available</p>
         ) : (
@@ -316,6 +227,7 @@ const Testimonials = () => {
               setTestimonial={setTestimonial}
               onSubmit={handleFormSubmit}
               onClose={closeModal}
+              loading={isCreating || isUpdating}
             />
           ) : null}
         </div>
@@ -333,8 +245,13 @@ const Testimonials = () => {
               onClick={() => {
                 deletetestimonial(testimonial.id);
               }}
+              disabled={isDeleting}
             >
-              Delete Testimonial
+              {isDeleting ? (
+                <div className="spinner-border text-secondary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              ) : "Delete"}
             </button>
           </div>
         </div>
