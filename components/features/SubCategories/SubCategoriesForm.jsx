@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import { TiTimes } from "react-icons/ti";
 import Alert from "@/components/custom/Alert/Alert";
 import Modal from "@/components/custom/Modal/modal";
-import {
-  createSubCategory,
-  deleteSubCategory,
-  fetchSubCategories,
-  updateSubCategory,
-} from "@/data/categories/fetcher";
 import { SubCategorydefault } from "@/constants";
 import {
   useCreateSubCategory,
@@ -52,7 +46,7 @@ const SubCategoriesForm = ({
 
   const { data: subcategories, isLoading: loadingsubcategories } =
     useFetchSubCategories(
-      `${apiendpoint}/subcategories/${currentCategory.id}/`,
+      `${apiendpoint}/subcategories/${currentCategory?.id}/`,
       currentCategory?.id
     );
   //   -----------------------------------------
