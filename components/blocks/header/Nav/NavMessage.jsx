@@ -47,7 +47,7 @@ function NavMessage() {
             <div className="px-4">
               <h4>Message header</h4>
               <p>No messages yet</p>
-              <p>4 hrs. ago</p>
+              {/* <p>4 hrs. ago</p> */}
             </div>
           </a>
         </li>

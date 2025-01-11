@@ -1,13 +1,11 @@
 "use client";
 import React, {
-  useContext,
   useEffect,
   useMemo,
   useState,
   useTransition,
 } from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
 import Alert from "@/components/custom/Alert/Alert";
 import ServiceCard from "./ServiceCard";
@@ -15,10 +13,8 @@ import ServiceForm from "./ServiceForm";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import CategoriesForm from "@/components/features/Categories/Categories";
 import SubCategoriesForm from "@/components/features/SubCategories/SubCategoriesForm";
-import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import { BsPersonFillGear } from "react-icons/bs";
-import useSWR from "swr";
 import { fetchCategories } from "@/data/categories/fetcher";
 import { serviceDefault } from "@/constants";
 import { useRouter } from "next/navigation";
@@ -32,14 +28,17 @@ import {
 } from "@/data/services/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { PulseLoader } from "react-spinners";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useCreateService, useDeleteService, useFetchServices, useUpdateService } from "@/data/services/service.hook";
+import toast from "react-hot-toast";
 
 const Services = () => {
   const { openModal } = useAdminContext();
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
   const [service, setService] = useState(serviceDefault);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
-  const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [addorupdate, setAddorupdate] = useState({ mode: "", state: false });
 
   const router = useRouter();
@@ -50,15 +49,14 @@ const Services = () => {
   const [allCategories, setAllCategories] = useState([]);
   const Organizationid = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
-  const [isPending, startTransition] = useTransition();
   const [isdeleting, startDeletion] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-    mutate: categoriesmutate,
-  } = useSWR(`${servicesAPIendpoint}/categories/`, fetchCategories);
+  } = useFetchCategories(`${servicesAPIendpoint}/categories/`);
 
   useEffect(() => {
     if (!categories) return;
@@ -76,11 +74,7 @@ const Services = () => {
     data: services,
     isLoading: loadingServices,
     error: error,
-    mutate,
-  } = useSWR(
-    `${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchServices
-  );
+  } = useFetchServices(`${servicesAPIendpoint}/services/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`)
 
   // -----------------------------------------
   // Handle page change
@@ -125,17 +119,12 @@ const Services = () => {
     setService(serviceDefault);
   };
 
-  // ----------------------------------------------------
-  // Show an alert
-  // ----------------------------------------------------
-  const handleAlert = (message, type) => {
-    setAlert({ show: true, message, type });
-    setTimeout(() => setAlert({ show: false, message: "", type: "" }), 3000);
-  };
-
   //----------------------------------------------------
   // Create a new service or update an existing service
   //----------------------------------------------------
+  const { mutateAsync: createService } = useCreateService();
+  const { mutateAsync: updateService } = useUpdateService();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     startTransition(async () => {
@@ -153,54 +142,16 @@ const Services = () => {
       };
       try {
         if (addorupdate.mode === "add") {
-          const newService = await createService(servicetosubmit);
-          await mutate(
-            (Services) => {
-              /** * @type {Services} */
-              const newServices = [newService, ...(Services?.results || [])];
-              return {
-                ...Services,
-                results: newServices.sort(
-                  (a, b) =>
-                    new Date(b.created_at).getTime() -
-                    new Date(a.created_at).getTime()
-                ),
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
+          await createService(servicetosubmit);
         } else {
-          const updatedService = await updateService(servicetosubmit);
-          await mutate(
-            (Services) => {
-              /** * @type {Services} */
-              const otherServices = (Services?.results || []).map((o) =>
-                o.id === updatedService.id ? updatedService : o
-              );
-              return {
-                ...Services,
-                results: otherServices.sort(
-                  (a, b) =>
-                    new Date(b.updated_at).getTime() -
-                    new Date(a.updated_at).getTime()
-                ),
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
+          await updateService(servicetosubmit);
         }
-        handleAlert(
-          `your Service have been ${
-            addorupdate.mode === "add" ? "added" : "updated"
-          } successfully `,
-          "success"
-        );
+       toast.success(
+          `Service ${addorupdate.mode === "add" ? "created" : "updated"} successfully`
+       );
       } catch (error) {
-        handleAlert("An error have occurred, please try again", "danger");
+        console.log(error.message);
+        toast.error(`Error ${addorupdate.mode === "add" ? "creating" : "updating"} Service`);
       } finally {
         closeModal();
       }
@@ -210,6 +161,8 @@ const Services = () => {
   //----------------------------------------------------
   // Delete a service
   //----------------------------------------------------
+
+  const {mutateAsync: deleteService} = useDeleteService();
   /**
    * @async
    * @param {number} id
@@ -217,23 +170,11 @@ const Services = () => {
   const handleDelete = async (id) => {
     startDeletion(async () => {
       try {
-        const serviceid = await deleteService(id);
-        await mutate(
-          (Services) => {
-            const otherServices = Services.results.filter(
-              (service) => service.id !== serviceid
-            );
-            Services.results = otherServices;
-            return { ...Services };
-          },
-          {
-            populateCache: true,
-          }
-        );
-        handleAlert("Service deleted Successfully", "success");
+        await deleteService(id);
+        toast.success("Service deleted successfully");
       } catch (error) {
         console.log(error.message);
-        handleAlert("Error deleting Service", "danger");
+        toast.error("Error deleting Service");
       } finally {
         closeModal();
       }
@@ -264,7 +205,6 @@ const Services = () => {
         <div className="col-12 col-md-7">
           <CategoriesForm
             items={categories}
-            mutate={categoriesmutate}
             addUrl={`${servicesAPIendpoint}/add_category/`}
             updateUrl={`${servicesAPIendpoint}/update_category/`}
             deleteUrl={`${servicesAPIendpoint}/delete_category/`}
@@ -336,7 +276,6 @@ const Services = () => {
       </div>
 
       {/* The Services & Application list */}
-      {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <div className="row">
         {
           // loading

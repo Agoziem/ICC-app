@@ -8,6 +8,9 @@ import {
 } from "@/data/notificationsAPI/fetcher";
 import useSWR from "swr";
 import { notificationActionSchema } from "@/schemas/notifications";
+import { useFetchNotifications } from "@/data/notificationsAPI/notifications.hook";
+import { useQueryClient } from "react-query";
+import toast from "react-hot-toast";
 
 function NavNotice() {
   const [showmodal, setShowModal] = useState(false);
@@ -25,14 +28,9 @@ function NavNotice() {
     data: notifications,
     isLoading,
     error,
-    mutate,
-  } = useSWR(`${notificationAPIendpoint}/notifications/`, fetchNotifications, {
-    onSuccess: (data) =>
-      data.sort(
-        (a, b) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-      ),
-  });
+  } = useFetchNotifications();
+
+  const queryClient = useQueryClient();
 
   // WebSocket Connection for notifications
   useEffect(() => {
@@ -41,110 +39,87 @@ function NavNotice() {
         const responseNotification = JSON.parse(event.data);
         const validatedcontact =
           notificationActionSchema.safeParse(responseNotification);
-
-        // validate the websocket data
+  
+        // Validate the WebSocket data
         if (!validatedcontact.success) {
           console.log(validatedcontact.error.issues);
+          return;
         }
+  
         const newNotification = validatedcontact.data;
-
-        // handle create notification action
+  
+        // Function to sort notifications by updated_at
+        const sortNotifications = (notifications) =>
+          notifications.sort(
+            (a, b) =>
+              new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+          );
+  
+        // Define cache key for notifications
+        const cacheKey = ["notifications"];
+  
+        // Handle different actions
         if (newNotification.action === "add") {
-          mutate(
-            (existingNotifications) => {
-              const notificationExists = existingNotifications?.some(
-                (notification) =>
-                  notification.id === newNotification.notification.id
-              );
-
-              if (notificationExists) {
-                return [
-                  newNotification.notification,
-                  ...existingNotifications.filter(
-                    (notification) =>
-                      notification.id !== newNotification.notification.id
-                  ),
-                ].sort(
-                  (a, b) =>
-                    new Date(b.updated_at).getTime() -
-                    new Date(a.updated_at).getTime()
-                );
-              } else {
-                // If the contact doesn't exist, just add it to the top
-                return [
-                  newNotification.notification,
-                  ...(existingNotifications || []),
-                ].sort(
-                  (a, b) =>
-                    new Date(b.updated_at).getTime() -
-                    new Date(a.updated_at).getTime()
-                );
-              }
-            },
-            {
-              populateCache: true,
+          queryClient.setQueryData(cacheKey, (existingNotifications = []) => {
+            const notificationExists = existingNotifications.some(
+              (notification) =>
+                notification.id === newNotification.notification.id
+            );
+  
+            if (notificationExists) {
+              return sortNotifications([
+                newNotification.notification,
+                ...existingNotifications.filter(
+                  (notification) =>
+                    notification.id !== newNotification.notification.id
+                ),
+              ]);
+            } else {
+              // If the notification doesn't exist, just add it to the top
+              return sortNotifications([
+                newNotification.notification,
+                ...existingNotifications,
+              ]);
             }
-          );
+          });
+          toast.success("New notification received");
         }
-
-        // handle update notification action
+  
         if (newNotification.action === "update") {
-          mutate(
-            (existingNotifications) => {
-              const updatedMessages = existingNotifications.map(
-                (notification) =>
-                  notification.id === newNotification.notification.id
-                    ? newNotification.notification
-                    : notification
-              );
-              return updatedMessages.sort(
-                (a, b) =>
-                  new Date(b.updated_at).getTime() -
-                  new Date(a.updated_at).getTime()
-              );
-            },
-            {
-              populateCache: true,
-            }
+          queryClient.setQueryData(cacheKey, (existingNotifications = []) =>
+            sortNotifications(
+              existingNotifications.map((notification) =>
+                notification.id === newNotification.notification.id
+                  ? newNotification.notification
+                  : notification
+              )
+            )
           );
+          toast.success("A Notification was updated");
         }
-
-        // handle delete notification action
+  
         if (newNotification.action === "delete") {
-          mutate(
-            (existingNotifications) => {
-              // Remove the notification with the matching ID
-              return existingNotifications.filter(
-                (notification) =>
-                  notification.id !== newNotification.notification.id
-              );
-            },
-            {
-              populateCache: true,
-            }
+          queryClient.setQueryData(cacheKey, (existingNotifications = []) =>
+            existingNotifications.filter(
+              (notification) =>
+                notification.id !== newNotification.notification.id
+            )
           );
+          toast.success("A Notification deleted");
         }
-
-        // handle mark as read notification action
+  
         if (newNotification.action === "mark_viewed") {
-          mutate(
-            (existingNotifications) => {
-              const updatedMessages = existingNotifications.map(
-                (notification) =>
-                  notification.id === newNotification.notification.id
-                    ? newNotification.notification
-                    : notification
-              );
-              return updatedMessages;
-            },
-            {
-              populateCache: true,
-            }
+          queryClient.setQueryData(cacheKey, (existingNotifications = []) =>
+            existingNotifications.map((notification) =>
+              notification.id === newNotification.notification.id
+                ? newNotification.notification
+                : notification
+            )
           );
         }
       };
     }
-  }, [isConnected, ws, mutate]);
+  }, [isConnected, ws]);
 
   /** @param {NotificationMessage} notification */
   const mark_viewed = (notification) => {

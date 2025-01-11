@@ -1,7 +1,13 @@
 "use client";
 
 import React, { createContext, useContext } from "react";
-import { useQuery, useMutation, QueryClient, QueryClientProvider, useQueryClient } from "react-query";
+import {
+  useQuery,
+  useMutation,
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from "react-query";
 import {
   fetchEmails,
   deleteEmail,
@@ -20,12 +26,26 @@ const EmailContext = createContext(null);
 
 // Custom Hook: Fetch Emails
 export const useFetchEmails = () => {
-  return useQuery("emails", fetchEmails);
+  return useQuery("emails", fetchEmails, {
+    onSuccess: (data) => {
+      data.results = data.results.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    },
+  });
 };
 
 // Custom Hook: Fetch Sent Emails
 export const useFetchSentEmails = () => {
-  return useQuery("sentEmails", getSentEmail);
+  return useQuery("sentEmails", getSentEmail,{
+    onSuccess: (data) => {
+      data = data.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    },
+  });
 };
 
 // Custom Hook: Create Email
@@ -86,4 +106,3 @@ export const useEmail = () => {
   }
   return context;
 };
-

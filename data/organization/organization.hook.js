@@ -60,6 +60,11 @@ export const useDeleteOrganization = () => {
 export const useFetchStaffs = (url) =>
   useQuery(["staffs", url], () => fetchStaffs(url), {
     enabled: !!url,
+    onSuccess: (data) => {
+      data.results = data.results.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
   });
 
 export const useCreateStaff = () => {
@@ -87,6 +92,11 @@ export const useDeleteStaff = () => {
 export const useFetchDepartments = (url) =>
   useQuery(["departments", url], () => fetchDepartments(url), {
     enabled: !!url,
+    onSuccess: (data) => {
+      data.results = data.results.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
   });
 
 export const useFetchDepartment = (url) =>
@@ -119,6 +129,11 @@ export const useDeleteDepartment = () => {
 export const useFetchTestimonials = (url) =>
   useQuery(["testimonials", url], () => fetchTestimonials(url), {
     enabled: !!url,
+    onSuccess: (data) => {
+      data.results = data.results.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    },
   });
 
 export const useCreateTestimonial = () => {
@@ -146,6 +161,11 @@ export const useDeleteTestimonial = () => {
 export const useFetchSubscriptions = (url) =>
   useQuery(["subscriptions", url], () => fetchSubscriptions(url), {
     enabled: !!url,
+    onSuccess: (data) => {
+      data.results = data.results.sort(
+        (a, b) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime()
+      );
+    },
   });
 
 export const useCreateSubscription = () => {

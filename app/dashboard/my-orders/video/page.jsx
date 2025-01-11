@@ -1,9 +1,9 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
-import useSWR from "swr";
-import { fetchVideo, vidoesapiAPIendpoint } from "@/data/videos/fetcher";
+import { vidoesapiAPIendpoint } from "@/data/videos/fetcher";
 import { PulseLoader } from "react-spinners";
+import { useFetchVideoByToken } from "@/data/videos/video.hook";
 
 const VideoPage = () => {
   const searchParams = useSearchParams();
@@ -13,9 +13,8 @@ const VideoPage = () => {
     data: video,
     isLoading: loadingVideo,
     error: error,
-  } = useSWR(
-    videotoken ? `${vidoesapiAPIendpoint}/video_by_token/${videotoken}/` : null,
-    fetchVideo
+  } = useFetchVideoByToken(
+    videotoken ? `${vidoesapiAPIendpoint}/video_by_token/${videotoken}/` : null
   );
 
   return (

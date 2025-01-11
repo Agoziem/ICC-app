@@ -1,13 +1,11 @@
 "use client";
 import React, {
-  useContext,
   useEffect,
   useMemo,
   useState,
   useTransition,
 } from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
 import Alert from "@/components/custom/Alert/Alert";
 import ProductCard from "./ProductCard";
@@ -19,7 +17,6 @@ import { RiShoppingBasketFill } from "react-icons/ri";
 import SubCategoriesForm from "@/components/features/SubCategories/SubCategoriesForm";
 import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import { fetchCategories } from "@/data/categories/fetcher";
-import useSWR from "swr";
 import { defaultProduct } from "@/constants";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -32,6 +29,8 @@ import {
 } from "@/data/product/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { PulseLoader } from "react-spinners";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useCreateProduct, useDeleteProduct, useFetchProducts, useUpdateProduct } from "@/data/product/product.hook";
 
 // /...
 const Products = () => {
@@ -58,8 +57,9 @@ const Products = () => {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-    mutate: categoriesmutate,
-  } = useSWR(`${productsAPIendpoint}/categories/`, fetchCategories);
+  } = useFetchCategories(
+    `${productsAPIendpoint}/categories/`,
+  );
 
   // ----------------------------------------------------
   // Add a new category to the list of categories
@@ -80,11 +80,9 @@ const Products = () => {
     data: products,
     isLoading: loadingProducts,
     error: error,
-    mutate,
-  } = useSWR(
-    `${productsAPIendpoint}/products/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchProducts
-  );
+  } = useFetchProducts(
+    `${productsAPIendpoint}/products/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
+  )
 
   // -----------------------------------------
   // Handle page change
@@ -137,6 +135,8 @@ const Products = () => {
   //----------------------------------------------------
   // Create a new product or update an existing product
   //----------------------------------------------------
+  const { mutateAsync: createProduct } = useCreateProduct();
+  const { mutateAsync: updateProduct } = useUpdateProduct();
   const handleSubmit = async (e) => {
     e.preventDefault();
     startTransition(async () => {
@@ -154,45 +154,9 @@ const Products = () => {
       };
       try {
         if (addorupdate.mode !== "add") {
-          const updatedProduct = await updateProduct(producttosubmit);
-          await mutate(
-            (Products) => {
-              /** * @type {Products} */
-              const otherProducts = (Products?.results || []).map((o) =>
-                o.id === updatedProduct.id ? updatedProduct : o
-              );
-              return {
-                ...Products,
-                results: otherProducts.sort(
-                  (a, b) =>
-                    new Date(b.last_updated_date).getTime() -
-                    new Date(a.last_updated_date).getTime()
-                ),
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
+          await updateProduct(producttosubmit);
         } else {
-          const newProduct = await createProduct(producttosubmit);
-          await mutate(
-            (Products) => {
-              /** * @type {Products} */
-              const newProducts = [newProduct, ...(Products?.results || [])];
-              return {
-                ...Products,
-                results: newProducts.sort(
-                  (a, b) =>
-                    new Date(b.created_at).getTime() -
-                    new Date(a.created_at).getTime()
-                ),
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
+          await createProduct(producttosubmit);
         }
         handleAlert(
           `your Service have been ${
@@ -211,6 +175,7 @@ const Products = () => {
   //----------------------------------------------------
   // Delete a product
   //----------------------------------------------------
+  const { mutateAsync: deleteProduct } = useDeleteProduct();
   /**
    * @async
    * @param {number} id
@@ -218,19 +183,7 @@ const Products = () => {
   const handleDelete = async (id) => {
     startDeletion(async () => {
       try {
-        const productid = await deleteProduct(id);
-        await mutate(
-          (Products) => {
-            const otherProducts = Products.results.filter(
-              (product) => product.id !== productid
-            );
-            Products.results = otherProducts;
-            return { ...Products };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await deleteProduct(id);
         handleAlert("Service deleted Successfully", "success");
       } catch (error) {
         console.log(error.message);
@@ -265,7 +218,6 @@ const Products = () => {
         <div className="col-12 col-md-7">
           <CategoriesForm
             items={categories}
-            mutate={categoriesmutate}
             addUrl={`${productsAPIendpoint}/add_category/`}
             updateUrl={`${productsAPIendpoint}/update_category`}
             deleteUrl={`${productsAPIendpoint}/delete_category`}

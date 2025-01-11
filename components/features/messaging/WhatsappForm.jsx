@@ -2,19 +2,16 @@ import { WATemplateSchema } from "@/schemas/whatsapp";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
 import Alert from "../../custom/Alert/Alert";
-import {
-  createTemplateMessage,
-  WATemplatescachekey,
-} from "@/data/whatsappAPI/fetcher";
 import { createTemplateMessageOptions } from "@/data/whatsappAPI/fetcherOptions";
+import { useCreateTemplateMessage } from "@/data/whatsappAPI/whatsapp.hook";
 
 const WATemplateForm = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { mutate } = useSWR(WATemplatescachekey);
   const [showLink, setShowLink] = useState(false);
+
+  const { mutateAsync: createTemplateMessage } = useCreateTemplateMessage();
 
   const {
     register,
@@ -60,10 +57,7 @@ const WATemplateForm = () => {
         status: "pending",
         created_at: new Date().toISOString(),
       };
-      await mutate(
-        createTemplateMessage(data),
-        createTemplateMessageOptions(templateData)
-      );
+      await createTemplateMessage(templateData)
       setSuccess("WA Broadcast sent successfully!");
       reset();
     } catch (error) {

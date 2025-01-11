@@ -2,17 +2,8 @@ import { notificationSchema } from "@/schemas/notifications";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
 import Alert from "../../custom/Alert/Alert";
-import {
-  createNotification,
-  notificationAPIendpoint,
-  updateNotification,
-} from "@/data/notificationsAPI/fetcher";
-import {
-  createnotificationoption,
-  updateNotificationOption,
-} from "@/data/notificationsAPI/fetcherOption";
+import { useCreateNotification, useUpdateNotification } from "@/data/notificationsAPI/notifications.hook";
 
 /**
  * @param {{ notification: NotificationMessage; editmode: boolean; setEditMode: (value: boolean) => void; formRef:React.RefObject<HTMLFormElement>; }} param0
@@ -21,7 +12,6 @@ import {
 const NotificationForm = ({ notification, editmode, setEditMode, formRef }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { mutate } = useSWR(`${notificationAPIendpoint}/notifications/`);
 
   // -----------------------------------------------------------------
   // Default values for the form, used for reset and initial state
@@ -70,6 +60,8 @@ const NotificationForm = ({ notification, editmode, setEditMode, formRef }) => {
   // --------------------------------------
   // Submit function to handle notification creation or edit
   // --------------------------------------
+  const { mutateAsync: createNotification } = useCreateNotification();
+  const { mutateAsync: updateNotification } = useUpdateNotification();
   const onSubmit = async (data) => {
     try {
       setError("");
@@ -87,15 +79,8 @@ const NotificationForm = ({ notification, editmode, setEditMode, formRef }) => {
         viewed: false,
       };
       editmode
-        ? mutate(
-            updateNotification(notificationData),
-            updateNotificationOption(notificationData)
-          )
-        : mutate(
-            createNotification(notificationData),
-            createnotificationoption(notificationData)
-          );
-
+        ? updateNotification(notificationData)
+        : createNotification(notificationData);
       setSuccess(`Notification ${editmode ? "edited" : "sent"} successfully!`);
       setEditMode(false);
       reset(defaultNotificationValues); // Reset the form using default values

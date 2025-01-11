@@ -30,6 +30,17 @@ export const useFetchVideo = (url) => {
   );
 };
 
+// Hook to fetch a single video by Token
+export const useFetchVideoByToken = (url, token) => {
+  return useQuery(
+    ["video", token, url], // Dynamic cache key for a single video
+    () => fetchVideo(url),
+    {
+      enabled: !!token, // Ensure the query only runs if the token is provided
+    }
+  );
+};
+
 // Hook to create a new video
 export const useCreateVideo = () => {
   const queryClient = useQueryClient();

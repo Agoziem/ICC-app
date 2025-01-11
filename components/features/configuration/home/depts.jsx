@@ -5,15 +5,17 @@ import DepartmentForm from "./DepartmentForm";
 import { deptDefault } from "@/constants";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
-  createDepartment,
-  deleteDepartment,
-  fetchDepartments,
-  fetchStaffs,
   MainAPIendpoint,
-  updateDepartment,
 } from "@/data/organization/fetcher";
-import useSWR from "swr";
 import Pagination from "@/components/custom/Pagination/Pagination";
+import {
+  useCreateDepartment,
+  useDeleteDepartment,
+  useFetchDepartments,
+  useFetchStaffs,
+  useUpdateDepartment,
+} from "@/data/organization/organization.hook";
+import toast from "react-hot-toast";
 
 const Depts = () => {
   const OrganizationID = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -26,60 +28,32 @@ const Depts = () => {
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || "1";
   const pageSize = "10";
-
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
-
   const [addorupdate, setAddOrUpdate] = useState({
     type: "add",
     state: false,
   });
 
   // for data fetching
-  const { data: staffs } = useSWR(
-    `${MainAPIendpoint}/staff/${OrganizationID}/`,
-    fetchStaffs,
-    {
-      onSuccess: (data) =>
-        data.results.sort(
-          (a, b) =>
-            new Date(b.last_updated_date).getTime() -
-            new Date(a.last_updated_date).getTime()
-        ),
-    }
+  const { data: staffs } = useFetchStaffs(
+    `${MainAPIendpoint}/staff/${OrganizationID}/`
   );
 
   // for data fetching
-  const {
-    data: depts,
-    mutate,
-    isLoading: loadingdepts,
-  } = useSWR(
-    `${MainAPIendpoint}/department/${OrganizationID}/?page=${page}&page_size=${pageSize}`,
-    fetchDepartments,
-    {
-      onSuccess: (data) =>
-        data.results.sort(
-          (a, b) =>
-            new Date(b.last_updated_date).getTime() -
-            new Date(a.last_updated_date).getTime()
-        ),
-      }
-    );
-    
-    // Handle page change
-    const handlePageChange = (newPage) => {
-      router.push(`?page=${newPage}&page_size=${pageSize}`);
-    };
+  const { data: depts, isLoading: loadingdepts } = useFetchDepartments(
+    `${MainAPIendpoint}/department/${OrganizationID}/?page=${page}&page_size=${pageSize}`
+  );
 
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    router.push(`?page=${newPage}&page_size=${pageSize}`);
+  };
 
-    // -------------------------------------------------------------
+  // -------------------------------------------------------------
   // Function to handle form submission
   // -------------------------------------------------------------
 
+  const { mutateAsync: createDepartment,isLoading: isCreating } = useCreateDepartment();
+  const { mutateAsync: updateDepartment,isLoading: isUpdating } = useUpdateDepartment();
   const handleSubmit = async (e) => {
     const { organization, staff_in_charge, services, ...restData } = department;
     const departmenttosubmit = {
@@ -91,68 +65,21 @@ const Depts = () => {
     e.preventDefault();
     try {
       if (addorupdate.type === "add") {
-        const newDepartment = await createDepartment(departmenttosubmit);
-        await mutate(
-          (Departments) => {
-            const newDepartments = [
-              newDepartment,
-              ...(Departments?.results || []),
-            ];
-            return {
-              ...Departments,
-              results: newDepartments.sort(
-                (a, b) =>
-                  new Date(b.created_at).getTime() -
-                  new Date(a.created_at).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await createDepartment(departmenttosubmit);
       } else {
-        const updatedDepartment = await updateDepartment(departmenttosubmit);
-        mutate(
-          (Departments) => {
-            const otherDepartments = (Departments?.results || []).map((o) =>
-              o.id === updatedDepartment.id ? updatedDepartment : o
-            );
-            return {
-              ...Departments,
-              results: otherDepartments.sort(
-                (a, b) =>
-                  new Date(b.last_updated_date).getTime() -
-                  new Date(a.last_updated_date).getTime()
-              ),
-            };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await updateDepartment(departmenttosubmit);
       }
-      setAlert({
-        show: true,
-        message: `Department ${addorupdate.type}ed successfully`,
-        type: "success",
-      });
+      toast.success(
+        `Department ${addorupdate.type === "add" ? "added" : "updated"} successfully`
+      );
     } catch (error) {
-      console.error("Error adding Department data:", error);
-      setAlert({
-        show: true,
-        message: "Error adding Department data",
-        type: "danger",
-      });
+      toast.error(
+        `An error occurred while ${
+          addorupdate.type === "add" ? "adding" : "updating"
+        } Department`
+      );
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
@@ -174,47 +101,21 @@ const Depts = () => {
   // -------------------------------------------------------------
   // Function to delete a testimonial
   // -------------------------------------------------------------
+  const { mutateAsync: deleteDepartment, isLoading: isDeleting } =
+    useDeleteDepartment();
   /**
    * @param {number} id
    */
   const removeDepartment = async (id) => {
     try {
-      const deptid = await deleteDepartment(id);
-      mutate(
-        (Departments) => {
-          const otherDepartments = Departments.results.filter(
-            (department) => department.id !== deptid
-          );
-          Departments.results = otherDepartments;
-          return { ...Departments };
-        },
-        {
-          populateCache: true,
-        }
-      );
-      setAlert({
-        show: true,
-        message: "Department deleted successfully",
-        type: "success",
-      });
+      await deleteDepartment(id);
+      toast.success("Department deleted successfully");
     } catch (error) {
-      setAlert({
-        show: true,
-        message: "An error occurred while deleting Department",
-        type: "danger",
-      });
+      toast.error("An error occurred while deleting Department");
     } finally {
       closeModal();
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
-
 
   return (
     <div className="px-1 px-md-4">
@@ -235,16 +136,15 @@ const Depts = () => {
           </button>
         </div>
         <div>
-        <h4 className="mb-1">
-          {depts?.count} Department{depts?.count > 1 ? "s" : ""}
-        </h4>
-        <p>in total</p>
+          <h4 className="mb-1">
+            {depts?.count} Department{depts?.count > 1 ? "s" : ""}
+          </h4>
+          <p>in total</p>
         </div>
       </div>
 
       {/* set of horizontal Cards that are clickable */}
       <div className="mt-4">
-        {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
         {depts?.results?.length === 0 ? (
           <p>No testimonials available</p>
         ) : (
@@ -342,6 +242,7 @@ const Depts = () => {
               handleSubmit={handleSubmit}
               closeModal={closeModal}
               staffs={staffs.results}
+              loading={isCreating || isUpdating}
             />
           ) : null}
         </div>
@@ -359,8 +260,9 @@ const Depts = () => {
               onClick={() => {
                 removeDepartment(department.id);
               }}
+              disabled={isDeleting}
             >
-              Delete Testimonial
+              {isDeleting ? "Deleting Testimonial..." : "Delete Testimonial"}
             </button>
           </div>
         </div>

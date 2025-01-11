@@ -7,7 +7,7 @@ import {
   updateService,
   deleteService,
   fetchServiceUsers,
-  addusertoProgressorCompleted,
+  updateUserServiceStatus,
 } from "@/data/services/fetcher";
 
 // Hook to fetch all services
@@ -22,15 +22,25 @@ export const useFetchServices = (url) => {
 };
 
 // Hook to fetch a single service
-export const useFetchService = (url) => {
+export const useFetchService = (url, serviceid) => {
   return useQuery(
-    ["service", url], // Dynamic cache key for a specific service
+    ["service", serviceid, url], // Dynamic cache key for a specific service
     () => fetchService(url),
     {
-      enabled: !!url, // Ensure query only runs if URL is provided
+      enabled: !!serviceid, // Ensure query only runs if URL is provided
     }
   );
 };
+
+export const useFetchServiceByToken = (url,token) => {
+  return useQuery(
+    ["service", token, url], // Dynamic cache key for a specific service
+    () => fetchService(url),
+    {
+      enabled: !!token,
+    }
+  );
+}
 
 // Hook to create a new service
 export const useCreateService = () => {
@@ -64,22 +74,55 @@ export const useDeleteService = () => {
 };
 
 // Hook to fetch service users
-export const useFetchServiceUsers = (url) => {
+/**
+ *
+ * @param {number} serviceId
+ * @param {string} category
+ */
+export const useFetchServiceUsers = (serviceId, category) => {
   return useQuery(
-    ["serviceUsers", url], // Dynamic cache key for service users
-    () => fetchServiceUsers(url),
+    ["serviceUsers", serviceId, category], // Dynamic cache key for service users
+    () => fetchServiceUsers(serviceId, category),
     {
-      enabled: !!url, // Ensure query only runs if URL is provided
+      enabled: !!serviceId, // Ensure query only runs if URL is provided
     }
   );
 };
 
-// Hook to add a user to progress or completed
-export const useAddUserToProgressOrCompleted = () => {
+export const useUpdateServiceUser = () => {
   const queryClient = useQueryClient();
-  return useMutation(addusertoProgressorCompleted, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["serviceUsers"]); // Invalidate the service users list
+
+  return useMutation(
+    /**
+     * @param {{userId:number, serviceId:number, action: "add-to-progress" | "add-to-completed" | "remove-from-progress" | "remove-from-completed";category:string}} param0
+     */
+    async ({ userId, serviceId, action, category }) => {
+      if (!userId || !serviceId || !action || !category) {
+        throw new Error(
+          "Missing required parameters: userId, serviceId, or action."
+        );
+      }
+      return await updateUserServiceStatus(userId, serviceId, action);
     },
-  });
+    {
+      onSuccess: (_, variables) => {
+        const { serviceId, action, category } = variables;
+
+        // Dynamically invalidate based on the action
+        if (
+          [
+            "add-to-progress",
+            "add-to-completed",
+            "remove-from-progress",
+            "remove-from-completed",
+          ].includes(action)
+        ) {
+          queryClient.invalidateQueries(["serviceUsers", serviceId, category]);
+        }
+      },
+      onError: (error) => {
+        console.error("Failed to update user service status:", error);
+      },
+    }
+  );
 };

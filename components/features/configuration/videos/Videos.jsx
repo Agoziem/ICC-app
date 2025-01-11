@@ -8,11 +8,8 @@ import VideoForm from "./VideoForm";
 import CategoryTabs from "@/components/features/Categories/Categoriestab";
 import CategoriesForm from "@/components/features/Categories/Categories";
 import SubCategoriesForm from "@/components/features/SubCategories/SubCategoriesForm";
-import { useSubCategoriesContext } from "@/data/categories/Subcategoriescontext";
 import { FaVideo } from "react-icons/fa6";
 import Pagination from "@/components/custom/Pagination/Pagination";
-import useSWR from "swr";
-import { fetchCategories } from "@/data/categories/fetcher";
 import { VideoDefault } from "@/constants";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -25,6 +22,8 @@ import {
 } from "@/data/videos/fetcher";
 import SearchInput from "@/components/custom/Inputs/SearchInput";
 import { PulseLoader } from "react-spinners";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useCreateVideo, useDeleteVideo, useFetchVideos, useUpdateVideo } from "@/data/videos/video.hook";
 
 const Videos = () => {
   const { openModal } = useAdminContext();
@@ -49,8 +48,7 @@ const Videos = () => {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-    mutate: categoriesmutate,
-  } = useSWR(`${vidoesapiAPIendpoint}/categories/`, fetchCategories);
+  } = useFetchCategories(`${vidoesapiAPIendpoint}/categories/`);
 
   useEffect(() => {
     if (!categories) return;
@@ -68,10 +66,8 @@ const Videos = () => {
     data: videos,
     isLoading: loadingVideos,
     error: error,
-    mutate,
-  } = useSWR(
-    `${vidoesapiAPIendpoint}/videos/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchVideos
+  } = useFetchVideos(
+    `${vidoesapiAPIendpoint}/videos/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`
   );
 
   // -----------------------------------------
@@ -125,6 +121,9 @@ const Videos = () => {
   //----------------------------------------------------
   // Create a new video or update an existing video
   //----------------------------------------------------
+  const {mutateAsync: createVideo} = useCreateVideo();
+  const {mutateAsync: updateVideo} = useUpdateVideo();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     startTransition(async () => {
@@ -142,45 +141,9 @@ const Videos = () => {
       };
       try {
         if (addorupdate.mode === "add") {
-          const newVideo = await createVideo(videostosubmit);
-          await mutate(
-            (Videos) => {
-              /** * @type {Videos} */
-              const newVideos = [newVideo, ...(Videos?.results || [])];
-              return {
-                ...Videos,
-                results: newVideos.sort(
-                  (a, b) =>
-                    new Date(b.created_at).getTime() -
-                    new Date(a.created_at).getTime()
-                ),
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
+          await createVideo(videostosubmit);
         } else {
-          const updatedVideo = await updateVideo(videostosubmit);
-          await mutate(
-            (Videos) => {
-              /** * @type {Videos} */
-              const otherVideos = (Videos?.results || []).map((o) =>
-                o.id === updatedVideo.id ? updatedVideo : o
-              );
-              return {
-                ...Videos,
-                results: otherVideos.sort(
-                  (a, b) =>
-                    new Date(b.updated_at).getTime() -
-                    new Date(a.updated_at).getTime()
-                ),
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
+          await updateVideo(videostosubmit);
         }
         handleAlert(
           `your Video have been ${
@@ -199,6 +162,7 @@ const Videos = () => {
   //----------------------------------------------------
   // Delete a Video
   //----------------------------------------------------
+  const {mutateAsync: deleteVideo} = useDeleteVideo();
   /**
    * @async
    * @param {number} id
@@ -206,19 +170,7 @@ const Videos = () => {
   const handleDelete = async (id) => {
     startDeletion(async () => {
       try {
-        const videoid = await deleteVideo(id);
-        await mutate(
-          (Videos) => {
-            const otherVideos = Videos.results.filter(
-              (service) => service.id !== videoid
-            );
-            Videos.results = otherVideos;
-            return { ...Videos };
-          },
-          {
-            populateCache: true,
-          }
-        );
+        await deleteVideo(id);
         handleAlert("Service deleted Successfully", "success");
       } catch (error) {
         console.log(error.message);
@@ -253,7 +205,6 @@ const Videos = () => {
         <div className="col-12 col-md-7">
           <CategoriesForm
             items={categories}
-            mutate={categoriesmutate}
             addUrl={`${vidoesapiAPIendpoint}/add_category/`}
             updateUrl={`${vidoesapiAPIendpoint}/update_category`}
             deleteUrl={`${vidoesapiAPIendpoint}/delete_category`}

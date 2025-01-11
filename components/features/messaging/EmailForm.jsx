@@ -3,14 +3,13 @@ import { emailMessageSchema } from "@/schemas/emails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
 import Alert from "../../custom/Alert/Alert";
 import { createEmailOptions } from "@/data/Emails/fetcherOptions";
+import { useCreateEmail } from "@/data/Emails/emails.hook";
 
 const EmailForm = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { mutate } = useSWR(`${emailAPIendpoint}/emails/getsentemails/`);
 
   // -----------------------------------------------------------------
   // Initialize React Hook Form and connect it to Zod via zodResolver
@@ -46,6 +45,7 @@ const EmailForm = () => {
   // --------------------------------------
   // Submit function to send the email
   // --------------------------------------
+  const { mutateAsync: createEmail } = useCreateEmail();
   const onSubmit = async (data) => {
     try {
       setError("");
@@ -55,9 +55,9 @@ const EmailForm = () => {
         ...data,
         id: getRandomInt(100_000, 1_000_000),
         created_at: new Date().toISOString(),
-        status: "pending"
+        status: "pending",
       };
-      await mutate(createEmail(data), createEmailOptions(emailData));
+      await createEmail(emailData);
       // Send the Email to the subscribed emails later
       setSuccess("Email sent successfully!");
       reset();
@@ -71,9 +71,6 @@ const EmailForm = () => {
       }, 3000);
     }
   };
-
-
-
 
   return (
     <div

@@ -1,20 +1,16 @@
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
 import React, { useEffect, useState } from "react";
-import Alert from "@/components/custom/Alert/Alert";
-import { updateOrganization } from "@/data/organization/fetcher";
 import { OrganizationDefault } from "@/constants";
+import { useUpdateOrganization } from "@/data/organization/organization.hook";
+import toast from "react-hot-toast";
 
 
 /**
- * @param {{ OrganizationData: Organization, mutate: any }} param0
+ * @param {{ OrganizationData: Organization }} param0
  */
-const TermsOfUse = ({ OrganizationData,mutate }) => {
+const TermsOfUse = ({ OrganizationData }) => {
   const [organizationdata,setOrganizationData] = useState(OrganizationDefault)
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  })
+
 
   useEffect(() => {
     if (OrganizationData?.id) {
@@ -22,32 +18,15 @@ const TermsOfUse = ({ OrganizationData,mutate }) => {
     }
   }, [OrganizationData]);
 
+  const { mutateAsync } = useUpdateOrganization();
   const editTermsOfUse = async (e) => {
     e.preventDefault();
     try {
-      await mutate(updateOrganization(organizationdata), {
-        populateCache: true,
-      });
-      setAlert({
-        show: true,
-        message: "Terms of Use updated successfully",
-        type: "success",
-      })
+      await mutateAsync(organizationdata)
+      toast.success("Terms of Use Updated Successfully")
     } catch (error) {
       console.log(error.message)
-      setAlert({
-        show: true,
-        message: "An error occurred",
-        type: "danger",
-      })
-    } finally {
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        })
-      }, 3000)
+      toast.error("Error Updating Terms of Use")
     }
   };
 
@@ -56,7 +35,6 @@ const TermsOfUse = ({ OrganizationData,mutate }) => {
       <h5>Terms of Use</h5>
       <hr />
       <p>Add or edit Terms of Use</p>
-      {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <Tiptap
         item={organizationdata?.terms_of_use || ""}
         setItem={(value) => {

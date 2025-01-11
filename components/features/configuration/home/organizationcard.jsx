@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Alert from "@/components/custom/Alert/Alert";
 import { converttoformData } from "@/utils/formutils";
 import OrganizationalForm from "./organizationalform";
-import { updateOrganization } from "@/data/organization/fetcher";
 import { OrganizationDefault } from "@/constants";
+import { useUpdateOrganization } from "@/data/organization/organization.hook";
+import toast from "react-hot-toast";
 
 /**
- * @param {{ OrganizationData: Organization; mutate: any; }} param0
+ * @param {{ OrganizationData: Organization; }} param0
  */
-const OrganizationCard = ({ OrganizationData, mutate }) => {
+const OrganizationCard = ({ OrganizationData }) => {
   const [Organization, setOrganizationData] = useState(OrganizationDefault);
   const [alert, setAlert] = useState({
     show: false,
@@ -23,38 +23,22 @@ const OrganizationCard = ({ OrganizationData, mutate }) => {
     }
   }, [OrganizationData]);
 
+  const { mutateAsync } = useUpdateOrganization();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await mutate(updateOrganization(Organization), {
-        populateCache: true,
-      });
-      setAlert({
-        show: true,
-        message: "Organization details updated successfully",
-        type: "success",
-      });
+      await mutateAsync(Organization);
+      toast.success("Organization Details Updated Successfully");
     } catch (error) {
-      setAlert({
-        show: true,
-        message: "Error updating organization details",
-        type: "danger",
-      });
+      console.log(error);
+      toast.error("Error Updating Organization Details");
     } finally {
       setEditMode(false);
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
     }
   };
 
   return (
     <div className="card px-5 py-5">
-      {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       {editMode ? (
         <div>
           <div className="float-end">

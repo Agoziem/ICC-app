@@ -2,7 +2,6 @@
 import { useCart } from "@/data/carts/Cartcontext";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAdminContext } from "@/data/payments/Admincontextdata";
-import { useUserContext } from "@/data/payments/usercontextdata";
 import { BsFillCartCheckFill } from "react-icons/bs";
 import { useRouter, useSearchParams } from "next/navigation";
 import useJsxToPdf from "@/hooks/useJSXtoPDF";
@@ -12,13 +11,12 @@ import { useSession } from "next-auth/react";
 import { paymentsAPIendpoint, verifyPayment } from "@/data/payments/fetcher";
 import { BeatLoader } from "react-spinners";
 import { sendPaymentSuccessfulEmail } from "@/utils/mail";
+import { useQueryClient } from "react-query";
 
 const OrderCompleted = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const reference = searchParams.get("ref") || "";
-  const { mutate: userordersmutate } = useUserContext();
-  const { mutate: ordersmutate } = useAdminContext();
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   /** @type {[Order,(value:Order) => void]} */
@@ -36,67 +34,76 @@ const OrderCompleted = () => {
   // -------------------------------
   // Verify payment function
   // -------------------------------
+  const queryClient = useQueryClient();
   const verifypayment = useCallback(async () => {
     if (!reference) {
       setError("Reference does not exist");
       return;
     }
 
+    setLoading(true); // Ensure loading state is set to true
+
     try {
+      // Call the API to verify payment
       const data = await verifyPayment(
         `${paymentsAPIendpoint}/verifypayment/`,
         { reference, customer_id: parseInt(session?.user?.id) }
       );
 
-      ordersmutate(
-        (previousOrders = []) => {
-          const orderExists = previousOrders.find((o) => o.id === data.id);
-          if (orderExists) {
-            return previousOrders.map((o) => (o.id === data.id ? data : o));
-          }
-          return [...previousOrders, data];
-        },
-        { populateCache: true, revalidate: false }
-      );
+      // Optimistically update the "orders" cache
+      queryClient.setQueryData("payments", (previousOrders = []) => {
+        const orderExists = previousOrders.some((o) => o.id === data.id);
+        if (orderExists) {
+          // Update the existing order
+          return previousOrders.map((o) => (o.id === data.id ? data : o));
+        }
+        // Add the new order
+        return [...previousOrders, data];
+      });
 
-      userordersmutate(
+      // Optimistically update the "userOrders" cache
+      queryClient.setQueryData(
+        ["paymentsByUser", session?.user?.id],
         (previousOrders = []) => {
-          const orderExists = previousOrders.find((o) => o.id === data.id);
+          const orderExists = previousOrders.some((o) => o.id === data.id);
           if (orderExists) {
+            // Update the existing order
             return previousOrders.map((o) => (o.id === data.id ? data : o));
           }
+          // Add the new order
           return [...previousOrders, data];
-        },
-        { populateCache: true, revalidate: false }
+        }
       );
 
       setOrder(data);
       setSuccess("Your Payment has been Verified");
-      sendPaymentSuccessfulEmail(data)
-    } catch (error) {
-      console.error("Error verifying payment:", error); // Add this for debugging
 
-      ordersmutate(
-        (previousOrders = []) =>
-          previousOrders.map((o) =>
-            o.reference === reference ? { ...o, status: "Failed" } : o
-          ),
-        { populateCache: true, revalidate: false }
+      // Trigger additional side effects like sending a confirmation email
+      sendPaymentSuccessfulEmail(data);
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+
+      // Update the "orders" cache to mark the order as failed
+      queryClient.setQueryData("payments", (previousOrders = []) =>
+        previousOrders.map((o) =>
+          o.reference === reference ? { ...o, status: "Failed" } : o
+        )
       );
 
-      userordersmutate(
+      // Update the "userOrders" cache to mark the order as failed
+      queryClient.setQueryData(
+        ["paymentsByUser", session?.user?.id],
         (previousOrders = []) =>
           previousOrders.map((o) =>
             o.reference === reference ? { ...o, status: "Failed" } : o
-          ),
-        { populateCache: true, revalidate: false }
+          )
       );
 
       setError(error.message || "An error occurred while verifying payment");
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset the loading state
     }
-  }, [reference, session]);
+  }, [reference, session, queryClient]);
 
   // -----------------------------------------------
   // trigger the Verify Payment on page load

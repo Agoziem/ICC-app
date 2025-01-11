@@ -1,19 +1,16 @@
-import Alert from "@/components/custom/Alert/Alert";
 import Tiptap from "@/components/custom/Richtexteditor/Tiptap";
 import { OrganizationDefault } from "@/constants";
 import { updateOrganization } from "@/data/organization/fetcher";
+import { useUpdateOrganization } from "@/data/organization/organization.hook";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 /**
- * @param {{ OrganizationData: Organization, mutate: any }} param0
+ * @param {{ OrganizationData: Organization }} param0
  */
-const PrivacyPolicy = ({ OrganizationData, mutate }) => {
+const PrivacyPolicy = ({ OrganizationData }) => {
   const [organizationdata, setOrganizationData] = useState(OrganizationDefault);
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
+
 
   useEffect(() => {
     if (OrganizationData?.id) {
@@ -21,32 +18,15 @@ const PrivacyPolicy = ({ OrganizationData, mutate }) => {
     }
   }, [OrganizationData]);
 
+  const { mutateAsync } = useUpdateOrganization();
   const editPrivacyPolicy = async (e) => {
     e.preventDefault();
     try {
-      await mutate(updateOrganization(organizationdata), {
-        populateCache: true,
-      });
-      setAlert({
-        show: true,
-        message: "Terms of Use updated successfully",
-        type: "success",
-      });
+      await mutateAsync(organizationdata);
+      toast.success("Privacy Policy Updated Successfully");
     } catch (error) {
       console.log(error.message);
-      setAlert({
-        show: true,
-        message: "An error occurred",
-        type: "danger",
-      });
-    } finally {
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
+      toast.error("Error Updating Privacy Policy");
     }
   };
 
@@ -55,7 +35,6 @@ const PrivacyPolicy = ({ OrganizationData, mutate }) => {
       <h5>Privacy Policy</h5>
       <hr />
       <p>Add or edit Privacy Policy</p>
-      {alert.show && <Alert type={alert.type}>{alert.message}</Alert>}
       <Tiptap
         item={organizationdata?.privacy_policy || ""}
         setItem={(value) => {

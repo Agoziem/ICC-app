@@ -1,11 +1,10 @@
-import useSWR from "swr";
 import ProfileimagePlaceholders from "../../custom/ImagePlaceholders/ProfileimagePlaceholders";
 import EmailInput from "./EmailInput";
 import { MdOutlineMessage } from "react-icons/md";
 import { emailAPIendpoint, getResponses } from "@/data/Emails/fetcher";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
-import { useContext } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
+import { useFetchResponses } from "@/data/Emails/emails.hook";
 /**
  * Holds all the Messages that was sent well paginated with load more button
  *
@@ -19,16 +18,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
  */
 
 const EmailBody = ({ message, selectMessage, showlist, setShowlist }) => {
-  const { OrganizationData } = useContext(OrganizationContext);
-
+  const { data: OrganizationData } = useFetchOrganization();
   const {
     data: emailresponses,
     error: responseerror,
     isLoading: loadingresponse,
-  } = useSWR(
-    message ? `${emailAPIendpoint}/emails/${message.id}/responses/` : null,
-    () => getResponses(message)
-  );
+  } = useFetchResponses(message ? message.id : null);
 
   return (
     <>

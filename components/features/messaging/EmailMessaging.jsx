@@ -1,22 +1,12 @@
 import { emailAPIendpoint, getSentEmail } from "@/data/Emails/fetcher";
 import EmailForm from "./EmailForm";
-import useSWR from "swr";
 import { TbMessageCancel } from "react-icons/tb";
 import { PulseLoader } from "react-spinners";
+import { useFetchSentEmails } from "@/data/Emails/emails.hook";
 
 const EmailMessaging = () => {
   // fetch all the messages and populate cache
-  const {
-    data: sentemails,
-    isLoading,
-    error,
-  } = useSWR(`${emailAPIendpoint}/emails/getsentemails/`, getSentEmail, {
-    onSuccess: (data) =>
-      data.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      ),
-  });
+  const { data: sentemails, isLoading, error } = useFetchSentEmails();
 
   /**
    * @param {string} emailstatus

@@ -1,5 +1,5 @@
 // types.d.ts
-import { productSchema, serviceSchema, UserPurchaseSchema, videoSchema } from "@/schemas/items";
+import { productSchema, serviceSchema, UserPurchasedResponseSchema, UserPurchaseSchema, videoSchema } from "@/schemas/items";
 import { z } from "zod";
 declare global {
   type Service = z.infer<typeof serviceSchema>;
@@ -15,6 +15,8 @@ declare global {
   type Videos = Video[];
 
   type ServiceUser = z.infer<typeof UserPurchaseSchema>
+
+  type PaginatedServiceUser =z.infer<typeof UserPurchasedResponseSchema>
 }
 
 export {};

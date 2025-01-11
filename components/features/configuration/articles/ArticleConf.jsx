@@ -2,13 +2,12 @@
 import React, { useState } from "react";
 import ArticleForm from "./ArticleForm";
 import ArticleList from "./ArticleList";
-import { useSession } from "next-auth/react";
 import ArticleCategoryForm from "./ArticleCategoryForm";
 import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
 import { articleAPIendpoint, fetchArticles, fetchArticlesCategories } from "@/data/articles/fetcher";
 import { ArticleDefault } from "@/constants";
-import { useForm } from "react-hook-form";
+import { useFetchCategories } from "@/data/categories/categories.hook";
+import { useFetchArticles } from "@/data/articles/articles.hook";
 
 const ArticleConf = () => {
   const searchParams = useSearchParams();
@@ -23,18 +22,15 @@ const ArticleConf = () => {
     data: categories,
     isLoading: loadingCategories,
     error: categoryError,
-    mutate: categoriesmutate
-  } = useSWR(`${articleAPIendpoint}/getCategories/`, fetchArticlesCategories);
+  } = useFetchCategories(`${articleAPIendpoint}/getCategories/`);
 
   const {
     data: articles,
     isLoading: loadingArticles,
     error: articleError,
-    mutate: articlesmutate
-  } = useSWR(
+  } = useFetchArticles(
     `${articleAPIendpoint}/orgblogs/${Organizationid}/?category=${currentCategory}&page=${page}&page_size=${pageSize}`,
-    fetchArticles
-  );
+  )
 
 
 
@@ -44,7 +40,6 @@ const ArticleConf = () => {
         <div>
           <ArticleCategoryForm
             categories={categories}
-            mutate = {categoriesmutate}
           />
         </div>
         <ArticleForm
@@ -53,7 +48,6 @@ const ArticleConf = () => {
           editMode={editMode}
           setEditMode={setEditMode}
           articles={articles}
-          mutate = {articlesmutate}
           categories={categories}
         />
       </div>
@@ -62,7 +56,6 @@ const ArticleConf = () => {
           articles={articles}
           article={article}
           setArticle={setArticle}
-          mutate = {articlesmutate}
           editMode={editMode}
           setEditMode={setEditMode}
           loading={loadingArticles}

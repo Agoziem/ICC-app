@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 import MessageCard from "./MessageCard";
 import SearchInput from "../../custom/Inputs/SearchInput";
 import "./Email.css";
-import useSWR from "swr";
-import { emailAPIendpoint, fetchEmails } from "@/data/Emails/fetcher";
 import useWebSocket from "@/hooks/useWebSocket";
 import { MessageWebsocketSchema } from "@/schemas/emails";
 import { MdOutlineContacts } from "react-icons/md";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import { useSearchParams, useRouter } from "next/navigation";
+import {  useFetchEmails } from "@/data/Emails/emails.hook";
+import { useQueryClient } from "react-query";
+import toast from "react-hot-toast";
 
 /**
  * Holds all the Messages that was sent well paginated with load more button
@@ -35,18 +36,7 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
     data: messages,
     isLoading: loadingMessages,
     error,
-    mutate,
-  } = useSWR(
-    `${emailAPIendpoint}/emails/${process.env.NEXT_PUBLIC_ORGANIZATION_ID}/?page=${page}&page_size=${pageSize}`,
-    fetchEmails,
-    {
-      onSuccess: (data) =>
-        data?.results?.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        ),
-    }
-  );
+  } = useFetchEmails();
 
   // Handle page change
   const handlePageChange = (newPage) => {
@@ -59,56 +49,70 @@ const Messages = ({ message, selectMessage, showlist, setShowlist }) => {
   // -----------------------------------------
   // Handling WebSocket onmessage event
   // -----------------------------------------
+  const queryClient = useQueryClient();
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {
-        const newMessage = JSON.parse(event.data); // Assuming the message comes in JSON format
-        const validateddata = MessageWebsocketSchema.safeParse(newMessage);
-        if (!validateddata.success) {
-          throw new Error(
-            `Validation failed: ${JSON.stringify(validateddata.error.issues)}`
-          );
-        }
-        if (newMessage.operation === "create") {
-          mutate(
-            (existingMessages) => {
-              const newMessages = [
-                validateddata.data.message,
-                ...(existingMessages.results || []),
-              ];
-              return {
-                ...existingMessages,
-                results: newMessages,
-              };
-            },
-            {
-              populateCache: true,
-            }
-          );
-        }
+        try {
+          const newMessage = JSON.parse(event.data);
+          const validatedData = MessageWebsocketSchema.safeParse(newMessage);
 
-        if (validateddata.data.operation === "update") {
-          mutate(
-            (existingMessages) => {
-              const otherMessages = (existingMessages?.results || []).map(
-                (message) =>
-                  message.id === validateddata.data.message.id
-                    ? validateddata.data.message
-                    : message
-              );
-              return {
-                ...existingMessages,
-                results: otherMessages,
-              };
-            },
-            {
-              populateCache: true,
+          if (!validatedData.success) {
+            console.error(
+              "Invalid WebSocket data:",
+              validatedData.error.issues
+            );
+            return;
+          }
+
+          const { operation, message } = validatedData.data;
+
+          queryClient.setQueryData(
+            ["emails"],
+            (oldData) => {
+              if (!oldData) return; // No cache to update
+
+              const updatedResults = [...(oldData.results || [])];
+
+              switch (operation) {
+                case "create":
+                  toast.success("you have a new message");
+                  return {
+                    ...oldData,
+                    count: oldData.count + 1,
+                    results: [message, ...updatedResults], // Add new message at the top
+                  };
+
+                case "update":
+                  return {
+                    ...oldData,
+                    results: updatedResults.map((msg) =>
+                      msg.id === message.id ? message : msg
+                    ), // Replace the updated message
+                  };
+
+                case "delete":
+                  toast.success("A message was deleted");
+                  return {
+                    ...oldData,
+                    count: oldData.count - 1,
+                    results: updatedResults.filter(
+                      (msg) => msg.id !== message.id
+                    ), // Remove deleted message
+                  };
+
+                default:
+                  console.warn(`Unhandled operation: ${operation}`);
+                  return oldData;
+              }
             }
           );
+        } catch (error) {
+          console.error("Error handling WebSocket message:", error);
         }
       };
     }
-  }, [isConnected, ws, mutate]);
+  }, [isConnected, ws, queryClient]);
 
   if (loadingMessages) {
     return <p>Loading....</p>;

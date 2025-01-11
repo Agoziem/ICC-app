@@ -5,13 +5,13 @@ import ArticlePlaceholder from "./ArticlePlaceholder";
 import Pagination from "@/components/custom/Pagination/Pagination";
 import { ArticleDefault } from "@/constants";
 import { useRouter } from "next/navigation";
-import { deleteArticle } from "@/data/articles/fetcher";
+import { useDeleteArticle } from "@/data/articles/articles.hook";
+import toast from "react-hot-toast";
 
 /**
- * @param {{ mutate:any;articles: ArticlesResponse; article: Article; setArticle: (value:Article) => void; editMode: any; setEditMode: any; loading: any; currentPage: any; pageSize: any; }} param0
+ * @param {{ articles: ArticlesResponse; article: Article; setArticle: (value:Article) => void; editMode: any; setEditMode: any; loading: any; currentPage: any; pageSize: any; }} param0
  */
 const ArticleList = ({
-  mutate,
   articles,
   article,
   setArticle,
@@ -30,43 +30,16 @@ const ArticleList = ({
   const router = useRouter();
 
   // handle Article Delete
+  const { mutateAsync: deleteArticle } = useDeleteArticle();
   const removeArticle = async (id) => {
     try {
-      const articleid = await deleteArticle(id);
-      await mutate(
-        (Articles) => {
-          const otherArticles = Articles.results.filter(
-            (article) => article.id !== articleid
-          );
-          Articles.results = otherArticles;
-          return { ...Articles };
-        },
-        {
-          populateCache: true,
-          // revalidate: false,
-        }
-      );
-      setAlert({
-        show: true,
-        message: "Article deleted successfully",
-        type: "success",
-      });
+      await deleteArticle(id);
+      toast.success("Article deleted successfully");
     } catch (error) {
-      setAlert({
-        show: true,
-        message: "An error occurred",
-        type: "danger",
-      });
+      toast.error("An error occurred, please try again");
     } finally {
-      setTimeout(() => {
-        setAlert({
-          show: false,
-          message: "",
-          type: "",
-        });
-      }, 3000);
+      closeModal();
     }
-    closeModal();
   };
 
   const closeModal = () => {

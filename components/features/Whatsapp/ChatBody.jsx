@@ -4,13 +4,10 @@ import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
 import { BsWhatsapp } from "react-icons/bs";
 import "./whatsapp.css";
 import Scrolltobottom from "./Scrolltobottom";
-import {
-  fetchWAMessages,
-  WhatsappAPIendpoint,
-} from "@/data/whatsappAPI/fetcher";
-import useSWR from "swr";
 import useWebSocket from "@/hooks/useWebSocket";
 import { WAMessageWebsocketSchema } from "@/schemas/whatsapp";
+import { useFetchWAMessages } from "@/data/whatsappAPI/whatsapp.hook";
+import { useQueryClient } from "react-query";
 
 // Component to show when there are no chat messages
 const NoMessages = ({ messagesloading, messageserror }) => (
@@ -45,17 +42,12 @@ const ChatBody = () => {
     data: chatmessages,
     error: messageserror,
     isLoading: messagesloading,
-    mutate,
-  } = useSWR(
-    selectedContact
-      ? `${WhatsappAPIendpoint}/messages/${selectedContact.id}`
-      : null,
-    () => fetchWAMessages(selectedContact)
-  );
-
+  } = useFetchWAMessages(selectedContact?.id);
+  console.log(selectedContact);
   // -----------------------------------------------------
   // append a new message upon recieval from websocket
   // -----------------------------------------------------
+  const queryClient = useQueryClient();
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {
@@ -63,25 +55,22 @@ const ChatBody = () => {
         const validatedmessage =
           WAMessageWebsocketSchema.safeParse(responseMessage);
         if (!validatedmessage.success) {
-         console.log(validatedmessage.error.issues)
+          console.log(validatedmessage.error.issues);
         }
         const newMessage = validatedmessage.data;
         if (selectedContact.id === newMessage.contact.id) {
           if (newMessage.operation === "create") {
-            mutate(
-              (existingMessages) => [
-                newMessage.message,
-                ...(existingMessages || []),
-              ],
-              {
-                populateCache: true,
+            queryClient.setQueryData(
+              ["chatmessages", selectedContact?.id],
+              (oldData) => {
+                return [...oldData, newMessage.message];
               }
             );
           }
         }
       };
     }
-  }, [isConnected, ws, mutate]);
+  }, [isConnected, ws, queryClient]);
 
   // ------------------------------------------------------
   // Scroll to the bottom whenever messages change
@@ -90,7 +79,7 @@ const ChatBody = () => {
     if (bottomRef.current) {
       scrollToBottom();
     }
-  }, [chatmessages,bottomRef]);
+  }, [chatmessages, bottomRef]);
 
   // ------------------------------------------------------
   // Handle scroll event to check if the user has scrolled up

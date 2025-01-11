@@ -1,4 +1,5 @@
 import { getMedia } from "@/data/whatsappAPI/fetcher";
+import { useFetchMedia } from "@/data/whatsappAPI/whatsapp.hook";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiCheckDouble } from "react-icons/bi";
@@ -16,7 +17,9 @@ const ChatMessage = ({ message }) => {
     data: mediaUrl,
     isLoading,
     error,
-  } = useSWR(message?.media_id || null, getMedia);
+  } = useFetchMedia(
+    message?.media_id,
+  )
 
   const messageTime = new Date(message.timestamp);
 

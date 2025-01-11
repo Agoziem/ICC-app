@@ -9,15 +9,13 @@ import ChatAttachments from "../../features/Whatsapp/ChatAttachments";
 import AttachmentInput from "./AttachmentInput";
 import ExtendableTextarea from "./ExtendableTextarea";
 import { useWhatsappAPIContext } from "@/data/whatsappAPI/WhatsappContext";
+import { useSendWAMessage } from "@/data/whatsappAPI/whatsapp.hook";
 
 /**
  * @param {{contact: WAContact}} props
  * @returns {JSX.Element}
  */
 const ChatInput = ({ contact }) => {
-  const { mutate } = useSWR(
-    contact ? `${WhatsappAPIendpoint}/messages/${contact.id}` : null
-  );
   const [hasAttachment, setHasAttachment] = useState(false);
   const [messageBody, setMessageBody] = useState(""); // Manage input with useState
   const [fileName, setFileName] = useState("No Selected file");
@@ -35,6 +33,7 @@ const ChatInput = ({ contact }) => {
   };
 
   // Handle message submission
+  const { mutateAsync:sendWAMessage } = useSendWAMessage();
   const handleSubmission = async (e) => {
     e.preventDefault();
     if (!messageBody.trim()) {
@@ -53,10 +52,7 @@ const ChatInput = ({ contact }) => {
     try {
       setMessageBody(""); // Clear the input field after submitting
       setIsSubmitting(false);
-      await mutate(
-        sendWAMessage(messagetosubmit),
-        sendWAMessageOptions(messagetosubmit)
-      );
+      await sendWAMessage(messagetosubmit);
     } catch (error) {
       console.log(error.message);
     }

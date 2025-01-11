@@ -1,9 +1,16 @@
 import ImageUploader from "@/components/custom/Imageuploader/ImageUploader";
 
 /**
- * @param {{ addStaff: any; addorupdate: any; staff: Staff; setStaff: (value:Staff) => void; closeModal: any; }} param0
+ * @param {{ addStaff: any; addorupdate: any; staff: Staff; setStaff: (value:Staff) => void; closeModal: any;loading:boolean }} param0
  */
-const StaffForm = ({ addStaff, addorupdate, staff, setStaff, closeModal }) => {
+const StaffForm = ({
+  addStaff,
+  addorupdate,
+  staff,
+  setStaff,
+  closeModal,
+  loading,
+}) => {
   return (
     <form onSubmit={addStaff}>
       <div className="mb-3">
@@ -185,8 +192,8 @@ const StaffForm = ({ addStaff, addorupdate, staff, setStaff, closeModal }) => {
         >
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary border-0 rounded">
-          {addorupdate.mode === "add" ? "Add" : "Update"}
+        <button type="submit" className="btn btn-primary border-0 rounded" disabled={loading}>
+          {loading ? "submitting" : addorupdate.mode === "add" ? "Add" : "Update"}
         </button>
       </div>
     </form>

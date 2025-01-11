@@ -1,8 +1,8 @@
-import { WATemplatescachekey, getSentTemplates } from "@/data/whatsappAPI/fetcher";
-import useSWR from "swr";
+
 import { TbBrandWhatsapp } from "react-icons/tb";
 import WATemplateForm from "./WhatsappForm";
 import { PulseLoader } from "react-spinners";
+import { useGetSentTemplates } from "@/data/whatsappAPI/whatsapp.hook";
 
 const WhatsappMessaging = () => {
   // fetch all the messages and populate cache
@@ -10,14 +10,9 @@ const WhatsappMessaging = () => {
     data: senttemplatemessages,
     isLoading,
     error,
-  } = useSWR(WATemplatescachekey, getSentTemplates, {
-    onSuccess: (data) =>
-      data.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      ),
-  });
+  } = useGetSentTemplates()
 
+  
   /**
  * @param {string} messagestatus
  */
