@@ -43,30 +43,42 @@ const ChatBody = () => {
     error: messageserror,
     isLoading: messagesloading,
   } = useFetchWAMessages(selectedContact?.id);
-  console.log(selectedContact);
+
   // -----------------------------------------------------
   // append a new message upon recieval from websocket
   // -----------------------------------------------------
   const queryClient = useQueryClient();
+
   useEffect(() => {
     if (isConnected && ws) {
       ws.onmessage = (event) => {
-        const responseMessage = JSON.parse(event.data); // Assuming the message comes in JSON format
-        const validatedmessage =
-          WAMessageWebsocketSchema.safeParse(responseMessage);
-        if (!validatedmessage.success) {
-          console.log(validatedmessage.error.issues);
-        }
-        const newMessage = validatedmessage.data;
-        if (selectedContact.id === newMessage.contact.id) {
+        try {
+          const responseMessage = JSON.parse(event.data); // Parse the WebSocket message
+          const validatedmessage =
+            WAMessageWebsocketSchema.safeParse(responseMessage);
+
+          // Validate the WebSocket message
+          if (!validatedmessage.success) {
+            console.error(
+              "Invalid WebSocket message:",
+              validatedmessage.error.issues
+            );
+            return; // Exit early if the message is invalid
+          }
+
+          const newMessage = validatedmessage.data;
+
+          // Safely check if selectedContact exists
           if (newMessage.operation === "create") {
             queryClient.setQueryData(
-              ["chatmessages", selectedContact?.id],
-              (oldData) => {
+              ["waMessages", newMessage.message.contact],
+              (oldData = []) => {
                 return [...oldData, newMessage.message];
               }
             );
           }
+        } catch (error) {
+          console.error("Error processing WebSocket message:", error);
         }
       };
     }

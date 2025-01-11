@@ -26,7 +26,6 @@ export const useFetchWAMessages = (contact_id) => {
   });
 };
 
-// Send a WhatsApp Message
 // Send a WhatsApp Message with Optimistic Updates
 export const useSendWAMessage = () => {
   const queryClient = useQueryClient();
@@ -47,12 +46,7 @@ export const useSendWAMessage = () => {
       // Optimistically update the cache with the new message
       queryClient.setQueryData(cacheKey, (oldMessages = []) => [
         ...oldMessages,
-        {
-          ...newMessage,
-          id: `temp-${Date.now()}`, // Temporary ID
-          status: "pending", // Mark the message as "pending"
-          createdAt: new Date().toISOString(), // Set optimistic timestamp
-        },
+        newMessage,
       ]);
 
       // Return the snapshot for rollback in case of an error
@@ -62,29 +56,10 @@ export const useSendWAMessage = () => {
     // On success, update the cache with the server's response
     onSuccess: (data, variables) => {
       const cacheKey = ["waMessages", variables.contact];
-
-      queryClient.setQueryData(cacheKey, (oldMessages = []) =>
-        oldMessages.map((message) =>
-          message.id.startsWith("temp-") // Replace the temporary message
-            ? { ...message, ...data, status: "sent" } // Update with server response
-            : message
-        )
-      );
-    },
-
-    // On error, rollback to the previous cache state
-    onError: (error, variables, context) => {
-      const cacheKey = ["waMessages", variables.contact];
-      queryClient.setQueryData(cacheKey, context.previousMessages); // Rollback to previous state
-    },
-
-    // Refetch the messages query to ensure consistency
-    onSettled: (_, __, variables) => {
-      queryClient.invalidateQueries(["waMessages", variables.contact]);
+      queryClient.invalidateQueries(cacheKey);
     },
   });
 };
-
 
 // Fetch Media by ID
 export const useFetchMedia = (mediaId) => {
