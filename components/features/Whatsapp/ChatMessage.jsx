@@ -1,10 +1,7 @@
-import { getMedia } from "@/data/whatsappAPI/fetcher";
 import { useFetchMedia } from "@/data/whatsappAPI/whatsapp.hook";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import { BiCheckDouble } from "react-icons/bi";
 import { FaRegFileImage } from "react-icons/fa6";
-import useSWR from "swr";
 
 /**
  * Description placeholder

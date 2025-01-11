@@ -1,10 +1,7 @@
 import React, { useState, useRef } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { ImAttachment } from "react-icons/im";
-import useSWR from "swr";
-import { sendWAMessage, WhatsappAPIendpoint } from "@/data/whatsappAPI/fetcher";
 import { WAMessageDefault } from "@/constants";
-import { sendWAMessageOptions } from "@/data/whatsappAPI/fetcherOptions";
 import ChatAttachments from "../../features/Whatsapp/ChatAttachments";
 import AttachmentInput from "./AttachmentInput";
 import ExtendableTextarea from "./ExtendableTextarea";

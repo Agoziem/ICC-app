@@ -2,11 +2,6 @@ import React, { useEffect, useState } from "react";
 import useWebSocket from "@/hooks/useWebSocket";
 import Modal from "@/components/custom/Modal/modal";
 import { shortenMessage, timeSince } from "@/utils/utilities";
-import {
-  fetchNotifications,
-  notificationAPIendpoint,
-} from "@/data/notificationsAPI/fetcher";
-import useSWR from "swr";
 import { notificationActionSchema } from "@/schemas/notifications";
 import { useFetchNotifications } from "@/data/notificationsAPI/notifications.hook";
 import { useQueryClient } from "react-query";

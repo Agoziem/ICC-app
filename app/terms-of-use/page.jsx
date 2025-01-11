@@ -1,12 +1,11 @@
 "use client";
 import BackButton from "@/components/custom/backbutton/BackButton";
 import NextBreadcrumb from "@/components/custom/Breadcrumb/breadcrumb";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 import React, { useContext } from "react";
 
 const TermsPage = () => {
-  /** * @type {{OrganizationData:Organization}}*/
-  const { OrganizationData } = useContext(OrganizationContext);
+   const { data: OrganizationData } = useFetchOrganization();
   return (
     <div
       className="mx-auto mt-4 mb-5 px-4 px-md-0 py-2"

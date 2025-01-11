@@ -2,10 +2,8 @@
 import Datatable from "@/components/custom/Datatable/Datatable";
 import PageTitle from "@/components/custom/PageTitle/PageTitle";
 import OrderTableItems from "@/components/features/orders/OrderTableItems";
-import { fetchPayments, paymentsAPIendpoint } from "@/data/payments/fetcher";
 import { useFetchPayments } from "@/data/payments/orders.hook";
 import React, { useEffect, useState } from "react";
-import useSWR from "swr";
 
 const PaymentsPage = () => {
   /**

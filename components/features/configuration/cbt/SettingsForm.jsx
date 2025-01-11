@@ -1,14 +1,14 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { TiTimes } from "react-icons/ti";
-import { OrganizationContext } from "@/data/organization/Organizationalcontextdata";
 import Modal from "@/components/custom/Modal/modal";
 import Alert from "@/components/custom/Alert/Alert";
 import { useRouter } from "next/navigation";
+import { useFetchOrganization } from "@/data/organization/organization.hook";
 
 const SettingsForm = () => {
   const router = useRouter();
-  const { OrganizationData } = useContext(OrganizationContext);
+  const { data: OrganizationData } = useFetchOrganization();
   const [tests, setTests] = useState([]);
   const [loadingTests, setLoadingTests] = useState(false);
   const [test, setTest] = useState({
