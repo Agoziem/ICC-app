@@ -52,9 +52,8 @@ const SubCategoriesForm = ({
 
   const { data: subcategories, isLoading: loadingsubcategories } =
     useFetchSubCategories(
+      `${apiendpoint}/subcategories/${currentCategory.id}/`,
       currentCategory?.id
-        ? `${apiendpoint}/subcategories/${currentCategory.id}/`
-        : null
     );
   //   -----------------------------------------
   // close modal
@@ -71,7 +70,6 @@ const SubCategoriesForm = ({
   const { mutateAsync: updateSubCategory } = useUpdateSubCategory();
   const handleItem = async (e, url) => {
     e.preventDefault();
-    console.log(item);
     try {
       if (edit) {
         await updateSubCategory(item);
