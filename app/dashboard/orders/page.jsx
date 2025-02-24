@@ -22,9 +22,18 @@ const OrderPage = () => {
     email,
     amount,
     reference,
-    metadata: {
-      name,
-    },
+    custom_fields: [
+      {
+        display_name: "Name",
+        variable_name: "name",
+        value: name,
+      },
+      {
+        display_name: "Email",
+        variable_name: "email",
+        value: email,
+      },
+    ],
     publicKey,
     text: "Complete Payment",
     onSuccess: () => handleSuccess(),
