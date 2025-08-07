@@ -18,3 +18,5 @@ export const getFileIcon = (type) => {
         return <BsFileEarmarkPdfFill className="text-secondary " />;
     }
   };
+
+  
