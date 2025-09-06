@@ -1,15 +1,15 @@
 import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
 import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
-import FooterSection from "@/sections/footerSection";
+import FooterSection from "@/components/sections/footerSection";
 
 export const metadata = {
-    title: "ICC Videos",
+    title: "ICC Products",
     description:
-      "We offer video tutorials on various courses across institutions.",
+      "We offer products such as past questions and study materials across tertiary institutions in the country.",
   };
   
-
-const VideoLayout = ({ children }) => {
+  
+const ProductLayout = ({ children }) => {
   return (
     <div
       className="d-flex flex-column justify-content-between"
@@ -29,4 +29,4 @@ const VideoLayout = ({ children }) => {
   );
 };
 
-export default VideoLayout;
+export default ProductLayout;

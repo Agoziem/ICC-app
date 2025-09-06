@@ -1,14 +1,15 @@
 import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
 import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
-import FooterSection from "@/sections/footerSection";
+import FooterSection from "@/components/sections/footerSection";
+import React from "react";
 
 export const metadata = {
-  title: "ICC Services",
+  title: "Privacy Policy",
   description:
-    "We offer all JAMB-related services, including Post-UTME and admissions for schools across the country.",
+    "Read our privacy policy to understand how we collect, use, and protect your data.",
 };
 
-const ServiceLayout = ({ children }) => {
+const PrivacyLayout = ({ children }) => {
   return (
     <div
       className="d-flex flex-column justify-content-between"
@@ -28,4 +29,4 @@ const ServiceLayout = ({ children }) => {
   );
 };
 
-export default ServiceLayout;
+export default PrivacyLayout;

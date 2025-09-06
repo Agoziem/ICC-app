@@ -1,15 +1,14 @@
 import BackToTop from "@/components/custom/backtotopbutton/BackToTop";
 import MainHeader from "@/components/blocks/header/Mainheader/MainHeader";
-import FooterSection from "@/sections/footerSection";
+import FooterSection from "@/components/sections/footerSection";
 
 export const metadata = {
-    title: "ICC Products",
-    description:
-      "We offer products such as past questions and study materials across tertiary institutions in the country.",
-  };
-  
-  
-const ProductLayout = ({ children }) => {
+  title: "ICC Services",
+  description:
+    "We offer all JAMB-related services, including Post-UTME and admissions for schools across the country.",
+};
+
+const ServiceLayout = ({ children }) => {
   return (
     <div
       className="d-flex flex-column justify-content-between"
@@ -29,4 +28,4 @@ const ProductLayout = ({ children }) => {
   );
 };
 
-export default ProductLayout;
+export default ServiceLayout;
